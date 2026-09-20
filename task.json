@@ -1,13 +1,13 @@
 {
-  "run": "verify-new-posts-p0101-battery-registration",
+  "run": "read-new-posts-quality-check",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=P0101%20%D8%AD%D8%B3%D8%A7%D8%B3%20MAF&limit=10&status=publish"
+      "path": "/post/82265"
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=%D8%AA%D8%B3%D8%AC%D9%8A%D9%84%20%D8%A7%D9%84%D8%A8%D8%B7%D8%A7%D8%B1%D9%8A%D8%A9%20%D8%A7%D9%84%D8%AC%D8%AF%D9%8A%D8%AF%D8%A9%20Battery%20Registration&limit=10&status=publish"
+      "path": "/post/82266"
     }
   ],
   "verify": []
