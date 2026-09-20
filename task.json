@@ -1,25 +1,25 @@
 {
-  "run": "audit-high-impression-low-ctr-dtc-pages",
+  "run": "read-p0011-p0342-old-and-new-for-consolidation",
   "requests": [
+    {
+      "method": "GET",
+      "path": "/post/114"
+    },
     {
       "method": "GET",
       "path": "/post/82275"
     },
     {
       "method": "GET",
+      "path": "/post/80209"
+    },
+    {
+      "method": "GET",
+      "path": "/post/82276"
+    },
+    {
+      "method": "GET",
       "path": "/post/80193"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=P0342&limit=20&status=any"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=P0000&limit=20&status=any"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=P0597&limit=20&status=any"
     }
   ],
   "verify": []
