@@ -1,5 +1,5 @@
 {
-  "run": "verify-after-key-refresh",
+  "run": "verify-manual-key",
   "requests": [
     {
       "method": "GET",
