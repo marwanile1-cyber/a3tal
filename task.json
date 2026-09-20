@@ -1,9 +1,9 @@
 {
-  "run": "seo-audit-jetour-service-page",
+  "run": "read-p0342-page",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=%D9%85%D8%B1%D8%A7%D9%83%D8%B2%20%D8%AE%D8%AF%D9%85%D8%A9%20%D8%AC%D9%8A%D8%AA%D9%88%D8%B1&limit=20&status=any"
+      "path": "/search-posts?search=P0342&limit=20&status=any"
     }
   ],
   "verify": []
