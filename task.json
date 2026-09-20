@@ -1,9 +1,13 @@
 {
-  "run": "read-ac-idle-page-for-seo",
+  "run": "read-elantra-used-price-page",
   "requests": [
     {
       "method": "GET",
-      "path": "/post/81009"
+      "path": "/search-posts?search=hyundai%20elantra%20used&limit=20&status=any"
+    },
+    {
+      "method": "GET",
+      "path": "/post/81044"
     }
   ],
   "verify": []
