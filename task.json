@@ -1,9 +1,9 @@
 {
-  "run": "read-sensor-category-reference",
+  "run": "read-turbo-post-media-for-sensor-guide",
   "requests": [
     {
       "method": "GET",
-      "path": "/post/80995"
+      "path": "/post/80521"
     }
   ],
   "verify": []
