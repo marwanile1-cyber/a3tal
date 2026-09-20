@@ -1,13 +1,13 @@
 {
-  "run": "audit-generic-p0011-gap",
+  "run": "read-hyundai-p0011-and-p0016-media",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=P0011&limit=20&status=any"
+      "path": "/post/114"
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=%D9%83%D9%88%D8%AF%20P0011&limit=20&status=any"
+      "path": "/post/81350"
     }
   ],
   "verify": []
