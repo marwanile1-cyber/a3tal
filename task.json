@@ -1,10 +1,25 @@
 {
-  "run": "read-p0700-before-fast-update",
+  "run": "tighten-p0700-search-intent",
   "requests": [
     {
-      "method": "GET",
-      "path": "/post/81177"
+      "method": "POST",
+      "path": "/update-post",
+      "body": {
+        "id": 81177,
+        "title": "كود P0700: معنى Transmission Control System وكيف تقرأ عطل TCM",
+        "excerpt": "P0700 يعني أن نظام التحكم في الفتيس طلب إضاءة لمبة العطل أو سجّل كودًا تفصيليًا داخل TCM. تعرف على طريقة الوصول للكود الحقيقي قبل تغيير أي قطعة.",
+        "meta": {
+          "_yoast_wpseo_focuskw": "P0700",
+          "_yoast_wpseo_title": "كود P0700: معنى العطل وكيف تقرأ كود TCM الحقيقي",
+          "_yoast_wpseo_metadesc": "شرح كود P0700 ومعنى Transmission Control System (MIL Request). ادخل إلى TCM واقرأ الكود التفصيلي قبل تغيير الزيت أو السولينويد أو كنترول الفتيس.",
+          "_yoast_wpseo_canonical": "https://a3tal.com/p0700-transmission-control-system-malfunction/"
+        }
+      }
     }
   ],
-  "verify": []
+  "verify": [
+    {
+      "path": "/post/81177"
+    }
+  ]
 }
