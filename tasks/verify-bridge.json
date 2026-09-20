@@ -1,0 +1,16 @@
+{
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/status"
+    }
+  ],
+  "verify": [
+    {
+      "path": "/post/80963"
+    },
+    {
+      "path": "/post/81939"
+    }
+  ]
+}
