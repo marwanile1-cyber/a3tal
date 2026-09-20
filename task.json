@@ -1,17 +1,9 @@
 {
-  "run": "verify-manual-key",
+  "run": "read-old-coolant-guide",
   "requests": [
     {
       "method": "GET",
-      "path": "/status"
-    },
-    {
-      "method": "GET",
       "path": "/post/80963"
-    },
-    {
-      "method": "GET",
-      "path": "/post/81939"
     }
   ],
   "verify": []
