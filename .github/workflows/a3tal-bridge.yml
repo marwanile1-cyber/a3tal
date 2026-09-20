@@ -1,0 +1,106 @@
+name: A3tal Bridge Task
+
+on:
+  push:
+    paths:
+      - 'tasks/*.json'
+  workflow_dispatch:
+    inputs:
+      task_file:
+        description: 'Path to task JSON'
+        required: true
+        default: 'tasks/task.json'
+
+permissions:
+  contents: read
+
+jobs:
+  run-task:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Resolve task file
+        id: task
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            FILE="${{ inputs.task_file }}"
+          else
+            FILE="$(git diff-tree --no-commit-id --name-only -r "$GITHUB_SHA" | grep -E '^tasks/.*\.json$' | tail -n 1)"
+          fi
+          if [ -z "$FILE" ] || [ ! -f "$FILE" ]; then
+            echo "No task JSON found."
+            exit 1
+          fi
+          echo "file=$FILE" >> "$GITHUB_OUTPUT"
+
+      - name: Validate secret
+        shell: bash
+        env:
+          A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+        run: |
+          if [ -z "$A3TAL_API_KEY" ]; then
+            echo "Missing repository secret A3TAL_API_KEY"
+            exit 1
+          fi
+
+      - name: Execute requests
+        shell: bash
+        env:
+          A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+          TASK_FILE: ${{ steps.task.outputs.file }}
+        run: |
+          set -euo pipefail
+          BASE="https://a3tal.com/wp-json/a3tal-ai/v1"
+
+          echo "Using task: $TASK_FILE"
+
+          COUNT="$(jq '.requests | length' "$TASK_FILE")"
+          for ((i=0; i<COUNT; i++)); do
+            METHOD="$(jq -r ".requests[$i].method // \"POST\"" "$TASK_FILE")"
+            PATH_PART="$(jq -r ".requests[$i].path" "$TASK_FILE")"
+            BODY="$(jq -c ".requests[$i].body // {}" "$TASK_FILE")"
+
+            echo "::group::Request $((i+1)) $METHOD $PATH_PART"
+            if [ "$METHOD" = "GET" ]; then
+              curl --fail-with-body --silent --show-error \
+                -H "X-A3tal-Key: $A3TAL_API_KEY" \
+                "$BASE$PATH_PART" | tee "/tmp/a3tal-response-$i.json"
+            else
+              curl --fail-with-body --silent --show-error \
+                -X "$METHOD" \
+                -H "X-A3tal-Key: $A3TAL_API_KEY" \
+                -H "Content-Type: application/json" \
+                --data "$BODY" \
+                "$BASE$PATH_PART" | tee "/tmp/a3tal-response-$i.json"
+            fi
+            echo
+            jq . "/tmp/a3tal-response-$i.json" || true
+            echo "::endgroup::"
+          done
+
+      - name: Verify requests
+        if: always()
+        shell: bash
+        env:
+          A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+          TASK_FILE: ${{ steps.task.outputs.file }}
+        run: |
+          set -euo pipefail
+          BASE="https://a3tal.com/wp-json/a3tal-ai/v1"
+          if ! jq -e '.verify and (.verify | length > 0)' "$TASK_FILE" >/dev/null; then
+            echo "No verification requests."
+            exit 0
+          fi
+
+          COUNT="$(jq '.verify | length' "$TASK_FILE")"
+          for ((i=0; i<COUNT; i++)); do
+            PATH_PART="$(jq -r ".verify[$i].path" "$TASK_FILE")"
+            echo "::group::Verify $((i+1)) GET $PATH_PART"
+            curl --fail-with-body --silent --show-error \
+              -H "X-A3tal-Key: $A3TAL_API_KEY" \
+              "$BASE$PATH_PART" | jq .
+            echo "::endgroup::"
+          done
