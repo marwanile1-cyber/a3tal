@@ -1,9 +1,9 @@
 {
-  "run": "read-tiggo4pro-page-full",
+  "run": "read-tiggo4pro-80234-full",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=chery%20tiggo%204%20pro%202026&limit=10&status=any"
+      "path": "/post/80234"
     }
   ],
   "verify": []
