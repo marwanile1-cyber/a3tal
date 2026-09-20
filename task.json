@@ -1,13 +1,13 @@
 {
-  "run": "seo-audit-vibration-cannibalization",
+  "run": "seo-audit-vibration-cannibalization-v2",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=رجة في السيارة على سرعة 80&limit=20&status=any"
+      "path": "/search-posts?search=%D8%B1%D8%AC%D8%A9%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%B3%D9%8A%D8%A7%D8%B1%D8%A9%20%D8%B9%D9%84%D9%89%20%D8%B3%D8%B1%D8%B9%D8%A9%2080&limit=20&status=any"
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=اهتزاز السيارة على السرعات العالية&limit=20&status=any"
+      "path": "/search-posts?search=%D8%A7%D9%87%D8%AA%D8%B2%D8%A7%D8%B2%20%D8%A7%D9%84%D8%B3%D9%8A%D8%A7%D8%B1%D8%A9%20%D8%B9%D9%84%D9%89%20%D8%A7%D9%84%D8%B3%D8%B1%D8%B9%D8%A7%D8%AA%20%D8%A7%D9%84%D8%B9%D8%A7%D9%84%D9%8A%D8%A9&limit=20&status=any"
     }
   ],
   "verify": []
