@@ -1,31 +1,26 @@
 {
-  "run": "insert-agm-gel-internal-images",
+  "run": "insert-agm-gel-images-lightweight",
   "requests": [
     {
       "method": "POST",
-      "path": "/insert-images",
+      "path": "/replace-content",
       "body": {
         "post_id": 82258,
-        "images": [
-          {
-            "url": "https://a3tal.com/wp-content/uploads/2026/09/agm-battery-deep-cycle.webp",
-            "alt": "بطارية AGM وتقنية Absorbent Glass Mat",
-            "caption": "بطارية AGM: تصميم منخفض المقاومة الداخلية يناسب التيارات المرتفعة وتطبيقات التشغيل القوي",
-            "after": "<h2 style=\"color:#cc0000\">ما هي بطارية AGM؟</h2>"
-          },
-          {
-            "url": "https://a3tal.com/wp-content/uploads/2026/09/gel-battery-deep-cycle-scaled.webp",
-            "alt": "بطارية GEL Deep Cycle للطاقة الشمسية والـBackup",
-            "caption": "بطارية GEL: الإلكتروليت يكون في صورة هلامية وتنتشر في تطبيقات Deep Cycle والطاقة الاحتياطية",
-            "after": "<h2 style=\"color:#cc0000\">ما هي بطارية GEL؟</h2>"
-          }
-        ]
+        "search": "<h2 style=\"color:#cc0000\">ما هي بطارية AGM؟</h2>",
+        "replace": "<h2 style=\"color:#cc0000\">ما هي بطارية AGM؟</h2>\n<figure style=\"margin:20px auto;text-align:center\">\n<img src=\"https://a3tal.com/wp-content/uploads/2026/09/agm-battery-deep-cycle.webp\" alt=\"بطارية AGM وتقنية Absorbent Glass Mat\" loading=\"lazy\" decoding=\"async\" style=\"max-width:100%;height:auto;border-radius:10px\" />\n<figcaption>بطارية AGM: تصميم منخفض المقاومة الداخلية يناسب التيارات المرتفعة وتطبيقات التشغيل القوي.</figcaption>\n</figure>",
+        "all": false
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/replace-content",
+      "body": {
+        "post_id": 82258,
+        "search": "<h2 style=\"color:#cc0000\">ما هي بطارية GEL؟</h2>",
+        "replace": "<h2 style=\"color:#cc0000\">ما هي بطارية GEL؟</h2>\n<figure style=\"margin:20px auto;text-align:center\">\n<img src=\"https://a3tal.com/wp-content/uploads/2026/09/gel-battery-deep-cycle-scaled.webp\" alt=\"بطارية GEL Deep Cycle للطاقة الشمسية والـBackup\" loading=\"lazy\" decoding=\"async\" style=\"max-width:100%;height:auto;border-radius:10px\" />\n<figcaption>بطارية GEL: الإلكتروليت يكون في صورة هلامية وتنتشر في تطبيقات Deep Cycle والطاقة الاحتياطية.</figcaption>\n</figure>",
+        "all": false
       }
     }
   ],
-  "verify": [
-    {
-      "path": "/post/82258"
-    }
-  ]
+  "verify": []
 }
