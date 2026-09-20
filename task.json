@@ -1,43 +1,18 @@
 {
-  "run": "optimize-pcv-and-soueast-query-matching",
+  "run": "locate-kgm-service-page",
   "requests": [
     {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 81111,
-        "title": "أعراض تلف بلف تبخير الزيت PCV: التفتفة ونقص الزيت وطريقة الفحص",
-        "excerpt": "أعراض تلف بلف تبخير الزيت PCV تشمل Vacuum غير طبيعي وصفيرًا أو سلانسية غير مستقرة واستهلاك زيت حسب نوع العطل. تعرف على طريقة الفحص والتنظيف ومتى يتغير.",
-        "meta": {
-          "_yoast_wpseo_focuskw": "أعراض تلف بلف تبخير الزيت",
-          "_yoast_wpseo_title": "أعراض تلف بلف تبخير الزيت PCV: التفتفة والفحص ونقص الزيت",
-          "_yoast_wpseo_metadesc": "أعراض تلف بلف تبخير الزيت PCV وطريقة فحصه: هل يسبب تفتفة أو نقص زيت؟ تعرف على اختبار البلف والخراطيم ومتى ينفع التنظيف أو يلزم التغيير.",
-          "_yoast_wpseo_canonical": ""
-        }
-      }
+      "method": "GET",
+      "path": "/search-posts?search=KGM%20Torres%20service%20centers&limit=20&status=any"
     },
     {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 80534,
-        "title": "Soueast Hotline Egypt 17456 | توكيل ساوايست MANEAST ومراكز الصيانة",
-        "excerpt": "Soueast Hotline Egypt 17456 هو رقم خدمة العملاء والمساعدة على الطريق. دليل توكيل ساوايست MANEAST ومراكز الصيانة والفروع والحجز في مصر.",
-        "meta": {
-          "_yoast_wpseo_focuskw": "Soueast Hotline Egypt",
-          "_yoast_wpseo_title": "Soueast Hotline Egypt 17456 | توكيل ساوايست MANEAST",
-          "_yoast_wpseo_metadesc": "Soueast Hotline Egypt 17456 لخدمة العملاء والحجز والمساعدة على الطريق. دليل توكيل ساوايست MANEAST ومراكز الصيانة والفروع في مصر.",
-          "_yoast_wpseo_canonical": ""
-        }
-      }
+      "method": "GET",
+      "path": "/search-posts?search=%D8%AA%D9%88%D9%83%D9%8A%D9%84%20%D8%B3%D8%A7%D9%86%D8%AC%20%D9%8A%D9%88%D9%86%D8%AC&limit=20&status=any"
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=16106&limit=20&status=any"
     }
   ],
-  "verify": [
-    {
-      "path": "/post/81111"
-    },
-    {
-      "path": "/post/80534"
-    }
-  ]
+  "verify": []
 }
