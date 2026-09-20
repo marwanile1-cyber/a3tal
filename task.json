@@ -1,17 +1,17 @@
 {
-  "run": "read-opel-insignia-spare-parts-pages",
+  "run": "read-insignia-parts-old-new-full",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=%D8%A3%D8%B3%D8%B9%D8%A7%D8%B1%20%D9%82%D8%B7%D8%B9%20%D8%BA%D9%8A%D8%A7%D8%B1%20%D8%A3%D9%88%D8%A8%D9%84%20%D8%A7%D9%86%D8%B3%D9%8A%D8%AC%D9%86%D9%8A%D8%A7&limit=20&status=any"
+      "path": "/post/79933"
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=opel%20insignia%20spare%20parts%20prices&limit=20&status=any"
+      "path": "/post/80817"
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=opel%20insignia%20maintenance%20prices%20market%20guide&limit=20&status=any"
+      "path": "/post/80856"
     }
   ],
   "verify": []
