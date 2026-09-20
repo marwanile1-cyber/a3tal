@@ -28,7 +28,7 @@ jobs:
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             FILE="${{ inputs.task_file }}"
           else
-            FILE="$(find tasks -maxdepth 1 -type f -name '*.json' -printf '%T@ %p\n' | sort -nr | head -n 1 | cut -d' ' -f2-)"
+            FILE="$(jq -r '[.commits[].added[], .commits[].modified[]] | map(select(startswith("tasks/") and endswith(".json"))) | last // empty' "$GITHUB_EVENT_PATH")"
           fi
           if [ -z "$FILE" ] || [ ! -f "$FILE" ]; then
             echo "No task JSON found."
@@ -64,11 +64,17 @@ jobs:
             if [ "$METHOD" = "GET" ]; then
               curl --fail-with-body --silent --show-error \
                 -H "X-A3tal-Key: $A3TAL_API_KEY" \
+                -H "X-A3tal-API-Key: $A3TAL_API_KEY" \
+                -H "X-API-Key: $A3TAL_API_KEY" \
+                -H "Authorization: Bearer $A3TAL_API_KEY" \
                 "$BASE$PATH_PART" | tee "/tmp/a3tal-response-$i.json"
             else
               curl --fail-with-body --silent --show-error \
                 -X "$METHOD" \
                 -H "X-A3tal-Key: $A3TAL_API_KEY" \
+                -H "X-A3tal-API-Key: $A3TAL_API_KEY" \
+                -H "X-API-Key: $A3TAL_API_KEY" \
+                -H "Authorization: Bearer $A3TAL_API_KEY" \
                 -H "Content-Type: application/json" \
                 --data "$BODY" \
                 "$BASE$PATH_PART" | tee "/tmp/a3tal-response-$i.json"
@@ -101,6 +107,9 @@ jobs:
             echo "::group::Verify $((i+1)) GET $PATH_PART"
             curl --fail-with-body --silent --show-error \
               -H "X-A3tal-Key: $A3TAL_API_KEY" \
+              -H "X-A3tal-API-Key: $A3TAL_API_KEY" \
+              -H "X-API-Key: $A3TAL_API_KEY" \
+              -H "Authorization: Bearer $A3TAL_API_KEY" \
               "$BASE$PATH_PART" | jq .
             echo "::endgroup::"
           done
