@@ -1,46 +1,22 @@
 {
-  "run": "upload-kia-pv5-official-images",
+  "run": "audit-turbo-delete-content-gap",
   "requests": [
     {
-      "method": "POST",
-      "path": "/upload-image",
-      "body": {
-        "post_id": 82270,
-        "url": "https://www.kia.com/cdn-cgi/image/width=1072,height=601,fit=scale-down,quality=85,format=auto/content/dam/kwcms/nmc/en/images/hmg-cms/vehicle/passenger_q.png",
-        "filename": "kia-pv5-egypt-featured.webp",
-        "alt": "كيا PV5 Passenger الكهربائية",
-        "caption": "Kia PV5 Passenger الكهربائية بتصميم عملي ومساحة داخلية كبيرة.",
-        "set_featured": true
-      }
+      "method": "GET",
+      "path": "/search-posts?search=%D8%A5%D9%84%D8%BA%D8%A7%D8%A1%20%D8%A7%D9%84%D8%AA%D9%8A%D8%B1%D8%A8%D9%88&limit=20&status=any"
     },
     {
-      "method": "POST",
-      "path": "/upload-image",
-      "body": {
-        "post_id": 82270,
-        "url": "https://www.kia.com/cdn-cgi/image/width=1072,height=601,fit=scale-down,quality=85,format=auto/content/dam/kwcms/nmc/en/images/hmg-cms/vehicle/passenger_s.png",
-        "filename": "kia-pv5-egypt-side.webp",
-        "alt": "كيا PV5 Passenger من الجانب",
-        "caption": "نسخة Kia PV5 Passenger تركز على سهولة الدخول والمرونة والمساحة.",
-        "set_featured": false
-      }
+      "method": "GET",
+      "path": "/search-posts?search=%D9%87%D9%84%20%D9%8A%D9%85%D9%83%D9%86%20%D8%A5%D9%84%D8%BA%D8%A7%D8%A1%20%D8%A7%D9%84%D8%AA%D9%8A%D8%B1%D8%A8%D9%88&limit=20&status=any"
     },
     {
-      "method": "POST",
-      "path": "/upload-image",
-      "body": {
-        "post_id": 82270,
-        "url": "https://www.kia.com/cdn-cgi/image/width=1072,height=601,fit=scale-down,quality=85,format=auto/content/dam/kwcms/nmc/en/images/hmg-cms/vehicle/cargo_q.png",
-        "filename": "kia-pv5-egypt-cargo.webp",
-        "alt": "كيا PV5 Cargo الكهربائية",
-        "caption": "منصة Kia PV5 تدعم نسخ Cargo للاستخدامات التجارية.",
-        "set_featured": false
-      }
+      "method": "GET",
+      "path": "/search-posts?search=turbo%20delete&limit=20&status=any"
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D8%A7%D8%B2%D8%A7%D9%84%D8%A9%20%D8%A7%D9%84%D8%AA%D9%8A%D8%B1%D8%A8%D9%88&limit=20&status=any"
     }
   ],
-  "verify": [
-    {
-      "path": "/post/82270"
-    }
-  ]
+  "verify": []
 }
