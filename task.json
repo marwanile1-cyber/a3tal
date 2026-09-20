@@ -1,10 +1,9 @@
 {
-  "run": "automation-scan-p0016",
+  "run": "automation-scan-p0455",
   "requests": [
-    {"method":"GET","path":"/search-posts?search=P0016&limit=30&status=any"},
-    {"method":"GET","path":"/search-posts?search=تزامن الكرنك والكامة&limit=30&status=any"},
-    {"method":"GET","path":"/search-posts?search=حساس الكامة&limit=30&status=any"},
-    {"method":"GET","path":"/search-posts?search=&limit=15&status=publish"}
+    {"method":"GET","path":"/search-posts?search=P0455&limit=30&status=any"},
+    {"method":"GET","path":"/post/81350"},
+    {"method":"GET","path":"/post/81373"}
   ],
   "verify": []
 }
