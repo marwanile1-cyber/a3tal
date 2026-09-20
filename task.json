@@ -1,17 +1,21 @@
 {
-  "run": "locate-p0300-legacy-pages",
+  "run": "read-p0300-three-pages-and-p0000",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=%D8%B4%D9%8A%D9%81%D8%B1%D9%88%D9%84%D9%8A%D9%87%20P0300&limit=30&status=any"
+      "path": "/post/79856"
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=Random%20Misfire&limit=30&status=any"
+      "path": "/post/80159"
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=%D8%A7%D8%AE%D8%AA%D9%84%D8%A7%D9%84%20%D8%A7%D9%84%D8%A7%D8%AD%D8%AA%D8%B1%D8%A7%D9%82%20%D8%A7%D9%84%D8%B9%D8%B4%D9%88%D8%A7%D8%A6%D9%8A&limit=30&status=any"
+      "path": "/post/81329"
+    },
+    {
+      "method": "GET",
+      "path": "/post/149"
     }
   ],
   "verify": []
