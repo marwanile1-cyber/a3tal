@@ -1,9 +1,9 @@
 {
-  "run": "seo-audit-p0335-crankshaft-sensor",
+  "run": "read-nissan-p0335-specialized-page",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=P0335%20%D8%AD%D8%B3%D8%A7%D8%B3%20%D8%A7%D9%84%D9%83%D8%B1%D9%86%D9%83&limit=20&status=any"
+      "path": "/post/80345"
     }
   ],
   "verify": []
