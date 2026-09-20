@@ -1,17 +1,9 @@
 {
-  "run": "audit-pcv-cleaning-content-gap",
+  "run": "read-pcv-hub-before-cleaning-guide",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=%D8%AA%D9%86%D8%B8%D9%8A%D9%81%20%D8%A8%D9%84%D9%81%20%D8%A7%D9%84%D8%AA%D8%A8%D8%AE%D9%8A%D8%B1&limit=20&status=any"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=%D9%81%D8%AD%D8%B5%20%D8%A8%D9%84%D9%81%20%D8%A7%D9%84%D8%AA%D8%A8%D8%AE%D9%8A%D8%B1&limit=20&status=any"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=PCV&limit=20&status=any"
+      "path": "/post/81111"
     }
   ],
   "verify": []
