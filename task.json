@@ -1,17 +1,9 @@
 {
-  "run": "audit-turbo-cluster-cannibalization",
+  "run": "read-turbo-hub-before-cluster-separation",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=%D8%A3%D8%B9%D8%B7%D8%A7%D9%84%20%D8%A7%D9%84%D8%AA%D9%8A%D8%B1%D8%A8%D9%88&limit=30&status=any"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=%D8%AA%D9%8A%D8%B1%D8%A8%D9%88%20%D8%A7%D9%84%D8%AF%D9%8A%D8%B2%D9%84&limit=30&status=any"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=%D8%A5%D9%84%D8%BA%D8%A7%D8%A1%20%D8%A7%D9%84%D8%AA%D9%8A%D8%B1%D8%A8%D9%88&limit=30&status=any"
+      "path": "/post/80521"
     }
   ],
   "verify": []
