@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name: A3tal AI Bridge
+ * Plugin Name: A3tal Direct Bridge
  * Description: Secure REST bridge for managing A3tal.com posts, SEO fields, media and redirects from trusted AI clients.
- * Version: 2.0.0
+ * Version: 2.1.0
  * Author: A3tal.com
  * Update URI: https://github.com/marwanile1-cyber/a3tal
  */
@@ -11,11 +11,11 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-final class A3tal_AI_Bridge {
-    const OPTION_KEY = 'a3tal_ai_bridge_api_key';
-    const REDIRECTS_KEY = 'a3tal_ai_bridge_redirects';
-    const BACKUPS_KEY = 'a3tal_ai_bridge_backups';
-    const NS = 'a3tal-ai/v1';
+final class A3tal_Direct_Bridge {
+    const OPTION_KEY = 'a3tal_direct_bridge_api_key';
+    const REDIRECTS_KEY = 'a3tal_direct_bridge_redirects';
+    const BACKUPS_KEY = 'a3tal_direct_bridge_backups';
+    const NS = 'a3tal-direct/v1';
 
     public static function init() {
         add_action('rest_api_init', [__CLASS__, 'register_routes']);
@@ -89,7 +89,7 @@ final class A3tal_AI_Bridge {
     public static function authorize(WP_REST_Request $request) {
         $stored = (string) get_option(self::OPTION_KEY, '');
         if ($stored === '') {
-            return new WP_Error('a3tal_no_key', 'A3tal AI Bridge API key is not configured.', ['status' => 403]);
+            return new WP_Error('a3tal_no_key', 'A3tal Direct Bridge API key is not configured.', ['status' => 403]);
         }
 
         $provided = trim((string) $request->get_header('x-a3tal-key'));
@@ -110,8 +110,8 @@ final class A3tal_AI_Bridge {
     public static function status() {
         return rest_ensure_response([
             'ok' => true,
-            'plugin' => 'A3tal AI Bridge',
-            'version' => '2.0.0',
+            'plugin' => 'A3tal Direct Bridge',
+            'version' => '2.1.0',
             'site' => home_url('/'),
             'time_gmt' => current_time('mysql', true),
             'routes' => [
@@ -487,7 +487,7 @@ final class A3tal_AI_Bridge {
 
         if (isset($redirects[$path])) {
             $item = $redirects[$path];
-            wp_safe_redirect($item['target'], (int) $item['code'], 'A3tal AI Bridge');
+            wp_safe_redirect($item['target'], (int) $item['code'], 'A3tal Direct Bridge');
             exit;
         }
     }
@@ -548,16 +548,16 @@ final class A3tal_AI_Bridge {
 
     public static function admin_menu() {
         add_management_page(
-            'A3tal AI Bridge',
-            'A3tal AI Bridge',
+            'A3tal Direct Bridge',
+            'A3tal Direct Bridge',
             'manage_options',
-            'a3tal-ai-bridge',
+            'a3tal-direct-bridge',
             [__CLASS__, 'settings_page']
         );
     }
 
     public static function register_settings() {
-        register_setting('a3tal_ai_bridge', self::OPTION_KEY, [
+        register_setting('a3tal_direct_bridge', self::OPTION_KEY, [
             'type' => 'string',
             'sanitize_callback' => 'sanitize_text_field',
             'default' => '',
@@ -577,11 +577,11 @@ final class A3tal_AI_Bridge {
         $key = (string) get_option(self::OPTION_KEY, '');
         ?>
         <div class="wrap">
-            <h1>A3tal AI Bridge</h1>
+            <h1>A3tal Direct Bridge</h1>
             <p>Use this API key only in trusted clients. Never commit it to GitHub.</p>
 
             <form method="post" action="options.php">
-                <?php settings_fields('a3tal_ai_bridge'); ?>
+                <?php settings_fields('a3tal_direct_bridge'); ?>
                 <table class="form-table">
                     <tr>
                         <th scope="row"><label for="<?php echo esc_attr(self::OPTION_KEY); ?>">API Key</label></th>
@@ -607,4 +607,4 @@ final class A3tal_AI_Bridge {
     }
 }
 
-A3tal_AI_Bridge::init();
+A3tal_Direct_Bridge::init();
