@@ -1,18 +1,10 @@
 {
-  "run": "publish-elantra-hd-price-gap",
+  "run": "audit-starter-page",
   "requests": [
     {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 82230,
-        "status": "publish"
-      }
+      "method": "GET",
+      "path": "/search-posts?search=%D9%85%D8%A7%D8%B1%D8%B4%20%D8%A7%D9%84%D8%B3%D9%8A%D8%A7%D8%B1%D8%A9&limit=20&status=any"
     }
   ],
-  "verify": [
-    {
-      "path": "/post/82230"
-    }
-  ]
+  "verify": []
 }
