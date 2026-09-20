@@ -1,21 +1,13 @@
 {
-  "run": "audit-elantra-hd-price-gap",
+  "run": "read-elantra-cluster-reference",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=%D8%A5%D9%84%D9%86%D8%AA%D8%B1%D8%A7%20HD%202026&limit=30&status=any"
+      "path": "/post/80584"
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=%D8%B3%D8%B9%D8%B1%20%D8%A5%D9%84%D9%86%D8%AA%D8%B1%D8%A7%20HD&limit=30&status=any"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=%D9%87%D9%8A%D9%88%D9%86%D8%AF%D8%A7%D9%8A%20HD%202026&limit=30&status=any"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=Elantra%20HD&limit=30&status=any"
+      "path": "/post/81359"
     }
   ],
   "verify": []
