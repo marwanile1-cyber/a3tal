@@ -1,21 +1,17 @@
 {
-  "run": "audit-new-content-gaps-after-updates",
+  "run": "read-related-p0171-cluster-assets",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=P0016&limit=20&status=any"
+      "path": "/post/81373"
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=P0171&limit=20&status=any"
+      "path": "/post/81382"
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=P0420&limit=20&status=any"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=AGM%20EFB&limit=20&status=any"
+      "path": "/post/81111"
     }
   ],
   "verify": []
