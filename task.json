@@ -1,27 +1,86 @@
 {
-  "run": "seo-rebuild-corolla-transmission-guide",
+  "run": "seo-batch-audit-top-20-stale-pages",
   "requests": [
     {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 80629,
-        "title": "فتيس تويوتا كورولا: الفرق بين MMT وCVT والأوتوماتيك وتشخيص الأعطال",
-        "content": "<article class=\"a3tal-article\" dir=\"rtl\" lang=\"ar\">\n<p>لو بتبحث عن <strong>نوع فتيس تويوتا كورولا</strong> أو عندك نتشة أو ونة أو تأخير في الحركة، أول خطوة هي تحديد <strong>جيل السيارة ونوع ناقل الحركة</strong>. اسم “كورولا” وحده لا يكفي؛ بعض الأجيال القديمة في أسواق مختلفة استخدمت ناقل <strong>MMT</strong> وهو مانيوال مؤتمت، وأجيال أخرى استخدمت أوتوماتيك تقليدي، بينما <strong>كورولا الحالية في مصر تأتي بناقل Automatic CVT</strong> وفق مواصفات Toyota Egypt الرسمية.</p>\n\n<div style=\"background:#eef6ff;border-right:5px solid #2474b5;padding:16px;margin:18px 0;border-radius:8px\">\n<strong>الخلاصة السريعة:</strong>\n<ul>\n<li><strong>كورولا الحالية في مصر:</strong> CVT بحسب Toyota Egypt.</li>\n<li><strong>MMT:</strong> ليس أوتوماتيك تقليديًا؛ هو ناقل مانيوال مع تشغيل إلكتروني للدبرياج والنقل.</li>\n<li><strong>لا تختار زيت الفتيس من سنة السيارة فقط:</strong> حدّد كود الناقل أو راجع دليل نفس السيارة/VIN.</li>\n<li><strong>الونة أو النتشة لا تعني عمرة:</strong> ابدأ بالأكواد، مستوى/حالة السائل، الكهرباء والبيانات الحية قبل فك الفتيس.</li>\n</ul>\n</div>\n\n<h2 style=\"color:#cc0000\">ما نوع فتيس تويوتا كورولا الحالية في مصر؟</h2>\n<p>موقع Toyota Egypt وبروشور كورولا الحاليان يذكران أن ناقل الحركة هو <strong>Automatic CVT</strong>. النسخ البنزين الحالية بمحرك 1.6 لتر، والبروشور الرسمي يعرض CVT أيضًا ضمن مواصفات الفئات الحالية.</p>\n\n<p>هذا مهم لأن البحث عن “فتيس تويوتا كورولا” يجمع أجيالًا مختلفة جدًا. لو سيارتك 2008 أو 2012 أو 2016 أو 2020، لا تطبق مواصفات كورولا الحالية عليها تلقائيًا.</p>\n\n<h2 style=\"color:#cc0000\">كيف تعرف نوع فتيس كورولا عندك؟</h2>\n<div style=\"overflow-x:auto;margin:18px 0\">\n<table style=\"width:100%;border-collapse:collapse;min-width:760px\">\n<thead>\n<tr style=\"background:#174a7e;color:#fff\">\n<th style=\"border:1px solid #ddd;padding:10px\">النوع</th>\n<th style=\"border:1px solid #ddd;padding:10px\">كيف تميزه مبدئيًا؟</th>\n<th style=\"border:1px solid #ddd;padding:10px\">مهم قبل الصيانة</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td style=\"border:1px solid #ddd;padding:10px\"><strong>MMT / Multi-mode Manual</strong></td>\n<td style=\"border:1px solid #ddd;padding:10px\">دليل Toyota يعرض أوضاع R وN وE وM مع + و− في السيارات المجهزة به</td>\n<td style=\"border:1px solid #ddd;padding:10px\">له دبرياج وآلية تشغيل إلكترونية؛ لا يُعامل كأوتوماتيك تقليدي</td>\n</tr>\n<tr>\n<td style=\"border:1px solid #ddd;padding:10px\"><strong>Automatic تقليدي</strong></td>\n<td style=\"border:1px solid #ddd;padding:10px\">ناقل بتروس وكلاچات داخلية وTorque Converter حسب الجيل</td>\n<td style=\"border:1px solid #ddd;padding:10px\">مواصفة ATF تختلف حسب الناقل</td>\n</tr>\n<tr>\n<td style=\"border:1px solid #ddd;padding:10px\"><strong>CVT</strong></td>\n<td style=\"border:1px solid #ddd;padding:10px\">ناقل متغير باستمرار؛ كورولا الحالية في مصر CVT</td>\n<td style=\"border:1px solid #ddd;padding:10px\">يحتاج CVT Fluid بالمواصفة المحددة لنفس الناقل</td>\n</tr>\n</tbody>\n</table>\n</div>\n\n<p>لو ما زلت غير متأكد، استخدم رقم الشاسيه VIN أو بيانات لوحة السيارة/الفتيس أو دليل المالك. شكل عصا الفتيس يساعد لكنه ليس بديلًا عن تحديد كود الناقل عند شراء زيت أو قطعة.</p>\n\n<h2 style=\"color:#cc0000\">ما هو فتيس MMT في تويوتا كورولا؟</h2>\n<p><strong>Multi-mode Manual Transmission</strong> عبارة عن ناقل يدوي في بنيته الأساسية، لكن تشغيل الدبرياج واختيار الغيار يتمان آليًا بواسطة Actuators ووحدة تحكم. دليل Toyota الأصلي يوضح أوضاع <strong>E</strong> للقيادة المؤتمتة و<strong>M</strong> للاختيار اليدوي المتتابع.</p>\n\n<p>لهذا قد تشعر بفاصل في العزم أثناء النقلة أكثر من الأوتوماتيك التقليدي؛ النظام فعليًا يفصل الدبرياج ويغير الغيار ثم يعاود التعشيق. هذا الإحساس وحده لا يساوي عطلًا.</p>\n\n<h3 style=\"color:#0033cc\">أعراض تستحق فحص MMT</h3>\n<ul>\n<li>عدم قبول E أو M أو R بصورة متكررة.</li>\n<li>لمبة تحذير الناقل مع كود مخزن.</li>\n<li>اهتزاز شديد عند بدء الحركة بدل مجرد إحساس النقلة الطبيعي.</li>\n<li>انزلاق واضح أو ارتفاع RPM مع ضعف نقل العزم.</li>\n<li>توقف عمل Actuator أو فشل Initialization بعد إصلاح مرتبط بالنظام.</li>\n</ul>\n\n<h3 style=\"color:#0033cc\">هل يجب وضع MMT على N في كل إشارة؟</h3>\n<p>لا نضع قاعدة “بعد 5 ثوانٍ لازم N” لكل حالة. اتبع تعليمات دليل المالك الخاص بسيارتك. الأهم عدم استخدام البنزين لتعليق السيارة على مطلع؛ دليل Toyota يحذر من تثبيت السيارة بالـAccelerator لأن ذلك قد يسخن الدبرياج، ويوصي باستخدام الفرامل/فرامل التثبيت وفق الموقف.</p>\n\n<h3 style=\"color:#0033cc\">هل طقم دبرياج MMT يتغير كل 80–100 ألف كم؟</h3>\n<p>لا يوجد رقم واحد يصلح لكل السيارات. عمر الدبرياج يتأثر بالزحام، طريقة القيادة، حالة الـActuator وضبط النظام. يُستبدل عندما يثبت التآكل أو الانزلاق أو عندما يصل القياس/التشخيص إلى حد الخدمة، وليس بمجرد وصول العداد لرقم ثابت.</p>\n\n<h2 style=\"color:#cc0000\">فتيس CVT في تويوتا كورولا: كيف يعمل؟</h2>\n<p>CVT لا يستخدم نسب تروس ثابتة بالطريقة نفسها التي يعمل بها الأوتوماتيك التقليدي؛ يغيّر نسبة النقل باستمرار داخل نطاق التشغيل. لذلك من الطبيعي أحيانًا أن يرتفع RPM ويظل ثابتًا بينما تزيد سرعة السيارة، خصوصًا مع التسارع القوي. هذا السلوك وحده لا يعني Slip.</p>\n\n<p>كورولا الحالية في مصر مزودة بـCVT رسميًا. لكن كود الناقل ومواصفة السائل قد تختلف بين الأجيال والأسواق، لذلك لا نعمم كود K311 أو K120 أو أي مواصفة زيت على كل كورولا.</p>\n\n<h2 style=\"color:#cc0000\">أشهر أعراض مشاكل فتيس كورولا CVT</h2>\n\n<h3 style=\"color:#0033cc\">1. ونة أو صفير يتغير مع سرعة السيارة</h3>\n<p>الونة تحتاج تحديد مصدرها أولًا: قد تكون من الناقل، Bearing، كاوتش، بلي عجل أو جزء دوار آخر. لو الصوت مرتبط بسرعة السيارة وليس RPM فقط، نفذ Road Test منظم واقرأ بيانات CVT بدل الحكم من الصوت وحده.</p>\n\n<h3 style=\"color:#0033cc\">2. رعشة أو Judder عند بدء الحركة</h3>\n<p>قد تكون من ناقل الحركة، لكن قواعد المحرك، إشعال المحرك، Fuel Trim أو أجزاء أخرى يمكن أن تسبب رعشة شبيهة. افحص الأكواد وبيانات المحرك والفتيس قبل فتح Valve Body أو تغيير الزيت كتجربة.</p>\n\n<h3 style=\"color:#0033cc\">3. تأخير عند اختيار D أو R</h3>\n<p>سجّل زمن التعشيق باردًا وساخنًا، وتأكد من مستوى السائل بالطريقة الصحيحة وعدم وجود تسريب، ثم افحص DTCs وضغط/بيانات التحكم حسب دليل الخدمة. التأخير لا يحدد قطعة واحدة بمفرده.</p>\n\n<h3 style=\"color:#0033cc\">4. ارتفاع RPM بدون تسارع مناسب</h3>\n<p>فرّق بين سلوك CVT الطبيعي وبين انزلاق غير طبيعي. لو RPM يرتفع فجأة مع ضعف واضح في نقل العزم أو تظهر أكواد Ratio/Pressure، هنا يحتاج الناقل تشخيصًا أعمق.</p>\n\n<h2 style=\"color:#cc0000\">زيت فتيس تويوتا كورولا: WS أم CVT TC أم FE؟</h2>\n<p>هذه من أكثر النقاط التي كانت تسبب خطأ في النسخة القديمة من المقال. لا توجد قاعدة آمنة تقول: “موديلات كذا إلى كذا = TC، وبعد سنة كذا = FE” لكل كورولا في كل سوق. Toyota تستخدم سوائل مختلفة حسب <strong>نوع وكود ناقل الحركة</strong>.</p>\n\n<div style=\"background:#fff8e6;border-right:5px solid #d99a00;padding:16px;margin:18px 0;border-radius:8px\">\n<strong>لا تخلط السوائل:</strong> ATF لناقل أوتوماتيك تقليدي ليس هو CVT Fluid، وCVT TC وCVT FE ليستا تسمية يمكن تبديلها عشوائيًا. راجع دليل السيارة أو بيانات الخدمة حسب VIN/Transmission Code قبل الشراء.\n</div>\n\n<p>لدينا دليل مستقل يشرح <a href=\"https://a3tal.com/toyota-cvt-fluid-fe-vs-tc/\">الفرق بين Toyota CVT Fluid FE وTC</a>. استخدمه للفهم والمقارنة، ثم طابق المواصفة مع سيارتك تحديدًا.</p>\n\n<h2 style=\"color:#cc0000\">متى يتغير زيت فتيس كورولا؟</h2>\n<p>لا ننشر فاصلًا ثابتًا مثل “كل 40 ألف كم في مصر” لكل الأجيال. خطة تغيير أو فحص سائل الناقل تختلف حسب نوع الفتيس، جدول صيانة السوق، وظروف الاستخدام. المرجع الأول هو جدول الصيانة ودليل المالك لنفس السيارة.</p>\n\n<p>إذا كان تاريخ الصيانة مجهولًا أو السائل في حالة سيئة والفتيس لديه أعراض انزلاق، لا تنفذ Flush قويًا باعتباره علاجًا. افحص الناقل أولًا وحدد ما إذا كان المطلوب Drain &amp; Fill أو إجراء آخر حسب حالته.</p>\n\n<h2 style=\"color:#cc0000\">هل فلتر CVT يتغير مع الزيت؟</h2>\n<p>يعتمد على تصميم الناقل وإجراء الخدمة. بعض النواقل بها Strainer أو Filter ويمكن الوصول إليه عند فك الكارتيرة، وأخرى لها ترتيبات مختلفة. لا نفترض وجود “فلتر ورقي يجب تغييره كل 40 ألف” في كل CVT كورولا. استخدم دليل الفتيس نفسه.</p>\n\n<h2 style=\"color:#cc0000\">أكواد فتيس كورولا: ماذا تعني فعلًا؟</h2>\n<table style=\"width:100%;border-collapse:collapse;margin:18px 0\">\n<thead><tr style=\"background:#263238;color:#fff\">\n<th style=\"border:1px solid #ddd;padding:10px\">الكود</th>\n<th style=\"border:1px solid #ddd;padding:10px\">المعنى العام</th>\n<th style=\"border:1px solid #ddd;padding:10px\">ما لا يجب فعله</th>\n</tr></thead>\n<tbody>\n<tr><td style=\"border:1px solid #ddd;padding:10px\"><strong>P0810</strong></td><td style=\"border:1px solid #ddd;padding:10px\">Clutch Position Control Error في تطبيقات MMT المناسبة</td><td style=\"border:1px solid #ddd;padding:10px\">لا تحكم أن Actuator تالف قبل فحص الدائرة والـInitialization والدبرياج</td></tr>\n<tr><td style=\"border:1px solid #ddd;padding:10px\"><strong>P0900</strong></td><td style=\"border:1px solid #ddd;padding:10px\">Clutch Actuator Circuit/Open حسب التطبيق</td><td style=\"border:1px solid #ddd;padding:10px\">لا تغير الـActuator قبل فحص الفيوز والتغذية والأسلاك</td></tr>\n<tr><td style=\"border:1px solid #ddd;padding:10px\"><strong>P0705</strong></td><td style=\"border:1px solid #ddd;padding:10px\">Transmission Range Sensor Circuit</td><td style=\"border:1px solid #ddd;padding:10px\">لا تغير الحساس من الكود وحده؛ افحص Live Data والضبط والدائرة</td></tr>\n<tr><td style=\"border:1px solid #ddd;padding:10px\"><strong>P2714</strong></td><td style=\"border:1px solid #ddd;padding:10px\">Pressure Control Solenoid “D” Performance/Stuck Off في التطبيقات التي تستخدمه</td><td style=\"border:1px solid #ddd;padding:10px\">لا تعتبر “الزيت القديم” هو السبب تلقائيًا؛ يلزم تشخيص ضغط/دائرة/Valve Body حسب الناقل</td></tr>\n</tbody>\n</table>\n\n<h2 style=\"color:#cc0000\">طريقة تشخيص مشكلة فتيس كورولا بالترتيب</h2>\n<ol>\n<li><strong>حدد النوع والكود:</strong> MMT أم Automatic أم CVT، وما Transmission Code؟</li>\n<li><strong>اقرأ جميع DTCs وFreeze Frame:</strong> قبل مسح أي كود.</li>\n<li><strong>افحص المحرك أيضًا:</strong> Misfire أو مشكلة Throttle قد تشعر بها كأنها نتشة فتيس.</li>\n<li><strong>افحص التسريب ومستوى السائل:</strong> بالطريقة ودرجة الحرارة المحددة للناقل.</li>\n<li><strong>راجع Live Data:</strong> Input/Output speed، حرارة السائل، Range Position وأوامر التحكم حسب المتاح.</li>\n<li><strong>افحص الكهرباء:</strong> البطارية، الأرضي، الفيش والأسلاك قبل استبدال Solenoid أو Actuator.</li>\n<li><strong>اختبارات ميكانيكية/ضغط:</strong> تُنفذ بعد الخطوات السابقة وفق دليل الخدمة.</li>\n</ol>\n\n<h2 style=\"color:#cc0000\">هل فتيس كورولا CVT ضعيف؟</h2>\n<p>لا يمكن إعطاء حكم عام مثل “أفضل CVT في العالم” أو “كابوس”. الاعتمادية تتأثر بالناقل المحدد، الصيانة، الحرارة، أسلوب الاستخدام وحالة السيارة. المطلوب للمشتري المستعمل هو <strong>فحص فعلي</strong>: أكواد، تجربة باردة وساخنة، عدم وجود ونة أو Judder غير طبيعي، وعدم وجود تسريب أو آثار إصلاح غير موثق.</p>\n\n<h2 style=\"color:#cc0000\">فتيس تويوتا كورولا 2008: هل هو MMT دائمًا؟</h2>\n<p>لا تعتمد على السنة وحدها؛ التجهيز يختلف حسب السوق والفئة. إذا كانت عصا الفتيس تحمل أوضاع <strong>E وM</strong> كما في دليل Toyota للـMulti-mode، فهذا مؤشر قوي أنه MMT. أما إذا كان ترتيب الناقل مختلفًا، حدده من VIN/بيانات السيارة قبل شراء قطع أو زيت.</p>\n\n<h2 style=\"color:#cc0000\">فتيس تويوتا كورولا 2026 في مصر</h2>\n<p>بحسب Toyota Egypt، كورولا الحالية في مصر بناقل <strong>Automatic CVT</strong>. البروشور الرسمي الحالي يذكر CVT ضمن خانة Transmission. لذلك أي محتوى قديم يصف كورولا الحالية بأنها 4AT أو MMT لا ينطبق عليها.</p>\n\n<h2 style=\"color:#cc0000\">الأسئلة الشائعة عن فتيس تويوتا كورولا</h2>\n\n<h3 style=\"color:#0033cc\">ما نوع فتيس تويوتا كورولا الحالية؟</h3>\n<p>كورولا الحالية في مصر تأتي بناقل Automatic CVT بحسب Toyota Egypt. الأجيال القديمة قد تكون MMT أو أوتوماتيك تقليدي أو CVT حسب السنة والسوق والفئة.</p>\n\n<h3 style=\"color:#0033cc\">هل فتيس MMT أوتوماتيك؟</h3>\n<p>هو ناقل مانيوال مؤتمت: بنية مانيوال مع تشغيل إلكتروني للدبرياج واختيار الغيار. لذلك إحساس نقلاته وطريقة تشخيصه تختلف عن الأوتوماتيك التقليدي.</p>\n\n<h3 style=\"color:#0033cc\">ما زيت فتيس تويوتا كورولا المناسب؟</h3>\n<p>يتحدد من نوع وكود الناقل، وليس من اسم كورولا أو السنة فقط. ATF WS وCVT TC وCVT FE سوائل مختلفة؛ راجع دليل نفس السيارة قبل الاختيار.</p>\n\n<h3 style=\"color:#0033cc\">هل ونة CVT تعني أن الفتيس تالف؟</h3>\n<p>لا. يجب تحديد مصدر الصوت أولًا واستبعاد بلي العجل والإطارات والأجزاء الدوارة، ثم فحص بيانات وأكواد الناقل ومستوى السائل قبل الحكم على الداخل.</p>\n\n<h3 style=\"color:#0033cc\">هل أغير زيت CVT لو العربية عدت 100 ألف كم؟</h3>\n<p>لا نقرر من العداد وحده. راجع تاريخ الصيانة وحالة الناقل وجدول Toyota الخاص بالسيارة. لو توجد أعراض انزلاق أو تاريخ مجهول، شخّص أولًا قبل Flush أو تغيير غير مخطط.</p>\n\n<h3 style=\"color:#0033cc\">هل P2714 يعني تغيير Valve Body؟</h3>\n<p>لا. الكود يصف أداء دائرة/سولينويد ضغط في التطبيقات المناسبة، ويحتاج فحصًا كهربائيًا وهيدروليكيًا حسب دليل الناقل قبل تقرير استبدال Valve Body.</p>\n\n<h2 style=\"color:#cc0000\">الخلاصة</h2>\n<p><strong>فتيس تويوتا كورولا ليس نوعًا واحدًا عبر كل الأجيال.</strong> كورولا الحالية في مصر CVT، بينما بعض السيارات الأقدم استخدمت MMT أو أوتوماتيك تقليدي. لذلك لا تشترِ زيتًا أو Actuator أو Valve Body من السنة وحدها. حدد نوع وكود الناقل، اقرأ الأكواد والبيانات، افحص السائل والدائرة، وبعدها قرر الإصلاح.</p>\n\n<p>وللصيانة العامة راجع <a href=\"https://a3tal.com/toyota-corolla-maintenance-prices-guide-2026/\">جدول صيانة تويوتا كورولا والأسعار الرسمية حسب الكيلومترات</a>.</p>\n\n<div style=\"background:#f7f9fb;border:1px solid #d8e0e6;padding:14px;margin:22px 0;border-radius:8px\">\n<strong>مصادر المراجعة:</strong>\n<ul>\n<li><a href=\"https://toyota.com.eg/ar/models/corolla\" target=\"_blank\" rel=\"noopener\">Toyota Egypt – Corolla الحالية</a></li>\n<li><a href=\"https://toyota.com.eg/storage/49557/Corolla-2026-Brochure.pdf\" target=\"_blank\" rel=\"noopener\">Toyota Egypt – Corolla Brochure</a></li>\n<li><a href=\"https://myportalcontent.toyota-europe.com/Manuals/Toyota/Corolla%20TMMT_EE_12F04E.pdf\" target=\"_blank\" rel=\"noopener\">Toyota Owner’s Manual – Multi-mode Manual Transmission</a></li>\n</ul>\n<strong>آخر مراجعة:</strong> 20 سبتمبر 2026.\n</div>\n</article>",
-        "excerpt": "دليل فتيس تويوتا كورولا: نوع فتيس كورولا الحالية CVT، والفرق بين MMT والأوتوماتيك التقليدي، وأسباب النتشة والونة وطريقة اختيار زيت الفتيس وتشخيص الأكواد.",
-        "status": "publish",
-        "meta": {
-          "_yoast_wpseo_focuskw": "فتيس تويوتا كورولا",
-          "_yoast_wpseo_title": "فتيس تويوتا كورولا: MMT وCVT والأوتوماتيك وتشخيص الأعطال",
-          "_yoast_wpseo_metadesc": "تعرف على نوع فتيس تويوتا كورولا والفرق بين MMT وCVT والأوتوماتيك، وتشخيص النتشة والونة وأكواد الفتيس واختيار الزيت الصحيح قبل الإصلاح.",
-          "_yoast_wpseo_canonical": "https://a3tal.com/toyota-corolla-transmission-problems-mmt-cvt/"
-        }
-      }
+      "method": "GET",
+      "path": "/search-posts?search=%D8%BA%D8%A8%D9%88%D8%B1%20%D8%A7%D9%88%D8%AA%D9%88%20%D8%AD%D8%AC%D8%B2%20%D8%A7%D9%84%D8%B5%D9%8A%D8%A7%D9%86%D8%A9%20%D8%A7%D9%84%D9%81%D8%B1%D9%88%D8%B9&limit=12&status=any"
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D9%85%D8%B1%D8%A7%D9%83%D8%B2%20%D8%AE%D8%AF%D9%85%D8%A9%20%D8%BA%D8%A8%D9%88%D8%B1%20%D8%A7%D9%88%D8%AA%D9%88&limit=12&status=any"
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D8%A3%D8%B1%D9%82%D8%A7%D9%85%20%D9%85%D8%B1%D8%A7%D9%83%D8%B2%20%D8%AE%D8%AF%D9%85%D8%A9%20%D8%A7%D9%84%D9%85%D9%86%D8%B5%D9%88%D8%B1&limit=12&status=any"
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D9%85%D8%B1%D8%A7%D9%83%D8%B2%20%D8%AE%D8%AF%D9%85%D8%A9%20%D8%AC%D9%8A%D8%AA%D9%88%D8%B1%20%D8%A7%D9%84%D9%85%D8%B9%D8%AA%D9%85%D8%AF%D8%A9%20%D9%81%D9%8A%20%D9%85%D8%B5%D8%B1&limit=12&status=any"
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D8%A3%D8%B3%D8%B9%D8%A7%D8%B1%20%D8%A5%D8%B7%D8%A7%D8%B1%D8%A7%D8%AA%20%D8%A7%D9%84%D8%B3%D9%8A%D8%A7%D8%B1%D8%A7%D8%AA%20%D9%81%D9%8A%20%D9%85%D8%B5%D8%B1&limit=12&status=any"
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D8%B1%D8%AC%D8%A9%20%D8%A7%D9%84%D8%B3%D9%8A%D8%A7%D8%B1%D8%A9%20%D8%B9%D9%84%D9%89%20%D8%B3%D8%B1%D8%B9%D8%A9%2080%20100%20120&limit=12&status=any"
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D9%85%D8%AE%D8%A7%D9%84%D9%81%D8%A7%D8%AA%20%D8%A7%D9%84%D9%85%D8%B1%D9%88%D8%B1%20%D8%A3%D8%B3%D8%B9%D8%A7%D8%B1%20%D8%A7%D9%84%D8%B1%D8%A7%D8%AF%D8%A7%D8%B1%D8%A7%D8%AA&limit=12&status=any"
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D8%AA%D9%83%D9%8A%D9%8A%D9%81%20%D8%A7%D9%84%D8%B3%D9%8A%D8%A7%D8%B1%D8%A9%20%D8%B6%D8%B9%D9%8A%D9%81%20%D8%B9%D9%84%D9%89%20%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%86%D8%B3%D9%8A%D9%87&limit=12&status=any"
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D8%B3%D9%88%D9%8A%D8%B3%D8%AA%20%D9%85%D8%B1%D8%A7%D9%83%D8%B2%20%D8%A7%D9%84%D8%AE%D8%AF%D9%85%D8%A9%20%D8%A7%D9%84%D8%AE%D8%B7%20%D8%A7%D9%84%D8%B3%D8%A7%D8%AE%D9%86&limit=12&status=any"
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D8%AD%D8%AC%D8%B2%20%D8%B5%D9%8A%D8%A7%D9%86%D8%A9%20%D9%87%D9%8A%D9%88%D9%86%D8%AF%D8%A7%D9%8A%20%D9%81%D9%8A%20%D9%85%D8%B5%D8%B1&limit=12&status=any"
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D8%AA%D9%84%D9%81%20%D8%A3%D8%B3%D8%B7%D9%88%D8%A7%D9%86%D8%A9%20%D8%A7%D9%84%D8%AF%D8%A8%D8%B1%D9%8A%D8%A7%D8%AC%20%D8%A7%D9%84%D9%83%D9%84%D8%AA%D8%B4&limit=12&status=any"
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D9%85%D8%B1%D9%83%D8%B2%20%D8%AE%D8%AF%D9%85%D8%A9%20%D9%85%D9%86%D8%B5%D9%88%D8%B1%20%D8%B4%D9%8A%D9%81%D8%B1%D9%88%D9%84%D9%8A%D9%87%20%D8%A7%D9%84%D8%B1%D8%A6%D9%8A%D8%B3%D9%8A&limit=12&status=any"
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D9%83%D9%8A%D8%A7%20%D9%85%D8%B1%D8%A7%D9%83%D8%B2%20%D8%A7%D9%84%D8%B5%D9%8A%D8%A7%D9%86%D8%A9%20%D9%81%D9%8A%20%D9%85%D8%B5%D8%B1&limit=12&status=any"
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D8%A3%D8%B9%D8%B1%D8%A7%D8%B6%20%D8%AA%D9%84%D9%81%20%D8%A7%D9%84%D9%85%D8%A7%D8%B1%D8%B4&limit=12&status=any"
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D8%A3%D8%B3%D8%B9%D8%A7%D8%B1%20%D9%87%D9%8A%D9%88%D9%86%D8%AF%D8%A7%D9%8A%20%D8%A7%D9%84%D9%86%D8%AA%D8%B1%D8%A7%20%D8%A7%D9%84%D9%85%D8%B3%D8%AA%D8%B9%D9%85%D9%84%D8%A9&limit=12&status=any"
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D9%85%D8%A7%D8%B3%D8%AA%D8%B1%20%D8%AF%D8%A8%D8%B1%D9%8A%D8%A7%D8%AC%20%D8%A3%D8%B9%D8%B1%D8%A7%D8%B6%20%D8%A7%D9%84%D8%AA%D9%84%D9%81&limit=12&status=any"
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D9%86%D9%82%D8%B5%20%D9%85%D9%8A%D8%A7%D9%87%20%D8%A7%D9%84%D8%B1%D8%AF%D9%8A%D8%A7%D8%AA%D9%8A%D8%B1%20%D8%A8%D8%AF%D9%88%D9%86%20%D8%AA%D8%B3%D8%B1%D9%8A%D8%A8&limit=12&status=any"
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D8%B2%D9%8A%D9%88%D8%AA%20%D9%84%D9%8A%D9%83%D9%88%D9%8A%20%D9%85%D9%88%D9%84%D9%8A&limit=12&status=any"
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D8%A3%D8%B9%D8%B1%D8%A7%D8%B6%20%D8%AA%D9%84%D9%81%20%D8%B3%D8%A8%D8%A7%D8%A6%D9%83%20%D8%A7%D9%84%D9%83%D8%B1%D9%86%D9%83&limit=12&status=any"
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D9%82%D8%B7%D8%B9%20%D8%BA%D9%8A%D8%A7%D8%B1%20%D9%85%D8%B1%D8%B3%D9%8A%D8%AF%D8%B3%20%D9%81%D9%8A%20%D9%85%D8%B5%D8%B1&limit=12&status=any"
     }
   ],
-  "verify": [
-    {
-      "path": "/post/80629"
-    }
-  ]
+  "verify": []
 }
