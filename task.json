@@ -1,9 +1,5 @@
 {
-  "run": "automation-scan-p0455",
-  "requests": [
-    {"method":"GET","path":"/search-posts?search=P0455&limit=30&status=any"},
-    {"method":"GET","path":"/post/81350"},
-    {"method":"GET","path":"/post/81373"}
-  ],
+  "run": "read-p0442-reference",
+  "requests": [{"method":"GET","path":"/post/81448"}],
   "verify": []
 }
