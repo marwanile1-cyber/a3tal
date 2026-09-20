@@ -1,9 +1,9 @@
 {
-  "run": "seo-audit-renault-service-page",
+  "run": "read-corolla-transmission-page",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=%D8%B1%D9%8A%D9%86%D9%88%20%D9%85%D8%B1%D8%A7%D9%83%D8%B2%20%D8%A7%D9%84%D8%B5%D9%8A%D8%A7%D9%86%D8%A9%20%D8%A7%D9%84%D8%AE%D8%B7%20%D8%A7%D9%84%D8%B3%D8%A7%D8%AE%D9%86&limit=20&status=any"
+      "path": "/post/80629"
     }
   ],
   "verify": []
