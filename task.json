@@ -1,186 +1,30 @@
 {
-  "run": "fix-broken-canonicals-and-optimize-mercedes-hyundai",
+  "run": "audit-p0010-valve-seals-timing-rpm-belt-starter",
   "requests": [
     {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 79943,
-        "meta": {
-          "_yoast_wpseo_canonical": ""
-        }
-      }
+      "method": "GET",
+      "path": "/search-posts?search=P0010&limit=20&status=any"
     },
     {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 79964,
-        "meta": {
-          "_yoast_wpseo_canonical": ""
-        }
-      }
+      "method": "GET",
+      "path": "/search-posts?search=%D8%AC%D9%84%D8%AF%20%D8%A7%D9%84%D8%A8%D9%84%D9%88%D9%81&limit=20&status=any"
     },
     {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 79977,
-        "meta": {
-          "_yoast_wpseo_canonical": ""
-        }
-      }
+      "method": "GET",
+      "path": "/search-posts?search=%D8%B9%D8%AF%D9%85%20%D8%B6%D8%A8%D8%B7%20%D8%B3%D9%8A%D8%B1%20%D8%A7%D9%84%D9%83%D8%A7%D8%AA%D9%8A%D9%86%D8%A9&limit=20&status=any"
     },
     {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 79906,
-        "meta": {
-          "_yoast_wpseo_canonical": ""
-        }
-      }
+      "method": "GET",
+      "path": "/search-posts?search=RPM%20%D8%A8%D9%8A%D8%B9%D9%84%D9%89%20%D9%88%D9%8A%D9%88%D8%B7%D9%8A&limit=20&status=any"
     },
     {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 114,
-        "meta": {
-          "_yoast_wpseo_canonical": ""
-        }
-      }
+      "method": "GET",
+      "path": "/search-posts?search=%D8%B3%D9%8A%D8%B1%20%D8%A7%D9%84%D8%AF%D9%8A%D9%86%D8%A7%D9%85%D9%88%20%D8%A8%D9%8A%D8%B5%D9%81%D8%B1&limit=20&status=any"
     },
     {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 79,
-        "meta": {
-          "_yoast_wpseo_canonical": ""
-        }
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 75,
-        "meta": {
-          "_yoast_wpseo_canonical": ""
-        }
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 80056,
-        "meta": {
-          "_yoast_wpseo_canonical": ""
-        }
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 79952,
-        "meta": {
-          "_yoast_wpseo_canonical": ""
-        }
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 79856,
-        "meta": {
-          "_yoast_wpseo_canonical": ""
-        }
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 80401,
-        "meta": {
-          "_yoast_wpseo_canonical": ""
-        }
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 80122,
-        "title": "قطع غيار مرسيدس التوفيقية والاستيراد: أفضل طرق الشراء والمطابقة",
-        "excerpt": "دليل شراء قطع غيار مرسيدس من التوفيقية والاستيراد وشارع دمشق والحرفيين، وكيف تطابق Part Number وVIN وتفرق بين Genuine وAftermarket.",
-        "meta": {
-          "_yoast_wpseo_focuskw": "قطع غيار مرسيدس التوفيقية",
-          "_yoast_wpseo_title": "قطع غيار مرسيدس التوفيقية والاستيراد: دليل الشراء",
-          "_yoast_wpseo_metadesc": "قطع غيار مرسيدس في التوفيقية والاستيراد وشارع دمشق والحرفيين: كيف تختار القطعة الصحيحة وتطابق Part Number وVIN قبل الشراء.",
-          "_yoast_wpseo_canonical": ""
-        }
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 79958,
-        "title": "توكيل هيونداي 16661: مراكز الصيانة المعتمدة وحجز الخدمة",
-        "excerpt": "توكيل هيونداي في مصر 16661: حجز الصيانة ومراكز غبور المعتمدة وخدمة العملاء وطريقة اختيار مركز الخدمة الصحيح قبل الزيارة.",
-        "meta": {
-          "_yoast_wpseo_focuskw": "مراكز صيانة هيونداي المعتمدة",
-          "_yoast_wpseo_title": "توكيل هيونداي 16661: مراكز الصيانة المعتمدة والحجز",
-          "_yoast_wpseo_metadesc": "رقم توكيل هيونداي 16661 مع مراكز الصيانة المعتمدة في مصر وحجز الخدمة عبر غبور وMy Hyundai وطريقة اختيار الفرع المناسب.",
-          "_yoast_wpseo_canonical": ""
-        }
-      }
+      "method": "GET",
+      "path": "/search-posts?search=%D9%85%D8%A7%D8%B1%D8%B4%20%D8%A7%D9%84%D8%B3%D9%8A%D8%A7%D8%B1%D8%A9&limit=20&status=any"
     }
   ],
-  "verify": [
-    {
-      "path": "/post/79943"
-    },
-    {
-      "path": "/post/79964"
-    },
-    {
-      "path": "/post/79977"
-    },
-    {
-      "path": "/post/79906"
-    },
-    {
-      "path": "/post/114"
-    },
-    {
-      "path": "/post/79"
-    },
-    {
-      "path": "/post/75"
-    },
-    {
-      "path": "/post/80056"
-    },
-    {
-      "path": "/post/79952"
-    },
-    {
-      "path": "/post/79856"
-    },
-    {
-      "path": "/post/80401"
-    },
-    {
-      "path": "/post/80122"
-    },
-    {
-      "path": "/post/79958"
-    }
-  ]
+  "verify": []
 }
