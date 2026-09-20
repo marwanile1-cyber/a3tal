@@ -1,25 +1,29 @@
 {
-  "run": "audit-fresh-discover-car-launches",
+  "run": "audit-fresh-september-discover-gaps",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=%D9%85%D9%88%D9%86%D8%AC%D8%A7%D8%B1%D9%88%20EM-i&limit=20&status=any"
+      "path": "/search-posts?search=BYD%20Atto%202&limit=20&status=any"
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=Geely%20Monjaro%20EM-i&limit=20&status=any"
+      "path": "/search-posts?search=%D9%83%D8%A7%D8%AF%D9%8A%D9%84%D8%A7%D9%83%20LYRIQ&limit=20&status=any"
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=%D9%87%D8%A7%D9%81%D8%A7%D9%84%20V7&limit=20&status=any"
+      "path": "/search-posts?search=Cadillac%20LYRIQ&limit=20&status=any"
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=Haval%20V7&limit=20&status=any"
+      "path": "/search-posts?search=%D8%B1%D9%8A%D9%86%D9%88%20%D9%83%D8%A7%D8%B1%D8%AF%D9%8A%D8%A7%D9%86&limit=20&status=any"
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=Kia%20PV5&limit=20&status=any"
+      "path": "/search-posts?search=Renault%20Kardian&limit=20&status=any"
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D8%B3%D9%88%D8%B2%D9%88%D9%83%D9%8A%20%D8%A3%D9%84%D8%AA%D9%88&limit=20&status=any"
     }
   ],
   "verify": []
