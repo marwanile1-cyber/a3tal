@@ -1,18 +1,10 @@
 {
-  "run": "remove-duplicate-agm-gel-post",
+  "run": "audit-recent-content-before-new-publishing",
   "requests": [
     {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 82258,
-        "status": "trash"
-      }
+      "method": "GET",
+      "path": "/search-posts?search=&limit=80&status=publish"
     }
   ],
-  "verify": [
-    {
-      "path": "/post/82262"
-    }
-  ]
+  "verify": []
 }
