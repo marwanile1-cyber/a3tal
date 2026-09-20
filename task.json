@@ -1,26 +1,18 @@
 {
-  "run": "audit-generic-cvt-fluid-gap",
+  "run": "clean-diesel-turbo-citation-artifacts",
   "requests": [
     {
-      "method": "GET",
-      "path": "/search-posts?search=%D8%B2%D9%8A%D8%AA%20%D9%81%D8%AA%D9%8A%D8%B3%20CVT&limit=20&status=any"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=%D8%B3%D8%B9%D8%B1%20%D8%B2%D9%8A%D8%AA%20%D9%81%D8%AA%D9%8A%D8%B3%20CVT&limit=20&status=any"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=CVT%20Fluid&limit=20&status=any"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=NS-3&limit=20&status=any"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=HCF-2&limit=20&status=any"
+      "method": "POST",
+      "path": "/update-post",
+      "body": {
+        "id": 82277,
+        "content": ""
+      }
     }
   ],
-  "verify": []
+  "verify": [
+    {
+      "path": "/post/82277"
+    }
+  ]
 }
