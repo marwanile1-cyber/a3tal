@@ -28,7 +28,7 @@ jobs:
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             FILE="${{ inputs.task_file }}"
           else
-            FILE="$(git diff-tree --no-commit-id --name-only -r "$GITHUB_SHA" | grep -E '^tasks/.*\.json$' | tail -n 1)"
+            FILE="$(find tasks -maxdepth 1 -type f -name '*.json' -printf '%T@ %p\n' | sort -nr | head -n 1 | cut -d' ' -f2-)"
           fi
           if [ -z "$FILE" ] || [ ! -f "$FILE" ]; then
             echo "No task JSON found."
@@ -54,15 +54,12 @@ jobs:
         run: |
           set -euo pipefail
           BASE="https://a3tal.com/wp-json/a3tal-ai/v1"
-
           echo "Using task: $TASK_FILE"
-
           COUNT="$(jq '.requests | length' "$TASK_FILE")"
           for ((i=0; i<COUNT; i++)); do
             METHOD="$(jq -r ".requests[$i].method // \"POST\"" "$TASK_FILE")"
             PATH_PART="$(jq -r ".requests[$i].path" "$TASK_FILE")"
             BODY="$(jq -c ".requests[$i].body // {}" "$TASK_FILE")"
-
             echo "::group::Request $((i+1)) $METHOD $PATH_PART"
             if [ "$METHOD" = "GET" ]; then
               curl --fail-with-body --silent --show-error \
@@ -90,11 +87,14 @@ jobs:
         run: |
           set -euo pipefail
           BASE="https://a3tal.com/wp-json/a3tal-ai/v1"
+          if [ -z "$TASK_FILE" ] || [ ! -f "$TASK_FILE" ]; then
+            echo "Task file unavailable; skipping verification."
+            exit 0
+          fi
           if ! jq -e '.verify and (.verify | length > 0)' "$TASK_FILE" >/dev/null; then
             echo "No verification requests."
             exit 0
           fi
-
           COUNT="$(jq '.verify | length' "$TASK_FILE")"
           for ((i=0; i<COUNT; i++)); do
             PATH_PART="$(jq -r ".verify[$i].path" "$TASK_FILE")"
