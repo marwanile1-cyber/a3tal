@@ -1,25 +1,9 @@
 {
-  "run": "audit-turbo-boost-sensor-gap",
+  "run": "read-sensor-category-reference",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=%D8%AD%D8%B3%D8%A7%D8%B3%20%D8%A7%D9%84%D8%AA%D9%8A%D8%B1%D8%A8%D9%88&limit=20&status=any"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=Boost%20Pressure%20Sensor&limit=20&status=any"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=P0236&limit=20&status=any"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=P0237&limit=20&status=any"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=P0238&limit=20&status=any"
+      "path": "/post/80995"
     }
   ],
   "verify": []
