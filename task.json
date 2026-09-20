@@ -1,14 +1,43 @@
 {
-  "run": "read-vibration-posts-before-merge",
+  "run": "consolidate-vibration-cannibalization",
   "requests": [
     {
-      "method": "GET",
+      "method": "POST",
+      "path": "/update-post",
+      "body": {
+        "id": 79,
+        "meta": {
+          "_yoast_wpseo_focuskw": "رجة السيارة على سرعة 80",
+          "_yoast_wpseo_title": "سبب رجة السيارة على سرعة 80 و100 و120: التشخيص بالترتيب",
+          "_yoast_wpseo_metadesc": "تعرف على أسباب رجة السيارة على سرعة 80 و100 و120، وكيف تفرق بين الترصيص والجنط والكاوتش والكوبلن ورولمان البلي والطنابير حسب توقيت ومكان الاهتزاز.",
+          "_yoast_wpseo_canonical": "https://a3tal.com/%d8%b1%d8%ac%d8%a9-%d9%81%d9%8a-%d8%a7%d9%84%d8%b3%d9%8a%d8%a7%d8%b1%d8%a9-%d8%b9%d9%84%d9%89-%d8%b3%d8%b1%d8%b9%d8%a9-80-%d8%a3%d9%88-100-%d8%a3%d9%88-120/"
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/update-post",
+      "body": {
+        "id": 79910,
+        "status": "draft"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/redirect",
+      "body": {
+        "source_path": "/%d8%a3%d8%b3%d8%a8%d8%a7%d8%a8-%d8%a7%d9%87%d8%aa%d8%b2%d8%a7%d8%b2-%d8%a7%d9%84%d8%b3%d9%8a%d8%a7%d8%b1%d8%a9-%d8%b9%d9%84%d9%89-%d8%a7%d9%84%d8%b3%d8%b1%d8%b9%d8%a7%d8%aa-%d8%a7%d9%84%d8%b9%d8%a7/",
+        "target_url": "https://a3tal.com/%d8%b1%d8%ac%d8%a9-%d9%81%d9%8a-%d8%a7%d9%84%d8%b3%d9%8a%d8%a7%d8%b1%d8%a9-%d8%b9%d9%84%d9%89-%d8%b3%d8%b1%d8%b9%d8%a9-80-%d8%a3%d9%88-100-%d8%a3%d9%88-120/",
+        "status_code": 301
+      }
+    }
+  ],
+  "verify": [
+    {
       "path": "/post/79"
     },
     {
-      "method": "GET",
       "path": "/post/79910"
     }
-  ],
-  "verify": []
+  ]
 }
