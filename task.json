@@ -1,18 +1,10 @@
 {
-  "run": "clean-diesel-turbo-citation-artifacts",
+  "run": "read-transmission-fluid-hub-before-cvt-page",
   "requests": [
     {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 82277,
-        "content": ""
-      }
+      "method": "GET",
+      "path": "/post/79879"
     }
   ],
-  "verify": [
-    {
-      "path": "/post/82277"
-    }
-  ]
+  "verify": []
 }
