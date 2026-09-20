@@ -1,62 +1,186 @@
 {
-  "run": "audit-canonical-integrity-arabic-slugs",
+  "run": "fix-broken-canonicals-and-optimize-mercedes-hyundai",
   "requests": [
     {
-      "method": "GET",
-      "path": "/post/79958"
+      "method": "POST",
+      "path": "/update-post",
+      "body": {
+        "id": 79943,
+        "meta": {
+          "_yoast_wpseo_canonical": ""
+        }
+      }
     },
     {
-      "method": "GET",
+      "method": "POST",
+      "path": "/update-post",
+      "body": {
+        "id": 79964,
+        "meta": {
+          "_yoast_wpseo_canonical": ""
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/update-post",
+      "body": {
+        "id": 79977,
+        "meta": {
+          "_yoast_wpseo_canonical": ""
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/update-post",
+      "body": {
+        "id": 79906,
+        "meta": {
+          "_yoast_wpseo_canonical": ""
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/update-post",
+      "body": {
+        "id": 114,
+        "meta": {
+          "_yoast_wpseo_canonical": ""
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/update-post",
+      "body": {
+        "id": 79,
+        "meta": {
+          "_yoast_wpseo_canonical": ""
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/update-post",
+      "body": {
+        "id": 75,
+        "meta": {
+          "_yoast_wpseo_canonical": ""
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/update-post",
+      "body": {
+        "id": 80056,
+        "meta": {
+          "_yoast_wpseo_canonical": ""
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/update-post",
+      "body": {
+        "id": 79952,
+        "meta": {
+          "_yoast_wpseo_canonical": ""
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/update-post",
+      "body": {
+        "id": 79856,
+        "meta": {
+          "_yoast_wpseo_canonical": ""
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/update-post",
+      "body": {
+        "id": 80401,
+        "meta": {
+          "_yoast_wpseo_canonical": ""
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/update-post",
+      "body": {
+        "id": 80122,
+        "title": "قطع غيار مرسيدس التوفيقية والاستيراد: أفضل طرق الشراء والمطابقة",
+        "excerpt": "دليل شراء قطع غيار مرسيدس من التوفيقية والاستيراد وشارع دمشق والحرفيين، وكيف تطابق Part Number وVIN وتفرق بين Genuine وAftermarket.",
+        "meta": {
+          "_yoast_wpseo_focuskw": "قطع غيار مرسيدس التوفيقية",
+          "_yoast_wpseo_title": "قطع غيار مرسيدس التوفيقية والاستيراد: دليل الشراء",
+          "_yoast_wpseo_metadesc": "قطع غيار مرسيدس في التوفيقية والاستيراد وشارع دمشق والحرفيين: كيف تختار القطعة الصحيحة وتطابق Part Number وVIN قبل الشراء.",
+          "_yoast_wpseo_canonical": ""
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/update-post",
+      "body": {
+        "id": 79958,
+        "title": "توكيل هيونداي 16661: مراكز الصيانة المعتمدة وحجز الخدمة",
+        "excerpt": "توكيل هيونداي في مصر 16661: حجز الصيانة ومراكز غبور المعتمدة وخدمة العملاء وطريقة اختيار مركز الخدمة الصحيح قبل الزيارة.",
+        "meta": {
+          "_yoast_wpseo_focuskw": "مراكز صيانة هيونداي المعتمدة",
+          "_yoast_wpseo_title": "توكيل هيونداي 16661: مراكز الصيانة المعتمدة والحجز",
+          "_yoast_wpseo_metadesc": "رقم توكيل هيونداي 16661 مع مراكز الصيانة المعتمدة في مصر وحجز الخدمة عبر غبور وMy Hyundai وطريقة اختيار الفرع المناسب.",
+          "_yoast_wpseo_canonical": ""
+        }
+      }
+    }
+  ],
+  "verify": [
+    {
       "path": "/post/79943"
     },
     {
-      "method": "GET",
       "path": "/post/79964"
     },
     {
-      "method": "GET",
       "path": "/post/79977"
     },
     {
-      "method": "GET",
       "path": "/post/79906"
     },
     {
-      "method": "GET",
       "path": "/post/114"
     },
     {
-      "method": "GET",
-      "path": "/post/80122"
-    },
-    {
-      "method": "GET",
       "path": "/post/79"
     },
     {
-      "method": "GET",
       "path": "/post/75"
     },
     {
-      "method": "GET",
       "path": "/post/80056"
     },
     {
-      "method": "GET",
       "path": "/post/79952"
     },
     {
-      "method": "GET",
-      "path": "/post/81102"
-    },
-    {
-      "method": "GET",
-      "path": "/post/80209"
-    },
-    {
-      "method": "GET",
       "path": "/post/79856"
+    },
+    {
+      "path": "/post/80401"
+    },
+    {
+      "path": "/post/80122"
+    },
+    {
+      "path": "/post/79958"
     }
-  ],
-  "verify": []
+  ]
 }
