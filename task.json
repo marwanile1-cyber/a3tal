@@ -1,9 +1,41 @@
 {
-  "run": "read-related-turbo-article-media",
+  "run": "upload-turbo-delete-article-media",
   "requests": [
     {
-      "method": "GET",
-      "path": "/post/80521"
+      "method": "POST",
+      "path": "/upload-image",
+      "body": {
+        "post_id": 80521,
+        "url": "https://www.garrettmotion.com/wp-content/uploads/2018/06/b01-1.jpg",
+        "filename": "turbo-delete-engine-system-featured.jpg",
+        "alt": "منظومة التيربو ومسار الهواء والعادم في المحرك",
+        "caption": "إلغاء التيربو لا يعني فك الشاحن فقط؛ التيربو جزء من منظومة الهواء والعادم والتحكم في المحرك.",
+        "set_featured": false
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/upload-image",
+      "body": {
+        "post_id": 80521,
+        "url": "https://www.garrettmotion.com/wp-content/uploads/2018/06/b02.jpg",
+        "filename": "turbocharger-components-cutaway.jpg",
+        "alt": "مكونات التيربو الداخلية التوربين والكمبروسر ومحور الدوران",
+        "caption": "التيربو يحول طاقة غازات العادم إلى طاقة تدير الضاغط لزيادة كتلة الهواء الداخلة للمحرك.",
+        "set_featured": false
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/upload-image",
+      "body": {
+        "post_id": 80521,
+        "url": "https://www.bosch-mobility.com/media/global/solutions/passenger-cars-and-light-commercial-vehicles/powertrain-solutions/sensortechnology/intakemanifoldandboostpressuresensor/saugladedrucksensor_produktdetailansicht.jpg",
+        "filename": "boost-pressure-map-sensor-bosch.jpg",
+        "alt": "حساس ضغط بوست MAP في محرك تيربو",
+        "caption": "ECU يعتمد على قياس ضغط وحرارة هواء السحب للتحكم في الوقود والبوست والانبعاثات.",
+        "set_featured": false
+      }
     }
   ],
   "verify": []
