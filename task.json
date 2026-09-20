@@ -1,9 +1,17 @@
 {
-  "run": "seo-audit-soueast-service-page",
+  "run": "locate-soueast-service-page-v2",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=%D8%B3%D8%A7%D9%88%D8%A7%D9%8A%D8%B3%D8%AA%20%D9%85%D8%B1%D8%A7%D9%83%D8%B2%20%D8%A7%D9%84%D8%AE%D8%AF%D9%85%D8%A9&limit=20&status=any"
+      "path": "/search-posts?search=%D8%B3%D8%A7%D9%88%20%D8%A7%D9%8A%D8%B3%D8%AA%20%D8%A7%D9%84%D8%AE%D8%B7%20%D8%A7%D9%84%D8%B3%D8%A7%D8%AE%D9%86&limit=20&status=any"
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=Soueast%20Egypt%20service%20centers&limit=20&status=any"
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D9%85%D8%B1%D8%A7%D9%83%D8%B2%20%D8%AE%D8%AF%D9%85%D8%A9%20Soueast&limit=20&status=any"
     }
   ],
   "verify": []
