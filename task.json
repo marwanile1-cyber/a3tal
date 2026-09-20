@@ -1,13 +1,13 @@
 {
-  "run": "audit-check-engine-page",
+  "run": "locate-check-engine-arabic-only",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=Check%20Engine&limit=20&status=any"
+      "path": "/search-posts?search=%D9%84%D9%85%D8%A8%D8%A9%20%D8%A7%D9%84%D9%85%D8%AD%D8%B1%D9%83&limit=20&status=any"
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=%D9%84%D9%85%D8%A8%D8%A9%20%D8%A7%D9%84%D9%85%D8%AD%D8%B1%D9%83&limit=20&status=any"
+      "path": "/search-posts?search=%D8%A5%D8%B6%D8%A7%D8%A1%D8%A9%20%D9%84%D9%85%D8%A8%D8%A9%20%D8%A7%D9%84%D9%85%D8%AD%D8%B1%D9%83&limit=20&status=any"
     }
   ],
   "verify": []
