@@ -1,21 +1,21 @@
 {
-  "run": "locate-sunny-cng-tiggo-torres-pages",
+  "run": "locate-clutch-master-transmission-jerk-torres",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=%D9%81%D8%AA%D9%8A%D8%B3%20%D9%86%D9%8A%D8%B3%D8%A7%D9%86%20%D8%B5%D9%86%D9%8A&limit=10&status=any"
+      "path": "/search-posts?search=%D9%85%D8%A7%D8%B3%D8%AA%D8%B1%20%D8%A7%D9%84%D8%AF%D8%A8%D8%B1%D9%8A%D8%A7%D8%AC%20%D8%A7%D9%84%D8%B9%D9%84%D9%88%D9%8A&limit=10&status=any"
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=%D8%A3%D8%B6%D8%B1%D8%A7%D8%B1%20%D8%AA%D8%AD%D9%88%D9%8A%D9%84%20%D8%A7%D9%84%D8%B3%D9%8A%D8%A7%D8%B1%D8%A9%20%D9%85%D9%86%20%D8%A8%D9%86%D8%B2%D9%8A%D9%86%20%D8%A5%D9%84%D9%89%20%D8%BA%D8%A7%D8%B2&limit=10&status=any"
+      "path": "/post/80153"
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=%D8%B4%D9%8A%D8%B1%D9%8A%20%D8%AA%D9%8A%D8%AC%D9%88%204%20%D8%A8%D8%B1%D9%88&limit=10&status=any"
+      "path": "/post/81019"
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=%D8%B3%D8%A7%D9%86%D8%AC%20%D9%8A%D9%88%D9%86%D8%AC%20%D8%AA%D9%88%D8%B1%D9%8A%D8%B3&limit=10&status=any"
+      "path": "/post/80611"
     }
   ],
   "verify": []
