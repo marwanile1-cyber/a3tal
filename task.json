@@ -1,25 +1,25 @@
 {
-  "run": "tighten-p0700-search-intent",
+  "run": "tighten-p0597-search-intent",
   "requests": [
     {
       "method": "POST",
       "path": "/update-post",
       "body": {
-        "id": 81177,
-        "title": "كود P0700: معنى Transmission Control System وكيف تقرأ عطل TCM",
-        "excerpt": "P0700 يعني أن نظام التحكم في الفتيس طلب إضاءة لمبة العطل أو سجّل كودًا تفصيليًا داخل TCM. تعرف على طريقة الوصول للكود الحقيقي قبل تغيير أي قطعة.",
+        "id": 80165,
+        "title": "كود P0597: Thermostat Heater Control Circuit Open والأسباب والفحص",
+        "excerpt": "P0597 يعني Open في دائرة التحكم بسخان الثرموستات الإلكتروني. تعرف على الأسباب وفحص الفيشة والأسلاك والثرموستات قبل تغيير القطعة.",
         "meta": {
-          "_yoast_wpseo_focuskw": "P0700",
-          "_yoast_wpseo_title": "كود P0700: معنى العطل وكيف تقرأ كود TCM الحقيقي",
-          "_yoast_wpseo_metadesc": "شرح كود P0700 ومعنى Transmission Control System (MIL Request). ادخل إلى TCM واقرأ الكود التفصيلي قبل تغيير الزيت أو السولينويد أو كنترول الفتيس.",
-          "_yoast_wpseo_canonical": "https://a3tal.com/p0700-transmission-control-system-malfunction/"
+          "_yoast_wpseo_focuskw": "P0597",
+          "_yoast_wpseo_title": "كود P0597: Thermostat Heater Circuit Open والفحص",
+          "_yoast_wpseo_metadesc": "شرح كود P0597 ومعنى Thermostat Heater Control Circuit Open، وأسباب العطل وفحص الفيشة والأسلاك والثرموستات الإلكتروني قبل تغيير القطعة.",
+          "_yoast_wpseo_canonical": "https://a3tal.com/p0597-thermostat-heater-fix-aluminum-housing-egypt-2026/"
         }
       }
     }
   ],
   "verify": [
     {
-      "path": "/post/81177"
+      "path": "/post/80165"
     }
   ]
 }
