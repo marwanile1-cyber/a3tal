@@ -1,25 +1,25 @@
 {
-  "run": "audit-p0014-ac-mg5-egr-p0226",
+  "run": "read-p0014-ac-mg5-egr-p0226-full",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=P0014&limit=20&status=any"
+      "path": "/post/80150"
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=%D8%B6%D8%B9%D9%81%20%D8%AA%D8%A8%D8%B1%D9%8A%D8%AF%20%D9%85%D9%83%D9%8A%D9%81%20%D8%A7%D9%84%D8%B3%D9%8A%D8%A7%D8%B1%D8%A9%20%D8%B9%D9%86%D8%AF%20%D8%A7%D9%84%D9%88%D9%82%D9%88%D9%81&limit=20&status=any"
+      "path": "/post/81009"
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=%D8%AC%D8%AF%D9%88%D9%84%20%D8%B5%D9%8A%D8%A7%D9%86%D8%A9%20MG5&limit=20&status=any"
+      "path": "/post/80687"
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=%D8%A3%D8%B9%D8%B1%D8%A7%D8%B6%20%D8%AA%D9%84%D9%81%20%D8%A8%D9%84%D9%81%20EGR&limit=20&status=any"
+      "path": "/post/81088"
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=P0226&limit=20&status=any"
+      "path": "/post/80052"
     }
   ],
   "verify": []
