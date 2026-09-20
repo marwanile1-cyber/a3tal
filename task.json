@@ -1,21 +1,21 @@
 {
-  "run": "audit-next-high-impression-repair-pages",
+  "run": "read-p0597-p0303-abs-power-pages",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=P0597&limit=20&status=any"
+      "path": "/post/80165"
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=P0303&limit=20&status=any"
+      "path": "/post/79853"
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=%D8%B7%D8%B1%D9%85%D8%A8%D8%A9%20%D8%A7%D9%84%D8%A8%D8%A7%D9%88%D8%B1&limit=20&status=any"
+      "path": "/post/79952"
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=ABS&limit=20&status=any"
+      "path": "/post/81135"
     }
   ],
   "verify": []
