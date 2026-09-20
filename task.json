@@ -1,25 +1,25 @@
 {
-  "run": "tighten-p0597-search-intent",
+  "run": "tighten-hyundai-p0303-search-intent",
   "requests": [
     {
       "method": "POST",
       "path": "/update-post",
       "body": {
-        "id": 80165,
-        "title": "كود P0597: Thermostat Heater Control Circuit Open والأسباب والفحص",
-        "excerpt": "P0597 يعني Open في دائرة التحكم بسخان الثرموستات الإلكتروني. تعرف على الأسباب وفحص الفيشة والأسلاك والثرموستات قبل تغيير القطعة.",
+        "id": 79853,
+        "title": "Hyundai P0303: كود Misfire السلندر 3 والأسباب وطريقة الفحص",
+        "excerpt": "Hyundai P0303 يعني Cylinder 3 Misfire. افحص بوجيه وكويل وبخاخ السلندر 3 ثم الضغط والتسريب قبل تغيير القطع عشوائيًا.",
         "meta": {
-          "_yoast_wpseo_focuskw": "P0597",
-          "_yoast_wpseo_title": "كود P0597: Thermostat Heater Circuit Open والفحص",
-          "_yoast_wpseo_metadesc": "شرح كود P0597 ومعنى Thermostat Heater Control Circuit Open، وأسباب العطل وفحص الفيشة والأسلاك والثرموستات الإلكتروني قبل تغيير القطعة.",
-          "_yoast_wpseo_canonical": "https://a3tal.com/p0597-thermostat-heater-fix-aluminum-housing-egypt-2026/"
+          "_yoast_wpseo_focuskw": "Hyundai P0303",
+          "_yoast_wpseo_title": "Hyundai P0303: Cylinder 3 Misfire | الأسباب والفحص",
+          "_yoast_wpseo_metadesc": "ظهر Hyundai P0303؟ الكود يعني Cylinder 3 Misfire. افحص البوجيه والكويل والبخاخ والضغط والتسريب في السلندر 3 قبل تغيير القطع.",
+          "_yoast_wpseo_canonical": ""
         }
       }
     }
   ],
   "verify": [
     {
-      "path": "/post/80165"
+      "path": "/post/79853"
     }
   ]
 }
