@@ -1,15 +1,15 @@
 {
-  "run": "upload-kia-pv5-images",
+  "run": "upload-kia-pv5-official-images",
   "requests": [
     {
       "method": "POST",
       "path": "/upload-image",
       "body": {
         "post_id": 82270,
-        "url": "https://media.gemini.media/img/shift-eg/large/2026/7/10/2026_7_10_11_32_15_653.webp",
+        "url": "https://www.kia.com/cdn-cgi/image/width=1072,height=601,fit=scale-down,quality=85,format=auto/content/dam/kwcms/nmc/en/images/hmg-cms/vehicle/passenger_q.png",
         "filename": "kia-pv5-egypt-featured.webp",
-        "alt": "كيا PV5 الكهربائية في مصر",
-        "caption": "Kia PV5 الكهربائية وصلت السوق المصري بسعر إطلاق 2.5 مليون جنيه.",
+        "alt": "كيا PV5 Passenger الكهربائية",
+        "caption": "Kia PV5 Passenger الكهربائية بتصميم عملي ومساحة داخلية كبيرة.",
         "set_featured": true
       }
     },
@@ -18,10 +18,10 @@
       "path": "/upload-image",
       "body": {
         "post_id": 82270,
-        "url": "https://www.kia.com/cdn-cgi/image/width=1072,height=601,fit=scale-down,quality=85,format=auto/content/dam/kwcms/nmc/en/images/hmg-cms/vehicle/passenger_q.png",
+        "url": "https://www.kia.com/cdn-cgi/image/width=1072,height=601,fit=scale-down,quality=85,format=auto/content/dam/kwcms/nmc/en/images/hmg-cms/vehicle/passenger_s.png",
         "filename": "kia-pv5-egypt-side.webp",
-        "alt": "كيا PV5 Passenger الكهربائية",
-        "caption": "Kia PV5 Passenger تعتمد تصميمًا عمليًا ومساحة كبيرة للركاب والأمتعة.",
+        "alt": "كيا PV5 Passenger من الجانب",
+        "caption": "نسخة Kia PV5 Passenger تركز على سهولة الدخول والمرونة والمساحة.",
         "set_featured": false
       }
     },
@@ -33,7 +33,7 @@
         "url": "https://www.kia.com/cdn-cgi/image/width=1072,height=601,fit=scale-down,quality=85,format=auto/content/dam/kwcms/nmc/en/images/hmg-cms/vehicle/cargo_q.png",
         "filename": "kia-pv5-egypt-cargo.webp",
         "alt": "كيا PV5 Cargo الكهربائية",
-        "caption": "منصة Kia PV5 تدعم نسخ الركاب والاستخدام التجاري Cargo.",
+        "caption": "منصة Kia PV5 تدعم نسخ Cargo للاستخدامات التجارية.",
         "set_featured": false
       }
     }
