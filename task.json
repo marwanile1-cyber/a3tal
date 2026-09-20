@@ -1,5 +1,5 @@
 {
-  "run": "read-renault-soueast-fiat-skoda-service-pages",
+  "run": "read-four-dealer-pages-full",
   "requests": [
     {
       "method": "GET",
@@ -11,11 +11,11 @@
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=%D8%AA%D9%88%D9%83%D9%8A%D9%84%20%D9%81%D9%8A%D8%A7%D8%AA&limit=20&status=any"
+      "path": "/post/80444"
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=%D8%AA%D9%88%D9%83%D9%8A%D9%84%20%D8%B3%D9%83%D9%88%D8%AF%D8%A7&limit=20&status=any"
+      "path": "/post/80669"
     }
   ],
   "verify": []
