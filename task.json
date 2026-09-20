@@ -1,25 +1,9 @@
 {
-  "run": "audit-existing-agm-gel-content",
+  "run": "read-battery-cluster-category",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=AGM&limit=20&status=any"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=GEL&limit=20&status=any"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=%D8%A8%D8%B7%D8%A7%D8%B1%D9%8A%D8%A9%20AGM&limit=20&status=any"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=%D8%A8%D8%B7%D8%A7%D8%B1%D9%8A%D8%A9%20GEL&limit=20&status=any"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=%D8%A8%D8%B7%D8%A7%D8%B1%D9%8A%D8%A7%D8%AA%20%D8%A7%D9%84%D8%B3%D9%8A%D8%A7%D8%B1%D8%A7%D8%AA&limit=20&status=any"
+      "path": "/post/80106"
     }
   ],
   "verify": []
