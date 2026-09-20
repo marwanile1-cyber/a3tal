@@ -33,7 +33,7 @@ jobs:
         run: |
           set -euo pipefail
           TASK_FILE="task.json"
-          BASE="https://a3tal.com/wp-json/a3tal-ai/v1"
+          BASE="https://a3tal.com/wp-json/a3tal-direct/v1"
 
           if [ ! -f "$TASK_FILE" ]; then
             echo "task.json not found"
@@ -82,7 +82,7 @@ jobs:
         run: |
           set -euo pipefail
           TASK_FILE="task.json"
-          BASE="https://a3tal.com/wp-json/a3tal-ai/v1"
+          BASE="https://a3tal.com/wp-json/a3tal-direct/v1"
 
           if ! jq -e '.verify and (.verify | length > 0)' "$TASK_FILE" >/dev/null; then
             echo "No verification requests."
