@@ -1,25 +1,10 @@
 {
-  "run": "optimize-kgm-ssangyong-hotline-service-intent",
+  "run": "read-p0000-before-fast-rewrite",
   "requests": [
     {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 81023,
-        "title": "توكيل KGM سانج يونج 16106: الحجز ومراكز الصيانة في مصر",
-        "excerpt": "توكيل KGM سانج يونج في مصر: الخط الساخن الرسمي 16106، حجز الصيانة ومركز أبو رواش وخدمات ما بعد البيع لسيارات توريس وتيفولي.",
-        "meta": {
-          "_yoast_wpseo_focuskw": "توكيل KGM سانج يونج",
-          "_yoast_wpseo_title": "توكيل KGM سانج يونج 16106: الحجز ومراكز الصيانة",
-          "_yoast_wpseo_metadesc": "رقم توكيل KGM سانج يونج في مصر 16106. تعرف على حجز الصيانة ومركز خدمة أبو رواش وخدمات ما بعد البيع لسيارات توريس وتيفولي.",
-          "_yoast_wpseo_canonical": ""
-        }
-      }
+      "method": "GET",
+      "path": "/post/149"
     }
   ],
-  "verify": [
-    {
-      "path": "/post/81023"
-    }
-  ]
+  "verify": []
 }
