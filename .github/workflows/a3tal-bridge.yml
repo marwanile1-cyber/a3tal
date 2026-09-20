@@ -52,18 +52,22 @@ jobs:
                 -H "X-A3tal-Key: $A3TAL_API_KEY" \
                 -H "X-A3tal-API-Key: $A3TAL_API_KEY" \
                 -H "X-API-Key: $A3TAL_API_KEY" \
+                -H "X-A3tal-Token: $A3TAL_API_KEY" \
+                -H "X-Auth-Token: $A3TAL_API_KEY" \
                 -H "Authorization: Bearer $A3TAL_API_KEY" \
-                "$BASE$PATH_PART" | tee "/tmp/a3tal-response-$i.json"
+                "$BASE$PATH_PART?api_key=$A3TAL_API_KEY&key=$A3TAL_API_KEY&token=$A3TAL_API_KEY" | tee "/tmp/a3tal-response-$i.json"
             else
               curl --fail-with-body --silent --show-error \
                 -X "$METHOD" \
                 -H "X-A3tal-Key: $A3TAL_API_KEY" \
                 -H "X-A3tal-API-Key: $A3TAL_API_KEY" \
                 -H "X-API-Key: $A3TAL_API_KEY" \
+                -H "X-A3tal-Token: $A3TAL_API_KEY" \
+                -H "X-Auth-Token: $A3TAL_API_KEY" \
                 -H "Authorization: Bearer $A3TAL_API_KEY" \
                 -H "Content-Type: application/json" \
                 --data "$BODY" \
-                "$BASE$PATH_PART" | tee "/tmp/a3tal-response-$i.json"
+                "$BASE$PATH_PART?api_key=$A3TAL_API_KEY&key=$A3TAL_API_KEY&token=$A3TAL_API_KEY" | tee "/tmp/a3tal-response-$i.json"
             fi
             echo
             jq . "/tmp/a3tal-response-$i.json" || true
