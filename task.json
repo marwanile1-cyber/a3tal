@@ -1,17 +1,18 @@
 {
-  "run": "auth-compat-test-2",
+  "run": "verify-after-key-refresh",
   "requests": [
     {
       "method": "GET",
       "path": "/status"
-    }
-  ],
-  "verify": [
+    },
     {
+      "method": "GET",
       "path": "/post/80963"
     },
     {
+      "method": "GET",
       "path": "/post/81939"
     }
-  ]
+  ],
+  "verify": []
 }
