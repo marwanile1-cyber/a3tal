@@ -1,9 +1,19 @@
 {
-  "run": "find-stale-2025-pages-direct-bridge-2026-09-21",
+  "run": "check-code-duplicates-before-edit-2026-09-21",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=2025&limit=100&status=publish",
+      "path": "/search-posts?search=C1010&limit=20&status=publish",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=P1083&limit=20&status=publish",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=P03A3&limit=20&status=publish",
       "body": {}
     }
   ],
