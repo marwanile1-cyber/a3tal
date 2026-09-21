@@ -1,21 +1,71 @@
 {
-  "run": "check-p0299-p0420-p0087-duplicates-before-edit-2026-09-21",
+  "run": "update-p0299-p0087-and-consolidate-p0420-2026-09-21",
   "requests": [
     {
-      "method": "GET",
-      "path": "/search-posts?search=P0299&limit=30&status=publish",
-      "body": {}
+      "method": "POST",
+      "path": "/update-post",
+      "body": {
+        "id": 80147,
+        "title": "كود P0299 في السيارات الصينية: أسباب Underboost وطريقة التشخيص",
+        "content": "<div class=\"a3tal-p0299-cn-guide\" dir=\"rtl\" lang=\"ar\" style=\"line-height:1.9;color:#263238\">\n<div style=\"background:#eef6ff;border-right:5px solid #2474b5;padding:16px 18px;border-radius:8px;margin:0 0 22px\">\n<p style=\"margin:0\"><strong>الخلاصة:</strong> كود <strong>P0299</strong> يعني Turbo/Supercharger Underboost: ضغط البوست الفعلي أقل من القيمة التي يطلبها كمبيوتر المحرك. في السيارات الصينية لا تبدأ بتغيير التيربو؛ افحص التسريب في خراطيم الشحن والإنتركولر، التحكم في الـWastegate/Actuator، حساس البوست، التغذية والفاكيوم، ثم التيربو نفسه.</p>\n</div>\n\n<p>P0299 يظهر في سيارات تيربو من علامات صينية متعددة، لكن نفس الكود لا يعني نفس القطعة في كل موديل. نظام التحكم قد يكون Wastegate كهربائي أو فاكيوم، وقد تستخدم السيارة حساس MAP واحدًا أو أكثر، لذلك التشخيص لازم يعتمد على بيانات نفس المحرك.</p>\n\n<h2 style=\"color:#c62828\">ما معنى P0299؟</h2>\n<p>الـECU يحدد Boost Target حسب الحمل وRPM والحرارة وظروف التشغيل، ثم يقارن الضغط المطلوب بالضغط المقاس. عندما يبقى الضغط الفعلي أقل من الهدف بمقدار/مدة تتجاوز حدود المعايرة، يسجل P0299.</p>\n\n<h2 style=\"color:#c62828\">أشهر أسباب P0299 في السيارات الصينية</h2>\n<ul>\n<li>خرطوم Turbo/Intercooler مشقوق أو قفيز مفكوك.</li>\n<li>تسريب من الإنتركولر أو وصلة الشحن.</li>\n<li>Wastegate عالقة مفتوحة أو ذراع/بوابة بها بوش.</li>\n<li>Electronic Actuator أو Boost Control Solenoid لا يتحكم بشكل صحيح.</li>\n<li>خرطوم فاكيوم أو مصدر فاكيوم ضعيف في الأنظمة التي تعتمد عليه.</li>\n<li>حساس Boost/MAP متسخ أو يقرأ خطأ أو دائرته بها مشكلة.</li>\n<li>فلتر هواء شديد الانسداد أو مشكلة في مسار السحب.</li>\n<li>تسريب عادم قبل التيربو يقلل الطاقة التي تدير التربينة.</li>\n<li>تلف ميكانيكي في التيربو أو ريش/محور، لكنه ليس أول افتراض.</li>\n<li>تقييد في العادم/DPF في بعض محركات الديزل حسب النظام.</li>\n</ul>\n\n<h2 style=\"color:#c62828\">الأعراض المحتملة</h2>\n<ul>\n<li>ضعف سحب واضح عند الضغط.</li>\n<li>دخول Limp Mode أو تقليل عزم.</li>\n<li>لمبة Check Engine.</li>\n<li>صوت هسهسة لو يوجد Boost Leak.</li>\n<li>دخان أو استهلاك زيت إذا توجد مشكلة ميكانيكية في التيربو، لكن ليس مع كل P0299.</li>\n</ul>\n\n<h2 style=\"color:#c62828\">ابدأ بـRequested Boost مقابل Actual Boost</h2>\n<p>أهم خطوة على جهاز الفحص هي مقارنة <strong>Boost Target/Desired</strong> مع <strong>Actual Boost/MAP</strong> أثناء نفس ظروف الحمل. لو الهدف يرتفع والفعلي يظل منخفضًا، أثبت المشكلة أولًا ثم ابحث عن سبب فقد الضغط أو ضعف التحكم.</p>\n\n<h2 style=\"color:#c62828\">طريقة التشخيص بالترتيب</h2>\n<ol>\n<li>سجل Freeze Frame والأكواد المصاحبة قبل المسح.</li>\n<li>افحص فلتر الهواء ومسار السحب.</li>\n<li>اعمل فحص بصري لكل خراطيم البوست والقفيزات والإنتركولر.</li>\n<li>استخدم Smoke/Pressure Test لنظام الشحن إذا أمكن.</li>\n<li>راقب Requested vs Actual Boost.</li>\n<li>افحص حركة Wastegate/Actuator وأمر التحكم من الكمبيوتر.</li>\n<li>راجع حساس البوست ومرجعه الكهربائي إذا القراءة غير منطقية.</li>\n<li>افحص تسريب العادم قبل التيربو.</li>\n<li>بعد استبعاد التحكم والتسريب، افحص التيربو ميكانيكيًا للبوش والريش والزيت.</li>\n</ol>\n\n<p>لو محتاج تفرق بين التيربو نفسه والحساس، راجع <a href=\"https://a3tal.com/turbo-boost-pressure-sensor-symptoms-diagnosis/\"><strong>أعراض تلف حساس ضغط البوست</strong></a>، ولأعراض التيربو الميكانيكية راجع <a href=\"https://a3tal.com/bad-turbocharger-symptoms-repair-cost/\"><strong>أعراض تلف التيربو وطريقة التشخيص</strong></a>.</p>\n\n<h2 style=\"color:#c62828\">هل تنظيف التيربو يحل P0299؟</h2>\n<p>ليس كقاعدة. لو السبب Wastegate متحجرة بسبب ترسبات في تصميم معين قد تكون هناك خدمة مناسبة، لكن لو المشكلة تسريب خرطوم أو Actuator أو Sensor أو تلف محور فلن يحلها «تنظيف التيربو» العام.</p>\n\n<h2 style=\"color:#c62828\">هل حساس البوست يسبب P0299؟</h2>\n<p>ممكن، لكن لازم تثبت أن القراءة غير منطقية مقارنة بالضغط الحقيقي/البارومتري وباقي البيانات. تغيير الحساس بالتجربة قد لا يحل Underboost حقيقي.</p>\n\n<h2 style=\"color:#c62828\">هل أقدر أمشي بالكود؟</h2>\n<p>لو السيارة دخلت Limp Mode أو فقدت عزمًا كبيرًا، تجنب الضغط العالي وافحصها. وإذا يوجد دخان كثيف أو صوت احتكاك/صفير جديد قوي أو استهلاك زيت واضح، أوقف الاستخدام حتى فحص التيربو لأن المشكلة قد تكون ميكانيكية.</p>\n\n<h2 style=\"color:#c62828\">ما الذي يحدد تكلفة الإصلاح؟</h2>\n<p>سبب P0299 قد يكون قفيز خرطوم بسيطًا أو Actuator أو Intercooler أو Turbo كاملًا، لذلك لا يوجد سعر ثابت منطقي للكود. التشخيص قبل التسعير أهم من قائمة أسعار قطع.</p>\n\n<h2 style=\"color:#c62828\">الأسئلة الشائعة</h2>\n<h3 style=\"color:#1565c0\">هل P0299 يعني التيربو بايظ؟</h3>\n<p>لا. يعني أن البوست أقل من المطلوب. التسريب والتحكم والحساسات ومصدر الفاكيوم كلها تُفحص قبل الحكم على التيربو.</p>\n\n<h3 style=\"color:#1565c0\">هل خرطوم الإنتركولر يعمل P0299؟</h3>\n<p>نعم، أي تسريب في مسار الهواء المضغوط يمكن أن يمنع وصول الضغط المطلوب للمانيفولد.</p>\n\n<h3 style=\"color:#1565c0\">هل أغير حساس MAP أولًا؟</h3>\n<p>لا. راقب القراءة وقارنها بالبيانات المرجعية واختبر الدائرة والتسريب أولًا.</p>\n\n<div style=\"background:#eef6ff;border-right:5px solid #2474b5;padding:16px 18px;border-radius:8px;margin-top:24px\">\n<p style=\"margin:0\"><strong>الخلاصة:</strong> P0299 كود أداء للبوست، وليس حكمًا على التيربو. ابدأ بالـLive Data والتسريب والتحكم، وبعدها انتقل للفحص الميكانيكي.</p>\n</div>\n</div>",
+        "excerpt": "كود P0299 يعني Turbo Underboost وليس تلف التيربو تلقائيًا. تعرف على فحص تسريب البوست والإنتركولر وWastegate والحساس وRequested vs Actual Boost.",
+        "status": "publish",
+        "meta": {
+          "_yoast_wpseo_focuskw": "كود P0299",
+          "_yoast_wpseo_title": "كود P0299 في السيارات الصينية | أسباب Underboost",
+          "_yoast_wpseo_metadesc": "شرح كود P0299 Turbo Underboost في السيارات الصينية: فحص خراطيم البوست والإنتركولر وWastegate وحساس الضغط قبل تغيير التيربو."
+        }
+      }
     },
     {
-      "method": "GET",
-      "path": "/search-posts?search=P0420&limit=30&status=publish",
-      "body": {}
+      "method": "POST",
+      "path": "/update-post",
+      "body": {
+        "id": 80162,
+        "title": "كود P0087: ضغط Fuel Rail منخفض وأسباب ضعف ضغط الوقود",
+        "content": "<div class=\"a3tal-p0087-guide\" dir=\"rtl\" lang=\"ar\" style=\"line-height:1.9;color:#263238\">\n<div style=\"background:#eef6ff;border-right:5px solid #2474b5;padding:16px 18px;border-radius:8px;margin:0 0 22px\">\n<p style=\"margin:0\"><strong>الخلاصة:</strong> كود <strong>P0087</strong> يعني Fuel Rail/System Pressure Too Low: ضغط الوقود الفعلي في المسطرة أقل من المطلوب. السبب قد يكون في طلمبة الخزان أو فلتر/خط الوقود أو طلمبة الهاي بريشر أو المنظم أو البخاخات أو حساس الضغط حسب نظام السيارة.</p>\n</div>\n\n<p>P0087 يظهر كثيرًا في محركات الحقن المباشر بنزين GDI ومحركات الديزل Common Rail. الكمبيوتر يقارن ضغط الـFuel Rail المطلوب بالقيمة الفعلية، وإذا عجز النظام عن الوصول للضغط المستهدف يسجل الكود وقد يقلل القدرة لحماية المحرك.</p>\n\n<h2 style=\"color:#c62828\">ما معنى P0087 بالتحديد؟</h2>\n<p>المعنى العام هو <strong>Fuel Rail/System Pressure – Too Low</strong>. الكود لا يقول إن حساس الضغط نفسه تالف؛ هو يقول إن القراءة الفعلية أقل من الضغط الذي يحتاجه النظام وفق شروط التشخيص.</p>\n\n<h2 style=\"color:#c62828\">أشهر أسباب P0087</h2>\n<ul>\n<li>ضغط منخفض من طلمبة الخزان أو التغذية الأولية.</li>\n<li>فلتر وقود مسدود أو خط وقود مقيد.</li>\n<li>هواء أو تلوث في نظام الديزل.</li>\n<li>ضعف طلمبة High Pressure Fuel Pump.</li>\n<li>Fuel Pressure Regulator/Control Valve لا يتحكم بالشكل المطلوب.</li>\n<li>تسريب داخلي زائد من البخاخات/Return Flow في بعض الديزل.</li>\n<li>تسريب وقود خارجي.</li>\n<li>حساس Fuel Rail Pressure أو دائرته يعطي قراءة خاطئة.</li>\n<li>وقود ملوث أو غير مناسب في بعض الحالات.</li>\n</ul>\n\n<h2 style=\"color:#c62828\">الأعراض المحتملة</h2>\n<ul>\n<li>تأخير أو صعوبة تشغيل.</li>\n<li>تقطيع أو ضعف سحب تحت الحمل.</li>\n<li>توقف المحرك أو دخوله Limp Mode.</li>\n<li>لمبة Check Engine.</li>\n<li>عدم قدرة المحرك على رفع RPM في بعض الاستراتيجيات.</li>\n</ul>\n\n<div style=\"background:#ffebee;border-right:5px solid #c62828;padding:15px 18px;border-radius:8px;margin:20px 0\">\n<p style=\"margin:0\"><strong>تحذير مهم:</strong> أنظمة Common Rail وGDI تعمل بضغط مرتفع جدًا. لا تفك مواسير الضغط العالي والمحرك يعمل، ولا تبحث عن التسريب بإصبعك. وقود الضغط العالي يمكن أن يخترق الجلد ويسبب إصابة خطيرة.</p>\n</div>\n\n<h2 style=\"color:#c62828\">قارن Desired Rail Pressure مع Actual</h2>\n<p>على جهاز الفحص راقب الضغط المطلوب والفعلـي أثناء التدوير والسلانسيه والتسارع حسب إجراء الشركة. السؤال الأساسي: <strong>هل الطلمبة عاجزة فعلًا عن تكوين الضغط، أم الحساس يبلغ قراءة خاطئة؟</strong></p>\n\n<h2 style=\"color:#c62828\">طريقة التشخيص الصحيحة</h2>\n<ol>\n<li>احفظ Freeze Frame والأكواد المصاحبة.</li>\n<li>افحص مستوى الوقود وجودته وأي تسريب ظاهر.</li>\n<li>راجع ضغط/تدفق جانب التغذية منخفض الضغط حسب المواصفة.</li>\n<li>افحص فلتر الوقود وخطوط السحب.</li>\n<li>قارن Desired وActual Rail Pressure بالاسكانر.</li>\n<li>راجع Fuel Pressure Sensor و5V Reference/Ground/Signal إذا البيانات غير منطقية.</li>\n<li>اختبر صمام التحكم/المنظم حسب تصميم النظام.</li>\n<li>في الديزل افحص Injector Leak-Off/Return إذا تطلب التشخيص.</li>\n<li>لا تحكم على HPFP قبل التأكد أن التغذية الواصلة لها سليمة.</li>\n</ol>\n\n<h2 style=\"color:#c62828\">هل P0087 يعني طلمبة هاي بريشر؟</h2>\n<p>ليس دائمًا. الـHPFP سبب معروف في أنظمة الحقن المباشر، لكن طلمبة الخزان الضعيفة أو فلتر مسدود أو بخاخ يرجع وقودًا زائدًا قد يمنع الهاي بريشر من تحقيق الهدف حتى لو الطلمبة نفسها سليمة.</p>\n\n<h2 style=\"color:#c62828\">الفرق بين P0087 وأكواد حساس الضغط</h2>\n<p>P0087 يصف <strong>ضغط النظام المنخفض</strong>. أما أكواد مثل P0192/P0193 فتركز أكثر على دائرة Fuel Rail Pressure Sensor وقيمتها الكهربائية. وجودهم معًا يغير مسار التشخيص.</p>\n\n<h2 style=\"color:#c62828\">هل تغيير فلتر البنزين ممكن يحل الكود؟</h2>\n<p>لو الفلتر مسدود فعلًا ويقلل تدفق الوقود، نعم. لكن تغيير الفلتر بالتجربة بدون قياس ضغط/تدفق قد لا يحل المشكلة.</p>\n\n<h2 style=\"color:#c62828\">هل أقدر أمشي مع P0087؟</h2>\n<p>لو العربية بتبطل أو تقطع بقوة أو تدخل Limp Mode، الأفضل عدم استخدامها تحت حمل إلى أن يتم التشخيص. ضغط الوقود غير الكافي قد يسبب توقفًا مفاجئًا أو تشغيلًا غير مستقر.</p>\n\n<h2 style=\"color:#c62828\">ما الذي يحدد تكلفة الإصلاح؟</h2>\n<p>الفرق ضخم بين فلتر وقود أو توصيل كهربائي وبين HPFP أو بخاخات، لذلك لا نعتمد جدول أسعار ثابت. التشخيص يجب أن يحدد هل الخلل Low Side أم High Side أم Sensor/Control.</p>\n\n<h2 style=\"color:#c62828\">الأسئلة الشائعة</h2>\n<h3 style=\"color:#1565c0\">هل P0087 سببه حساس الضغط؟</h3>\n<p>ممكن، لكن ليس أول افتراض. قارن القراءة المطلوبة والفعلية وافحص دائرة الحساس والتغذية والضغط الحقيقي.</p>\n\n<h3 style=\"color:#1565c0\">هل طلمبة البنزين العادية تسبب P0087؟</h3>\n<p>نعم، في الأنظمة التي تعتمد على Low-Pressure Pump لتغذية HPFP، ضعف التغذية يمكن أن يخفض Rail Pressure تحت الحمل.</p>\n\n<h3 style=\"color:#1565c0\">هل البخاخات تسبب ضغط منخفض؟</h3>\n<p>في بعض الأنظمة، تسريب داخلي أو Return Flow زائد من بخاخ قد يمنع وصول الضغط المطلوب.</p>\n\n<div style=\"background:#eef6ff;border-right:5px solid #2474b5;padding:16px 18px;border-radius:8px;margin-top:24px\">\n<p style=\"margin:0\"><strong>الخلاصة:</strong> P0087 يحتاج تقسيم النظام إلى Low Pressure وHigh Pressure وSensor/Control. القياس والـLive Data أهم من تغيير طلمبة الهاي بريشر بالتجربة.</p>\n</div>\n</div>",
+        "excerpt": "كود P0087 يعني أن ضغط Fuel Rail الفعلي أقل من المطلوب. تعرف على فحص طلمبة الخزان وHPFP والفلتر والمنظم والبخاخات والحساس قبل تغيير القطع.",
+        "status": "publish",
+        "meta": {
+          "_yoast_wpseo_focuskw": "كود P0087",
+          "_yoast_wpseo_title": "كود P0087 | ضغط Fuel Rail منخفض وطريقة التشخيص",
+          "_yoast_wpseo_metadesc": "شرح كود P0087 Fuel Rail Pressure Too Low وأسباب ضعف ضغط الوقود وطريقة فحص Low Side وHPFP والمنظم والبخاخات والحساس."
+        }
+      }
     },
     {
-      "method": "GET",
-      "path": "/search-posts?search=P0087&limit=30&status=publish",
-      "body": {}
+      "method": "POST",
+      "path": "/update-post",
+      "body": {
+        "id": 80156,
+        "status": "draft",
+        "meta": {
+          "_yoast_wpseo_canonical": "https://a3tal.com/p0420-catalyst-efficiency-bank-1/"
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/redirect",
+      "body": {
+        "source_path": "/p0420-catalytic-converter-clean-replace-cost-egypt-2026/",
+        "target_url": "https://a3tal.com/p0420-catalyst-efficiency-bank-1/",
+        "status_code": 301
+      }
     }
   ],
-  "verify": []
+  "verify": [
+    {
+      "path": "/post/80147"
+    },
+    {
+      "path": "/post/80162"
+    },
+    {
+      "path": "/post/80156"
+    },
+    {
+      "path": "/post/81336"
+    }
+  ]
 }
