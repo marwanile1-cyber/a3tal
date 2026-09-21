@@ -1,25 +1,9 @@
 {
-  "run": "audit-next-clean-candidates-modified-dates",
+  "run": "read-renault-df049-page-full",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=rear-dongle-suspension-bent-symptoms-zargina-vs-replacement&limit=10&status=any"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=renault%20df049&limit=10&status=any"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=soueast%20s07&limit=10&status=any"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=thinkdiag%202&limit=10&status=any"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=%D9%84%D9%85%D8%A8%D8%A7%D8%AA%20%D8%A7%D8%B9%D8%B7%D8%A7%D9%84%20%D8%A7%D9%84%D8%B3%D9%8A%D8%A7%D8%B1%D8%A7%D8%AA&limit=10&status=any"
+      "path": "/post/80537"
     }
   ],
   "verify": []
