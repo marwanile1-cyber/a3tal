@@ -1,13 +1,9 @@
 {
-  "run": "audit-jetour-dct-wet-dry-current-date",
+  "run": "read-jetour-dct-80717-full",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=jetour%20transmission%20problems%20dct%20dry%20wet&limit=10&status=any"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=%D9%81%D8%AA%D9%8A%D8%B3%20DCT%20wet&limit=10&status=any"
+      "path": "/post/80717"
     }
   ],
   "verify": []
