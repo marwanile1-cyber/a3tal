@@ -1,33 +1,21 @@
 {
-  "run": "consolidate-old-p03a3-page-into-current-guide-2026-09-21",
+  "run": "check-p0299-p0420-p0087-duplicates-before-edit-2026-09-21",
   "requests": [
     {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 80135,
-        "status": "draft",
-        "meta": {
-          "_yoast_wpseo_canonical": "https://a3tal.com/p03a3-cylinder-2-pressure-sensor-intermittent/"
-        }
-      }
+      "method": "GET",
+      "path": "/search-posts?search=P0299&limit=30&status=publish",
+      "body": {}
     },
     {
-      "method": "POST",
-      "path": "/redirect",
-      "body": {
-        "source_path": "/opel-insignia-p03a3-pressure-sensor-glow-plug-fix-2026/",
-        "target_url": "https://a3tal.com/p03a3-cylinder-2-pressure-sensor-intermittent/",
-        "status_code": 301
-      }
+      "method": "GET",
+      "path": "/search-posts?search=P0420&limit=30&status=publish",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=P0087&limit=30&status=publish",
+      "body": {}
     }
   ],
-  "verify": [
-    {
-      "path": "/post/80135"
-    },
-    {
-      "path": "/post/82280"
-    }
-  ]
+  "verify": []
 }
