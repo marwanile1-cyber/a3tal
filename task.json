@@ -1,19 +1,14 @@
 {
-  "run": "verify-internal-link-targets-after-hub-update-2026-09-21",
+  "run": "check-turn-clicking-page-before-edit-2026-09-21",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=%D9%83%D8%A7%D9%88%D8%AA%D8%B4%D8%A9%20%D8%A7%D9%84%D9%83%D9%88%D8%A8%D9%84%D9%86&limit=10&status=publish",
+      "path": "/post/67",
       "body": {}
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=%D8%B7%D9%84%D9%85%D8%A8%D8%A9%20%D9%85%D9%8A%D8%A7%D9%87&limit=10&status=publish",
-      "body": {}
-    },
-    {
-      "method": "GET",
-      "path": "/post/80029",
+      "path": "/search-posts?search=%D8%B7%D9%82%D8%B7%D9%82%D8%A9%20%D8%B9%D9%86%D8%AF%20%D8%A7%D9%84%D9%85%D9%84%D9%81&limit=30&status=publish",
       "body": {}
     }
   ],
