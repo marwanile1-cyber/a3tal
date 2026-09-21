@@ -1,21 +1,9 @@
 {
-  "run": "audit-high-impression-price-pages-modified",
+  "run": "read-new-car-prices-80189-full",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=%D8%A7%D8%B3%D8%B9%D8%A7%D8%B1%20%D8%A7%D9%84%D8%B3%D9%8A%D8%A7%D8%B1%D8%A7%D8%AA%20%D8%A7%D9%84%D8%AC%D8%AF%D9%8A%D8%AF%D8%A9%20%D9%81%D9%8A%20%D9%85%D8%B5%D8%B1&limit=10&status=any"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=hyundai%20elantra%20used%20car%20prices%20egypt&limit=10&status=any"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=chery%20arrizo%205%202026%20egypt&limit=10&status=any"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=kia%20sportage%202026%20hybrid%20prices%20egypt&limit=10&status=any"
+      "path": "/post/80189"
     }
   ],
   "verify": []
