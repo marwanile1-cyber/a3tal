@@ -1,33 +1,26 @@
 {
-  "run": "consolidate-old-p0300-duplicate-2026-09-21",
+  "run": "check-next-four-modified-dates-before-edit-2026-09-21",
   "requests": [
     {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 80159,
-        "status": "draft",
-        "meta": {
-          "_yoast_wpseo_canonical": "https://a3tal.com/p0300-random-misfire/"
-        }
-      }
+      "method": "GET",
+      "path": "/post/80097",
+      "body": {}
     },
     {
-      "method": "POST",
-      "path": "/redirect",
-      "body": {
-        "source_path": "/p0300-engine-misfire-causes-fix-prices-egypt-2026/",
-        "target_url": "https://a3tal.com/p0300-random-misfire/",
-        "status_code": 301
-      }
+      "method": "GET",
+      "path": "/post/80119",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/post/80168",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/post/80204",
+      "body": {}
     }
   ],
-  "verify": [
-    {
-      "path": "/post/80159"
-    },
-    {
-      "path": "/post/81329"
-    }
-  ]
+  "verify": []
 }
