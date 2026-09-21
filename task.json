@@ -1,29 +1,9 @@
 {
-  "run": "verify-five-updated-pages-modified-dates-2026-09-21",
+  "run": "find-stale-2025-pages-direct-bridge-2026-09-21",
   "requests": [
     {
       "method": "GET",
-      "path": "/post/80091",
-      "body": {}
-    },
-    {
-      "method": "GET",
-      "path": "/post/80094",
-      "body": {}
-    },
-    {
-      "method": "GET",
-      "path": "/post/80103",
-      "body": {}
-    },
-    {
-      "method": "GET",
-      "path": "/post/80109",
-      "body": {}
-    },
-    {
-      "method": "GET",
-      "path": "/post/80113",
+      "path": "/search-posts?search=2025&limit=100&status=publish",
       "body": {}
     }
   ],
