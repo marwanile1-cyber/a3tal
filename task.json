@@ -1,26 +1,41 @@
 {
-  "run": "rewrite-american-cooling-hvac-cylinder-deactivation-page-2026-09-22",
+  "run": "compare-january-stale-symptom-pages-2026-09-22",
   "requests": [
     {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 80554,
-        "title": "أكواد حرارة وتكييف السيارات الأمريكية: P0128 وAFM/MDS وأعطال HVAC",
-        "content": "<div class=\"a3tal-american-cooling-afm\" dir=\"rtl\" lang=\"ar\" style=\"line-height:1.9;color:#263238\">\n\n<div style=\"background:#eef6ff;border-right:5px solid #2474b5;padding:16px 18px;border-radius:8px;margin:0 0 22px\">\n<p style=\"margin:0\"><strong>الخلاصة:</strong> أكواد الحرارة والتكييف وفصل السلندرات في GM وفورد وكرايسلر تحتاج فصل الأنظمة عن بعضها. <strong>P0128</strong> لا يعني ثرموستات 100%، ولون سائل التبريد ليس مواصفة، وأكواد AFM/MDS لا تثبت أن الـLifter تالف. اقرأ البيانات ودرجة الحرارة وضغط الزيت والأكواد الخاصة بالمنصة قبل الإصلاح.</p>\n</div>\n\n<h2 style=\"color:#c62828\">P0128: المحرك لا يصل لحرارة التنظيم المتوقعة</h2>\n\n<p>P0128 يعني أن ECM يرى إن حرارة سائل التبريد لم تصل للمستوى المتوقع خلال الزمن/ظروف التشغيل المحددة. الثرموستات العالق مفتوح احتمال شائع، لكن مش الوحيد.</p>\n\n<p>افحص:</p>\n\n<ul>\n<li>ECT reading والمحرك بارد مقارنة بحرارة الجو.</li>\n<li>مستوى سائل التبريد.</li>\n<li>هل المراوح تعمل بدون سبب باستمرار؟</li>\n<li>Thermostat operation.</li>\n<li>ECT sensor ودوائره.</li>\n</ul>\n\n<p>لو الحساس يقرأ أبرد من الحقيقة، ممكن يظهر P0128 حتى لو الثرموستات سليم.</p>\n\n<h2 style=\"color:#c62828\">P1299 في فورد: Overtemperature Protection</h2>\n\n<p>P1299 في تطبيقات فورد يرتبط بحماية المحرك من ارتفاع حرارة رأس السلندر. لو ظهر مع Overheat warning أو Reduced Power، تعامل مع السخونة كحالة حقيقية لحد ما تثبت العكس.</p>\n\n<p>اتجاه الفحص يشمل نقص Coolant، Fan operation، Water Pump، Thermostat، ECT/CHT sensor والدورة نفسها حسب المحرك.</p>\n\n<div style=\"background:#fff3e0;border-right:5px solid #ef6c00;padding:15px 18px;border-radius:8px;margin:20px 0\">\n<p style=\"margin:0\"><strong>لو المحرك سخن فعليًا:</strong> توقف في مكان آمن وأطفئ المحرك. لا تفتح غطاء القربة أو الردياتير وهو ساخن وتحت ضغط، ولا تصب ماء بارد فجأة على محرك شديد السخونة.</p>\n</div>\n\n<h2 style=\"color:#c62828\">سائل التبريد: اللون مش مواصفة</h2>\n\n<p>من أخطر النصائح القديمة اختيار Coolant من اللون: برتقالي لـGM، أصفر لفورد، بنفسجي لموبار... الألوان ليست معيارًا موحدًا بين الشركات أو حتى بين سنوات نفس العلامة.</p>\n\n<p>المعيار الصحيح هو <strong>المواصفة الكيميائية/OEM specification</strong> المكتوبة في Owner’s Manual أو Service Information. لو هتغيّر نوعًا أو تعمل Flush، اتأكد من التوافق بدل الخلط على أساس اللون.</p>\n\n<h2 style=\"color:#c62828\">هل Dex-Cool “يتحول لطين لو دخل هوا”؟</h2>\n\n<p>التلوث أو الخلط بين سوائل غير متوافقة أو استخدام مياه غير مناسبة قد يعمل رواسب ومشاكل، لكن عبارة إن مجرد دخول الهواء يحول Dex-Cool تلقائيًا إلى طين مبالغة غير دقيقة.</p>\n\n<p>لو وجدت Sludge، افحص سبب التلوث والتسريب ونوع السوائل التي تم خلطها بدل تغيير السائل فقط.</p>\n\n<h2 style=\"color:#c62828\">AFM وDFM في GM: إيه الفرق؟</h2>\n\n<p>AFM/DFM أنظمة Cylinder Deactivation تستخدم استراتيجيات زيت وهيدروليك/ميكانيكا وبرمجيات لتعطيل بعض السلندرات تحت ظروف معينة لتقليل الاستهلاك. تفاصيل النظام تختلف حسب المحرك والسنة.</p>\n\n<p>أكواد من عائلة <strong>P3400/P3497</strong> قد ترتبط بأداء Cylinder Deactivation Bank 1/2 في تطبيقات تستخدمها، لكن الكود لا يقول إن الكامة أو lifter انتهوا.</p>\n\n<h2 style=\"color:#c62828\">قبل ما تقول “Lifter AFM بايظ”</h2>\n\n<p>راجع:</p>\n\n<ul>\n<li>مستوى الزيت ومواصفته.</li>\n<li>ضغط الزيت الفعلي إذا توجد أعراض ميكانيكية.</li>\n<li>Misfire counters والسلندر المتأثر.</li>\n<li>Solenoid/control circuit حسب المحرك.</li>\n<li>Valve train noise.</li>\n<li>Compression/Leak-down عند الحاجة.</li>\n</ul>\n\n<p>لو يوجد Misfire ثابت وصوت Tick ومشكلة حركة صمام، ساعتها الفحص الميكانيكي للكامة والـLifter يصبح منطقيًا.</p>\n\n<h2 style=\"color:#c62828\">MDS في Chrysler/Dodge مش هو AFM نفسه</h2>\n\n<p>كرايسلر/دودج تستخدم MDS في محركات معينة، وهو نظام فصل سلندرات لكن بتصميم وتحكم مختلف عن GM AFM/DFM. لذلك ما تستخدمش أكواد أو قطع GM على HEMI والعكس.</p>\n\n<h2 style=\"color:#c62828\">هل AFM Disabler يحل مشكلة الـLifter؟</h2>\n\n<p><strong>لا.</strong> جهاز أو برمجة تمنع دخول النظام في وضع فصل السلندرات لا تصلح lifter انهار بالفعل، ولا تصلح Cam lobe تالف أو ضغط زيت ضعيف.</p>\n\n<p>أي تعديل برمجي أو ميكانيكي للنظام لازم يتقيم حسب قوانين بلدك والضمان والانبعاثات ومعايرة المحرك. ما نوصيش بإلغاء عام لمجرد إن السيارة عدت مسافة معينة.</p>\n\n<h2 style=\"color:#c62828\">Hemi Tick: مش تشخيص واحد</h2>\n\n<p>التكتكة في HEMI لها أكثر من مصدر محتمل، مثل valvetrain/lifter أو exhaust manifold leak/bolts أو صوت Injectors طبيعي نسبيًا. اربط الصوت بالـMisfire وCompression والحرارة ومكان الصوت قبل فتح المحرك.</p>\n\n<h2 style=\"color:#c62828\">Blend Door Actuator: تكتكة خلف الطبلون</h2>\n\n<p>لو تسمع تكتكة متكررة عند تغيير درجة الحرارة أو اتجاه الهواء، ومعها فرق حرارة بين اليمين واليسار، Blend Door Actuator احتمال جيد.</p>\n\n<p>لكن مكانه وطريقة Calibration تختلف حسب Ford/GM/Stellantis والموديل. اقرأ HVAC module وابحث عن actuator position قبل الفك.</p>\n\n<h2 style=\"color:#c62828\">A/C Pressure Sensor: ما تعتمدش على “B10xx” ككود عام</h2>\n\n<p>أكواد Body/HVAC غالبًا Manufacturer-Specific. لو الكمبروسر لا يعمل، راقب Refrigerant Pressure PID وقارنها بالضغط الفعلي إذا الإجراء يسمح، وافحص Signal/5V/Ground قبل تغيير الحساس.</p>\n\n<h2 style=\"color:#c62828\">المكيف بارد ناحية وحار ناحية</h2>\n\n<p>لو Dual-Zone، الاحتمالات تشمل:</p>\n\n<ul>\n<li>Blend door actuator أو door نفسها.</li>\n<li>Calibration lost.</li>\n<li>Coolant flow في heater core.</li>\n<li>Refrigerant charge في بعض الحالات.</li>\n<li>HVAC sensor data.</li>\n</ul>\n\n<p>ما تغيرش Actuator من العرض فقط؛ اعمل Command/Calibration بجهاز مناسب إن كان النظام يدعم.</p>\n\n<h2 style=\"color:#c62828\">لو السيارة سخنت مرة واحدة: هل المحرك اتضرر؟</h2>\n\n<p>مش شرط. الضرر يعتمد على درجة الحرارة والمدة ووجود Coolant/ضغط ونوع المحرك. بعد Overheat قوي، راقب فقد مياه، ضغط دورة غير طبيعي، Misfire، دخان أبيض، خلط زيت/مياه وCompression إذا ظهرت أعراض.</p>\n\n<h2 style=\"color:#c62828\">أسئلة شائعة</h2>\n\n<h3 style=\"color:#1565c0\">P0128 يعني أغير الثرموستات؟</h3>\n<p>مش قبل مقارنة ECT والحرارة وتشغيل المراوح وفحص مستوى السائل.</p>\n\n<h3 style=\"color:#1565c0\">هل لون الـCoolant كفاية للاختيار؟</h3>\n<p>لا. اختار بالمواصفة، لأن ألوان السوائل غير موحدة عالميًا.</p>\n\n<h3 style=\"color:#1565c0\">هل AFM Disabler يمنع تلف الـLifter؟</h3>\n<p>مافيش ضمان، وهو لا يصلح تلفًا موجودًا. أي تعديل يحتاج تقييم للمحرك والضمان والقوانين.</p>\n\n<h3 style=\"color:#1565c0\">تكتكة HEMI معناها كامة؟</h3>\n<p>مش دائمًا. لازم تحديد مكان الصوت وربطه بالـMisfire والـvalvetrain والعادم.</p>\n\n<p>راجع أيضًا <a href=\"https://a3tal.com/american-cars-dtc-codes-encyclopedia-part1/\"><strong>أكواد المحرك والانبعاثات</strong></a> و<a href=\"https://a3tal.com/american-cars-dtc-codes-encyclopedia-part2-transmission-abs/\"><strong>أكواد الفتيس وABS وStabiliTrak</strong></a>.</p>\n\n<div style=\"background:#eef6ff;border-right:5px solid #2474b5;padding:16px 18px;border-radius:8px;margin-top:24px\">\n<p style=\"margin:0\"><strong>الخلاصة:</strong> في السيارات الأمريكية، اختار Coolant بالمواصفة، وشخّص الحرارة والـAFM/MDS من البيانات والضغط والميكانيكا. ما تستخدمش اللون أو جهاز Disable كبديل للتشخيص.</p>\n</div>\n\n</div>",
-        "excerpt": "شرح أعطال التبريد والتكييف وفصل السلندرات في GM وفورد ودودج: P0128 وP1299 وAFM/DFM/MDS وBlend Door ولماذا لون سائل التبريد ليس مواصفة.",
-        "status": "publish",
-        "meta": {
-          "_yoast_wpseo_focuskw": "أعطال التبريد وفصل السلندرات",
-          "_yoast_wpseo_title": "أكواد حرارة وتكييف الأمريكي | P0128 وAFM/MDS",
-          "_yoast_wpseo_metadesc": "شرح P0128 وP1299 وأعطال التبريد وAFM/DFM/MDS وBlend Door في السيارات الأمريكية، وطريقة اختيار Coolant بالمواصفة لا باللون."
-        }
-      }
+      "method": "GET",
+      "path": "/post/80386",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/post/81220",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/post/80389",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/post/80468",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/post/80976",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/post/80491",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/post/80212",
+      "body": {}
     }
   ],
-  "verify": [
-    {
-      "path": "/post/80554"
-    }
-  ]
+  "verify": []
 }
