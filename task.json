@@ -1,26 +1,26 @@
 {
-  "run": "compare-nissan-sunny-p0171-old-page-2026-09-22",
+  "run": "rewrite-nissan-sunny-p0171-child-guide-2026-09-22",
   "requests": [
     {
-      "method": "GET",
-      "path": "/post/80465",
-      "body": {}
-    },
-    {
-      "method": "GET",
-      "path": "/post/82264",
-      "body": {}
-    },
-    {
-      "method": "GET",
-      "path": "/post/80608",
-      "body": {}
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=P0171%20%D9%86%D9%8A%D8%B3%D8%A7%D9%86%20%D8%B5%D9%86%D9%8A&limit=50&status=publish",
-      "body": {}
+      "method": "POST",
+      "path": "/update-post",
+      "body": {
+        "id": 80465,
+        "title": "كود P0171 في نيسان صني: Fuel Trim وMAF وتسريب الهواء",
+        "content": "<div class=\"a3tal-sunny-p0171\" dir=\"rtl\" lang=\"ar\" style=\"line-height:1.9;color:#263238\">\n\n<div style=\"background:#eef6ff;border-right:5px solid #2474b5;padding:16px 18px;border-radius:8px;margin-bottom:22px\">\n<p style=\"margin:0\"><strong>الخلاصة:</strong> كود <strong>P0171 في نيسان صني</strong> يعني System Too Lean – Bank 1. في صني N16/N17 لا تبدأ بتغيير MAF أو حساس الأكسجين؛ اقرأ <strong>STFT وLTFT</strong> أولًا، ثم افحص خرطوم السحب بعد الـMAF، PCV/Vacuum Leak، ضغط الوقود، البخاخات، وتسريب العادم قبل الحساس الأمامي.</p>\n</div>\n\n<h2 style=\"color:#c62828\">ما معنى P0171 في نيسان صني؟</h2>\n\n<p>P0171 كود OBD-II عام معناه أن الكمبيوتر اضطر لإضافة وقود لتعويض خليط Lean على Bank 1 لدرجة تجاوزت الحد الطبيعي. في محركات صني الأربع سلندر يوجد Bank واحد، لذلك الكود يعبر عن خليط المحرك كله وليس بنكًا منفصلًا.</p>\n\n<p>المهم أن الكود لا يقول لك أي قطعة تالفة؛ هو يصف <strong>النتيجة</strong>: هواء أكثر من المتوقع، وقود أقل من المطلوب، أو قراءة Sensor جعلت الحساب غير صحيح.</p>\n\n<h2 style=\"color:#c62828\">ابدأ بـFuel Trim قبل شراء أي قطعة</h2>\n\n<p>اقرأ STFT وLTFT والمحرك دافئ، ثم قارن بين Idle وRPM أعلى ثابت:</p>\n\n<div style=\"overflow-x:auto;margin:18px 0\">\n<table style=\"width:100%;border-collapse:collapse;min-width:860px\">\n<thead><tr style=\"background:#17324d;color:#fff\">\n<th style=\"padding:11px;border:1px solid #ddd\">النمط</th>\n<th style=\"padding:11px;border:1px solid #ddd\">اتجاه الفحص</th>\n</tr></thead>\n<tbody>\n<tr><td style=\"padding:11px;border:1px solid #ddd\"><strong>Trim موجب جدًا على السلانسيه ويتحسن مع RPM</strong></td><td style=\"padding:11px;border:1px solid #ddd\">Vacuum leak / PCV / Intake hose</td></tr>\n<tr style=\"background:#f7f9fb\"><td style=\"padding:11px;border:1px solid #ddd\"><strong>Trim موجب على السلانسيه والقيادة معًا</strong></td><td style=\"padding:11px;border:1px solid #ddd\">MAF under-reporting أو Fuel Pressure</td></tr>\n<tr><td style=\"padding:11px;border:1px solid #ddd\"><strong>يزيد تحت الحمل</strong></td><td style=\"padding:11px;border:1px solid #ddd\">Fuel delivery / flow problem</td></tr>\n</tbody>\n</table>\n</div>\n\n<p>راجع <a href=\"https://a3tal.com/stft-ltft-fuel-trim-diagnosis/\"><strong>شرح STFT وLTFT</strong></a> لو محتاج تفهم القيم قبل باقي الاختبارات.</p>\n\n<h2 style=\"color:#c62828\">1. تسريب هواء بعد حساس MAF</h2>\n\n<p>في صني، أي Crack أو وصلة مفكوكة في خرطوم السحب بعد MAF تدخل هواء غير محسوب. افحص الخرطوم كاملًا، التوصيلات، جوانات المانيفولد ودوائر الـPCV حسب المحرك.</p>\n\n<p>لو Fuel Trim يتحسن عند رفع RPM، اعمل <a href=\"https://a3tal.com/car-smoke-test-vacuum-evap-leak/\"><strong>Smoke Test</strong></a> بدل رش منظفات حول المحرك.</p>\n\n<h2 style=\"color:#c62828\">2. حساس MAF: هل هو السبب؟</h2>\n\n<p>ممكن، لكن لا نعتمد على تنظيفه أو تغييره لمجرد P0171. راقب القراءة مع الحمل وقارنها بـRPM وMAP وFuel Trim. MAF قد يكون منحرفًا بدون تسجيل P0101.</p>\n\n<p>لو التنظيف مطلوب، استخدم منظف MAF مخصص فقط، ولا تلمس العنصر الحساس.</p>\n\n<h2 style=\"color:#c62828\">3. PCV وCrankcase Ventilation</h2>\n\n<p>تسريب في PCV أو خرطوم Breather قد يدخل هواء غير محسوب ويظهر خصوصًا على السلانسيه. لو يوجد صفير أو Idle خشن وFuel Trim موجب أكثر على Idle، افحص النظام جيدًا.</p>\n\n<h2 style=\"color:#c62828\">4. ضغط طرمبة البنزين والفلتر</h2>\n\n<p>لو Fuel Trim يظل موجبًا في السلانسيه والقيادة أو يسوء تحت الحمل، افحص ضغط وتدفق الوقود حسب مواصفة المحرك.</p>\n\n<p>لا تعتمد على صوت الطرمبة؛ راجع <a href=\"https://a3tal.com/bad-fuel-pump-symptoms-vs-filter/\"><strong>فحص ضغط وتدفق طرمبة البنزين</strong></a>.</p>\n\n<h2 style=\"color:#c62828\">5. البخاخات</h2>\n\n<p>Injector مقيد جزئيًا ممكن يعمل Lean أو Misfire، لكن لا تنظف أو تغير الطقم بالتجربة. استخدم Misfire Counter أو Balance Test لو متاح، وافحص الأكواد P020x أو P030x المصاحبة.</p>\n\n<h2 style=\"color:#c62828\">6. حساس الأكسجين O2/A/F</h2>\n\n<p>الحساس الأمامي قد يكون سليمًا تمامًا ويبلغ عن Lean حقيقي. فكر فيه بعد التأكد من السحب والوقود وعدم وجود Exhaust Leak قبله.</p>\n\n<p>تسريب عادم قبل الحساس ممكن يدخل أكسجين ويجعل الكمبيوتر يعتقد أن الخليط فقير.</p>\n\n<h2 style=\"color:#c62828\">أعراض P0171 في صني</h2>\n\n<ul>\n<li>Check Engine ثابتة.</li>\n<li>Idle غير مستقر.</li>\n<li>ضعف سحب.</li>\n<li>تقطيع أو Misfire في الحالات الأشد.</li>\n<li>صعوبة تشغيل أحيانًا حسب السبب.</li>\n<li>Fuel Trim موجب بشكل مستمر.</li>\n</ul>\n\n<p>الأعراض دي لا تثبت السبب؛ الكود والـLive Data هما اللي يرتبوا الاحتمالات.</p>\n\n<h2 style=\"color:#c62828\">P0171 مع P0300 أو P0301–P0304</h2>\n\n<p>لو ظهر Misfire مع Lean، حدد هل المشكلة عامة أم في سلندر واحد. Injector أو Vacuum leak قريب من Runner معين قد يركز المشكلة، بينما Fuel Pressure أو MAF غالبًا يؤثر على أكثر من سلندر.</p>\n\n<p>راجع <a href=\"https://a3tal.com/p0300-random-misfire/\"><strong>كود P0300</strong></a> و<a href=\"https://a3tal.com/p0301-p0302-p0303-p0304-cylinder-misfire/\"><strong>Misfire حسب رقم السلندر</strong></a>.</p>\n\n<h2 style=\"color:#c62828\">هل تنظيف البوابة يحل P0171؟</h2>\n\n<p>مش كقاعدة. البوابة المتسخة قد تؤثر على Idle في بعض الحالات، لكن P0171 ليس «كود بوابة». لو السبب Vacuum leak أو MAF أو ضغط وقود، تنظيف البوابة لن يصلح المشكلة.</p>\n\n<h2 style=\"color:#c62828\">هل الكود خطير؟</h2>\n\n<p>لو اللمبة ثابتة والسيارة تعمل طبيعيًا نسبيًا، شخّصه قريبًا. لو يوجد Misfire قوي أو Check Engine بتومض أو ضعف شديد، لا تضغط على المحرك لأن الاحتراق غير الطبيعي قد يضر المحول الحفاز.</p>\n\n<h2 style=\"color:#c62828\">خطة التشخيص في صني</h2>\n\n<ol>\n<li>اقرأ كل الأكواد وFreeze Frame.</li>\n<li>راقب STFT/LTFT على Idle ثم RPM أعلى.</li>\n<li>افحص خرطوم السحب وPCV.</li>\n<li>اعمل Smoke Test عند الاشتباه بتسريب.</li>\n<li>راجع MAF/MAP/IAT/ECT في Live Data.</li>\n<li>قس ضغط الوقود إذا التصحيح يظل موجبًا تحت الحمل.</li>\n<li>افحص Injector/Misfire Counters عند وجود مشكلة سلندر محدد.</li>\n<li>افحص Exhaust Leak والحساس الأمامي بعد استبعاد الأسباب السابقة.</li>\n</ol>\n\n<h2 style=\"color:#c62828\">الأسئلة الشائعة</h2>\n\n<h3 style=\"color:#1565c0\">هل P0171 في صني يعني MAF؟</h3>\n<p>لا. MAF احتمال واحد بين Vacuum Leak وPCV وضغط الوقود والبخاخات والعادم.</p>\n\n<h3 style=\"color:#1565c0\">هل أغير حساس الأكسجين أولًا؟</h3>\n<p>لا بدون اختبار. كثيرًا ما يكون الحساس مجرد من اكتشف الخليط الفقير الحقيقي.</p>\n\n<h3 style=\"color:#1565c0\">هل مسح الكود يحل المشكلة؟</h3>\n<p>لا. لو السبب لم يُصلح سيعود الكود. احفظ Freeze Frame قبل المسح.</p>\n\n<h3 style=\"color:#1565c0\">هل P0171 يسبب استهلاك بنزين عالي؟</h3>\n<p>ممكن لأن الكمبيوتر يضيف وقودًا للتعويض، لكن الاستهلاك وحده لا يحدد السبب.</p>\n\n<p>للدليل العام والأوسع راجع <a href=\"https://a3tal.com/p0171-system-too-lean-bank-1-diagnosis/\"><strong>كود P0171 وتشخيص الخليط الفقير بالـFuel Trim</strong></a>.</p>\n\n<div style=\"background:#eef6ff;border-right:5px solid #2474b5;padding:16px 18px;border-radius:8px;margin-top:24px\">\n<p style=\"margin:0\"><strong>الخلاصة:</strong> P0171 في نيسان صني يتشخّص من Fuel Trim أولًا. لو التحسن مع RPM واضح فكر في Vacuum Leak، ولو التصحيح موجب في كل الحالات فافحص MAF وضغط الوقود، ثم البخاخات والعادم والحساس.</p>\n</div>\n\n</div>",
+        "excerpt": "كود P0171 في نيسان صني لا يعني MAF تالف. تعرف على Fuel Trim وتسريب الهواء وPCV وضغط الوقود والبخاخات وحساس الأكسجين قبل تغيير القطع.",
+        "status": "publish",
+        "meta": {
+          "_yoast_wpseo_focuskw": "P0171 نيسان صني",
+          "_yoast_wpseo_title": "P0171 نيسان صني | Fuel Trim وMAF وتسريب الهواء",
+          "_yoast_wpseo_metadesc": "شرح كود P0171 في نيسان صني N16/N17: تشخيص Fuel Trim وتسريب الهواء وPCV وMAF وضغط الوقود والبخاخات قبل تغيير الحساسات."
+        }
+      }
     }
   ],
-  "verify": []
+  "verify": [
+    {
+      "path": "/post/80465"
+    }
+  ]
 }
