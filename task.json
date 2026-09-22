@@ -1,33 +1,21 @@
 {
-  "run": "consolidate-old-chevrolet-service-booking-page-2026-09-22",
+  "run": "check-old-mg-spare-parts-hub-overlap-2026-09-22",
   "requests": [
     {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 79961,
-        "status": "draft",
-        "meta": {
-          "_yoast_wpseo_canonical": "https://a3tal.com/mansour-chevrolet-maintenance-booking-numbers-branches/"
-        }
-      }
+      "method": "GET",
+      "path": "/post/79986",
+      "body": {}
     },
     {
-      "method": "POST",
-      "path": "/redirect",
-      "body": {
-        "source_path": "/%d8%ad%d8%ac%d8%b2-%d8%b5%d9%8a%d8%a7%d9%86%d8%a9-%d8%b4%d9%8a%d9%81%d8%b1%d9%88%d9%84%d9%8a%d8%a9-%d8%a7%d9%84%d8%af%d9%84%d9%8a%d9%84-%d8%a7%d9%84%d9%83%d8%a7%d9%85%d9%84-%d9%84%d8%b6%d9%85%d8%a7/",
-        "target_url": "https://a3tal.com/mansour-chevrolet-maintenance-booking-numbers-branches/",
-        "status_code": 301
-      }
+      "method": "GET",
+      "path": "/search-posts?search=%D9%82%D8%B7%D8%B9%20%D8%BA%D9%8A%D8%A7%D8%B1%20MG&limit=50&status=publish",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D8%A3%D8%B3%D8%B9%D8%A7%D8%B1%20%D9%82%D8%B7%D8%B9%20%D8%BA%D9%8A%D8%A7%D8%B1%20MG5&limit=50&status=publish",
+      "body": {}
     }
   ],
-  "verify": [
-    {
-      "path": "/post/79961"
-    },
-    {
-      "path": "/post/81108"
-    }
-  ]
+  "verify": []
 }
