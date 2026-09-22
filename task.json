@@ -1,21 +1,56 @@
 {
-  "run": "compare-old-fault-hubs-with-modern-diagnosis-hub-2026-09-22",
+  "run": "consolidate-two-old-car-fault-hubs-2026-09-22",
   "requests": [
     {
-      "method": "GET",
-      "path": "/post/165",
-      "body": {}
+      "method": "POST",
+      "path": "/update-post",
+      "body": {
+        "id": 165,
+        "status": "draft",
+        "meta": {
+          "_yoast_wpseo_canonical": "https://a3tal.com/%d8%a7%d9%84%d9%85%d9%88%d8%b3%d9%88%d8%b9%d8%a9-%d8%a7%d9%84%d8%b4%d8%a7%d9%85%d9%84%d8%a9-%d9%84%d8%aa%d8%b4%d8%ae%d9%8a%d8%b5-%d8%a3%d8%b9%d8%b7%d8%a7%d9%84-%d8%a7%d9%84%d8%b3%d9%8a%d8%a7%d8%b1/"
+        }
+      }
     },
     {
-      "method": "GET",
-      "path": "/post/37",
-      "body": {}
+      "method": "POST",
+      "path": "/redirect",
+      "body": {
+        "source_path": "/%d8%a3%d8%b9%d8%b7%d8%a7%d9%84-%d8%a7%d9%84%d8%b3%d9%8a%d8%a7%d8%b1%d8%a7%d8%aa-%d8%a7%d9%84%d8%b4%d8%a7%d8%a6%d8%b9%d8%a9/",
+        "target_url": "https://a3tal.com/%d8%a7%d9%84%d9%85%d9%88%d8%b3%d9%88%d8%b9%d8%a9-%d8%a7%d9%84%d8%b4%d8%a7%d9%85%d9%84%d8%a9-%d9%84%d8%aa%d8%b4%d8%ae%d9%8a%d8%b5-%d8%a3%d8%b9%d8%b7%d8%a7%d9%84-%d8%a7%d9%84%d8%b3%d9%8a%d8%a7%d8%b1/",
+        "status_code": 301
+      }
     },
     {
-      "method": "GET",
-      "path": "/post/80029",
-      "body": {}
+      "method": "POST",
+      "path": "/update-post",
+      "body": {
+        "id": 37,
+        "status": "draft",
+        "meta": {
+          "_yoast_wpseo_canonical": "https://a3tal.com/%d8%a7%d9%84%d9%85%d9%88%d8%b3%d9%88%d8%b9%d8%a9-%d8%a7%d9%84%d8%b4%d8%a7%d9%85%d9%84%d8%a9-%d9%84%d8%aa%d8%b4%d8%ae%d9%8a%d8%b5-%d8%a3%d8%b9%d8%b7%d8%a7%d9%84-%d8%a7%d9%84%d8%b3%d9%8a%d8%a7%d8%b1/"
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/redirect",
+      "body": {
+        "source_path": "/%d8%b9%d8%a7%d9%84%d9%85-%d8%a3%d8%b9%d8%b7%d8%a7%d9%84-%d8%a7%d9%84%d8%b3%d9%8a%d8%a7%d8%b1%d8%a7%d8%aa-%d8%af%d9%84%d9%8a%d9%84%d9%83-%d8%a7%d9%84%d8%b4%d8%a7%d9%85%d9%84-%d9%84%d9%84%d8%ad%d9%81/",
+        "target_url": "https://a3tal.com/%d8%a7%d9%84%d9%85%d9%88%d8%b3%d9%88%d8%b9%d8%a9-%d8%a7%d9%84%d8%b4%d8%a7%d9%85%d9%84%d8%a9-%d9%84%d8%aa%d8%b4%d8%ae%d9%8a%d8%b5-%d8%a3%d8%b9%d8%b7%d8%a7%d9%84-%d8%a7%d9%84%d8%b3%d9%8a%d8%a7%d8%b1/",
+        "status_code": 301
+      }
     }
   ],
-  "verify": []
+  "verify": [
+    {
+      "path": "/post/165"
+    },
+    {
+      "path": "/post/37"
+    },
+    {
+      "path": "/post/80029"
+    }
+  ]
 }
