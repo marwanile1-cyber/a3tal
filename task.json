@@ -1,21 +1,33 @@
 {
-  "run": "check-valvecover-sparkplugs-radiator-overlap-2026-09-22",
+  "run": "consolidate-old-valve-cover-gasket-duplicate-2026-09-22",
   "requests": [
     {
-      "method": "GET",
-      "path": "/search-posts?search=%D8%AC%D9%88%D8%A7%D9%86%20%D8%BA%D8%B7%D8%A7%D8%A1%20%D8%A7%D9%84%D8%AA%D8%A7%D9%83%D9%8A%D9%87%D8%A7%D8%AA&limit=50&status=publish",
-      "body": {}
+      "method": "POST",
+      "path": "/update-post",
+      "body": {
+        "id": 79999,
+        "status": "draft",
+        "meta": {
+          "_yoast_wpseo_canonical": "https://a3tal.com/valve-cover-gasket-leak-symptoms-guide/"
+        }
+      }
     },
     {
-      "method": "GET",
-      "path": "/search-posts?search=%D8%A7%D9%84%D8%A8%D9%88%D8%AC%D9%8A%D9%87%D8%A7%D8%AA&limit=50&status=publish",
-      "body": {}
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=%D8%A7%D9%84%D8%B1%D8%AF%D9%8A%D8%A7%D8%AA%D9%8A%D8%B1&limit=50&status=publish",
-      "body": {}
+      "method": "POST",
+      "path": "/redirect",
+      "body": {
+        "source_path": "/%d8%ac%d9%88%d8%a7%d9%86-%d8%ba%d8%b7%d8%a7%d8%a1-%d8%a7%d9%84%d8%aa%d8%a7%d9%83%d9%8a%d9%87%d8%a7%d8%aa/",
+        "target_url": "https://a3tal.com/valve-cover-gasket-leak-symptoms-guide/",
+        "status_code": 301
+      }
     }
   ],
-  "verify": []
+  "verify": [
+    {
+      "path": "/post/79999"
+    },
+    {
+      "path": "/post/81099"
+    }
+  ]
 }
