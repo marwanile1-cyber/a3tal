@@ -1,19 +1,9 @@
 {
-  "run": "check-head-gasket-brake-hubs-overlap-2026-09-22",
+  "run": "check-head-gasket-overlap-alone-2026-09-22",
   "requests": [
     {
       "method": "GET",
       "path": "/search-posts?search=%D8%AC%D9%88%D8%A7%D9%86%20%D9%88%D8%B4%20%D8%A7%D9%84%D8%B3%D9%84%D9%86%D8%AF%D8%B1&limit=50&status=publish",
-      "body": {}
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=%D8%B6%D8%B9%D9%81%20%D8%A7%D9%84%D9%81%D8%B1%D8%A7%D9%85%D9%84&limit=50&status=publish",
-      "body": {}
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=%D8%A3%D8%B9%D8%B7%D8%A7%D9%84%20%D8%A7%D9%84%D8%B3%D9%8A%D8%A7%D8%B1%D8%A7%D8%AA%20%D8%A7%D9%84%D8%B4%D8%A7%D8%A6%D8%B9%D8%A9&limit=50&status=publish",
       "body": {}
     }
   ],
