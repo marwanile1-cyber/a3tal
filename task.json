@@ -1,21 +1,33 @@
 {
-  "run": "check-chevrolet-service-booking-overlap-2026-09-22",
+  "run": "consolidate-old-chevrolet-service-booking-page-2026-09-22",
   "requests": [
     {
-      "method": "GET",
-      "path": "/post/79961",
-      "body": {}
+      "method": "POST",
+      "path": "/update-post",
+      "body": {
+        "id": 79961,
+        "status": "draft",
+        "meta": {
+          "_yoast_wpseo_canonical": "https://a3tal.com/mansour-chevrolet-maintenance-booking-numbers-branches/"
+        }
+      }
     },
     {
-      "method": "GET",
-      "path": "/search-posts?search=%D8%AD%D8%AC%D8%B2%20%D8%B5%D9%8A%D8%A7%D9%86%D8%A9%20%D8%B4%D9%8A%D9%81%D8%B1%D9%88%D9%84%D9%8A%D9%87&limit=50&status=publish",
-      "body": {}
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=%D9%85%D8%B1%D8%A7%D9%83%D8%B2%20%D8%B5%D9%8A%D8%A7%D9%86%D8%A9%20%D8%B4%D9%8A%D9%81%D8%B1%D9%88%D9%84%D9%8A%D9%87&limit=50&status=publish",
-      "body": {}
+      "method": "POST",
+      "path": "/redirect",
+      "body": {
+        "source_path": "/%d8%ad%d8%ac%d8%b2-%d8%b5%d9%8a%d8%a7%d9%86%d8%a9-%d8%b4%d9%8a%d9%81%d8%b1%d9%88%d9%84%d9%8a%d8%a9-%d8%a7%d9%84%d8%af%d9%84%d9%8a%d9%84-%d8%a7%d9%84%d9%83%d8%a7%d9%85%d9%84-%d9%84%d8%b6%d9%85%d8%a7/",
+        "target_url": "https://a3tal.com/mansour-chevrolet-maintenance-booking-numbers-branches/",
+        "status_code": 301
+      }
     }
   ],
-  "verify": []
+  "verify": [
+    {
+      "path": "/post/79961"
+    },
+    {
+      "path": "/post/81108"
+    }
+  ]
 }
