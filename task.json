@@ -1,9 +1,14 @@
 {
-  "run": "refresh-stale-pages-after-ev-corolla-2026-09-22",
+  "run": "check-fuel-filter-yaw-overlap-2026-09-22",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=2025&limit=100&status=publish",
+      "path": "/search-posts?search=%D9%81%D9%84%D8%AA%D8%B1%20%D8%A7%D9%84%D8%A8%D9%86%D8%B2%D9%8A%D9%86&limit=50&status=publish",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=Yaw%20Rate%20G-Sensor&limit=50&status=publish",
       "body": {}
     }
   ],
