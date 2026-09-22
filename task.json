@@ -1,36 +1,60 @@
 {
-  "run": "resave-latest-featured-images-to-purge-page-cache-2026-09-22",
+  "run": "show-featured-images-inside-last-four-a3tal-posts-2026-09-22",
   "requests": [
     {
       "method": "POST",
-      "path": "/update-post",
+      "path": "/insert-images",
       "body": {
-        "id": 82464,
-        "featured_media": 82468
+        "post_id": 82464,
+        "images": [
+          {
+            "url": "https://a3tal.com/wp-content/uploads/2026/09/hard-brake-pedal-booster-vacuum.webp",
+            "alt": "تشخيص دواسة الفرامل القاسية والسيرفو والفاكيوم",
+            "before": "<div style=\"background:#fff3e0;border-right:5px solid #ef6c00;padding:16px 18px;border-radius:8px;margin-bottom:22px\">"
+          }
+        ]
       }
     },
     {
       "method": "POST",
-      "path": "/update-post",
+      "path": "/insert-images",
       "body": {
-        "id": 82465,
-        "featured_media": 82469
+        "post_id": 82465,
+        "images": [
+          {
+            "url": "https://a3tal.com/wp-content/uploads/2026/09/sinking-brake-pedal-master-cylinder.webp",
+            "alt": "تشخيص دواسة الفرامل التي تغوص وماستر الفرامل",
+            "before": "<div style=\"background:#ffebee;border-right:5px solid #c62828;padding:16px 18px;border-radius:8px;margin-bottom:22px\">"
+          }
+        ]
       }
     },
     {
       "method": "POST",
-      "path": "/update-post",
+      "path": "/insert-images",
       "body": {
-        "id": 82466,
-        "featured_media": 82470
+        "post_id": 82466,
+        "images": [
+          {
+            "url": "https://a3tal.com/wp-content/uploads/2026/09/radiator-fan-after-engine-off.webp",
+            "alt": "مروحة الردياتير ونظام تبريد السيارة بعد إطفاء المحرك",
+            "before": "<div style=\"background:#fff3e0;border-right:5px solid #ef6c00;padding:16px 18px;border-radius:8px;margin-bottom:22px\">"
+          }
+        ]
       }
     },
     {
       "method": "POST",
-      "path": "/update-post",
+      "path": "/insert-images",
       "body": {
-        "id": 82467,
-        "featured_media": 82471
+        "post_id": 82467,
+        "images": [
+          {
+            "url": "https://a3tal.com/wp-content/uploads/2026/09/coolant-reservoir-boiling-bubbles.webp",
+            "alt": "فحص قربة مياه السيارة وفوران سائل التبريد",
+            "before": "<div style=\"background:#fff3e0;border-right:5px solid #ef6c00;padding:16px 18px;border-radius:8px;margin-bottom:22px\">"
+          }
+        ]
       }
     }
   ],
