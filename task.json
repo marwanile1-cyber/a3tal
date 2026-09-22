@@ -1,26 +1,26 @@
 {
-  "run": "rewrite-iac-valve-specialist-guide-2026-09-22",
+  "run": "compare-nissan-sunny-p0171-old-page-2026-09-22",
   "requests": [
     {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 80491,
-        "title": "حساس الأيدل IAC: أعراض العطل وطريقة الفحص وهل موجود في كل السيارات؟",
-        "content": "<div class=\"a3tal-iac-guide\" dir=\"rtl\" lang=\"ar\" style=\"line-height:1.9;color:#263238\">\n\n<div style=\"background:#eef6ff;border-right:5px solid #2474b5;padding:16px 18px;border-radius:8px;margin:0 0 22px\">\n<p style=\"margin:0\"><strong>الخلاصة:</strong> حساس/صمام الأيدل <strong>IAC</strong> موجود في كثير من السيارات القديمة ذات بوابة هواء ميكانيكية، لكنه <strong>ليس موجودًا كقطعة منفصلة في كل السيارات الحديثة</strong>. في أنظمة Electronic Throttle Control قد يتحكم الكمبيوتر في السلانسيه بتحريك بوابة الثروتل نفسها. لذلك تذبذب RPM لا يعني IAC تالف؛ افحص نوع النظام أولًا ثم Vacuum Leak وFuel Trim والبوابة والدائرة.</p>\n</div>\n\n<h2 style=\"color:#c62828\">ما هو IAC فعلًا؟</h2>\n\n<p><strong>Idle Air Control Valve</strong> هو صمام يسمح بمرور كمية هواء حول بوابة الثروتل للمحافظة على سرعة السلانسيه في الأنظمة التي تستخدمه. الكمبيوتر يغير فتح الصمام حسب الحمل ودرجة الحرارة وتشغيل التكييف وغيرها.</p>\n\n<p>لكن في كثير من أنظمة <strong>Throttle-by-Wire</strong> الحديثة لا يوجد IAC منفصل أصلًا؛ نفس موتور البوابة الإلكترونية يضبط فتحة الثروتل عند السلانسيه.</p>\n\n<h2 style=\"color:#c62828\">إزاي أعرف العربية عندها IAC ولا لأ؟</h2>\n\n<p>ما تعتمدش على اسم الموديل فقط. راجع:</p>\n\n<ul>\n<li>Wiring Diagram أو Service Manual.</li>\n<li>شكل Throttle Body ورقم القطعة.</li>\n<li>قائمة الـActuators في جهاز الفحص.</li>\n<li>هل البوابة بسلك ميكانيكي أم Electronic Throttle.</li>\n</ul>\n\n<p>لو العربية ETC بدون IAC منفصل، تغيير «حساس الأيدل» غير موجود أصلًا ومشكلة RPM تُشخّص من البوابة والتسريب والحساسات والتعلم.</p>\n\n<h2 style=\"color:#c62828\">أعراض ممكن تنتج من IAC — لكنها مش إثبات</h2>\n\n<ul>\n<li>Idle أعلى أو أقل من المطلوب.</li>\n<li>RPM hunting وهو واقف.</li>\n<li>المحرك يطفئ عند رفع القدم من البنزين.</li>\n<li>السلانسيه لا يعوض حمل التكييف في نظام يستخدم IAC.</li>\n<li>استجابة غير طبيعية لأمر IAC من Scan Tool.</li>\n</ul>\n\n<p>نفس الأعراض ممكن تحصل من Vacuum Leak أو Throttle Body أو PCV أو Fuel Trim أو EGR أو مشكلة إشعال.</p>\n\n<h2 style=\"color:#c62828\">P0505 إلى P0509: عائلة Idle Control</h2>\n\n<div style=\"overflow-x:auto;margin:18px 0\">\n<table style=\"width:100%;border-collapse:collapse;min-width:900px\">\n<thead><tr style=\"background:#17324d;color:#fff\">\n<th style=\"padding:11px;border:1px solid #ddd\">الكود</th>\n<th style=\"padding:11px;border:1px solid #ddd\">المعنى العام</th>\n<th style=\"padding:11px;border:1px solid #ddd\">المهم</th>\n</tr></thead>\n<tbody>\n<tr><td style=\"padding:11px;border:1px solid #ddd\"><strong>P0505</strong></td><td style=\"padding:11px;border:1px solid #ddd\">Idle Control System Malfunction</td><td style=\"padding:11px;border:1px solid #ddd\">النظام لا يحقق التحكم المتوقع؛ مش حكم على الصمام وحده</td></tr>\n<tr style=\"background:#f7f9fb\"><td style=\"padding:11px;border:1px solid #ddd\"><strong>P0506</strong></td><td style=\"padding:11px;border:1px solid #ddd\">Idle RPM lower than expected</td><td style=\"padding:11px;border:1px solid #ddd\">حمل/هواء/بوابة/IAC حسب النظام</td></tr>\n<tr><td style=\"padding:11px;border:1px solid #ddd\"><strong>P0507</strong></td><td style=\"padding:11px;border:1px solid #ddd\">Idle RPM higher than expected</td><td style=\"padding:11px;border:1px solid #ddd\">Vacuum leak/Throttle/PCV/Adaptation ضمن الاحتمالات</td></tr>\n<tr style=\"background:#f7f9fb\"><td style=\"padding:11px;border:1px solid #ddd\"><strong>P0508/P0509</strong></td><td style=\"padding:11px;border:1px solid #ddd\">Idle Air Control circuit low/high في تطبيقات تستخدمها</td><td style=\"padding:11px;border:1px solid #ddd\">افحص الدائرة والتغذية قبل الصمام</td></tr>\n</tbody>\n</table>\n</div>\n\n<h2 style=\"color:#c62828\">خطوات تشخيص IAC قبل التنظيف أو التغيير</h2>\n\n<ol>\n<li><strong>حدد إن كان IAC موجودًا أصلًا</strong> في السيارة.</li>\n<li>اقرأ DTC وFreeze Frame.</li>\n<li>راقب RPM المطلوب والفعلي إن كان متاحًا.</li>\n<li>افحص Vacuum/Intake leak.</li>\n<li>راجع Fuel Trim.</li>\n<li>اعمل Bi-Directional Test للـIAC إذا الجهاز يدعمه.</li>\n<li>افحص Power/Ground/Control أو مقاومة/Stepper circuits حسب مخطط السيارة.</li>\n<li>نظف أو استبدل فقط بعد إثبات أن الصمام عالق/خارج المواصفة.</li>\n</ol>\n\n<h2 style=\"color:#c62828\">هل تنظيف IAC حل آمن دائمًا؟</h2>\n\n<p>لا. طريقة التنظيف تختلف حسب نوع الصمام. بعض IAC تستخدم Pintle/Stepper Motor ويمكن إتلافها لو تم دفع الجزء المتحرك بالقوة أو غمر الموتور بالمنظف.</p>\n\n<p>لو الصمام قابل للتنظيف حسب Service Information:</p>\n\n<ul>\n<li>استخدم منظفًا مناسبًا لمجرى الهواء/Throttle Body.</li>\n<li>لا تغرق الجزء الكهربائي.</li>\n<li>لا تدفع Pintle بالقوة.</li>\n<li>نظف مجرى الـBypass نفسه، لأن المشكلة قد تكون ترسبات في الممر لا الصمام.</li>\n<li>غيّر الجوان/O-ring إذا الإجراء يطلب.</li>\n</ul>\n\n<h2 style=\"color:#c62828\">IAC سليم والـRPM لسه بيعلى ويوطي</h2>\n\n<p>وقتها وسّع الفحص إلى:</p>\n\n<ul>\n<li>Vacuum leak.</li>\n<li>PCV valve أو خرطوم breather.</li>\n<li>MAF/MAP.</li>\n<li>Throttle Body.</li>\n<li>EGR عالق مفتوح في الأنظمة التي تستخدمه.</li>\n<li>Fuel pressure/Injector balance.</li>\n<li>Misfire.</li>\n<li>Engine mounts لو المشكلة رجة وليست RPM فعليًا.</li>\n</ul>\n\n<p>الصفحة العامة للتشخيص موجودة هنا: <a href=\"https://a3tal.com/rpm-%d8%a8%d9%8a%d8%b9%d9%84%d9%89-%d9%88%d9%8a%d9%88%d8%b7%d9%8a/\"><strong>RPM بيعلى ويوطي: الأسباب وطريقة التشخيص</strong></a>.</p>\n\n<h2 style=\"color:#c62828\">هل يحتاج Idle Relearn بعد التنظيف؟</h2>\n\n<p>بعض السيارات تعيد التعلم تلقائيًا، وبعضها يحتاج Idle Learn أو Throttle Relearn بإجراء يدوي أو Scan Tool. لا تستخدم طريقة واحدة من الإنترنت لكل العربيات.</p>\n\n<p>المرجع هو Service Manual لنفس الموديل والمحرك. في Electronic Throttle تحديدًا، Relearn قد يتعلق بالبوابة وليس IAC منفصل.</p>\n\n<h2 style=\"color:#c62828\">العربية بتبطل مع تشغيل التكييف</h2>\n\n<p>لو نظامك يستخدم IAC، المفروض الكمبيوتر يرفع الهواء/السرعة لتعويض حمل الكمبروسر. لكن التبطيل مع A/C ممكن أيضًا يكون من:</p>\n\n<ul>\n<li>كمبروسر حمله عالي أو قافش جزئيًا.</li>\n<li>Idle control/Throttle response.</li>\n<li>محرك أساسًا ضعيف بسبب Misfire/Fuel Trim.</li>\n<li>جهد شحن ضعيف مع الحمل.</li>\n</ul>\n\n<p>لذلك ما تحكمش على IAC من التكييف وحده.</p>\n\n<h2 style=\"color:#c62828\">هل IAC له عمر افتراضي بالكيلومترات؟</h2>\n\n<p>لا يوجد رقم موحد. الصمام يتغير عند إثبات العطل، وليس لمجرد الوصول إلى مسافة معينة.</p>\n\n<h2 style=\"color:#c62828\">ما الذي يحدد سعر الإصلاح؟</h2>\n\n<p>بدل جدول أسعار قديم، التكلفة تعتمد على:</p>\n\n<ul>\n<li>هل السيارة لها IAC منفصل أم Throttle Body كامل.</li>\n<li>هل المشكلة تنظيف مجرى فقط أم صمام كهربائي تالف.</li>\n<li>هل القطعة OEM أو Aftermarket.</li>\n<li>هل بعد التركيب يحتاج Relearn بجهاز.</li>\n</ul>\n\n<h2 style=\"color:#c62828\">الأسئلة الشائعة</h2>\n\n<h3 style=\"color:#1565c0\">الـRPM بيعلى ويوطي يعني IAC؟</h3>\n<p>لا. IAC احتمال فقط في السيارات التي تستخدمه، وتسريب الهواء والبوابة وPCV وMAF/MAP قد تعمل نفس العرض.</p>\n\n<h3 style=\"color:#1565c0\">هل كل سيارة فيها حساس أيدل؟</h3>\n<p>لا. كثير من السيارات الحديثة ذات Electronic Throttle تتحكم في السلانسيه بالبوابة نفسها بدون IAC منفصل.</p>\n\n<h3 style=\"color:#1565c0\">هل أقدر أنضف IAC بنفسي؟</h3>\n<p>لو تعرف تصميمه وإجراء الخدمة المناسب، لكن لا تجبر الـPintle أو تغرق الجزء الكهربائي بالمنظف.</p>\n\n<h3 style=\"color:#1565c0\">P0507 يعني IAC بايظ؟</h3>\n<p>لا. يعني إن Idle RPM أعلى من المتوقع، وVacuum Leak أو Throttle/PCV/Adaptation من الاحتمالات.</p>\n\n<div style=\"background:#eef6ff;border-right:5px solid #2474b5;padding:16px 18px;border-radius:8px;margin-top:24px\">\n<p style=\"margin:0\"><strong>الخلاصة:</strong> قبل ما تشتري «حساس أيدل»، تأكد إن عربيتك فيها IAC أصلًا. بعدها شخّص النظام والدائرة والتسريب، مش العرض لوحده.</p>\n</div>\n\n</div>",
-        "excerpt": "حساس الأيدل IAC موجود في بعض السيارات وليس كلها. تعرف على أعراضه وأكواد P0505–P0509 والفرق عن الثروتل الإلكتروني وطريقة الفحص قبل التنظيف أو التغيير.",
-        "status": "publish",
-        "meta": {
-          "_yoast_wpseo_focuskw": "حساس الأيدل",
-          "_yoast_wpseo_title": "حساس الأيدل IAC | الأعراض والفحص وهل موجود في سيارتك؟",
-          "_yoast_wpseo_metadesc": "حساس الأيدل IAC: أعراض العطل وأكواد P0505–P0509 وطريقة الفحص، ولماذا كثير من السيارات الحديثة لا تستخدم IAC منفصلًا."
-        }
-      }
+      "method": "GET",
+      "path": "/post/80465",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/post/82264",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/post/80608",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=P0171%20%D9%86%D9%8A%D8%B3%D8%A7%D9%86%20%D8%B5%D9%86%D9%8A&limit=50&status=publish",
+      "body": {}
     }
   ],
-  "verify": [
-    {
-      "path": "/post/80491"
-    }
-  ]
+  "verify": []
 }
