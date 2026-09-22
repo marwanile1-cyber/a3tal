@@ -1,5 +1,5 @@
 {
-  "run": "rewrite-auto-maintenance-training-roadmap-2026-09-22",
+  "run": "retry-auto-maintenance-training-roadmap-2026-09-22",
   "requests": [
     {
       "method": "POST",
