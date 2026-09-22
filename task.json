@@ -1,52 +1,36 @@
 {
-  "run": "add-featured-images-to-last-four-a3tal-posts-2026-09-22",
+  "run": "resave-latest-featured-images-to-purge-page-cache-2026-09-22",
   "requests": [
     {
       "method": "POST",
-      "path": "/upload-image",
+      "path": "/update-post",
       "body": {
-        "image_url": "https://images.pexels.com/photos/6870304/pexels-photo-6870304.jpeg?auto=compress&cs=tinysrgb&w=1200&h=675&fit=crop",
-        "filename": "hard-brake-pedal-booster-vacuum.jpg",
-        "title": "تشخيص دواسة الفرامل القاسية والسيرفو",
-        "alt": "تشخيص دواسة الفرامل القاسية والسيرفو والفاكيوم",
-        "post_id": 82464,
-        "set_featured": true
+        "id": 82464,
+        "featured_media": 82468
       }
     },
     {
       "method": "POST",
-      "path": "/upload-image",
+      "path": "/update-post",
       "body": {
-        "image_url": "https://images.pexels.com/photos/6870299/pexels-photo-6870299.jpeg?auto=compress&cs=tinysrgb&w=1200&h=675&fit=crop",
-        "filename": "sinking-brake-pedal-master-cylinder.jpg",
-        "title": "تشخيص دواسة الفرامل التي تغوص",
-        "alt": "تشخيص دواسة الفرامل التي تغوص وماستر الفرامل",
-        "post_id": 82465,
-        "set_featured": true
+        "id": 82465,
+        "featured_media": 82469
       }
     },
     {
       "method": "POST",
-      "path": "/upload-image",
+      "path": "/update-post",
       "body": {
-        "image_url": "https://images.pexels.com/photos/34351909/pexels-photo-34351909.jpeg?auto=compress&cs=tinysrgb&w=1200&h=675&fit=crop",
-        "filename": "radiator-fan-after-engine-off.jpg",
-        "title": "مروحة الردياتير بعد إطفاء المحرك",
-        "alt": "مروحة الردياتير ونظام تبريد السيارة بعد إطفاء المحرك",
-        "post_id": 82466,
-        "set_featured": true
+        "id": 82466,
+        "featured_media": 82470
       }
     },
     {
       "method": "POST",
-      "path": "/upload-image",
+      "path": "/update-post",
       "body": {
-        "image_url": "https://images.pexels.com/photos/7854084/pexels-photo-7854084.jpeg?auto=compress&cs=tinysrgb&w=1200&h=675&fit=crop",
-        "filename": "coolant-reservoir-boiling-bubbles.jpg",
-        "title": "فوران قربة مياه السيارة",
-        "alt": "فحص قربة مياه السيارة وفوران سائل التبريد",
-        "post_id": 82467,
-        "set_featured": true
+        "id": 82467,
+        "featured_media": 82471
       }
     }
   ],
