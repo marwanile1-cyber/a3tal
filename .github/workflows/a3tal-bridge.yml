@@ -55,9 +55,9 @@ jobs:
             REQUEST_URL="$BASE$PATH_PART${SEP}api_key=$A3TAL_API_KEY&key=$A3TAL_API_KEY&token=$A3TAL_API_KEY"
 
             if [ "$METHOD" = "GET" ]; then
-              curl --fail-with-body --silent --show-error                 -H "X-A3tal-Key: $A3TAL_API_KEY"                 -H "X-A3tal-API-Key: $A3TAL_API_KEY"                 -H "X-API-Key: $A3TAL_API_KEY"                 -H "X-A3tal-Token: $A3TAL_API_KEY"                 -H "X-Auth-Token: $A3TAL_API_KEY"                 -H "Authorization: Bearer $A3TAL_API_KEY"                 "$REQUEST_URL" | tee "/tmp/a3tal-response-$i.json"
+              curl --retry 5 --retry-delay 5 --retry-all-errors --connect-timeout 20 --max-time 90 --fail-with-body --silent --show-error                 -H "X-A3tal-Key: $A3TAL_API_KEY"                 -H "X-A3tal-API-Key: $A3TAL_API_KEY"                 -H "X-API-Key: $A3TAL_API_KEY"                 -H "X-A3tal-Token: $A3TAL_API_KEY"                 -H "X-Auth-Token: $A3TAL_API_KEY"                 -H "Authorization: Bearer $A3TAL_API_KEY"                 "$REQUEST_URL" | tee "/tmp/a3tal-response-$i.json"
             else
-              curl --fail-with-body --silent --show-error                 -X "$METHOD"                 -H "X-A3tal-Key: $A3TAL_API_KEY"                 -H "X-A3tal-API-Key: $A3TAL_API_KEY"                 -H "X-API-Key: $A3TAL_API_KEY"                 -H "X-A3tal-Token: $A3TAL_API_KEY"                 -H "X-Auth-Token: $A3TAL_API_KEY"                 -H "Authorization: Bearer $A3TAL_API_KEY"                 -H "Content-Type: application/json"                 --data "$BODY"                 "$REQUEST_URL" | tee "/tmp/a3tal-response-$i.json"
+              curl --retry 5 --retry-delay 5 --retry-all-errors --connect-timeout 20 --max-time 90 --fail-with-body --silent --show-error                 -X "$METHOD"                 -H "X-A3tal-Key: $A3TAL_API_KEY"                 -H "X-A3tal-API-Key: $A3TAL_API_KEY"                 -H "X-API-Key: $A3TAL_API_KEY"                 -H "X-A3tal-Token: $A3TAL_API_KEY"                 -H "X-Auth-Token: $A3TAL_API_KEY"                 -H "Authorization: Bearer $A3TAL_API_KEY"                 -H "Content-Type: application/json"                 --data "$BODY"                 "$REQUEST_URL" | tee "/tmp/a3tal-response-$i.json"
             fi
             echo
             jq . "/tmp/a3tal-response-$i.json" || true
@@ -83,6 +83,6 @@ jobs:
           for ((i=0; i<COUNT; i++)); do
             PATH_PART="$(jq -r ".verify[$i].path" "$TASK_FILE")"
             echo "::group::Verify $((i+1)) GET $PATH_PART"
-            curl --fail-with-body --silent --show-error               -H "X-A3tal-Key: $A3TAL_API_KEY"               -H "X-A3tal-API-Key: $A3TAL_API_KEY"               -H "X-API-Key: $A3TAL_API_KEY"               -H "Authorization: Bearer $A3TAL_API_KEY"               "$BASE$PATH_PART" | jq .
+            curl --retry 5 --retry-delay 5 --retry-all-errors --connect-timeout 20 --max-time 90 --fail-with-body --silent --show-error               -H "X-A3tal-Key: $A3TAL_API_KEY"               -H "X-A3tal-API-Key: $A3TAL_API_KEY"               -H "X-API-Key: $A3TAL_API_KEY"               -H "Authorization: Bearer $A3TAL_API_KEY"               "$BASE$PATH_PART" | jq .
             echo "::endgroup::"
           done
