@@ -1,17 +1,9 @@
 {
-  "run": "inspect-overheating-category-and-traffic-gap-2026-09-23",
+  "run": "fetch-overheating-post-category-2026-09-23",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=%D8%AD%D8%B1%D8%A7%D8%B1%D8%A9%20%D8%A7%D9%84%D9%85%D9%88%D8%AA%D9%88%D8%B1%20%D8%B9%D9%84%D9%8A%D8%AA&limit=20&status=publish"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=%D8%AD%D8%B1%D8%A7%D8%B1%D8%A9%20%D8%A7%D9%84%D8%B9%D8%B1%D8%A8%D9%8A%D8%A9%20%D8%AA%D8%B9%D9%84%D9%89%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%B2%D8%AD%D9%85%D8%A9&limit=20&status=publish"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=%D8%A7%D9%84%D8%AD%D8%B1%D8%A7%D8%B1%D8%A9%20%D8%AA%D9%86%D8%B2%D9%84%20%D9%85%D8%B9%20%D8%A7%D9%84%D9%85%D8%B4%D9%8A&limit=20&status=publish"
+      "path": "/post/80951"
     }
   ],
   "verify": []
