@@ -1,62 +1,18 @@
 {
-  "run": "finish-overheating-traffic-image-and-fix-cooling-categories-2026-09-23",
+  "run": "scan-car-heater-not-hot-gap-2026-09-23",
   "requests": [
     {
-      "method": "POST",
-      "path": "/upload-image",
-      "body": {
-        "image_url": "https://images.pexels.com/photos/13690605/pexels-photo-13690605.jpeg?auto=compress&cs=tinysrgb&w=1200&h=675&fit=crop",
-        "filename": "overheating-in-traffic-cooling-system.jpg",
-        "title": "حرارة العربية تعلى في الزحمة",
-        "alt": "تشخيص ارتفاع حرارة العربية في الزحمة ونظام التبريد",
-        "post_id": 82480,
-        "set_featured": true
-      }
+      "method": "GET",
+      "path": "/search-posts?search=%D8%AF%D9%81%D8%A7%D9%8A%D8%A9%20%D8%A7%D9%84%D8%B9%D8%B1%D8%A8%D9%8A%D8%A9%20%D9%84%D8%A7%20%D8%AA%D8%B3%D8%AE%D9%86&limit=30&status=publish"
     },
     {
-      "method": "POST",
-      "path": "/insert-images",
-      "body": {
-        "post_id": 82480,
-        "images": [
-          {
-            "url": "https://a3tal.com/wp-content/uploads/2026/09/overheating-in-traffic-cooling-system.webp",
-            "alt": "تشخيص ارتفاع حرارة العربية في الزحمة ونظام التبريد",
-            "before": "<div style=\"background:#fff3e0;border-right:5px solid #ef6c00;padding:16px 18px;border-radius:8px;margin-bottom:22px\">"
-          }
-        ]
-      }
+      "method": "GET",
+      "path": "/search-posts?search=%D8%A7%D9%84%D8%AA%D8%AF%D9%81%D8%A6%D8%A9%20%D9%84%D8%A7%20%D8%AA%D8%B9%D9%85%D9%84%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%B3%D9%8A%D8%A7%D8%B1%D8%A9&limit=30&status=publish"
     },
     {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 82466,
-        "categories": [
-          8
-        ]
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 82467,
-        "categories": [
-          8
-        ]
-      }
+      "method": "GET",
+      "path": "/search-posts?search=heater%20core&limit=30&status=publish"
     }
   ],
-  "verify": [
-    {
-      "path": "/post/82480"
-    },
-    {
-      "path": "/post/82466"
-    },
-    {
-      "path": "/post/82467"
-    }
-  ]
+  "verify": []
 }
