@@ -1,18 +1,6 @@
 {
-  "run": "finish-radiator-hose-image-2026-09-23",
+  "run": "insert-existing-featured-image-radiator-hose-2026-09-23",
   "requests": [
-    {
-      "method": "POST",
-      "path": "/upload-image",
-      "body": {
-        "image_url": "https://images.pexels.com/photos/8478225/pexels-photo-8478225.jpeg?auto=compress&cs=tinysrgb&w=1200&h=675&fit=crop",
-        "filename": "radiator-hose-pressure-diagnosis.jpg",
-        "title": "تشخيص ضغط خرطوم الردياتير",
-        "alt": "تشخيص ضغط خرطوم الردياتير وصلابته وانتفاخه",
-        "post_id": 82496,
-        "set_featured": true
-      }
-    },
     {
       "method": "POST",
       "path": "/insert-images",
@@ -20,7 +8,7 @@
         "post_id": 82496,
         "images": [
           {
-            "url": "https://a3tal.com/wp-content/uploads/2026/09/radiator-hose-pressure-diagnosis.webp",
+            "url": "https://a3tal.com/wp-content/uploads/2026/09/radiator-fan-after-engine-off.webp",
             "alt": "تشخيص ضغط خرطوم الردياتير وصلابته وانتفاخه",
             "before": "<div style=\"background:#fff3e0;border-right:5px solid #ef6c00;padding:16px 18px;border-radius:8px;margin-bottom:22px\">"
           }
