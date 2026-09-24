@@ -1,9 +1,73 @@
 {
-  "run": "audit-latest-100-mobile-tables-2026-09-24",
+  "run": "fetch-recent-posts-for-mobile-table-fix-2026-09-24",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=&limit=100&status=publish"
+      "path": "/post/82512"
+    },
+    {
+      "method": "GET",
+      "path": "/post/82508"
+    },
+    {
+      "method": "GET",
+      "path": "/post/82504"
+    },
+    {
+      "method": "GET",
+      "path": "/post/82503"
+    },
+    {
+      "method": "GET",
+      "path": "/post/82502"
+    },
+    {
+      "method": "GET",
+      "path": "/post/82501"
+    },
+    {
+      "method": "GET",
+      "path": "/post/82500"
+    },
+    {
+      "method": "GET",
+      "path": "/post/82499"
+    },
+    {
+      "method": "GET",
+      "path": "/post/82498"
+    },
+    {
+      "method": "GET",
+      "path": "/post/82489"
+    },
+    {
+      "method": "GET",
+      "path": "/post/82486"
+    },
+    {
+      "method": "GET",
+      "path": "/post/82483"
+    },
+    {
+      "method": "GET",
+      "path": "/post/82480"
+    },
+    {
+      "method": "GET",
+      "path": "/post/82467"
+    },
+    {
+      "method": "GET",
+      "path": "/post/82466"
+    },
+    {
+      "method": "GET",
+      "path": "/post/82465"
+    },
+    {
+      "method": "GET",
+      "path": "/post/82464"
     }
   ],
   "verify": []
