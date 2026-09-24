@@ -2,7 +2,7 @@
 /**
  * Plugin Name: A3tal Direct Bridge
  * Description: Secure REST bridge for managing A3tal.com posts, SEO fields, media and redirects from trusted AI clients.
- * Version: 2.1.0
+ * Version: 2.1.1
  * Author: A3tal.com
  * Update URI: https://github.com/marwanile1-cyber/a3tal
  */
@@ -22,6 +22,41 @@ final class A3tal_Direct_Bridge {
         add_action('admin_menu', [__CLASS__, 'admin_menu']);
         add_action('admin_init', [__CLASS__, 'register_settings']);
         add_action('template_redirect', [__CLASS__, 'maybe_redirect'], 0);
+        add_action('wp_enqueue_scripts', [__CLASS__, 'enqueue_mobile_ux_patch'], 99);
+    }
+
+    public static function enqueue_mobile_ux_patch() {
+        $css = <<<'CSS'
+/* A3tal Pro mobile UX patch */
+.a3-entry-content{min-width:0}
+.a3-entry-content table{display:block!important;width:100%!important;max-width:100%!important;overflow-x:auto!important;overflow-y:hidden!important;-webkit-overflow-scrolling:touch!important;white-space:nowrap;touch-action:pan-x;overscroll-behavior-inline:contain;scrollbar-width:thin}
+.a3-entry-content th,.a3-entry-content td{min-width:120px;vertical-align:top}
+@media (max-width:560px){
+body.search .a3-post-grid{grid-template-columns:1fr!important;gap:14px!important}
+body.search .a3-post-card{display:grid!important;grid-template-columns:112px minmax(0,1fr)!important;align-items:stretch!important;min-height:112px}
+body.search .a3-post-card .a3-card-thumb{width:112px!important;height:100%!important;min-height:112px;aspect-ratio:auto!important}
+body.search .a3-post-card .a3-card-body{display:block!important;padding:12px 13px!important;min-width:0!important}
+body.search .a3-post-card .a3-card-title,body.search .a3-post-card .a3-card-title a{display:block!important;visibility:visible!important;opacity:1!important;color:#111827!important}
+body.search .a3-post-card .a3-card-title{margin:3px 0 6px!important;font-size:.98rem!important;line-height:1.5!important}
+body.search .a3-post-card .a3-card-excerpt{display:-webkit-box!important;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;margin-top:5px!important;font-size:.82rem!important}
+}
+@media (max-width:820px){.a3-site-header{position:relative!important;top:auto!important;backdrop-filter:none!important}.admin-bar .a3-site-header{top:auto!important}.a3-mobile-panel{top:0!important;padding-top:82px!important}.admin-bar .a3-mobile-panel{top:0!important;padding-top:128px!important}}
+@media (min-width:1081px){body.home .a3-primary-nav a[href*="/choose-your-car/"]{background:linear-gradient(135deg,#ee2b1c,#ff6a3d)!important;color:#fff!important;box-shadow:0 8px 22px rgba(238,43,28,.24);padding-inline:14px!important}}
+@media (max-width:1080px){
+body.home .a3-site-header{margin-bottom:108px}
+body.home .a3-primary-nav{display:block!important;position:absolute!important;top:68px;right:11px;left:11px;z-index:20;pointer-events:none}
+body.home .a3-primary-nav>ul{display:block!important}
+body.home .a3-primary-nav>ul>li{display:none!important}
+body.home .a3-primary-nav>ul>li:has(>a[href*="/choose-your-car/"]){display:block!important;pointer-events:auto}
+body.home .a3-primary-nav a[href*="/choose-your-car/"]{display:block!important;width:100%!important;padding:14px 16px!important;border-radius:16px!important;background:linear-gradient(135deg,#0f2742,#173f63 70%,#ee2b1c)!important;color:#fff!important;box-shadow:0 12px 30px rgba(15,39,66,.22);font-size:1.08rem!important;font-weight:900!important;text-align:center;white-space:normal!important}
+body.home .a3-primary-nav a[href*="/choose-your-car/"]::before{content:"🚘 مركز سيارتك — ";color:#ffcf54}
+body.home .a3-primary-nav a[href*="/choose-your-car/"]::after{content:"  • الأعطال والصيانة والزيوت وقطع الغيار";display:block;margin-top:3px;color:#d8e7f3;font-size:.76rem;font-weight:700}
+}
+@media (max-width:480px){body.home .a3-site-header{margin-bottom:112px}body.home .a3-primary-nav{top:64px;right:9px;left:9px}body.home .a3-primary-nav a[href*="/choose-your-car/"]{padding:13px 12px!important;font-size:1rem!important}.a3-entry-content table{font-size:.8rem!important}.a3-entry-content th,.a3-entry-content td{min-width:110px;padding:9px 10px!important}}
+CSS;
+        wp_register_style('a3tal-mobile-ux-patch', false, [], '2.1.1');
+        wp_enqueue_style('a3tal-mobile-ux-patch');
+        wp_add_inline_style('a3tal-mobile-ux-patch', $css);
     }
 
     public static function register_routes() {
@@ -111,7 +146,7 @@ final class A3tal_Direct_Bridge {
         return rest_ensure_response([
             'ok' => true,
             'plugin' => 'A3tal Direct Bridge',
-            'version' => '2.1.0',
+            'version' => '2.1.1',
             'site' => home_url('/'),
             'time_gmt' => current_time('mysql', true),
             'routes' => [
