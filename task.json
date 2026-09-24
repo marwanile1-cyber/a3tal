@@ -1,9 +1,9 @@
 {
-  "run": "audit-mobile-table-posts-2026-09-24",
+  "run": "audit-latest-100-mobile-tables-2026-09-24",
   "requests": [
     {
       "method": "GET",
-      "path": "/recent-posts?per_page=100"
+      "path": "/search-posts?search=&limit=100&status=publish"
     }
   ],
   "verify": []
