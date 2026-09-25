@@ -1,20 +1,18 @@
 {
-  "run": "clear-bad-thinkdiag-manual-canonical",
+  "run": "research-haval-v7-before-publish",
   "requests": [
     {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 79826,
-        "meta": {
-          "_yoast_wpseo_canonical": ""
-        }
-      }
+      "method": "GET",
+      "path": "/search-posts?search=هافال%20V7&limit=20"
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=هافال&limit=20"
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=سعر%20سيارة&limit=20"
     }
   ],
-  "verify": [
-    {
-      "path": "/post/79826"
-    }
-  ]
+  "verify": []
 }
