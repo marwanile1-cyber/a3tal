@@ -1,37 +1,22 @@
 {
-  "run": "fix-missing-featured-images-home",
+  "run": "fix-jetour-x70-featured-image",
   "requests": [
     {
       "method": "POST",
       "path": "/upload-image",
       "body": {
-        "image_url": "https://media.egypttelegraph.com/2026/3/large/1774144199468920260328025407547.jpg",
-        "post_id": 82554,
-        "filename": "soueast-s05-egypt-featured.webp",
-        "title": "سوإيست S05 في مصر",
-        "alt": "سوإيست S05 في مصر",
-        "set_featured": true
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/upload-image",
-      "body": {
-        "image_url": "https://postcdn.haraj.com.sa/userfiles30/2026-2-7/1126x2000-1_-1vNtDPWv7IMBY8.jpg-700.webp",
-        "post_id": 82550,
-        "filename": "haval-v7-featured-new.webp",
-        "title": "هافال V7",
-        "alt": "هافال V7",
+        "image_url": "https://www.alamelsyarat.net/content/upload/editor/Image1_8202524171058342241080.jpg",
+        "post_id": 82553,
+        "filename": "jetour-x70-egypt-featured.webp",
+        "title": "جيتور X70 في مصر",
+        "alt": "جيتور X70 في مصر",
         "set_featured": true
       }
     }
   ],
   "verify": [
     {
-      "path": "/post/82554"
-    },
-    {
-      "path": "/post/82550"
+      "path": "/post/82553"
     }
   ]
 }
