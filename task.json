@@ -1,58 +1,10 @@
 {
-  "run": "insert-featured-images-into-three-new-guides-2026-09-25",
+  "run": "inspect-broken-diesel-turbo-post-2026-09-25",
   "requests": [
     {
-      "method": "POST",
-      "path": "/insert-images",
-      "body": {
-        "post_id": 82538,
-        "images": [
-          {
-            "url": "https://a3tal.com/wp-content/uploads/2026/09/ac-pressure-sensor-diagnosis.webp",
-            "alt": "تشخيص حساس ضغط التكييف وكمبروسر السيارة",
-            "before": "<div style=\"background:#eef6ff;border-right:5px solid #2474b5;padding:16px 18px;border-radius:8px;margin-bottom:22px\">"
-          }
-        ]
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/insert-images",
-      "body": {
-        "post_id": 82539,
-        "images": [
-          {
-            "url": "https://a3tal.com/wp-content/uploads/2026/09/tie-rod-end-symptoms.webp",
-            "alt": "فحص طرف الدركسيون Tie Rod End والعفشة",
-            "before": "<div style=\"background:#eef6ff;border-right:5px solid #2474b5;padding:16px 18px;border-radius:8px;margin-bottom:22px\">"
-          }
-        ]
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/insert-images",
-      "body": {
-        "post_id": 82540,
-        "images": [
-          {
-            "url": "https://a3tal.com/wp-content/uploads/2026/09/knock-sensor-diagnosis.webp",
-            "alt": "تشخيص حساس الطرق Knock Sensor في المحرك",
-            "before": "<div style=\"background:#fff3e0;border-right:5px solid #ef6c00;padding:16px 18px;border-radius:8px;margin-bottom:22px\">"
-          }
-        ]
-      }
+      "method": "GET",
+      "path": "/search-posts?search=%D8%A3%D8%B9%D8%B7%D8%A7%D9%84%20%D8%AA%D9%8A%D8%B1%D8%A8%D9%88%20%D8%A7%D9%84%D8%AF%D9%8A%D8%B2%D9%84&limit=20&status=publish"
     }
   ],
-  "verify": [
-    {
-      "path": "/post/82538"
-    },
-    {
-      "path": "/post/82539"
-    },
-    {
-      "path": "/post/82540"
-    }
-  ]
+  "verify": []
 }
