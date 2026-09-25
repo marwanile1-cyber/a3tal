@@ -1,5 +1,5 @@
 {
-  "run": "inspect-toyota-thinkdiag-broken-posts",
+  "run": "fix-thinkdiag-sitemap-and-inspect-toyota-corolla",
   "requests": [
     {
       "method": "GET",
@@ -7,15 +7,7 @@
     },
     {
       "method": "GET",
-      "path": "/post/79826"
-    },
-    {
-      "method": "GET",
-      "path": "/post/80317"
-    },
-    {
-      "method": "GET",
-      "path": "/post/81115"
+      "path": "/search-posts?search=%D8%B3%D8%B9%D8%B1%20%D8%AA%D9%88%D9%8A%D9%88%D8%AA%D8%A7%20%D9%83%D9%88%D8%B1%D9%88%D9%84%D8%A7%202026&limit=20&status=publish"
     }
   ],
   "verify": []
