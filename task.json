@@ -1,40 +1,46 @@
 {
-  "run": "upload-featured-images-for-three-new-guides-2026-09-25",
+  "run": "insert-featured-images-into-three-new-guides-2026-09-25",
   "requests": [
     {
       "method": "POST",
-      "path": "/upload-image",
+      "path": "/insert-images",
       "body": {
-        "image_url": "https://images.pexels.com/photos/13690605/pexels-photo-13690605.jpeg?auto=compress&cs=tinysrgb&w=1200&h=675&fit=crop",
-        "filename": "ac-pressure-sensor-diagnosis.jpg",
-        "title": "تشخيص حساس ضغط التكييف",
-        "alt": "تشخيص حساس ضغط التكييف وكمبروسر السيارة",
         "post_id": 82538,
-        "set_featured": true
+        "images": [
+          {
+            "url": "https://a3tal.com/wp-content/uploads/2026/09/ac-pressure-sensor-diagnosis.webp",
+            "alt": "تشخيص حساس ضغط التكييف وكمبروسر السيارة",
+            "before": "<div style=\"background:#eef6ff;border-right:5px solid #2474b5;padding:16px 18px;border-radius:8px;margin-bottom:22px\">"
+          }
+        ]
       }
     },
     {
       "method": "POST",
-      "path": "/upload-image",
+      "path": "/insert-images",
       "body": {
-        "image_url": "https://images.pexels.com/photos/34357289/pexels-photo-34357289.jpeg?auto=compress&cs=tinysrgb&w=1200&h=675&fit=crop",
-        "filename": "tie-rod-end-symptoms.jpg",
-        "title": "أعراض تلف طرف الدركسيون",
-        "alt": "فحص طرف الدركسيون Tie Rod End والعفشة",
         "post_id": 82539,
-        "set_featured": true
+        "images": [
+          {
+            "url": "https://a3tal.com/wp-content/uploads/2026/09/tie-rod-end-symptoms.webp",
+            "alt": "فحص طرف الدركسيون Tie Rod End والعفشة",
+            "before": "<div style=\"background:#eef6ff;border-right:5px solid #2474b5;padding:16px 18px;border-radius:8px;margin-bottom:22px\">"
+          }
+        ]
       }
     },
     {
       "method": "POST",
-      "path": "/upload-image",
+      "path": "/insert-images",
       "body": {
-        "image_url": "https://images.pexels.com/photos/14590452/pexels-photo-14590452.jpeg?auto=compress&cs=tinysrgb&w=1200&h=675&fit=crop",
-        "filename": "knock-sensor-diagnosis.jpg",
-        "title": "تشخيص حساس الطرق Knock Sensor",
-        "alt": "تشخيص حساس الطرق Knock Sensor في المحرك",
         "post_id": 82540,
-        "set_featured": true
+        "images": [
+          {
+            "url": "https://a3tal.com/wp-content/uploads/2026/09/knock-sensor-diagnosis.webp",
+            "alt": "تشخيص حساس الطرق Knock Sensor في المحرك",
+            "before": "<div style=\"background:#fff3e0;border-right:5px solid #ef6c00;padding:16px 18px;border-radius:8px;margin-bottom:22px\">"
+          }
+        ]
       }
     }
   ],
