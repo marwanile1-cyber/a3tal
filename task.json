@@ -1,24 +1,22 @@
 {
-  "run": "render-soueast-s09-4k-image-inside-article-2026-09-26",
+  "run": "verify-s06dm-gap-and-new-car-category",
   "requests": [
     {
-      "method": "POST",
-      "path": "/insert-images",
-      "body": {
-        "post_id": 82559,
-        "images": [
-          {
-            "url": "https://a3tal.com/wp-content/uploads/2026/09/soueast-s09-egypt-discover-4k.webp",
-            "alt": "ساوإيست S09 في مصر بصورة 4K لمراجعة السعر والمواصفات",
-            "before": "<div style=\"background:linear-gradient(135deg,#eef6ff,#fff7ed);border-right:6px solid #e11d48;padding:18px 20px;border-radius:12px;margin-bottom:22px\">"
-          }
-        ]
-      }
+      "method": "GET",
+      "path": "/search-posts?search=SOUEAST%20S06%20DM&limit=50&status=publish"
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D8%B3%D8%A7%D9%88%D8%A5%D9%8A%D8%B3%D8%AA%20S06%20DM&limit=50&status=publish"
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D8%B3%D8%B9%D8%B1%20%D8%AC%D9%8A%D8%AA%D9%88%D8%B1%20T1&limit=20&status=publish"
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D8%B3%D8%A7%D9%88%20%D8%A5%D9%8A%D8%B3%D8%AA%20S07&limit=20&status=publish"
     }
   ],
-  "verify": [
-    {
-      "path": "/post/82559"
-    }
-  ]
+  "verify": []
 }
