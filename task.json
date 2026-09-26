@@ -1,24 +1,35 @@
 {
-  "run": "migrate-saudi-intent-to-ksa-section-2026-09-26",
+  "run": "cache-bust-and-canonicalize-legacy-saudi-pages-2026-09-26",
   "requests": [
     {
       "method": "POST",
-      "path": "/redirect",
+      "path": "/update-post",
       "body": {
-        "source_path": "/ksa-car-maintenance-guide-schedule-prices-2026/",
-        "target_url": "https://a3tal.com/ksa/category/car-maintenance/",
-        "status_code": 301
+        "id": 80174,
+        "title": "دليل مراكز صيانة السيارات في السعودية 2026: الجداول، الأسعار، وأفضل الورش",
+        "meta": {
+          "_yoast_wpseo_canonical": "https://a3tal.com/ksa/category/car-maintenance/"
+        }
       }
     },
     {
       "method": "POST",
-      "path": "/redirect",
+      "path": "/update-post",
       "body": {
-        "source_path": "/best-car-service-centers-ksa-petromin-onestop-guide-2026/",
-        "target_url": "https://a3tal.com/ksa/centers/",
-        "status_code": 301
+        "id": 80180,
+        "title": "الدليل الموسوعي لأفضل مراكز صيانة السيارات في السعودية 2026",
+        "meta": {
+          "_yoast_wpseo_canonical": "https://a3tal.com/ksa/centers/"
+        }
       }
     }
   ],
-  "verify": []
+  "verify": [
+    {
+      "path": "/post/80174"
+    },
+    {
+      "path": "/post/80180"
+    }
+  ]
 }
