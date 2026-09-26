@@ -1,16 +1,18 @@
 {
-  "run": "finish-soueast-s09-discover-image-2026-09-26",
+  "run": "render-soueast-s09-4k-image-inside-article-2026-09-26",
   "requests": [
     {
       "method": "POST",
-      "path": "/upload-image",
+      "path": "/insert-images",
       "body": {
-        "image_url": "https://raw.githubusercontent.com/marwanile1-cyber/a3tal/main/assets/soueast-s09-egypt-discover-4k.webp",
-        "filename": "soueast-s09-egypt-discover-4k.webp",
-        "title": "ساوإيست S09 في مصر",
-        "alt": "ساوإيست S09 في مصر بصورة 4K لمراجعة السعر والمواصفات",
         "post_id": 82559,
-        "set_featured": true
+        "images": [
+          {
+            "url": "https://a3tal.com/wp-content/uploads/2026/09/soueast-s09-egypt-discover-4k.webp",
+            "alt": "ساوإيست S09 في مصر بصورة 4K لمراجعة السعر والمواصفات",
+            "before": "<div style=\"background:linear-gradient(135deg,#eef6ff,#fff7ed);border-right:6px solid #e11d48;padding:18px 20px;border-radius:12px;margin-bottom:22px\">"
+          }
+        ]
       }
     }
   ],
