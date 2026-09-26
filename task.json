@@ -1,16 +1,26 @@
 {
-  "run": "upload-s06dm-exclusive-image-as-jpeg-2026-09-26",
+  "run": "finish-s06dm-featured-and-4k-inline-2026-09-26",
   "requests": [
     {
       "method": "POST",
-      "path": "/upload-image",
+      "path": "/update-post",
       "body": {
-        "image_url": "https://images.weserv.nl/?url=raw.githubusercontent.com/marwanile1-cyber/a3tal/main/assets/soueast-s06-dm-discover-4k.webp&output=jpg&q=90&w=3840&h=2160&fit=cover",
-        "filename": "soueast-s06-dm-discover-4k.jpg",
-        "title": "SOUEAST S06 DM في مصر",
-        "alt": "SOUEAST S06 DM في مصر بصورة حصرية من أعطال.كوم",
+        "id": 82564,
+        "featured_media": 82565
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/insert-images",
+      "body": {
         "post_id": 82564,
-        "set_featured": true
+        "images": [
+          {
+            "url": "https://raw.githubusercontent.com/marwanile1-cyber/a3tal/main/assets/soueast-s06-dm-discover-4k.webp",
+            "alt": "SOUEAST S06 DM في مصر بصورة حصرية 4K من أعطال.كوم",
+            "before": "<div style=\"background:#eef6ff;border-right:5px solid #2474b5;padding:18px 20px;border-radius:10px;margin-bottom:22px\">"
+          }
+        ]
       }
     }
   ],
