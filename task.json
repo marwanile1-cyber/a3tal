@@ -1,32 +1,24 @@
 {
-  "run": "finish-s06dm-featured-and-4k-inline-2026-09-26",
+  "run": "migrate-saudi-intent-to-ksa-section-2026-09-26",
   "requests": [
     {
       "method": "POST",
-      "path": "/update-post",
+      "path": "/redirect",
       "body": {
-        "id": 82564,
-        "featured_media": 82565
+        "source_path": "/ksa-car-maintenance-guide-schedule-prices-2026/",
+        "target_url": "https://a3tal.com/ksa/category/car-maintenance/",
+        "status_code": 301
       }
     },
     {
       "method": "POST",
-      "path": "/insert-images",
+      "path": "/redirect",
       "body": {
-        "post_id": 82564,
-        "images": [
-          {
-            "url": "https://raw.githubusercontent.com/marwanile1-cyber/a3tal/main/assets/soueast-s06-dm-discover-4k.webp",
-            "alt": "SOUEAST S06 DM في مصر بصورة حصرية 4K من أعطال.كوم",
-            "before": "<div style=\"background:#eef6ff;border-right:5px solid #2474b5;padding:18px 20px;border-radius:10px;margin-bottom:22px\">"
-          }
-        ]
+        "source_path": "/best-car-service-centers-ksa-petromin-onestop-guide-2026/",
+        "target_url": "https://a3tal.com/ksa/centers/",
+        "status_code": 301
       }
     }
   ],
-  "verify": [
-    {
-      "path": "/post/82564"
-    }
-  ]
+  "verify": []
 }
