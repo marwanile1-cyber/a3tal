@@ -1,35 +1,10 @@
 {
-  "run": "cache-bust-and-canonicalize-legacy-saudi-pages-2026-09-26",
+  "run": "bridge-live-status-check-2026-09-28",
   "requests": [
     {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 80174,
-        "title": "دليل مراكز صيانة السيارات في السعودية 2026: الجداول، الأسعار، وأفضل الورش",
-        "meta": {
-          "_yoast_wpseo_canonical": "https://a3tal.com/ksa/category/car-maintenance/"
-        }
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 80180,
-        "title": "الدليل الموسوعي لأفضل مراكز صيانة السيارات في السعودية 2026",
-        "meta": {
-          "_yoast_wpseo_canonical": "https://a3tal.com/ksa/centers/"
-        }
-      }
+      "method": "GET",
+      "path": "/status"
     }
   ],
-  "verify": [
-    {
-      "path": "/post/80174"
-    },
-    {
-      "path": "/post/80180"
-    }
-  ]
+  "verify": []
 }
