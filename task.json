@@ -1,9 +1,9 @@
 {
-  "run": "bridge-live-status-check-2026-09-28",
+  "run": "find-haval-v7-posts-2026-09-28",
   "requests": [
     {
       "method": "GET",
-      "path": "/status"
+      "path": "/search-posts?search=هافال%20V7&limit=20"
     }
   ],
   "verify": []
