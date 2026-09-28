@@ -45,22 +45,27 @@ jobs:
             METHOD="$(jq -r ".requests[$i].method // \"POST\"" "$TASK_FILE")"
             PATH_PART="$(jq -r ".requests[$i].path" "$TASK_FILE")"
             BODY="$(jq -c ".requests[$i].body // {}" "$TASK_FILE")"
+            LOG_RESPONSE="$(jq -r ".requests[$i].log_response // false" "$TASK_FILE")"
+            RESPONSE="/tmp/a3tal-response-$i.json"
 
             echo "::group::Request $((i+1)) $METHOD $PATH_PART"
-            if [[ "$PATH_PART" == *"?"* ]]; then
-              SEP="&"
-            else
-              SEP="?"
-            fi
-            REQUEST_URL="$BASE$PATH_PART${SEP}api_key=$A3TAL_API_KEY&key=$A3TAL_API_KEY&token=$A3TAL_API_KEY"
-
             if [ "$METHOD" = "GET" ]; then
-              curl --retry 5 --retry-delay 5 --retry-all-errors --connect-timeout 20 --max-time 90 --fail-with-body --silent --show-error                 -H "X-A3tal-Key: $A3TAL_API_KEY"                 -H "X-A3tal-API-Key: $A3TAL_API_KEY"                 -H "X-API-Key: $A3TAL_API_KEY"                 -H "X-A3tal-Token: $A3TAL_API_KEY"                 -H "X-Auth-Token: $A3TAL_API_KEY"                 -H "Authorization: Bearer $A3TAL_API_KEY"                 "$REQUEST_URL" | tee "/tmp/a3tal-response-$i.json"
+              STATUS="$(curl --retry 5 --retry-delay 5 --retry-all-errors --connect-timeout 20 --max-time 120 --silent --show-error                 -o "$RESPONSE" -w "%{http_code}"                 -H "X-A3tal-Key: $A3TAL_API_KEY"                 -H "Authorization: Bearer $A3TAL_API_KEY"                 "$BASE$PATH_PART")"
             else
-              curl --retry 5 --retry-delay 5 --retry-all-errors --connect-timeout 20 --max-time 90 --fail-with-body --silent --show-error                 -X "$METHOD"                 -H "X-A3tal-Key: $A3TAL_API_KEY"                 -H "X-A3tal-API-Key: $A3TAL_API_KEY"                 -H "X-API-Key: $A3TAL_API_KEY"                 -H "X-A3tal-Token: $A3TAL_API_KEY"                 -H "X-Auth-Token: $A3TAL_API_KEY"                 -H "Authorization: Bearer $A3TAL_API_KEY"                 -H "Content-Type: application/json"                 --data "$BODY"                 "$REQUEST_URL" | tee "/tmp/a3tal-response-$i.json"
+              STATUS="$(curl --retry 5 --retry-delay 5 --retry-all-errors --connect-timeout 20 --max-time 120 --silent --show-error                 -o "$RESPONSE" -w "%{http_code}"                 -X "$METHOD"                 -H "X-A3tal-Key: $A3TAL_API_KEY"                 -H "Authorization: Bearer $A3TAL_API_KEY"                 -H "Content-Type: application/json"                 --data "$BODY"                 "$BASE$PATH_PART")"
             fi
-            echo
-            jq . "/tmp/a3tal-response-$i.json" || true
+
+            echo "HTTP $STATUS"
+            if [ "$STATUS" -lt 200 ] || [ "$STATUS" -ge 300 ]; then
+              jq '{code,message,data}' "$RESPONSE" 2>/dev/null || echo "Request failed with a non-JSON response."
+              exit 1
+            fi
+
+            if [[ "$PATH_PART" == /admin* ]] && [ "$LOG_RESPONSE" != "true" ]; then
+              jq '{ok,op}' "$RESPONSE" 2>/dev/null || echo "Admin request completed."
+            else
+              jq . "$RESPONSE" 2>/dev/null || cat "$RESPONSE"
+            fi
             echo "::endgroup::"
           done
 
@@ -82,7 +87,22 @@ jobs:
           COUNT="$(jq '.verify | length' "$TASK_FILE")"
           for ((i=0; i<COUNT; i++)); do
             PATH_PART="$(jq -r ".verify[$i].path" "$TASK_FILE")"
+            LOG_RESPONSE="$(jq -r ".verify[$i].log_response // false" "$TASK_FILE")"
+            RESPONSE="/tmp/a3tal-verify-$i.json"
+
             echo "::group::Verify $((i+1)) GET $PATH_PART"
-            curl --retry 5 --retry-delay 5 --retry-all-errors --connect-timeout 20 --max-time 90 --fail-with-body --silent --show-error               -H "X-A3tal-Key: $A3TAL_API_KEY"               -H "X-A3tal-API-Key: $A3TAL_API_KEY"               -H "X-API-Key: $A3TAL_API_KEY"               -H "Authorization: Bearer $A3TAL_API_KEY"               "$BASE$PATH_PART" | jq .
+            STATUS="$(curl --retry 5 --retry-delay 5 --retry-all-errors --connect-timeout 20 --max-time 120 --silent --show-error               -o "$RESPONSE" -w "%{http_code}"               -H "X-A3tal-Key: $A3TAL_API_KEY"               -H "Authorization: Bearer $A3TAL_API_KEY"               "$BASE$PATH_PART")"
+
+            echo "HTTP $STATUS"
+            if [ "$STATUS" -lt 200 ] || [ "$STATUS" -ge 300 ]; then
+              jq '{code,message,data}' "$RESPONSE" 2>/dev/null || echo "Verification failed with a non-JSON response."
+              exit 1
+            fi
+
+            if [[ "$PATH_PART" == /admin* ]] && [ "$LOG_RESPONSE" != "true" ]; then
+              jq '{ok,op}' "$RESPONSE" 2>/dev/null || echo "Admin verification completed."
+            else
+              jq . "$RESPONSE" 2>/dev/null || cat "$RESPONSE"
+            fi
             echo "::endgroup::"
           done
