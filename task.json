@@ -1,13 +1,9 @@
 {
-  "run": "check-arrizo-6-gt-before-publish-2026-09-28",
+  "run": "verify-live-bridge-after-3-1-build-2026-09-28",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=Arrizo%206%20GT&limit=20"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=اريزو%206&limit=20"
+      "path": "/status"
     }
   ],
   "verify": []
