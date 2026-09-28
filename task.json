@@ -1,9 +1,35 @@
 {
-  "run": "verify-live-bridge-3-1-after-manual-upload",
+  "run": "upload-arrizo-6-gt-exclusive-images-2026-09-28",
   "requests": [
     {
-      "method": "GET",
-      "path": "/status"
+      "method": "POST",
+      "path": "/upload-image",
+      "body": {
+        "image_url": "https://raw.githubusercontent.com/marwanile1-cyber/a3tal/main/temp-media/arrizo6gt-featured-4k.webp",
+        "filename": "chery-arrizo-6-gt-egypt-featured-4k.webp",
+        "title": "شيري أريزو 6 GT في مصر",
+        "alt": "شيري أريزو 6 GT في مصر"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/upload-image",
+      "body": {
+        "image_url": "https://raw.githubusercontent.com/marwanile1-cyber/a3tal/main/temp-media/arrizo6gt-rear-4k.webp",
+        "filename": "chery-arrizo-6-gt-rear-4k.webp",
+        "title": "شيري أريزو 6 GT من الخلف",
+        "alt": "تصميم شيري أريزو 6 GT من الخلف"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/upload-image",
+      "body": {
+        "image_url": "https://raw.githubusercontent.com/marwanile1-cyber/a3tal/main/temp-media/arrizo6gt-interior-4k.webp",
+        "filename": "chery-arrizo-6-gt-interior-4k.webp",
+        "title": "مقصورة شيري أريزو 6 GT",
+        "alt": "مقصورة شيري أريزو 6 GT والشاشات الداخلية"
+      }
     }
   ],
   "verify": []
