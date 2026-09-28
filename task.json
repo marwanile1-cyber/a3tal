@@ -1,9 +1,13 @@
 {
-  "run": "find-haval-v7-posts-2026-09-28-b",
+  "run": "read-haval-v7-posts-before-merge-2026-09-28",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=V7&limit=20"
+      "path": "/post/82550"
+    },
+    {
+      "method": "GET",
+      "path": "/post/81430"
     }
   ],
   "verify": []
