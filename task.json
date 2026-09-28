@@ -1,17 +1,17 @@
 {
-  "run": "check-monjaro-vs-haval-comparison-gap",
+  "run": "check-ex5-vs-soueast-comparison-gap",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=Monjaro%20Haval&limit=20"
+      "path": "/search-posts?search=EX5%20S06&limit=20"
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=V7%20Monjaro&limit=20"
+      "path": "/search-posts?search=Geely%20EX5&limit=20"
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=comparison%20Monjaro&limit=20"
+      "path": "/search-posts?search=SOUEAST%20S06&limit=20"
     }
   ],
   "verify": []
