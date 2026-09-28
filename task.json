@@ -1,9 +1,10 @@
 {
-  "run": "find-comparison-category",
+  "run": "list-category-ids-for-comparison",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=مقارنة&limit=20"
+      "path": "/admin?op=terms&taxonomy=category",
+      "log_response": true
     }
   ],
   "verify": []
