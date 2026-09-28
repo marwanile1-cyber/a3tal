@@ -1,5 +1,5 @@
 {
-  "run": "verify-live-bridge-after-3-1-build-2026-09-28",
+  "run": "verify-live-bridge-3-1-after-manual-upload",
   "requests": [
     {
       "method": "GET",
