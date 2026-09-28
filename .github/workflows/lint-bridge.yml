@@ -14,5 +14,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: PHP syntax check
         run: php -l a3tal-direct-bridge.php
+
+      - name: Build installable plugin ZIP
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist/a3tal-direct-bridge
+          cp a3tal-direct-bridge.php dist/a3tal-direct-bridge/a3tal-direct-bridge.php
+          cd dist
+          zip -r a3tal-direct-bridge-3.1.0.zip a3tal-direct-bridge
+
+      - name: Upload plugin package
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-direct-bridge-3.1.0
+          path: dist/a3tal-direct-bridge-3.1.0.zip
+          if-no-files-found: error
+          retention-days: 7
