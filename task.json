@@ -4,23 +4,10 @@
       "method": "POST",
       "path": "/admin",
       "body": {
-        "op": "site_info"
-      },
-      "log_response": true
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "body": {
-        "op": "plugins"
-      },
-      "log_response": true
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "body": {
-        "op": "themes"
+        "op": "options",
+        "keys": [
+          "ad_inserter"
+        ]
       },
       "log_response": true
     }
