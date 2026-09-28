@@ -2,23 +2,20 @@
   "requests": [
     {
       "method": "GET",
-      "path": "/status",
+      "path": "/search-posts?search=P0455&limit=30&status=publish",
       "body": {},
       "log_response": true
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=&limit=100&status=publish",
+      "path": "/search-posts?search=EVAP&limit=30&status=publish",
       "body": {},
       "log_response": true
     },
     {
-      "method": "POST",
-      "path": "/admin",
-      "body": {
-        "op": "terms",
-        "taxonomy": "category"
-      },
+      "method": "GET",
+      "path": "/search-posts?search=P0442&limit=30&status=publish",
+      "body": {},
       "log_response": true
     }
   ],
