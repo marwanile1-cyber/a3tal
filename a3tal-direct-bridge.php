@@ -1457,6 +1457,62 @@ CSS;
         return is_wp_error($result) ? $result : ['updated' => (bool) $result, 'target' => $target->current ?? null];
     }
 
+
+    private static function admin_bridge_self_update($data) {
+        $confirm = self::admin_confirm($data, true);
+        if (is_wp_error($confirm)) {
+            return $confirm;
+        }
+        if (defined('DISALLOW_FILE_MODS') && DISALLOW_FILE_MODS) {
+            return new WP_Error('a3tal_file_mods_disabled', 'WordPress file modifications are disabled.', ['status' => 403]);
+        }
+
+        $url = 'https://raw.githubusercontent.com/marwanile1-cyber/a3tal/main/a3tal-direct-bridge.php';
+        $response = wp_remote_get($url, [
+            'timeout' => 30,
+            'redirection' => 3,
+            'headers' => ['Accept' => 'text/plain'],
+        ]);
+        if (is_wp_error($response)) {
+            return $response;
+        }
+
+        $status = (int) wp_remote_retrieve_response_code($response);
+        $code = (string) wp_remote_retrieve_body($response);
+        if ($status !== 200 || strlen($code) < 1000) {
+            return new WP_Error('a3tal_bridge_download_failed', 'Could not download a valid bridge file from GitHub.', ['status' => 502]);
+        }
+        if (strpos($code, 'Plugin Name: A3tal Direct Bridge') === false || strpos($code, 'final class A3tal_Direct_Bridge') === false) {
+            return new WP_Error('a3tal_bridge_invalid_source', 'Downloaded source is not the A3tal Direct Bridge plugin.', ['status' => 400]);
+        }
+
+        $sha256 = hash('sha256', $code);
+        $expected = strtolower(trim((string) ($data['expected_sha256'] ?? '')));
+        if ($expected !== '' && !hash_equals($expected, $sha256)) {
+            return new WP_Error('a3tal_bridge_checksum_mismatch', 'Downloaded bridge checksum does not match expected_sha256.', ['status' => 409]);
+        }
+
+        $backup = __FILE__ . '.bak-' . gmdate('Ymd-His');
+        if (!copy(__FILE__, $backup)) {
+            return new WP_Error('a3tal_bridge_backup_failed', 'Could not create a local backup of the current bridge.', ['status' => 500]);
+        }
+
+        $written = file_put_contents(__FILE__, $code, LOCK_EX);
+        if ($written === false) {
+            @copy($backup, __FILE__);
+            return new WP_Error('a3tal_bridge_update_failed', 'Could not replace the bridge file.', ['status' => 500]);
+        }
+
+        preg_match('/\* Version:\s*([^\r\n]+)/', $code, $m);
+        return [
+            'updated' => true,
+            'bytes' => $written,
+            'sha256' => $sha256,
+            'version' => isset($m[1]) ? trim($m[1]) : null,
+            'backup' => basename($backup),
+        ];
+    }
+
     private static function admin_file_write($data) {
         $confirm = self::admin_confirm($data, true);
         if (is_wp_error($confirm)) {
@@ -1726,6 +1782,9 @@ CSS;
 
                 case 'core_update':
                     $result = self::admin_core_update($data);
+                    break;
+                case 'bridge_self_update':
+                    $result = self::admin_bridge_self_update($data);
                     break;
                 case 'file_write':
                     $result = self::admin_file_write($data);
