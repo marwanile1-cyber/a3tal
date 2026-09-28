@@ -1,33 +1,13 @@
 {
-  "run": "scan-evergreen-diagnostic-gaps-2026-09-28",
+  "run": "find-fuel-diagnostic-category",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=مياه%20الردياتير&limit=30"
+      "path": "/search-posts?search=P0442&limit=10"
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=نقص%20المياه&limit=30"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=تبريد&limit=30"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=تنتش&limit=30"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=check%20engine&limit=30"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=لمبة%20المحرك&limit=30"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=تقطيع&limit=30"
+      "path": "/search-posts?search=fuel%20pump&limit=10"
     }
   ],
   "verify": []
