@@ -2248,3 +2248,5 @@ CSS;
 }
 
 A3tal_Direct_Bridge::init();
+
+// Build package refresh: 3.1.0
