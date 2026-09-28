@@ -1,9 +1,35 @@
 {
-  "run": "read-mechanical-category-reference",
+  "run": "upload-burning-smell-article-images-2026-09-28",
   "requests": [
     {
-      "method": "GET",
-      "path": "/post/82464"
+      "method": "POST",
+      "path": "/upload-image",
+      "body": {
+        "image_url": "https://raw.githubusercontent.com/marwanile1-cyber/a3tal/main/temp-media/fuel-smell-car-featured-4k.webp",
+        "filename": "burning-smell-car-featured-4k.webp",
+        "title": "ريحة حرق في العربية",
+        "alt": "سيارة متوقفة بعد ظهور رائحة حرق"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/upload-image",
+      "body": {
+        "image_url": "https://raw.githubusercontent.com/marwanile1-cyber/a3tal/main/temp-media/fuel-smell-car-roadside-4k.webp",
+        "filename": "burning-smell-car-roadside-4k.webp",
+        "title": "فحص السيارة بعد ظهور رائحة حرق",
+        "alt": "سيارة متوقفة لفحص سبب رائحة الحرق"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/upload-image",
+      "body": {
+        "image_url": "https://raw.githubusercontent.com/marwanile1-cyber/a3tal/main/temp-media/fuel-smell-diagnosis-workshop-4k.webp",
+        "filename": "burning-smell-diagnosis-workshop-4k.webp",
+        "title": "تشخيص رائحة الحرق في السيارة",
+        "alt": "فحص المحرك ومكونات السيارة في ورشة تشخيص"
+      }
     }
   ],
   "verify": []
