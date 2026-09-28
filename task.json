@@ -1,13 +1,9 @@
 {
-  "run": "find-fuel-diagnostic-category",
+  "run": "read-mechanical-category-reference",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=P0442&limit=10"
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=fuel%20pump&limit=10"
+      "path": "/post/82464"
     }
   ],
   "verify": []
