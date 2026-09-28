@@ -2,7 +2,7 @@
 /**
  * Plugin Name: A3tal Direct Bridge
  * Description: Secure administrator-grade REST bridge for managing A3tal.com content, SEO, media, users, plugins, themes, settings and wp-content from trusted AI clients.
- * Version: 3.0.0
+ * Version: 3.1.0
  * Author: A3tal.com
  * Update URI: https://github.com/marwanile1-cyber/a3tal
  */
@@ -54,7 +54,7 @@ body.home .a3-primary-nav a[href*="/choose-your-car/"]::after{content:"  • ا�
 }
 @media (max-width:480px){body.home .a3-site-header{margin-bottom:112px}body.home .a3-primary-nav{top:64px;right:9px;left:9px}body.home .a3-primary-nav a[href*="/choose-your-car/"]{padding:13px 12px!important;font-size:1rem!important}.a3-entry-content table{font-size:.8rem!important}.a3-entry-content th,.a3-entry-content td{min-width:110px;padding:9px 10px!important}}
 CSS;
-        wp_register_style('a3tal-mobile-ux-patch', false, [], '3.0.0');
+        wp_register_style('a3tal-mobile-ux-patch', false, [], '3.1.0');
         wp_enqueue_style('a3tal-mobile-ux-patch');
         wp_add_inline_style('a3tal-mobile-ux-patch', $css);
     }
@@ -93,6 +93,18 @@ CSS;
         register_rest_route(self::NS, '/upload-image', [
             'methods' => 'POST',
             'callback' => [__CLASS__, 'upload_image'],
+            'permission_callback' => [__CLASS__, 'authorize'],
+        ]);
+
+        register_rest_route(self::NS, '/upload-image-data', [
+            'methods' => 'POST',
+            'callback' => [__CLASS__, 'upload_image_data'],
+            'permission_callback' => [__CLASS__, 'authorize'],
+        ]);
+
+        register_rest_route(self::NS, '/publish-bundle', [
+            'methods' => 'POST',
+            'callback' => [__CLASS__, 'publish_bundle'],
             'permission_callback' => [__CLASS__, 'authorize'],
         ]);
 
@@ -152,7 +164,7 @@ CSS;
         return rest_ensure_response([
             'ok' => true,
             'plugin' => 'A3tal Direct Bridge',
-            'version' => '3.0.0',
+            'version' => '3.1.0',
             'site' => home_url('/'),
             'time_gmt' => current_time('mysql', true),
             'routes' => [
@@ -162,6 +174,8 @@ CSS;
                 'POST /create-post',
                 'POST /update-post',
                 'POST /upload-image',
+                'POST /upload-image-data',
+                'POST /publish-bundle',
                 'POST /set-featured-image',
                 'POST /insert-images',
                 'POST /redirect',
@@ -386,6 +400,331 @@ CSS;
 
         clean_post_cache($id);
         return rest_ensure_response(self::post_payload(get_post($id)));
+    }
+
+
+    private static function media_from_base64_payload($data, $post_id = 0) {
+        if (!is_array($data)) {
+            return new WP_Error('a3tal_image_payload_required', 'Image payload is required.', ['status' => 400]);
+        }
+
+        $raw = (string) ($data['image_base64'] ?? $data['base64'] ?? $data['data'] ?? '');
+        if ($raw === '') {
+            return new WP_Error('a3tal_image_data_required', 'image_base64 is required.', ['status' => 400]);
+        }
+
+        $declared_mime = '';
+        if (preg_match('#^data:(image/[a-z0-9.+-]+);base64,(.+)$#is', $raw, $m)) {
+            $declared_mime = strtolower(trim($m[1]));
+            $raw = $m[2];
+        }
+
+        $raw = preg_replace('/\s+/', '', $raw);
+        $bytes = base64_decode($raw, true);
+        if ($bytes === false || $bytes === '') {
+            return new WP_Error('a3tal_bad_image_base64', 'Invalid base64 image payload.', ['status' => 400]);
+        }
+
+        $max_bytes = 20 * 1024 * 1024;
+        if (strlen($bytes) > $max_bytes) {
+            return new WP_Error('a3tal_image_too_large', 'Decoded image exceeds the 20 MB bridge limit.', ['status' => 413]);
+        }
+
+        $info = @getimagesizefromstring($bytes);
+        if (!$info || empty($info['mime'])) {
+            return new WP_Error('a3tal_not_image', 'Decoded payload is not a valid image.', ['status' => 400]);
+        }
+
+        $mime = strtolower((string) $info['mime']);
+        $allowed = [
+            'image/jpeg' => 'jpg',
+            'image/png'  => 'png',
+            'image/webp' => 'webp',
+            'image/gif'  => 'gif',
+        ];
+        if (!isset($allowed[$mime])) {
+            return new WP_Error('a3tal_image_type_blocked', 'Only JPEG, PNG, WEBP and GIF images are allowed.', ['status' => 415]);
+        }
+        if ($declared_mime !== '' && $declared_mime !== $mime) {
+            return new WP_Error('a3tal_image_mime_mismatch', 'Declared image MIME does not match decoded image.', ['status' => 400]);
+        }
+
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+        require_once ABSPATH . 'wp-admin/includes/media.php';
+        require_once ABSPATH . 'wp-admin/includes/image.php';
+
+        $base_name = sanitize_file_name((string) ($data['filename'] ?? ('a3tal-image.' . $allowed[$mime])));
+        if ($base_name === '') {
+            $base_name = 'a3tal-image.' . $allowed[$mime];
+        }
+
+        $tmp = wp_tempnam($base_name);
+        if (!$tmp || file_put_contents($tmp, $bytes, LOCK_EX) === false) {
+            if ($tmp) {
+                @unlink($tmp);
+            }
+            return new WP_Error('a3tal_temp_write_failed', 'Could not create temporary image file.', ['status' => 500]);
+        }
+
+        $convert_webp = !array_key_exists('convert_webp', $data) || !empty($data['convert_webp']);
+        $quality = max(45, min(95, (int) ($data['quality'] ?? 84)));
+        $max_width = max(0, (int) ($data['max_width'] ?? 0));
+        $max_height = max(0, (int) ($data['max_height'] ?? 0));
+
+        $final_tmp = $tmp;
+        $final_name = $base_name;
+        $final_mime = $mime;
+
+        if ($convert_webp || $max_width || $max_height) {
+            $editor = wp_get_image_editor($tmp);
+            if (!is_wp_error($editor)) {
+                if ($max_width || $max_height) {
+                    $size = $editor->get_size();
+                    $target_w = $max_width ?: (int) ($size['width'] ?? 0);
+                    $target_h = $max_height ?: (int) ($size['height'] ?? 0);
+                    if ($target_w > 0 && $target_h > 0) {
+                        $editor->resize($target_w, $target_h, false);
+                    }
+                }
+                $editor->set_quality($quality);
+
+                if ($convert_webp) {
+                    $webp_tmp = wp_tempnam(pathinfo($base_name, PATHINFO_FILENAME) . '.webp');
+                    $saved = $editor->save($webp_tmp, 'image/webp');
+                    if (!is_wp_error($saved) && !empty($saved['path'])) {
+                        $final_tmp = $saved['path'];
+                        $final_name = sanitize_file_name(pathinfo($base_name, PATHINFO_FILENAME) . '.webp');
+                        $final_mime = 'image/webp';
+                        if ($final_tmp !== $tmp) {
+                            @unlink($tmp);
+                        }
+                    }
+                } elseif ($max_width || $max_height) {
+                    $resized_tmp = wp_tempnam($base_name);
+                    $saved = $editor->save($resized_tmp, $mime);
+                    if (!is_wp_error($saved) && !empty($saved['path'])) {
+                        $final_tmp = $saved['path'];
+                        if ($final_tmp !== $tmp) {
+                            @unlink($tmp);
+                        }
+                    }
+                }
+            }
+        }
+
+        $file = [
+            'name' => $final_name,
+            'tmp_name' => $final_tmp,
+            'type' => $final_mime,
+            'error' => 0,
+            'size' => @filesize($final_tmp),
+        ];
+
+        $media_id = media_handle_sideload(
+            $file,
+            (int) $post_id,
+            sanitize_text_field((string) ($data['title'] ?? ''))
+        );
+
+        if (is_wp_error($media_id)) {
+            @unlink($final_tmp);
+            return $media_id;
+        }
+
+        if (!empty($data['alt'])) {
+            update_post_meta($media_id, '_wp_attachment_image_alt', sanitize_text_field((string) $data['alt']));
+        }
+        if (!empty($data['caption'])) {
+            wp_update_post([
+                'ID' => $media_id,
+                'post_excerpt' => sanitize_text_field((string) $data['caption']),
+            ]);
+        }
+
+        if (!empty($data['set_featured']) && $post_id) {
+            set_post_thumbnail((int) $post_id, $media_id);
+        }
+
+        $src = wp_get_attachment_image_src($media_id, 'full');
+        return [
+            'media_id' => $media_id,
+            'url' => $src ? $src[0] : wp_get_attachment_url($media_id),
+            'width' => $src ? (int) $src[1] : null,
+            'height' => $src ? (int) $src[2] : null,
+            'mime' => get_post_mime_type($media_id),
+            'filesize' => get_attached_file($media_id) && file_exists(get_attached_file($media_id)) ? filesize(get_attached_file($media_id)) : null,
+            'featured_for_post' => (!empty($data['set_featured']) && $post_id) ? (int) $post_id : 0,
+        ];
+    }
+
+    public static function upload_image_data(WP_REST_Request $request) {
+        $data = $request->get_json_params();
+        $post_id = (int) ($data['post_id'] ?? 0);
+
+        if ($post_id && !get_post($post_id)) {
+            return new WP_Error('a3tal_bad_post', 'post_id does not exist.', ['status' => 404]);
+        }
+
+        $result = self::media_from_base64_payload($data, $post_id);
+        if (is_wp_error($result)) {
+            return $result;
+        }
+
+        return new WP_REST_Response($result, 201);
+    }
+
+    private static function bundle_image_html($media, $alt = '', $caption = '') {
+        $url = esc_url((string) ($media['url'] ?? ''));
+        if ($url === '') {
+            return '';
+        }
+
+        $html = '<figure class="wp-block-image size-full">';
+        $html .= '<img src="' . $url . '" alt="' . esc_attr((string) $alt) . '" loading="lazy" decoding="async">';
+        if ((string) $caption !== '') {
+            $html .= '<figcaption>' . esc_html((string) $caption) . '</figcaption>';
+        }
+        $html .= '</figure>';
+        return $html;
+    }
+
+    public static function publish_bundle(WP_REST_Request $request) {
+        $data = $request->get_json_params();
+        if (!is_array($data)) {
+            return new WP_Error('a3tal_bundle_required', 'JSON bundle payload is required.', ['status' => 400]);
+        }
+
+        $post_data = $data['post'] ?? [];
+        if (!is_array($post_data)) {
+            return new WP_Error('a3tal_post_payload_required', 'post object is required.', ['status' => 400]);
+        }
+
+        $post_id = (int) ($post_data['id'] ?? $post_data['post_id'] ?? 0);
+        $is_new = !$post_id;
+
+        if ($is_new) {
+            $title = sanitize_text_field((string) ($post_data['title'] ?? ''));
+            if ($title === '') {
+                return new WP_Error('a3tal_title_required', 'post.title is required.', ['status' => 400]);
+            }
+
+            $postarr = [
+                'post_type' => in_array(($post_data['type'] ?? 'post'), ['post', 'page'], true) ? $post_data['type'] : 'post',
+                'post_title' => $title,
+                'post_content' => wp_kses_post((string) ($post_data['content'] ?? '')),
+                'post_excerpt' => wp_kses_post((string) ($post_data['excerpt'] ?? '')),
+                'post_status' => 'draft',
+            ];
+            if (!empty($post_data['slug'])) {
+                $postarr['post_name'] = sanitize_title((string) $post_data['slug']);
+            }
+
+            $post_id = wp_insert_post($postarr, true);
+            if (is_wp_error($post_id)) {
+                return $post_id;
+            }
+        } else {
+            $post = get_post($post_id);
+            if (!$post) {
+                return new WP_Error('a3tal_not_found', 'Target post not found.', ['status' => 404]);
+            }
+            self::save_backup($post_id);
+
+            $update = ['ID' => $post_id, 'post_status' => 'draft'];
+            if (array_key_exists('title', $post_data)) {
+                $update['post_title'] = sanitize_text_field((string) $post_data['title']);
+            }
+            if (array_key_exists('content', $post_data)) {
+                $update['post_content'] = wp_kses_post((string) $post_data['content']);
+            }
+            if (array_key_exists('excerpt', $post_data)) {
+                $update['post_excerpt'] = wp_kses_post((string) $post_data['excerpt']);
+            }
+            if (array_key_exists('slug', $post_data)) {
+                $update['post_name'] = sanitize_title((string) $post_data['slug']);
+            }
+            $updated = wp_update_post($update, true);
+            if (is_wp_error($updated)) {
+                return $updated;
+            }
+        }
+
+        if (isset($post_data['categories'])) {
+            wp_set_post_categories($post_id, self::normalize_terms($post_data['categories']), false);
+        }
+        if (isset($post_data['tags'])) {
+            wp_set_post_tags($post_id, self::normalize_terms($post_data['tags']), false);
+        }
+        self::apply_meta($post_id, $post_data['meta'] ?? []);
+
+        $content = get_post_field('post_content', $post_id);
+        $media_results = [];
+        $media_items = $data['media'] ?? [];
+        if (!is_array($media_items)) {
+            $media_items = [];
+        }
+
+        foreach ($media_items as $index => $item) {
+            if (!is_array($item)) {
+                continue;
+            }
+
+            $item['post_id'] = $post_id;
+            $media = self::media_from_base64_payload($item, $post_id);
+            if (is_wp_error($media)) {
+                wp_update_post(['ID' => $post_id, 'post_status' => 'draft']);
+                return new WP_Error(
+                    'a3tal_bundle_media_failed',
+                    'Media item ' . ($index + 1) . ' failed: ' . $media->get_error_message(),
+                    ['status' => 400, 'post_id' => $post_id]
+                );
+            }
+
+            $key = sanitize_key((string) ($item['key'] ?? ('image_' . ($index + 1))));
+            $media_results[$key] = $media;
+
+            $role = sanitize_key((string) ($item['role'] ?? 'inline'));
+            if ($role === 'featured' || !empty($item['set_featured'])) {
+                set_post_thumbnail($post_id, (int) $media['media_id']);
+            }
+
+            if ($role !== 'featured') {
+                $placeholder = (string) ($item['placeholder'] ?? ('{{a3tal_image:' . $key . '}}'));
+                $html = self::bundle_image_html(
+                    $media,
+                    (string) ($item['alt'] ?? ''),
+                    (string) ($item['caption'] ?? '')
+                );
+
+                if ($placeholder !== '' && strpos($content, $placeholder) !== false) {
+                    $content = str_replace($placeholder, $html, $content);
+                } elseif (!empty($item['append_if_missing'])) {
+                    $content .= "\n" . $html;
+                }
+            }
+        }
+
+        $final_status = sanitize_key((string) ($post_data['status'] ?? ($data['status'] ?? 'publish')));
+        if (!in_array($final_status, ['draft', 'publish', 'private', 'pending', 'future'], true)) {
+            $final_status = 'publish';
+        }
+
+        $final = wp_update_post([
+            'ID' => $post_id,
+            'post_content' => wp_kses_post($content),
+            'post_status' => $final_status,
+        ], true);
+        if (is_wp_error($final)) {
+            return $final;
+        }
+
+        clean_post_cache($post_id);
+
+        return rest_ensure_response([
+            'ok' => true,
+            'post' => self::post_payload(get_post($post_id)),
+            'media' => $media_results,
+        ]);
     }
 
     public static function upload_image(WP_REST_Request $request) {
