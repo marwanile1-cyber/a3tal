@@ -1,94 +1,81 @@
-# A3tal AI Bridge
+# A3tal Direct Bridge 3.0
 
-Custom WordPress REST bridge for **a3tal.com**.
+Administrator-grade WordPress REST bridge for **a3tal.com**.
 
-## Why this exists
+## Live architecture
 
-This plugin gives a trusted AI client a direct, controlled path to manage A3tal.com without depending on WPVibe/WPWriter limits.
+- WordPress plugin: `a3tal-direct-bridge.php`
+- REST namespace: `/wp-json/a3tal-direct/v1`
+- GitHub workflow: `.github/workflows/a3tal-bridge.yml`
+- Authentication: repository secret `A3TAL_API_KEY` sent in request headers
+- The API key must never be committed to the repository or placed in a URL.
 
-It supports:
+## Existing content operations
 
-- Reading a post by ID
-- Searching posts/pages
-- Creating new posts
-- Updating title/content/excerpt/status/slug/categories/tags
-- Updating Yoast focus keyword, SEO title, meta description and canonical
-- Uploading an image from a URL
-- Setting/verifying featured images
-- Inserting images into post content
-- Creating 301/302/307/308 redirects
-- Rolling back the latest post edit
-- API-key authentication
+- Read/search posts and pages
+- Create/update posts and pages
+- Yoast title, focus keyword, meta description and canonical
+- Upload images, set featured images and insert images in content
+- Redirects
+- Per-post rollback snapshots
 
-## Installation
+## Administrator gateway
 
-1. Download/clone this repository.
-2. Place `a3tal-ai-bridge.php` inside a plugin folder named `a3tal-ai-bridge`.
-3. Upload that folder to `wp-content/plugins/` or install it as a ZIP.
-4. Activate **A3tal AI Bridge**.
-5. In WordPress admin open **Tools → A3tal AI Bridge**.
-6. Click **Generate New Random Key**.
-7. Keep the key private. Do **not** commit it to GitHub.
+Use `GET|POST /admin` with an `op` parameter.
 
-## Authentication
+Read operations include:
 
-Send either:
+- `site_info`
+- `plugins`
+- `themes`
+- `users`
+- `roles`
+- `options`
+- `terms`
+- `menus`
+- `comments`
+- `updates`
+- `cron`
+- `file_read`
+- `file_list`
+- `post_meta`
+- `theme_mods`
+- `audit_log`
 
-```
-X-A3tal-Key: YOUR_SECRET_KEY
-```
+Write operations include:
 
-or:
+- Site option set/delete
+- Arbitrary post meta set/delete
+- Taxonomy term create/update/delete
+- Navigation menu create/update/assign/delete
+- User create/update/delete
+- Role create/update/delete
+- Plugin install/activate/deactivate/update/delete
+- Theme install/activate/update/delete
+- WordPress core update
+- Theme mod set/delete
+- Cache and rewrite flushing
+- Transient cleanup
+- Cron execution/unscheduling
+- Text/code file management inside `wp-content`
+- `bridge_self_update` for future bridge releases
 
-```
-Authorization: Bearer YOUR_SECRET_KEY
-```
+Destructive or code-writing operations require explicit `confirm=true`; the highest-risk operations also require `dangerous=true`.
 
-## REST base
+## Boundary
 
-```
-https://a3tal.com/wp-json/a3tal-ai/v1/
-```
+Bridge 3.0 is designed to provide WordPress Administrator-level control. It intentionally does **not** provide operating-system root access, arbitrary shell execution, access to `wp-config.php`, or unrestricted filesystem access outside `wp-content`.
 
-## Main routes
+## Audit and safety
 
-- `GET /status`
-- `GET /post/{id}`
-- `GET /search-posts?search=...`
-- `POST /create-post`
-- `POST /update-post`
-- `POST /upload-image`
-- `POST /set-featured-image`
-- `POST /insert-images`
-- `POST /redirect`
-- `POST /rollback-last`
+- Admin mutations are logged inside WordPress in a rolling bridge audit log.
+- The bridge authentication option cannot be changed through the API.
+- File paths are normalized and restricted to `wp-content`.
+- File writes support `expected_sha256` conflict checking.
+- GitHub Actions suppresses `/admin` response bodies by default so sensitive values are not written to public logs.
+- A backup branch was created before the 3.0 upgrade: `backup/bridge-2.1.1-2026-09-28`.
+- A PHP lint workflow checks bridge syntax on every bridge-file push.
 
-## Example: update a post
+## Current deployment note
 
-```json
-{
-  "id": 80963,
-  "title": "New title",
-  "content": "<p>Updated article...</p>",
-  "status": "publish",
-  "meta": {
-    "_yoast_wpseo_focuskw": "focus keyword",
-    "_yoast_wpseo_title": "SEO title",
-    "_yoast_wpseo_metadesc": "Meta description"
-  }
-}
-```
-
-## Example: create a 301 redirect
-
-```json
-{
-  "source_path": "/red-vs-green-coolant-car/",
-  "target_url": "https://a3tal.com/ultimate-radiator-coolant-guide-types-differences/",
-  "status_code": 301
-}
-```
-
-## Security
-
-The repository must never contain the live API key. The secret stays inside WordPress options and is compared with `hash_equals()`.
+Updating this repository does not update the currently installed WordPress plugin automatically. The live site was verified on 2026-09-28 and reported Bridge **2.1.0**. Version 3.0 must therefore be installed on the site once. After 3.0 is live, the `bridge_self_update` operation can update the bridge from this repository for future releases.
