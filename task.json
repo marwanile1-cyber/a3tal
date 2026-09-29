@@ -4,7 +4,7 @@
       "method": "POST",
       "path": "/upload-image-data",
       "body": {
-        "post_id": 82639,
+        "post_id": 82603,
         "image_base64_parts": [
           "temp-media/opel-frontera/part-00.b64",
           "temp-media/opel-frontera/part-01.b64",
@@ -21,10 +21,7 @@
         "title": "أوبل فرونتيرا في مصر",
         "alt": "أوبل فرونتيرا الجديدة في مصر",
         "set_featured": true,
-        "convert_webp": false,
-        "max_width": 3840,
-        "max_height": 2160,
-        "quality": 84
+        "convert_webp": false
       },
       "log_response": true
     },
@@ -32,7 +29,7 @@
       "method": "POST",
       "path": "/update-post",
       "body": {
-        "id": 82639,
+        "id": 82603,
         "status": "publish"
       },
       "log_response": true
@@ -40,7 +37,7 @@
   ],
   "verify": [
     {
-      "path": "/post/82639",
+      "path": "/post/82603",
       "log_response": true
     }
   ]
