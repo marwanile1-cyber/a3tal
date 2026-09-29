@@ -3,19 +3,15 @@
     {
       "method": "POST",
       "path": "/admin",
-      "body": {
-        "op": "theme_install",
-        "source_url": "https://raw.githubusercontent.com/marwanile1-cyber/a3tal/main/theme-builds/a3tal-diagnostic-ui.zip",
-        "activate": false,
-        "confirm": true
-      },
+      "body": {"op":"terms","taxonomy":"category","limit":300},
+      "log_response": true
+    },
+    {
+      "method": "POST",
+      "path": "/admin",
+      "body": {"op":"menus"},
       "log_response": true
     }
   ],
-  "verify": [
-    {
-      "path": "/admin?op=themes",
-      "log_response": true
-    }
-  ]
+  "verify": []
 }
