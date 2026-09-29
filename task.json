@@ -2,49 +2,12 @@
   "requests": [
     {
       "method": "POST",
-      "path": "/insert-images",
+      "path": "/admin",
       "body": {
-        "post_id": 82612,
-        "images": [
-          {
-            "url": "https://a3tal.com/wp-content/uploads/2026/09/xpeng-p7plus-super-reev-system.webp",
-            "alt": "رسم توضيحي حصري لمنظومة REEV في XPENG P7+",
-            "caption": "تصميم حصري لأعطال.كوم يوضح توزيع البطارية ومولد البنزين والمحرك الكهربائي في منظومة REEV.",
-            "after": "<h2>كيف تعمل منظومة Super REEV؟</h2>"
-          },
-          {
-            "url": "https://a3tal.com/wp-content/uploads/2026/09/xpeng-p7plus-cargo-space.webp",
-            "alt": "رسم حصري يوضح تصميم Fastback ومساحة التحميل في XPENG P7+",
-            "caption": "تصميم حصري لأعطال.كوم يوضح شكل الـFastback ومساحة التحميل الكبيرة في XPENG P7+.",
-            "after": "<h2>تصميم Fastback ومساحة شنطة ضخمة</h2>"
-          }
-        ]
-      },
-      "log_response": true
-    },
-    {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 82612,
-        "status": "publish",
-        "categories": [
-          374
-        ],
-        "meta": {
-          "_yoast_wpseo_focuskw": "XPENG P7+ Super REEV",
-          "_yoast_wpseo_title": "XPENG P7+ Super REEV في مصر | السعر والمدى والمواصفات",
-          "_yoast_wpseo_metadesc": "سعر XPENG P7+ Super REEV في مصر 2,199,900 جنيه. بطارية 49.2 kWh، مدى كهربائي 430 كم وإجمالي 1550 كم مع مقارنة G7.",
-          "_yoast_wpseo_canonical": "https://a3tal.com/xpeng-p7-plus-super-reev-price-specs-egypt/"
-        }
+        "op": "cache_flush"
       },
       "log_response": true
     }
   ],
-  "verify": [
-    {
-      "path": "/post/82612",
-      "log_response": true
-    }
-  ]
+  "verify": []
 }
