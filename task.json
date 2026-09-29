@@ -4,40 +4,28 @@
       "method": "POST",
       "path": "/upload-image-data",
       "body": {
-        "post_id": 82603,
+        "post_id": 82606,
         "image_base64_parts": [
-          "temp-media/opel-frontera/part-00.b64",
-          "temp-media/opel-frontera/part-01.b64",
-          "temp-media/opel-frontera/part-02.b64",
-          "temp-media/opel-frontera/part-03.b64",
-          "temp-media/opel-frontera/part-04.b64",
-          "temp-media/opel-frontera/part-05.b64",
-          "temp-media/opel-frontera/part-06.b64",
-          "temp-media/opel-frontera/part-07.b64",
-          "temp-media/opel-frontera/part-08.b64",
-          "temp-media/opel-frontera/part-09.b64"
+          "temp-media/xpeng-g7-feat-1.b64",
+          "temp-media/xpeng-g7-feat-2.b64",
+          "temp-media/xpeng-g7-feat-3.b64",
+          "temp-media/xpeng-g7-feat-4.b64",
+          "temp-media/xpeng-g7-feat-5.b64",
+          "temp-media/xpeng-g7-feat-6.b64",
+          "temp-media/xpeng-g7-feat-7.b64"
         ],
-        "filename": "opel-frontera-featured-4k.webp",
-        "title": "أوبل فرونتيرا في مصر",
-        "alt": "أوبل فرونتيرا الجديدة في مصر",
+        "filename": "xpeng-g7-super-reev-egypt-featured-4k.webp",
+        "title": "XPENG G7 Super REEV في مصر",
+        "alt": "XPENG G7 Super REEV الجديدة في مصر",
         "set_featured": true,
         "convert_webp": false
-      },
-      "log_response": true
-    },
-    {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 82603,
-        "status": "publish"
       },
       "log_response": true
     }
   ],
   "verify": [
     {
-      "path": "/post/82603",
+      "path": "/post/82606",
       "log_response": true
     }
   ]
