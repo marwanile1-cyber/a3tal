@@ -2,22 +2,49 @@
   "requests": [
     {
       "method": "POST",
-      "path": "/upload-image-data",
+      "path": "/insert-images",
       "body": {
         "post_id": 82606,
-        "image_base64_parts": [
-          "temp-media/xpeng-g7-cargo-1.b64",
-          "temp-media/xpeng-g7-cargo-2.b64",
-          "temp-media/xpeng-g7-cargo-3.b64",
-          "temp-media/xpeng-g7-cargo-4.b64",
-          "temp-media/xpeng-g7-cargo-5.b64"
+        "images": [
+          {
+            "url": "https://a3tal.com/wp-content/uploads/2026/09/xpeng-g7-super-reev-interior-4k-scaled.webp",
+            "alt": "مقصورة XPENG G7 Super REEV والشاشة والتجهيزات الداخلية",
+            "caption": "تصميم حصري لأعطال.كوم يوضح مقصورة XPENG G7 Super REEV وتجهيزاتها التقنية.",
+            "after": "<h2>المقصورة والتكنولوجيا</h2>"
+          },
+          {
+            "url": "https://a3tal.com/wp-content/uploads/2026/09/xpeng-g7-storage-4k-scaled.webp",
+            "alt": "مساحة الشنطة في XPENG G7 Super REEV بعد طي المقاعد",
+            "caption": "تصميم حصري لأعطال.كوم يوضح مساحة التحميل في XPENG G7 Super REEV.",
+            "after": "<h2>مساحة الشنطة: واحدة من أقوى نقاط G7</h2>"
+          }
+        ]
+      },
+      "log_response": true
+    },
+    {
+      "method": "POST",
+      "path": "/update-post",
+      "body": {
+        "id": 82606,
+        "status": "publish",
+        "categories": [
+          374
         ],
-        "filename": "xpeng-g7-storage-4k.webp",
-        "set_featured": false,
-        "convert_webp": false
+        "meta": {
+          "_yoast_wpseo_focuskw": "XPENG G7 Super REEV",
+          "_yoast_wpseo_title": "XPENG G7 Super REEV في مصر | السعر والمدى والمواصفات",
+          "_yoast_wpseo_metadesc": "سعر XPENG G7 Super REEV في مصر 2,249,900 جنيه. بطارية 55.8 kWh، مدى كهربائي 430 كم ومدى إجمالي 1704 كم مع مقارنة المنافسين.",
+          "_yoast_wpseo_canonical": "https://a3tal.com/xpeng-g7-super-reev-price-specs-egypt/"
+        }
       },
       "log_response": true
     }
   ],
-  "verify": []
+  "verify": [
+    {
+      "path": "/post/82606",
+      "log_response": true
+    }
+  ]
 }
