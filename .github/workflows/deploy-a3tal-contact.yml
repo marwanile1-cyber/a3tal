@@ -1,0 +1,65 @@
+name: Deploy A3tal Contact
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "plugin-source/a3tal-contact/**"
+      - ".github/workflows/deploy-a3tal-contact.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  package-install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate plugin
+        shell: bash
+        run: |
+          set -euo pipefail
+          php -l plugin-source/a3tal-contact/a3tal-contact.php
+
+      - name: Build package
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f plugin-builds/a3tal-contact.zip
+          mkdir -p plugin-builds /tmp/a3tal-contact-build
+          rm -rf /tmp/a3tal-contact-build/a3tal-contact
+          cp -R plugin-source/a3tal-contact /tmp/a3tal-contact-build/a3tal-contact
+          cd /tmp/a3tal-contact-build
+          zip -qr "$GITHUB_WORKSPACE/plugin-builds/a3tal-contact.zip" a3tal-contact
+          unzip -t "$GITHUB_WORKSPACE/plugin-builds/a3tal-contact.zip"
+
+      - name: Commit package
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "a3tal-plugin-builder"
+          git config user.email "actions@users.noreply.github.com"
+          git add plugin-builds/a3tal-contact.zip
+          if ! git diff --cached --quiet; then
+            git commit -m "build: package A3tal Contact"
+            git push
+          fi
+
+      - name: Install and activate
+        env:
+          A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="https://a3tal.com/wp-json/a3tal-direct/v1"
+          SOURCE="https://raw.githubusercontent.com/marwanile1-cyber/a3tal/main/plugin-builds/a3tal-contact.zip?ts=$(date +%s)"
+          BODY="$(jq -nc --arg source "$SOURCE" '{op:"plugin_install",source_url:$source,activate:true,confirm:true}')"
+          RESPONSE=/tmp/install.json
+          STATUS="$(curl --retry 4 --retry-delay 3 --retry-all-errors --connect-timeout 20 --max-time 180 --silent --show-error -o "$RESPONSE" -w "%{http_code}" -X POST -H "X-A3tal-Key: $A3TAL_API_KEY" -H "Authorization: Bearer $A3TAL_API_KEY" -H "Content-Type: application/json" --data "$BODY" "$BASE/admin")"
+          cat "$RESPONSE" | jq .
+          test "$STATUS" -ge 200 -a "$STATUS" -lt 300
+          jq -e '.ok == true and .result.active == true' "$RESPONSE"
