@@ -2,15 +2,8 @@
   "requests": [
     {
       "method": "POST",
-      "path": "/upload-image",
-      "body": {
-        "image_url": "https://raw.githubusercontent.com/marwanile1-cyber/a3tal/main/temp-media/p0455-evap-featured-corrected-4k.webp",
-        "post_id": 82598,
-        "filename": "p0455-evap-featured-corrected-4k.webp",
-        "title": "تشخيص كود P0455 وتسريب نظام EVAP",
-        "alt": "تشخيص كود P0455 وتسريب كبير في نظام EVAP وعلبة الفحم النشط",
-        "set_featured": true
-      },
+      "path": "/admin",
+      "body": {"op":"cache_flush"},
       "log_response": true
     }
   ],
