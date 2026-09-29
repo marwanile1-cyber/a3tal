@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2560" height="1440" viewBox="0 0 2560 1440">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#09111c"/><stop offset="1" stop-color="#172d42"/></linearGradient>
+<linearGradient id="car" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#dfe7ef"/><stop offset=".5" stop-color="#6f8395"/><stop offset="1" stop-color="#d5dee7"/></linearGradient>
+<filter id="g"><feGaussianBlur stdDeviation="18"/></filter>
+</defs>
+<rect width="2560" height="1440" fill="url(#bg)"/>
+<circle cx="1750" cy="420" r="360" fill="#2d8dff" opacity=".16" filter="url(#g)"/>
+<path d="M260 850 C420 650 700 540 1050 515 C1430 490 1790 510 2080 650 C2220 720 2310 810 2350 900 L2220 955 L360 955Z" fill="url(#car)" opacity=".33" stroke="#d9e4ef" stroke-width="8"/>
+<path d="M730 585 C1010 500 1540 505 1900 610 L880 630Z" fill="#132131" opacity=".92"/>
+<rect x="870" y="770" width="760" height="120" rx="34" fill="#2b89ff" opacity=".75" stroke="#9fd1ff" stroke-width="5"/>
+<g fill="#77baff" opacity=".9"><rect x="910" y="795" width="70" height="70" rx="10"/><rect x="995" y="795" width="70" height="70" rx="10"/><rect x="1080" y="795" width="70" height="70" rx="10"/><rect x="1165" y="795" width="70" height="70" rx="10"/><rect x="1250" y="795" width="70" height="70" rx="10"/><rect x="1335" y="795" width="70" height="70" rx="10"/><rect x="1420" y="795" width="70" height="70" rx="10"/><rect x="1505" y="795" width="70" height="70" rx="10"/></g>
+<rect x="420" y="690" width="310" height="170" rx="35" fill="#ff9b45" opacity=".82" stroke="#ffd0a4" stroke-width="5"/>
+<rect x="430" y="880" width="260" height="90" rx="25" fill="#e3b14e" opacity=".75" stroke="#ffe2a8" stroke-width="4"/>
+<circle cx="1870" cy="820" r="115" fill="#9d7bff" opacity=".82" stroke="#d9ceff" stroke-width="5"/>
+<circle cx="690" cy="960" r="160" fill="#060a0f" stroke="#8fa0b2" stroke-width="7"/><circle cx="1930" cy="960" r="160" fill="#060a0f" stroke="#8fa0b2" stroke-width="7"/>
+<path d="M730 765 C790 765 820 800 870 820" stroke="#ffb365" stroke-width="16" fill="none"/><polygon points="860,795 900,822 858,844" fill="#ffb365"/>
+<path d="M1630 825 C1710 800 1760 795 1800 810" stroke="#62c0ff" stroke-width="16" fill="none"/><polygon points="1780,783 1820,810 1778,833" fill="#62c0ff"/>
+<path d="M1870 925 C1890 945 1905 960 1918 972" stroke="#bdaeff" stroke-width="16" fill="none"/><polygon points="1900,942 1935,980 1892,979" fill="#bdaeff"/>
+<g opacity=".22" stroke="#bfe1ff" stroke-width="3"><path d="M180 1180H2380"/><path d="M180 1230H2380"/></g>
+</svg>
