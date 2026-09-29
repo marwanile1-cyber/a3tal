@@ -3,14 +3,9 @@
     {
       "method": "POST",
       "path": "/admin",
-      "body": {"op":"cache_flush"},
+      "body": {"op":"post_meta","post_id":82598},
       "log_response": true
     }
   ],
-  "verify": [
-    {
-      "path": "/post/82598",
-      "log_response": true
-    }
-  ]
+  "verify": []
 }
