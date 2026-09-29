@@ -3,7 +3,13 @@
     {
       "method": "POST",
       "path": "/admin",
-      "body": {"op":"post_meta","post_id":82598},
+      "body": {"op":"post_meta","post_id":82598,"key":"_yoast_wpseo_opengraph-image"},
+      "log_response": true
+    },
+    {
+      "method": "POST",
+      "path": "/admin",
+      "body": {"op":"post_meta","post_id":82598,"key":"_yoast_wpseo_opengraph-image-id"},
       "log_response": true
     }
   ],
