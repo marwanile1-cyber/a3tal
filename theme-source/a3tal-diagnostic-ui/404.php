@@ -1,0 +1,3 @@
+<?php get_header(); ?>
+<section class="a3-section"><div class="a3-container"><div class="a3-dtc-panel"><div><span class="a3-eyebrow" style="color:#0284C7;background:#E0F2FE">404</span><h2>الصفحة دي مش موجودة</h2><p style="color:#64748B">جرّب البحث باسم العطل أو كود DTC أو موديل السيارة.</p><form class="a3-search-shell" method="get" action="<?php echo esc_url(home_url('/')); ?>"><input name="s" placeholder="ابحث في أعطال.كوم"><button class="a3-btn a3-btn-primary">بحث</button></form></div><div class="a3-dtc-art"><strong>NO DATA</strong><p>المسار غير موجود، لكن البحث غالبًا هيوصلك للمحتوى المطلوب.</p></div></div></div></section>
+<?php get_footer(); ?>
