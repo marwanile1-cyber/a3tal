@@ -4,7 +4,8 @@
       "method": "POST",
       "path": "/admin",
       "body": {
-        "op": "site_info"
+        "op": "file_list",
+        "path": "themes/a3tal-pro"
       },
       "log_response": true
     },
@@ -12,7 +13,8 @@
       "method": "POST",
       "path": "/admin",
       "body": {
-        "op": "themes"
+        "op": "file_read",
+        "path": "themes/a3tal-pro/functions.php"
       },
       "log_response": true
     },
@@ -20,7 +22,8 @@
       "method": "POST",
       "path": "/admin",
       "body": {
-        "op": "menus"
+        "op": "file_read",
+        "path": "themes/a3tal-pro/front-page.php"
       },
       "log_response": true
     },
@@ -28,24 +31,8 @@
       "method": "POST",
       "path": "/admin",
       "body": {
-        "op": "terms",
-        "taxonomy": "category",
-        "limit": 200
-      },
-      "log_response": true
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "body": {
-        "op": "options",
-        "keys": [
-          "show_on_front",
-          "page_on_front",
-          "page_for_posts",
-          "blogname",
-          "blogdescription"
-        ]
+        "op": "file_read",
+        "path": "themes/a3tal-pro/single.php"
       },
       "log_response": true
     }
