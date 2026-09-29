@@ -2,14 +2,20 @@
   "requests": [
     {
       "method": "POST",
-      "path": "/admin",
-      "body": {"op":"terms","taxonomy":"category","limit":300},
+      "path": "/search",
+      "body": {"query":"اتصل بنا","post_type":"page","status":"publish","limit":20},
       "log_response": true
     },
     {
       "method": "POST",
       "path": "/admin",
-      "body": {"op":"menus"},
+      "body": {"op":"users","limit":100},
+      "log_response": true
+    },
+    {
+      "method": "POST",
+      "path": "/admin",
+      "body": {"op":"roles"},
       "log_response": true
     }
   ],
