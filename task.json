@@ -1,48 +1,29 @@
 {
   "requests": [
     {
-      "method": "POST",
-      "path": "/upload-image-data",
-      "body": {
-        "post_id": 82603,
-        "image_base64_parts": [
-          "temp-media/frontera_b64_1.txt",
-          "temp-media/frontera_b64_2.txt",
-          "temp-media/frontera_b64_3.txt",
-          "temp-media/frontera_b64_4.txt",
-          "temp-media/frontera_b64_5.txt"
-        ],
-        "filename": "opel-frontera-egypt-featured-4k.webp",
-        "title": "أوبل فرونتيرا في مصر",
-        "alt": "أوبل فرونتيرا الجديدة في مصر",
-        "set_featured": true,
-        "convert_webp": false,
-        "quality": 90,
-        "max_width": 3840,
-        "max_height": 2160
-      },
+      "method": "GET",
+      "path": "/search-posts?search=XPENG%20G7&limit=50&status=publish",
+      "body": {},
       "log_response": true
     },
     {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 82603,
-        "status": "publish",
-        "meta": {
-          "_yoast_wpseo_focuskw": "أوبل فرونتيرا",
-          "_yoast_wpseo_title": "أوبل فرونتيرا في مصر | السعر والمواصفات والمنافسين",
-          "_yoast_wpseo_metadesc": "سعر أوبل فرونتيرا في مصر أصبح 1.23 مليون جنيه بعد زيادة 40 ألفًا. تعرف على المحرك والفتيس والـ7 مقاعد وأبرز المنافسين قبل الشراء.",
-          "_yoast_wpseo_canonical": "https://a3tal.com/opel-frontera-price-specs-egypt/"
-        }
-      },
+      "method": "GET",
+      "path": "/search-posts?search=G7%20SUPER%20REEV&limit=50&status=publish",
+      "body": {},
+      "log_response": true
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D8%A5%D9%83%D8%B3%20%D8%A8%D9%8A%D9%86%D8%AC%20G7&limit=50&status=publish",
+      "body": {},
+      "log_response": true
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=XPENG&limit=100&status=publish",
+      "body": {},
       "log_response": true
     }
   ],
-  "verify": [
-    {
-      "path": "/post/82603",
-      "log_response": true
-    }
-  ]
+  "verify": []
 }
