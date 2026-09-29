@@ -2,7 +2,7 @@
   "requests": [
     {
       "method": "GET",
-      "path": "/post/81091",
+      "path": "/post/81217",
       "log_response": true
     }
   ],
