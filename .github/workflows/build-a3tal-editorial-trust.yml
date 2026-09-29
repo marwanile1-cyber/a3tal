@@ -1,0 +1,43 @@
+name: Build A3tal Editorial Trust
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "plugin-source/a3tal-editorial-trust/**"
+      - ".github/workflows/build-a3tal-editorial-trust.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Validate
+        run: php -l plugin-source/a3tal-editorial-trust/a3tal-editorial-trust.php
+      - name: Package
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p plugin-builds /tmp/a3tal-editorial-trust-build
+          rm -f plugin-builds/a3tal-editorial-trust.zip
+          rm -rf /tmp/a3tal-editorial-trust-build/a3tal-editorial-trust
+          cp -R plugin-source/a3tal-editorial-trust /tmp/a3tal-editorial-trust-build/a3tal-editorial-trust
+          cd /tmp/a3tal-editorial-trust-build
+          zip -qr "$GITHUB_WORKSPACE/plugin-builds/a3tal-editorial-trust.zip" a3tal-editorial-trust
+          unzip -t "$GITHUB_WORKSPACE/plugin-builds/a3tal-editorial-trust.zip"
+      - name: Commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "a3tal-plugin-builder"
+          git config user.email "actions@users.noreply.github.com"
+          git add plugin-builds/a3tal-editorial-trust.zip
+          if ! git diff --cached --quiet; then
+            git commit -m "build: package A3tal Editorial Trust"
+            git push
+          fi
