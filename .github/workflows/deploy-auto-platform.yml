@@ -1,0 +1,81 @@
+name: Deploy A3tal Auto Platform Inactive
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "theme-source/a3tal-auto-platform/**"
+      - ".github/workflows/deploy-auto-platform.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  package-install:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate theme
+        shell: bash
+        run: |
+          set -euo pipefail
+          find theme-source/a3tal-auto-platform -name '*.php' -print0 | xargs -0 -n1 php -l
+          grep -q "Theme Name: A3tal Auto Platform" theme-source/a3tal-auto-platform/style.css
+
+      - name: Build package
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f theme-builds/a3tal-auto-platform.zip
+          mkdir -p theme-builds /tmp/a3tal-auto-platform-build
+          rm -rf /tmp/a3tal-auto-platform-build/a3tal-auto-platform
+          cp -R theme-source/a3tal-auto-platform /tmp/a3tal-auto-platform-build/a3tal-auto-platform
+          cd /tmp/a3tal-auto-platform-build
+          zip -qr "$GITHUB_WORKSPACE/theme-builds/a3tal-auto-platform.zip" a3tal-auto-platform
+          unzip -t "$GITHUB_WORKSPACE/theme-builds/a3tal-auto-platform.zip"
+
+      - name: Commit package
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "a3tal-theme-builder"
+          git config user.email "actions@users.noreply.github.com"
+          git add theme-builds/a3tal-auto-platform.zip
+          if git diff --cached --quiet; then
+            echo "Package unchanged."
+          else
+            git commit -m "build: package A3tal Auto Platform"
+            git push
+          fi
+
+      - name: Install inactive on A3tal.com
+        env:
+          A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="https://a3tal.com/wp-json/a3tal-direct/v1"
+          SOURCE="https://raw.githubusercontent.com/marwanile1-cyber/a3tal/main/theme-builds/a3tal-auto-platform.zip?ts=$(date +%s)"
+          BODY="$(jq -nc --arg source "$SOURCE" '{op:"theme_install",source_url:$source,activate:false,confirm:true}')"
+          RESPONSE=/tmp/install.json
+          STATUS="$(curl --retry 4 --retry-delay 3 --retry-all-errors --connect-timeout 20 --max-time 180 --silent --show-error -o "$RESPONSE" -w "%{http_code}" -X POST -H "X-A3tal-Key: $A3TAL_API_KEY" -H "Authorization: Bearer $A3TAL_API_KEY" -H "Content-Type: application/json" --data "$BODY" "$BASE/admin")"
+          cat "$RESPONSE" | jq .
+          test "$STATUS" -ge 200 -a "$STATUS" -lt 300
+          jq -e '.ok == true and .result.stylesheet == "a3tal-auto-platform" and .result.active == false' "$RESPONSE"
+
+      - name: Verify installed theme
+        env:
+          A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="https://a3tal.com/wp-json/a3tal-direct/v1"
+          RESPONSE=/tmp/themes.json
+          curl --retry 3 --retry-delay 2 --silent --show-error -o "$RESPONSE" -H "X-A3tal-Key: $A3TAL_API_KEY" -H "Authorization: Bearer $A3TAL_API_KEY" "$BASE/admin?op=themes"
+          cat "$RESPONSE" | jq .
+          jq -e '.result[] | select(.stylesheet=="a3tal-auto-platform" and .name=="A3tal Auto Platform" and .active==false)' "$RESPONSE"
