@@ -1,8 +1,8 @@
 {
   "requests": [
-    {"method":"GET","path":"/search-posts?search=%D8%A7%D8%AA%D8%B5%D9%84%20%D8%A8%D9%86%D8%A7&status=publish&limit=20","log_response":true},
-    {"method":"POST","path":"/admin","body":{"op":"users","limit":100},"log_response":true},
-    {"method":"POST","path":"/admin","body":{"op":"plugins"},"log_response":true}
+    {"method":"GET","path":"/post/41","log_response":true},
+    {"method":"GET","path":"/post/43","log_response":true},
+    {"method":"GET","path":"/search-posts?search=%D9%81%D8%B1%D9%8A%D9%82%20%D8%A3%D8%B9%D8%B7%D8%A7%D9%84&status=publish&limit=20","log_response":true}
   ],
   "verify": []
 }
