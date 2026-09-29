@@ -6,27 +6,20 @@
       "body": {
         "post_id": 82606,
         "image_base64_parts": [
-          "temp-media/xpeng-g7-feat-1.b64",
-          "temp-media/xpeng-g7-feat-2.b64",
-          "temp-media/xpeng-g7-feat-3.b64",
-          "temp-media/xpeng-g7-feat-4.b64",
-          "temp-media/xpeng-g7-feat-5.b64",
-          "temp-media/xpeng-g7-feat-6.b64",
-          "temp-media/xpeng-g7-feat-7.b64"
+          "temp-media/xpeng-g7-int-1.b64",
+          "temp-media/xpeng-g7-int-2.b64",
+          "temp-media/xpeng-g7-int-3.b64",
+          "temp-media/xpeng-g7-int-4.b64",
+          "temp-media/xpeng-g7-int-5.b64"
         ],
-        "filename": "xpeng-g7-super-reev-egypt-featured-4k.webp",
-        "title": "XPENG G7 Super REEV في مصر",
-        "alt": "XPENG G7 Super REEV الجديدة في مصر",
-        "set_featured": true,
+        "filename": "xpeng-g7-super-reev-interior-4k.webp",
+        "title": "مقصورة XPENG G7 Super REEV",
+        "alt": "مقصورة XPENG G7 Super REEV والشاشة والتجهيزات الداخلية",
+        "set_featured": false,
         "convert_webp": false
       },
       "log_response": true
     }
   ],
-  "verify": [
-    {
-      "path": "/post/82606",
-      "log_response": true
-    }
-  ]
+  "verify": []
 }
