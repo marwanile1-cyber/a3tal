@@ -2,22 +2,12 @@
   "requests": [
     {
       "method": "GET",
-      "path": "/post/81045",
+      "path": "/post/79928",
       "log_response": true
     },
     {
       "method": "GET",
-      "path": "/post/81052",
-      "log_response": true
-    },
-    {
-      "method": "GET",
-      "path": "/post/81055",
-      "log_response": true
-    },
-    {
-      "method": "GET",
-      "path": "/post/81031",
+      "path": "/post/79977",
       "log_response": true
     }
   ],
