@@ -4,38 +4,18 @@
       "method": "POST",
       "path": "/admin",
       "body": {
-        "op": "file_list",
-        "path": "themes/a3tal-pro"
-      },
-      "log_response": true
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "body": {
-        "op": "file_read",
-        "path": "themes/a3tal-pro/functions.php"
-      },
-      "log_response": true
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "body": {
-        "op": "file_read",
-        "path": "themes/a3tal-pro/front-page.php"
-      },
-      "log_response": true
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "body": {
-        "op": "file_read",
-        "path": "themes/a3tal-pro/single.php"
+        "op": "theme_install",
+        "source_url": "https://raw.githubusercontent.com/marwanile1-cyber/a3tal/main/theme-builds/a3tal-diagnostic-ui.zip",
+        "activate": false,
+        "confirm": true
       },
       "log_response": true
     }
   ],
-  "verify": []
+  "verify": [
+    {
+      "path": "/admin?op=themes",
+      "log_response": true
+    }
+  ]
 }
