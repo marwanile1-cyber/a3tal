@@ -6,15 +6,13 @@
       "body": {
         "post_id": 82606,
         "image_base64_parts": [
-          "temp-media/xpeng-g7-int-1.b64",
-          "temp-media/xpeng-g7-int-2.b64",
-          "temp-media/xpeng-g7-int-3.b64",
-          "temp-media/xpeng-g7-int-4.b64",
-          "temp-media/xpeng-g7-int-5.b64"
+          "temp-media/xpeng-g7-cargo-1.b64",
+          "temp-media/xpeng-g7-cargo-2.b64",
+          "temp-media/xpeng-g7-cargo-3.b64",
+          "temp-media/xpeng-g7-cargo-4.b64",
+          "temp-media/xpeng-g7-cargo-5.b64"
         ],
-        "filename": "xpeng-g7-super-reev-interior-4k.webp",
-        "title": "مقصورة XPENG G7 Super REEV",
-        "alt": "مقصورة XPENG G7 Super REEV والشاشة والتجهيزات الداخلية",
+        "filename": "xpeng-g7-storage-4k.webp",
         "set_featured": false,
         "convert_webp": false
       },
