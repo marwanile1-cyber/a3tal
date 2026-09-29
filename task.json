@@ -2,17 +2,20 @@
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=&limit=100&status=publish",
+      "path": "/search-posts?search=Venue&limit=50&status=publish",
       "body": {},
       "log_response": true
     },
     {
-      "method": "POST",
-      "path": "/admin",
-      "body": {
-        "op": "terms",
-        "taxonomy": "category"
-      },
+      "method": "GET",
+      "path": "/search-posts?search=%D9%87%D9%8A%D9%88%D9%86%D8%AF%D8%A7%D9%8A%20%D9%81%D9%8A%D9%86%D9%8A%D9%88&limit=50&status=publish",
+      "body": {},
+      "log_response": true
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D9%81%D9%8A%D9%86%D9%8A%D9%88&limit=50&status=publish",
+      "body": {},
       "log_response": true
     }
   ],
