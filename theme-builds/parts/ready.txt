@@ -1,0 +1,1 @@
+Build A3tal Diagnostic UI standalone package.
