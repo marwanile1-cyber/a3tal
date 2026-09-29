@@ -2,52 +2,41 @@
   "requests": [
     {
       "method": "POST",
-      "path": "/upload-image-data",
+      "path": "/insert-images",
       "body": {
         "post_id": 82612,
-        "image_svg_file": "temp-media/xpeng-p7plus-featured.svg",
-        "render_width": 3840,
-        "render_height": 2160,
-        "render_quality": 88,
-        "filename": "xpeng-p7plus-super-reev-egypt-featured-4k.webp",
-        "title": "XPENG P7+ Super REEV في مصر",
-        "alt": "XPENG P7+ Super REEV الجديدة في مصر",
-        "set_featured": true,
-        "convert_webp": false
+        "images": [
+          {
+            "url": "https://a3tal.com/wp-content/uploads/2026/09/xpeng-p7plus-super-reev-system.webp",
+            "alt": "رسم توضيحي حصري لمنظومة REEV في XPENG P7+",
+            "caption": "تصميم حصري لأعطال.كوم يوضح توزيع البطارية ومولد البنزين والمحرك الكهربائي في منظومة REEV.",
+            "after": "<h2>كيف تعمل منظومة Super REEV؟</h2>"
+          },
+          {
+            "url": "https://a3tal.com/wp-content/uploads/2026/09/xpeng-p7plus-cargo-space.webp",
+            "alt": "رسم حصري يوضح تصميم Fastback ومساحة التحميل في XPENG P7+",
+            "caption": "تصميم حصري لأعطال.كوم يوضح شكل الـFastback ومساحة التحميل الكبيرة في XPENG P7+.",
+            "after": "<h2>تصميم Fastback ومساحة شنطة ضخمة</h2>"
+          }
+        ]
       },
       "log_response": true
     },
     {
       "method": "POST",
-      "path": "/upload-image-data",
+      "path": "/update-post",
       "body": {
-        "post_id": 82612,
-        "image_svg_file": "temp-media/xpeng-p7plus-reev.svg",
-        "render_width": 2560,
-        "render_height": 1440,
-        "render_quality": 90,
-        "filename": "xpeng-p7plus-super-reev-system.webp",
-        "title": "منظومة XPENG P7+ Super REEV",
-        "alt": "رسم توضيحي حصري لمنظومة REEV في XPENG P7+",
-        "set_featured": false,
-        "convert_webp": false
-      },
-      "log_response": true
-    },
-    {
-      "method": "POST",
-      "path": "/upload-image-data",
-      "body": {
-        "post_id": 82612,
-        "image_svg_file": "temp-media/xpeng-p7plus-space.svg",
-        "render_width": 2560,
-        "render_height": 1440,
-        "render_quality": 90,
-        "filename": "xpeng-p7plus-cargo-space.webp",
-        "title": "مساحة XPENG P7+ Super REEV",
-        "alt": "رسم حصري يوضح تصميم Fastback ومساحة التحميل في XPENG P7+",
-        "set_featured": false,
-        "convert_webp": false
+        "id": 82612,
+        "status": "publish",
+        "categories": [
+          374
+        ],
+        "meta": {
+          "_yoast_wpseo_focuskw": "XPENG P7+ Super REEV",
+          "_yoast_wpseo_title": "XPENG P7+ Super REEV في مصر | السعر والمدى والمواصفات",
+          "_yoast_wpseo_metadesc": "سعر XPENG P7+ Super REEV في مصر 2,199,900 جنيه. بطارية 49.2 kWh، مدى كهربائي 430 كم وإجمالي 1550 كم مع مقارنة G7.",
+          "_yoast_wpseo_canonical": "https://a3tal.com/xpeng-p7-plus-super-reev-price-specs-egypt/"
+        }
       },
       "log_response": true
     }
