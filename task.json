@@ -1,23 +1,8 @@
 {
   "requests": [
-    {
-      "method": "POST",
-      "path": "/search",
-      "body": {"query":"اتصل بنا","post_type":"page","status":"publish","limit":20},
-      "log_response": true
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "body": {"op":"users","limit":100},
-      "log_response": true
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "body": {"op":"roles"},
-      "log_response": true
-    }
+    {"method":"GET","path":"/search-posts?search=%D8%A7%D8%AA%D8%B5%D9%84%20%D8%A8%D9%86%D8%A7&status=publish&limit=20","log_response":true},
+    {"method":"POST","path":"/admin","body":{"op":"users","limit":100},"log_response":true},
+    {"method":"POST","path":"/admin","body":{"op":"plugins"},"log_response":true}
   ],
   "verify": []
 }
