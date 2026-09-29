@@ -2,13 +2,13 @@
 /**
  * Plugin Name: A3tal Editorial Trust
  * Description: Editorial roles, public author profiles, reviewer attribution and trust metadata for A3tal.com.
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author: A3tal.com
  */
 if (!defined('ABSPATH')) exit;
 
 final class A3tal_Editorial_Trust {
-    const VERSION = '1.0.0';
+    const VERSION = '1.1.0';
     const META_REVIEWER = '_a3tal_reviewed_by';
 
     public static function init() {
@@ -145,15 +145,49 @@ final class A3tal_Editorial_Trust {
         return $content . $box;
     }
 
+    private static function core_team() {
+        return [
+            [
+                'name' => 'م/ محمد',
+                'role' => 'مهندس تشخيص أعطال وتكييف سيارات',
+                'experience' => 'خبرة نحو 15 عامًا',
+                'center' => 'مركز أوبل كينج دوم',
+                'bio' => 'متخصص في تشخيص أعطال السيارات وأنظمة التكييف، ويشارك في المراجعة الفنية للمحتوى المرتبط بالأعراض، خطوات الفحص، وأعطال التكييف.'
+            ],
+            [
+                'name' => 'م/ أحمد',
+                'role' => 'مهندس استقبال وفحص شامل للسيارات',
+                'experience' => 'خبرة نحو 10 سنوات',
+                'center' => 'مركز أوبل كينج دوم',
+                'bio' => 'متخصص في الكشف على حالة السيارة بالكامل وتشخيص مشكلات الميكانيكا والعفشة، ويشارك في مراجعة المحتوى المرتبط بالفحص والتشخيص العام.'
+            ],
+            [
+                'name' => 'م/ محمود',
+                'role' => 'متخصص كهرباء سيارات',
+                'experience' => 'خبرة نحو 5 سنوات',
+                'center' => 'مركز أوبل كينج دوم',
+                'bio' => 'متخصص في أعطال كهرباء السيارات، ويشارك في مراجعة المحتوى المرتبط بالدوائر الكهربائية، الشحن، البطارية، والحساسات.'
+            ],
+        ];
+    }
+
+    private static function core_team_card($person) {
+        return '<article class="a3tal-trust-person a3tal-core-team-person"><div class="a3tal-team-initial">' . esc_html(mb_substr(str_replace('م/ ', '', $person['name']), 0, 1)) . '</div><div><small>فريق المراجعة الفنية</small><strong>' . esc_html($person['name']) . '</strong><span>' . esc_html($person['role']) . '</span><em>' . esc_html($person['experience']) . ' • ' . esc_html($person['center']) . '</em><p>' . esc_html($person['bio']) . '</p></div></article>';
+    }
+
     public static function team_shortcode() {
-        $users = get_users(['meta_key' => 'a3tal_public_profile', 'meta_value' => '1', 'orderby' => 'display_name']);
         $cards = '';
+        foreach (self::core_team() as $person) {
+            $cards .= self::core_team_card($person);
+        }
+
+        $users = get_users(['meta_key' => 'a3tal_public_profile', 'meta_value' => '1', 'orderby' => 'display_name']);
         foreach ($users as $u) {
             if (!self::is_public_profile($u->ID)) continue;
             $cards .= self::person_card($u->ID, 'فريق أعطال.كوم');
         }
-        if ($cards === '') return '<p>سيتم عرض ملفات أعضاء فريق التحرير والمراجعة هنا بعد اكتمال بياناتهم المهنية واعتمادها للنشر.</p>';
-        return '<div class="a3tal-team-grid">' . $cards . '</div>';
+
+        return '<div class="a3tal-team-intro"><p>يعتمد أعطال.كوم على مراجعة فنية عملية للمحتوى المتخصص في الأعطال والصيانة، مع الاستفادة من خبرات فريق يعمل في مركز أوبل كينج دوم.</p></div><div class="a3tal-team-grid">' . $cards . '</div>';
     }
 }
 A3tal_Editorial_Trust::init();
