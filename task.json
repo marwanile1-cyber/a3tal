@@ -2,10 +2,79 @@
   "requests": [
     {
       "method": "POST",
-      "path": "/admin",
+      "path": "/upload-image-data",
       "body": {
-        "op": "cache_flush"
+        "post_id": 82612,
+        "image_base64_parts": [
+          "temp-media/p7fix-hero-1.b64",
+          "temp-media/p7fix-hero-2.b64",
+          "temp-media/p7fix-hero-3.b64",
+          "temp-media/p7fix-hero-4.b64",
+          "temp-media/p7fix-hero-5.b64",
+          "temp-media/p7fix-hero-6.b64",
+          "temp-media/p7fix-hero-7.b64",
+          "temp-media/p7fix-hero-8.b64",
+          "temp-media/p7fix-hero-9.b64",
+          "temp-media/p7fix-hero-10.b64"
+        ],
+        "filename": "xpeng-p7plus-discover-hero-corrected-4k.webp",
+        "title": "XPENG P7+ Super REEV في مصر",
+        "alt": "XPENG P7+ Super REEV فاستباك في مصر",
+        "set_featured": true,
+        "convert_webp": false
       },
+      "log_response": true
+    },
+    {
+      "method": "POST",
+      "path": "/upload-image-data",
+      "body": {
+        "post_id": 82612,
+        "image_base64_parts": [
+          "temp-media/p7fix-interior-1.b64",
+          "temp-media/p7fix-interior-2.b64",
+          "temp-media/p7fix-interior-3.b64",
+          "temp-media/p7fix-interior-4.b64",
+          "temp-media/p7fix-interior-5.b64",
+          "temp-media/p7fix-interior-6.b64"
+        ],
+        "filename": "xpeng-p7plus-interior-corrected-4k.webp",
+        "title": "مقصورة XPENG P7+ Super REEV",
+        "alt": "مقصورة XPENG P7+ Super REEV مع الشاشة والسقف البانورامي",
+        "set_featured": false,
+        "convert_webp": false
+      },
+      "log_response": true
+    },
+    {
+      "method": "POST",
+      "path": "/upload-image-data",
+      "body": {
+        "post_id": 82612,
+        "image_base64_parts": [
+          "temp-media/p7fix-reev-1.b64",
+          "temp-media/p7fix-reev-2.b64",
+          "temp-media/p7fix-reev-3.b64",
+          "temp-media/p7fix-reev-4.b64",
+          "temp-media/p7fix-reev-5.b64",
+          "temp-media/p7fix-reev-6.b64",
+          "temp-media/p7fix-reev-7.b64",
+          "temp-media/p7fix-reev-8.b64",
+          "temp-media/p7fix-reev-9.b64",
+          "temp-media/p7fix-reev-10.b64"
+        ],
+        "filename": "xpeng-p7plus-reev-cutaway-corrected-4k.webp",
+        "title": "منظومة XPENG P7+ Super REEV",
+        "alt": "تصور تقني لمنظومة XPENG P7+ Super REEV والبطارية والمحرك الكهربائي",
+        "set_featured": false,
+        "convert_webp": false
+      },
+      "log_response": true
+    },
+    {
+      "method": "GET",
+      "path": "/post/82612",
+      "body": {},
       "log_response": true
     }
   ],
