@@ -2,7 +2,20 @@
   "requests": [
     {
       "method": "GET",
-      "path": "/post/81494",
+      "path": "/search-posts?search=Opel%20Kingdom%20Desouk&limit=30&status=any",
+      "body": {},
+      "log_response": true
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D8%A3%D9%88%D8%A8%D9%84%20%D9%83%D9%8A%D9%86%D8%AC%20%D8%AF%D9%88%D9%85%20%D8%AF%D8%B3%D9%88%D9%82&limit=30&status=any",
+      "body": {},
+      "log_response": true
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D8%AF%D8%B3%D9%88%D9%82&limit=50&status=publish",
+      "body": {},
       "log_response": true
     }
   ],
