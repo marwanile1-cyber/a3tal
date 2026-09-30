@@ -2,20 +2,75 @@
   "requests": [
     {
       "method": "POST",
-      "path": "/create-post",
+      "path": "/upload-image-data",
       "body": {
-        "type": "page",
-        "title": "Opel Kingdom Desouk | مركز صيانة وتشخيص سيارات في دسوق",
-        "slug": "opel-kingdom-desouk",
-        "status": "draft",
-        "excerpt": "مركز Opel Kingdom Desouk في دسوق لخدمات الصيانة والتشخيص والفحص قبل الشراء والتكييف وقطع الغيار وتحويل الغاز الطبيعي وخدمة الشركات بفواتير ضريبية.",
-        "content": "<p>يتم تجهيز الصفحة.</p>",
-        "meta": {
-          "_yoast_wpseo_focuskw": "مركز صيانة سيارات في دسوق",
-          "_yoast_wpseo_title": "Opel Kingdom Desouk | صيانة وتشخيص سيارات في دسوق",
-          "_yoast_wpseo_metadesc": "Opel Kingdom Desouk في دسوق لصيانة وتشخيص السيارات، الفحص قبل الشراء، التكييف، قطع الغيار، الغاز الطبيعي وخدمة الأفراد والشركات بفواتير ضريبية.",
-          "_yoast_wpseo_canonical": "https://a3tal.com/opel-kingdom-desouk/"
-        }
+        "post_id": 82702,
+        "image_base64_parts": [
+          "temp-media/okd_exterior_1.b64",
+          "temp-media/okd_exterior_2.b64",
+          "temp-media/okd_exterior_3.b64",
+          "temp-media/okd_exterior_4.b64"
+        ],
+        "filename": "opel-kingdom-desouk-exterior.webp",
+        "title": "Opel Kingdom Desouk - مركز صيانة وتشخيص سيارات في دسوق",
+        "alt": "واجهة تصميمية لمركز Opel Kingdom Desouk لصيانة وتشخيص السيارات في دسوق",
+        "set_featured": true,
+        "convert_webp": false
+      },
+      "log_response": true
+    },
+    {
+      "method": "POST",
+      "path": "/upload-image-data",
+      "body": {
+        "post_id": 82702,
+        "image_base64_parts": [
+          "temp-media/okd_workshop_1.b64",
+          "temp-media/okd_workshop_2.b64",
+          "temp-media/okd_workshop_3.b64",
+          "temp-media/okd_workshop_4.b64"
+        ],
+        "filename": "opel-kingdom-desouk-workshop.webp",
+        "title": "ورشة Opel Kingdom Desouk",
+        "alt": "تصميم حصري لورشة Opel Kingdom Desouk وخدمات الصيانة المتكاملة",
+        "set_featured": false,
+        "convert_webp": false
+      },
+      "log_response": true
+    },
+    {
+      "method": "POST",
+      "path": "/upload-image-data",
+      "body": {
+        "post_id": 82702,
+        "image_base64_parts": [
+          "temp-media/okd_diagnostics_1.b64",
+          "temp-media/okd_diagnostics_2.b64",
+          "temp-media/okd_diagnostics_3.b64"
+        ],
+        "filename": "opel-kingdom-desouk-diagnostics.webp",
+        "title": "فحص وتشخيص السيارات في Opel Kingdom Desouk",
+        "alt": "فني يستخدم جهاز تشخيص وفحص كمبيوتر داخل مركز Opel Kingdom Desouk",
+        "set_featured": false,
+        "convert_webp": false
+      },
+      "log_response": true
+    },
+    {
+      "method": "POST",
+      "path": "/upload-image-data",
+      "body": {
+        "post_id": 82702,
+        "image_base64_parts": [
+          "temp-media/okd_gastec_1.b64",
+          "temp-media/okd_gastec_2.b64",
+          "temp-media/okd_gastec_3.b64"
+        ],
+        "filename": "opel-kingdom-desouk-gastec-cng.webp",
+        "title": "تحويل السيارات للعمل بالغاز الطبيعي",
+        "alt": "تصميم حصري لخدمة تحويل السيارات للعمل بالغاز الطبيعي بالتعاون مع غازتك",
+        "set_featured": false,
+        "convert_webp": false
       },
       "log_response": true
     }
