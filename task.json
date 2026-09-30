@@ -1,8 +1,148 @@
 {
   "requests": [
     {
-      "method": "GET",
-      "path": "/post/80723",
+      "method": "POST",
+      "path": "/upload-image-data",
+      "body": {
+        "post_id": 82681,
+        "image_base64_parts": [
+          "temp-media/kaiyi_hero_big_1.b64",
+          "temp-media/kaiyi_hero_big_2.b64",
+          "temp-media/kaiyi_hero_big_3.b64",
+          "temp-media/kaiyi_hero_big_4.b64"
+        ],
+        "filename": "kaiyi-x7-highline-egypt-featured-4k.webp",
+        "title": "كايي X7 Highline في مصر",
+        "alt": "كايي X7 Highline الجديدة ذات 7 مقاعد في مصر",
+        "set_featured": true,
+        "convert_webp": false
+      },
+      "log_response": true
+    },
+    {
+      "method": "POST",
+      "path": "/upload-image-data",
+      "body": {
+        "post_id": 82681,
+        "image_base64_parts": [
+          "temp-media/kaiyi_inner_big_1.b64",
+          "temp-media/kaiyi_inner_big_2.b64",
+          "temp-media/kaiyi_inner_big_3.b64"
+        ],
+        "filename": "kaiyi-x7-highline-interior-4k.webp",
+        "title": "مقصورة كايي X7",
+        "alt": "مقصورة كايي X7 ذات السبعة مقاعد والسقف البانورامي",
+        "set_featured": false,
+        "convert_webp": false
+      },
+      "log_response": true
+    },
+    {
+      "method": "POST",
+      "path": "/upload-image-data",
+      "body": {
+        "post_id": 82682,
+        "image_base64_parts": [
+          "temp-media/odo_hero_big_1.b64",
+          "temp-media/odo_hero_big_2.b64"
+        ],
+        "filename": "used-car-odometer-rollback-diagnosis-4k.webp",
+        "title": "فحص عداد السيارة المستعملة",
+        "alt": "فني يفحص عداد سيارة مستعملة بجهاز تشخيص OBD",
+        "set_featured": true,
+        "convert_webp": false
+      },
+      "log_response": true
+    },
+    {
+      "method": "POST",
+      "path": "/upload-image-data",
+      "body": {
+        "post_id": 82682,
+        "image_base64_parts": [
+          "temp-media/odo_inner_big_1.b64",
+          "temp-media/odo_inner_big_2.b64",
+          "temp-media/odo_inner_big_3.b64"
+        ],
+        "filename": "odometer-obd-modules-check-4k.webp",
+        "title": "فحص وحدات السيارة للكشف عن التلاعب بالعداد",
+        "alt": "جهاز OBD يفحص وحدات ECU وABS لمقارنة بيانات عداد الكيلومترات",
+        "set_featured": false,
+        "convert_webp": false
+      },
+      "log_response": true
+    },
+    {
+      "method": "POST",
+      "path": "/upload-image-data",
+      "body": {
+        "post_id": 82683,
+        "image_base64_parts": [
+          "temp-media/ev12_hero_big_1.b64",
+          "temp-media/ev12_hero_big_2.b64",
+          "temp-media/ev12_hero_big_3.b64"
+        ],
+        "filename": "ev-hybrid-12v-battery-featured-4k.webp",
+        "title": "بطارية 12 فولت في السيارة الكهربائية",
+        "alt": "فحص بطارية 12 فولت في سيارة كهربائية بجوار البطارية عالية الجهد",
+        "set_featured": true,
+        "convert_webp": false
+      },
+      "log_response": true
+    },
+    {
+      "method": "POST",
+      "path": "/upload-image-data",
+      "body": {
+        "post_id": 82683,
+        "image_base64_parts": [
+          "temp-media/ev12_inner_big_1.b64",
+          "temp-media/ev12_inner_big_2.b64",
+          "temp-media/ev12_inner_big_3.b64",
+          "temp-media/ev12_inner_big_4.b64"
+        ],
+        "filename": "ev-12v-high-voltage-system-cutaway-4k.webp",
+        "title": "شبكة 12 فولت والبطارية عالية الجهد",
+        "alt": "تصور تقني يوضح بطارية 12 فولت والبطارية عالية الجهد في سيارة كهربائية",
+        "set_featured": false,
+        "convert_webp": false
+      },
+      "log_response": true
+    },
+    {
+      "method": "POST",
+      "path": "/upload-image-data",
+      "body": {
+        "post_id": 82684,
+        "image_base64_parts": [
+          "temp-media/acwater_hero_big_1.b64",
+          "temp-media/acwater_hero_big_2.b64",
+          "temp-media/acwater_hero_big_3.b64"
+        ],
+        "filename": "car-ac-water-inside-cabin-featured-4k.webp",
+        "title": "مياه التكييف داخل السيارة",
+        "alt": "فحص مياه التكييف المتسربة في أرضية الراكب وخرطوم صرف المكيف",
+        "set_featured": true,
+        "convert_webp": false
+      },
+      "log_response": true
+    },
+    {
+      "method": "POST",
+      "path": "/upload-image-data",
+      "body": {
+        "post_id": 82684,
+        "image_base64_parts": [
+          "temp-media/acwater_inner_big_1.b64",
+          "temp-media/acwater_inner_big_2.b64",
+          "temp-media/acwater_inner_big_3.b64"
+        ],
+        "filename": "car-ac-drain-hose-underbody-4k.webp",
+        "title": "خرطوم صرف تكييف السيارة",
+        "alt": "خرطوم تصريف مياه التكييف أسفل السيارة مع خروج قطرات التكثيف",
+        "set_featured": false,
+        "convert_webp": false
+      },
       "log_response": true
     }
   ],
