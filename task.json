@@ -2,22 +2,7 @@
   "requests": [
     {
       "method": "GET",
-      "path": "/status",
-      "log_response": true
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=Dongfeng%20MAGE%20EV&limit=20&status=any",
-      "log_response": true
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=%D8%AF%D9%88%D9%86%D8%AC%20%D9%81%D9%8A%D9%86%D8%AC%20%D9%85%D9%8A%D8%AC&limit=20&status=any",
-      "log_response": true
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=Kaiyi%20X7&limit=20&status=any",
+      "path": "/post/82681",
       "log_response": true
     }
   ],
