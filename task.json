@@ -1,21 +1,22 @@
 {
   "requests": [
     {
-      "method": "GET",
-      "path": "/search-posts?search=Opel%20Kingdom%20Desouk&limit=30&status=any",
-      "body": {},
-      "log_response": true
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=%D8%A3%D9%88%D8%A8%D9%84%20%D9%83%D9%8A%D9%86%D8%AC%20%D8%AF%D9%88%D9%85%20%D8%AF%D8%B3%D9%88%D9%82&limit=30&status=any",
-      "body": {},
-      "log_response": true
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=%D8%AF%D8%B3%D9%88%D9%82&limit=50&status=publish",
-      "body": {},
+      "method": "POST",
+      "path": "/create-post",
+      "body": {
+        "type": "page",
+        "title": "Opel Kingdom Desouk | مركز صيانة وتشخيص سيارات في دسوق",
+        "slug": "opel-kingdom-desouk",
+        "status": "draft",
+        "excerpt": "مركز Opel Kingdom Desouk في دسوق لخدمات الصيانة والتشخيص والفحص قبل الشراء والتكييف وقطع الغيار وتحويل الغاز الطبيعي وخدمة الشركات بفواتير ضريبية.",
+        "content": "<p>يتم تجهيز الصفحة.</p>",
+        "meta": {
+          "_yoast_wpseo_focuskw": "مركز صيانة سيارات في دسوق",
+          "_yoast_wpseo_title": "Opel Kingdom Desouk | صيانة وتشخيص سيارات في دسوق",
+          "_yoast_wpseo_metadesc": "Opel Kingdom Desouk في دسوق لصيانة وتشخيص السيارات، الفحص قبل الشراء، التكييف، قطع الغيار، الغاز الطبيعي وخدمة الأفراد والشركات بفواتير ضريبية.",
+          "_yoast_wpseo_canonical": "https://a3tal.com/opel-kingdom-desouk/"
+        }
+      },
       "log_response": true
     }
   ],
