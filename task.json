@@ -2,7 +2,7 @@
   "requests": [
     {
       "method": "GET",
-      "path": "/post/80874",
+      "path": "/search-posts?search=%D8%AA%D9%88%D9%83%D9%8A%D9%84%20MG&limit=50&status=any",
       "log_response": true
     }
   ],
