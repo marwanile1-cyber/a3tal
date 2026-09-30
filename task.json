@@ -2,144 +2,24 @@
   "requests": [
     {
       "method": "POST",
-      "path": "/insert-images",
-      "body": {
-        "post_id": 82681,
-        "images": [
-          {
-            "url": "https://a3tal.com/wp-content/uploads/2026/09/kaiyi-x7-highline-interior-4k-scaled.webp",
-            "alt": "مقصورة كايي X7 ذات السبعة مقاعد والسقف البانورامي",
-            "caption": "تصميم حصري لأعطال.كوم يوضح تصورًا بصريًا لمقصورة SUV عائلية بسبعة مقاعد وتجهيزات الفئة.",
-            "after": "<h2>Highline أم Flagship: أين يذهب فرق السعر؟</h2>"
-          }
-        ]
-      },
-      "log_response": true
-    },
-    {
-      "method": "POST",
-      "path": "/insert-images",
-      "body": {
-        "post_id": 82682,
-        "images": [
-          {
-            "url": "https://a3tal.com/wp-content/uploads/2026/09/odometer-obd-modules-check-4k-scaled.webp",
-            "alt": "جهاز OBD يفحص وحدات ECU وABS لمقارنة بيانات عداد الكيلومترات",
-            "caption": "فحص وحدات متعددة قد يكشف تناقضات لا تظهر في رقم العداد على لوحة العدادات وحدها.",
-            "after": "<h2>افحص بيانات وحدات ABS والفتيس والـBCM</h2>"
-          }
-        ]
-      },
-      "log_response": true
-    },
-    {
-      "method": "POST",
-      "path": "/insert-images",
-      "body": {
-        "post_id": 82683,
-        "images": [
-          {
-            "url": "https://a3tal.com/wp-content/uploads/2026/09/ev-12v-high-voltage-system-cutaway-4k-scaled.webp",
-            "alt": "تصور تقني يوضح بطارية 12 فولت والبطارية عالية الجهد في سيارة كهربائية",
-            "caption": "تصميم حصري لأعطال.كوم يوضح الفرق بين شبكة 12 فولت والبطارية الرئيسية عالية الجهد.",
-            "after": "<h2>ما وظيفة بطارية 12 فولت في السيارة الكهربائية؟</h2>"
-          }
-        ]
-      },
-      "log_response": true
-    },
-    {
-      "method": "POST",
-      "path": "/insert-images",
-      "body": {
-        "post_id": 82684,
-        "images": [
-          {
-            "url": "https://a3tal.com/wp-content/uploads/2026/09/car-ac-drain-hose-underbody-4k-scaled.webp",
-            "alt": "خرطوم تصريف مياه التكييف أسفل السيارة مع خروج قطرات التكثيف",
-            "caption": "خرطوم صرف التكثيف يجب أن يسمح بخروج الماء أسفل السيارة بدل تجمعه داخل علبة المكيف أو المقصورة.",
-            "after": "<h2>أين يوجد خرطوم صرف المكيف؟</h2>"
-          }
-        ]
-      },
-      "log_response": true
-    },
-    {
-      "method": "POST",
       "path": "/update-post",
       "body": {
-        "id": 82681,
-        "status": "publish",
-        "featured_media": 82687,
-        "categories": [
-          374
-        ]
-      },
-      "log_response": true
-    },
-    {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 82682,
-        "status": "publish",
-        "featured_media": 82689,
-        "categories": [
-          20
-        ]
-      },
-      "log_response": true
-    },
-    {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 82683,
-        "status": "publish",
-        "featured_media": 82692,
-        "categories": [
-          14
-        ]
-      },
-      "log_response": true
-    },
-    {
-      "method": "POST",
-      "path": "/update-post",
-      "body": {
-        "id": 82684,
-        "status": "publish",
-        "featured_media": 82694,
-        "categories": [
-          18
-        ]
-      },
-      "log_response": true
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "body": {
-        "op": "cache_flush"
+        "id": 80877,
+        "title": "أكواد أعطال MG6: معاني DTC وطريقة التشخيص بدون تغيير قطع عشوائي",
+        "content": "<p><strong>مراجعة فنية: م/ محمد – مهندس تشخيص أعطال وتكييف سيارات، خبرة نحو 15 عامًا، مركز أوبل كينج دوم.</strong></p>\n\n<p><strong>أكواد أعطال MG6</strong> لا تُقرأ كقائمة «كود = قطعة». بعض الأكواد قياسية SAE/OBD، وبعضها Manufacturer-Specific وتحتاج تعريف MG الخاص بالموديل ووحدة التحكم. معيار SAE J2012 نفسه يحدد الأكواد القياسية ويحجز نطاقات لاستخدام الشركات المصنعة، لذلك لا يصح إعطاء سلسلة مثل P17xx معنى واحدًا لكل السيارات. citeturn825473search8</p>\n\n<h2>قبل أي شيء: احفظ الكود وFreeze Frame</h2>\n<p>لا تمسح الأكواد عند أول فحص. احفظ:</p>\n<ul>\n<li>Current / Active Codes.</li>\n<li>Pending Codes.</li>\n<li>History أو Stored Codes إذا كان الجهاز يعرضها.</li>\n<li>Freeze Frame.</li>\n<li>الوحدة التي سجلت الكود: ECM أم TCM أم ABS/EPB/BCM.</li>\n</ul>\n\n<p>الكود نفسه قد يظهر في ECM كتنبيه بينما التفاصيل الحقيقية داخل وحدة أخرى، وأوضح مثال هو P0700.</p>\n\n<h2>أكواد المحرك القياسية التي قد تراها في MG6</h2>\n<p>الأكواد التالية <strong>تعريفات OBD عامة</strong> وليست قائمة «أشهر أعطال MG6»:</p>\n\n<table>\n<thead><tr><th>الكود</th><th>المعنى العام</th><th>ابدأ بفحص</th></tr></thead>\n<tbody>\n<tr><td>P0300</td><td>Random/Multiple Cylinder Misfire</td><td>Misfire Counters، بوجيهات، كويلات، رشاشات، وقود، تسريب هواء، ضغط ميكانيكي</td></tr>\n<tr><td>P0301–P0304</td><td>Misfire في سلندر محدد</td><td>السلندر المحدد ثم مقارنة الإشعال والحقن والضغط</td></tr>\n<tr><td>P0299</td><td>Turbo/Supercharger Underboost</td><td>Requested vs Actual Boost، تسريب، Intercooler، Wastegate/Actuator، Sensor، التيربو بعد الاستبعاد</td></tr>\n<tr><td>P0011</td><td>Camshaft Timing Over-Advanced / System Performance وفق Bank/Cam المحدد</td><td>زيت ومواصفته ومستواه، Solenoid/VVT، أسلاك، توقيت ميكانيكي</td></tr>\n<tr><td>P0014</td><td>Camshaft Timing Over-Advanced / System Performance للجهة المحددة</td><td>نفس منهج VVT مع الرجوع لتعريف المحرك</td></tr>\n<tr><td>P0420</td><td>Catalyst System Efficiency Below Threshold</td><td>Misfire، Fuel Trim، تسريب عادم، O2 Sensors، ثم Catalyst</td></tr>\n</tbody>\n</table>\n\n<h2>P0300 لا يعني «بنزين 92» ولا LSPI تلقائيًا</h2>\n<p>Misfire قد ينتج من الإشعال أو الحقن أو الهواء أو الضغط الميكانيكي أو الوقود. وLSPI ظاهرة احتراق مختلفة تحدث في ظروف معينة بمحركات تيربو حقن مباشر، ولا تُشخّص من كود P0300 أو صوت «كركرة» وحدهما.</p>\n\n<p>إذا ظهر Misfire تحت حمل، احفظ ظروف Freeze Frame، راقب العدادات الخاصة بالـMisfire إن كانت متاحة، ثم افحص السبب بدل ربطه تلقائيًا بدرجة أوكتان واحدة.</p>\n\n<h2>P0299 لا يعني أن التيربو تالف</h2>\n<p>P0299 يعني أن ضغط الشحن أقل من المطلوب. افحص مسار الهواء المضغوط والإنتركولر والتحكم في الـWastegate/Actuator وحساس الضغط والتسريب قبل الحكم على التيربو.</p>\n\n<p>راجع <a href=\"https://a3tal.com/p0299-turbo-underboost-chinese-cars-fix-egypt-2026/\">دليل P0299 وUnderboost</a>.</p>\n\n<h2>P0011 وP0014: الزيت احتمال وليس «90% من السبب»</h2>\n<p>زيت غير مناسب أو متدهور قد يؤثر في أنظمة VVT، لكن الأكواد يمكن أن ترتبط أيضًا بصمام التحكم في الزيت، الدائرة الكهربائية، ترسبات، ضغط الزيت أو توقيت ميكانيكي. لا تغيّر الزيت وتعتبر التشخيص انتهى إذا عاد الكود.</p>\n\n<h2>P0420: لا تتهم «البنزين المصري» مباشرة</h2>\n<p>الكود يتعلق بكفاءة نظام المحول الحفاز كما تراقبه وحدة التحكم. قبل تغيير Catalyst افحص وجود Misfire أو خليط غير طبيعي أو تسريب عادم أو مشكلة حساسات O2. استمرار القيادة مع Misfire نشط قد يضر المحول الحفاز.</p>\n\n<h2>أكواد ناقل الحركة: ابدأ من وحدة TCM</h2>\n\n<h3>P0700</h3>\n<p><strong>P0700 = Transmission Control System (MIL Request).</strong> هو كود تنبيه/طلب إضاءة اللمبة، ولا يحدد الجزء التالف. يجب قراءة وحدة TCM نفسها للحصول على الكود أو الأكواد الأصلية. citeturn825473search0turn825473search5</p>\n\n<h3>P0810</h3>\n<p>التعريف العام هو <strong>Clutch Position Control Error</strong>. لكنه لا يثبت أن «روبوت الفتيس» تالف؛ يجب فحص موضع الكلاتش المطلوب والفعلي، الحساسات أو المشغلات والدائرة وإجراءات التعلم حسب الناقل الموجود في السيارة.</p>\n\n<h3>P0900</h3>\n<p>P0900 يرتبط عمومًا بـ<strong>Clutch Actuator Circuit/Open</strong>، وهو ليس نفس معنى P0810. افحص Power وGround والضفيرة والمشغل وأوامر وحدة التحكم قبل تغيير أي جزء.</p>\n\n<h2>لماذا لا نكتب P17xx = حرارة كلاتش؟</h2>\n<p>لأن P1xxx يتضمن نطاقات مخصصة للشركات المصنعة، وبالتالي <strong>P17xx ليست جملة تشخيص واحدة</strong>. الرقم الكامل، وحدة التحكم، سنة الموديل، نوع الناقل وتعريف MG في جهاز أو دليل الخدمة هي المرجع. معيار SAE J2012 ينص على وجود نطاقات Manufacturer-Specific. citeturn825473search8</p>\n\n<p>إذا ظهر كود مثل P17xx، لا تستخدم قائمة عامة من الإنترنت. اكتب الكود كاملًا كما ظهر واحتفظ بوصف جهاز MG أو جهاز تشخيص يدعم Enhanced DTCs.</p>\n\n<h2>رسالة Gearbox Fault أو سخونة الناقل</h2>\n<p>رسالة Gearbox Fault لا تعني تلقائيًا كلاتش أو TCU. احفظ الكود والحرارة والظروف التي ظهرت فيها الرسالة. وإذا كانت السيارة تطلب التوقف بسبب حرارة مرتفعة، اتبع رسالة السيارة ودليل المالك.</p>\n\n<p>لا نستخدم قاعدة «حط N واتركها دائرة 5 دقائق» لكل عطل؛ الإجراء يختلف حسب سبب التحذير وتصميم الناقل.</p>\n\n<h2>U0100 وU0101: فقد الاتصال ليس 95% بطارية</h2>\n<table>\n<thead><tr><th>الكود</th><th>المعنى العام</th></tr></thead>\n<tbody>\n<tr><td>U0100</td><td>Lost Communication With ECM/PCM</td></tr>\n<tr><td>U0101</td><td>Lost Communication With TCM</td></tr>\n</tbody>\n</table>\n\n<p>البطارية الضعيفة أو انخفاض الجهد قد يولدان أكواد اتصال، لكن لا توجد قاعدة موثقة تقول إن 95% من حالات MG6 سببها البطارية. الفحص يشمل:</p>\n<ul>\n<li>Battery Voltage أثناء Cranking.</li>\n<li>شحن الدينامو.</li>\n<li>Power وGround للوحدة المفقودة.</li>\n<li>الفيوزات والريلايات.</li>\n<li>CAN-H وCAN-L عند الحاجة.</li>\n<li>الوحدة أو وصلة الشبكة التي تمنع الاتصال.</li>\n</ul>\n\n<p>راجع <a href=\"https://a3tal.com/can-bus-u-codes-diagnosis/\">دليل CAN Bus وأكواد U</a>.</p>\n\n<h2>لمبات ABS وESP وEPB معًا</h2>\n<p>ظهور أكثر من لمبة في الوقت نفسه قد يكون بسبب عطل واحد مشترك مثل جهد منخفض أو Wheel Speed Sensor أو مشكلة شبكة، وقد تكون هناك أكواد مستقلة. اقرأ وحدات ABS/ESC/EPB نفسها، لا تكتفِ بـECM.</p>\n\n<h2>هل فصل البطارية يعالج لمبة EPB؟</h2>\n<p><strong>لا نوصي به كحل تشخيصي.</strong> قد يعيد تشغيل الوحدة أو يمسح حالة مؤقتة، لكنه لا يصلح موتور EPB أو زرًا أو حساسًا أو أسلاكًا أو تيلًا أو آلية ميكانيكية.</p>\n\n<p>عند وجود EPB Fault:</p>\n<ol>\n<li>اقرأ وحدة EPB/ABS.</li>\n<li>افحص البطارية والشحن.</li>\n<li>افحص الفيوز والتغذية والأرضي.</li>\n<li>افحص حالة التيل والآلية إذا دل الكود عليها.</li>\n<li>نفذ Service Mode أو Calibration فقط إذا يطلبها إجراء MG.</li>\n</ol>\n\n<h2>لمبة الصيانة ليست DTC</h2>\n<p>مؤشر الصيانة Service Reminder يختلف عن كود عطل. طريقة Reset تختلف حسب سنة السيارة ونظام العدادات/الشاشة. لا ننشر مسار Settings → Vehicle → Maintenance كقاعدة لكل MG6 ما لم يطابق دليل السيارة.</p>\n\n<p>بعد تنفيذ الصيانة الصحيحة، استخدم طريقة Reset الموجودة في دليل المالك أو جهاز الخدمة المناسب.</p>\n\n<h2>كيف تقرأ أكواد MG6 بطريقة صحيحة؟</h2>\n<ol>\n<li>اعمل Auto Scan لجميع الوحدات، لا ECM فقط.</li>\n<li>احفظ التقرير قبل المسح.</li>\n<li>فرّق بين Generic DTC وEnhanced/Manufacturer-Specific.</li>\n<li>اقرأ Freeze Frame والبيانات الحية.</li>\n<li>حدد Current وPending وHistory.</li>\n<li>اعمل الاختبار الموجه للدائرة قبل تغيير الجزء.</li>\n<li>بعد الإصلاح امسح الأكواد واختبر السيارة وأعد الفحص.</li>\n</ol>\n\n<h2>جدول سريع: الكود لا يساوي القطعة</h2>\n<table>\n<thead><tr><th>الكود</th><th>لا تفترض مباشرة</th><th>ما الذي تحتاجه؟</th></tr></thead>\n<tbody>\n<tr><td>P0301</td><td>كويل تالف</td><td>Misfire Test + إشعال + حقن + ضغط</td></tr>\n<tr><td>P0299</td><td>تيربو كامل</td><td>Boost Leak + Actuator + Sensor + Data</td></tr>\n<tr><td>P0420</td><td>Catalyst تالف</td><td>Misfire/Fuel Trim/O2/Exhaust Leak</td></tr>\n<tr><td>P0700</td><td>فتيس تالف</td><td>قراءة TCM</td></tr>\n<tr><td>U0101</td><td>TCM تالف</td><td>Power/Ground/CAN/Voltage</td></tr>\n<tr><td>P17xx</td><td>حرارة كلاتش</td><td>التعريف الكامل من MG لنفس الكود</td></tr>\n</tbody>\n</table>\n\n<h2>أسئلة شائعة</h2>\n\n<h3>هل جهاز OBD رخيص يكفي لقراءة MG6؟</h3>\n<p>قد يقرأ الأكواد العامة من ECM، لكنه قد لا يدخل إلى TCM وABS وEPB أو يعرض Enhanced Codes. للأعطال المعقدة تحتاج جهازًا يدعم وحدات MG الفعلية.</p>\n\n<h3>هل أمسح الكود بعد ظهوره؟</h3>\n<p>احفظه واحتفظ بـFreeze Frame أولًا. المسح قبل التشخيص قد يضيع أهم ظروف ظهور العطل.</p>\n\n<h3>هل P0700 يعني إصلاح الفتيس؟</h3>\n<p>لا. هو طلب MIL من نظام الناقل. اقرأ TCM لتعرف العطل الحقيقي. citeturn825473search0turn825473search5</p>\n\n<h3>هل كل P1xxx أكواد MG خاصة؟</h3>\n<p>ليس كل رقم في كل النطاقات له نفس الملكية أو المعنى، لكن SAE J2012 يخصص نطاقات Manufacturer-Specific. لذلك لا تعتمد على معنى Generic عندما يكون الكود خاصًا بالمصنع. citeturn825473search8</p>\n\n<h2>المصدر المعياري</h2>\n<p><a href=\"https://saemobilus.sae.org/standards/j2012_202509-diagnostic-trouble-code-definitions\" rel=\"nofollow noopener\" target=\"_blank\">SAE J2012 – Diagnostic Trouble Code Definitions</a>. citeturn825473search8</p>\n\n<h2>الخلاصة</h2>\n<p>أفضل «قاموس أكواد MG6» ليس جدولًا يربط كل كود بقطعة. الأكواد القياسية تعطي اتجاه الفحص، بينما الأكواد الخاصة تحتاج تعريف MG لنفس الوحدة والموديل. احفظ التقرير والـFreeze Frame، اقرأ TCM وABS وEPB عند الحاجة، ولا تستخدم فصل البطارية أو تغيير الزيت أو استبدال حساس كاختصار للتشخيص.</p>",
+        "excerpt": "دليل أكواد أعطال MG6: الفرق بين Generic وManufacturer-Specific، معاني P0300 وP0299 وP0420 وP0700 وU0100/U0101 وطريقة قراءة TCM وFreeze Frame.",
+        "meta": {
+          "_yoast_wpseo_focuskw": "أكواد أعطال MG6",
+          "_yoast_wpseo_title": "أكواد أعطال MG6 | معاني DTC وطريقة التشخيص",
+          "_yoast_wpseo_metadesc": "دليل أكواد أعطال MG6: الفرق بين الأكواد العامة والخاصة، ومعاني P0300 وP0299 وP0420 وP0700 وU0100/U0101 وطريقة التشخيص قبل تغيير القطع."
+        }
       },
       "log_response": true
     }
   ],
   "verify": [
     {
-      "path": "/post/82681",
-      "log_response": true
-    },
-    {
-      "path": "/post/82682",
-      "log_response": true
-    },
-    {
-      "path": "/post/82683",
-      "log_response": true
-    },
-    {
-      "path": "/post/82684",
+      "path": "/post/80877",
       "log_response": true
     }
   ]
