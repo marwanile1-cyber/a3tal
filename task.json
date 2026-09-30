@@ -1,10 +1,4 @@
 {
-  "requests": [
-    {
-      "method": "GET",
-      "path": "/post/80383",
-      "log_response": true
-    }
-  ],
+  "requests": [],
   "verify": []
 }
