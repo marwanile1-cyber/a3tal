@@ -1,10 +1,29 @@
 {
   "requests": [
     {
-      "method": "GET",
-      "path": "/post/81052",
+      "method": "POST",
+      "path": "/update-post",
+      "body": {
+        "id": 80252,
+        "status": "draft"
+      },
+      "log_response": true
+    },
+    {
+      "method": "POST",
+      "path": "/redirect",
+      "body": {
+        "source_path": "/geely-starray-2026-price-review-egypt/",
+        "target_url": "https://a3tal.com/geely-starray-2026-review-specs-faults/",
+        "status_code": 301
+      },
       "log_response": true
     }
   ],
-  "verify": []
+  "verify": [
+    {
+      "path": "/post/80252",
+      "log_response": true
+    }
+  ]
 }
