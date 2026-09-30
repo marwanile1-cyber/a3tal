@@ -2,7 +2,7 @@
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=MG%20ZS%20EV&limit=20&status=any",
+      "path": "/post/81085",
       "log_response": true
     }
   ],
