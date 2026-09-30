@@ -2,12 +2,7 @@
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=%D8%A7%D9%84%D8%B2%D9%85%D8%A7%D9%84%D9%83&limit=50&status=any",
-      "log_response": true
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=a3tal-service-center-zamalek&limit=20&status=any",
+      "path": "/post/81059",
       "log_response": true
     }
   ],
