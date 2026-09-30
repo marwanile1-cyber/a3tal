@@ -1,9 +1,42 @@
 {
   "requests": [
     {
-      "method": "GET",
-      "path": "/post/82681",
-      "log_response": true
+      "method": "POST",
+      "path": "/upload-image-data",
+      "log_response": true,
+      "body": {
+        "image_svg_file": "temp-media/dongfeng-mage-ev-featured.svg",
+        "render_width": 3840,
+        "render_height": 2160,
+        "render_quality": 88,
+        "filename": "dongfeng-mage-ev-egypt-featured.webp",
+        "title": "دونج فينج MAGE EV في مصر",
+        "alt": "دونج فينج MAGE EV الكهربائية المجمعة محليًا في مصر - تصميم حصري لأعطال.كوم",
+        "caption": "تصميم حصري لأعطال.كوم مستوحى من ملامح SUV كهربائية مدمجة.",
+        "convert_webp": true,
+        "quality": 88,
+        "max_width": 3840,
+        "max_height": 2160
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/upload-image-data",
+      "log_response": true,
+      "body": {
+        "image_svg_file": "temp-media/dongfeng-mage-ev-interior.svg",
+        "render_width": 3840,
+        "render_height": 2160,
+        "render_quality": 88,
+        "filename": "dongfeng-mage-ev-interior-egypt.webp",
+        "title": "مقصورة دونج فينج MAGE EV",
+        "alt": "تصور بصري لمقصورة دونج فينج MAGE EV مع الشاشات الرقمية والسقف البانورامي",
+        "caption": "تصور بصري حصري لأعطال.كوم مستوحى من التجهيزات الداخلية المنشورة، وليس صورة كتالوج رسمية.",
+        "convert_webp": true,
+        "quality": 88,
+        "max_width": 3840,
+        "max_height": 2160
+      }
     }
   ],
   "verify": []
