@@ -5,10 +5,10 @@
       "path": "/upload-image",
       "log_response": true,
       "body": {
-        "image_url": "https://storage.googleapis.com/automotora-colon-images/models/dongfeng/mage-ev-hero.webp",
-        "filename": "dongfeng-mage-ev-real-exterior.webp",
-        "title": "دونج فينج MAGE EV الكهربائية",
-        "alt": "دونج فينج MAGE EV الكهربائية بتصميم الواجهة الأمامية المغلقة والمصابيح الرفيعة"
+        "image_url": "https://latam-editorial.pxcrush.net/chileautos/general/editorial/mage-evestesi.jpg?pxc_format=webp&pxc_height=900&pxc_method=crop&pxc_width=1600",
+        "filename": "dongfeng-mage-ev-front-accurate-1600.webp",
+        "title": "دونج فينج MAGE EV - الواجهة الأمامية",
+        "alt": "دونج فينج MAGE EV الكهربائية بواجهة أمامية مغلقة ومصابيح LED رفيعة"
       }
     },
     {
@@ -16,10 +16,10 @@
       "path": "/upload-image",
       "log_response": true,
       "body": {
-        "image_url": "https://www.dongfeng-global.com/fr/_nuxt/img/high_07_m.cf43f2c.jpg",
-        "filename": "dongfeng-mage-ev-real-interior.jpg",
+        "image_url": "https://www.latercera.com/resizer/v2/4QCE65GZDZCIZLWOWLCLWVFSHE.png?auth=ede005dee685f615a8d33700deefcd96588921ba97bdcf5d7ebf03c464bf6988&height=900&quality=85&smart=true&width=1600",
+        "filename": "dongfeng-mage-ev-interior-accurate.png",
         "title": "مقصورة دونج فينج MAGE EV",
-        "alt": "مقصورة دونج فينج MAGE EV بالشاشة الوسطية الرأسية ولوحة العدادات الرقمية"
+        "alt": "مقصورة دونج فينج MAGE EV بالشاشة الرأسية ولوحة العدادات الرقمية والسقف البانورامي"
       }
     }
   ],
