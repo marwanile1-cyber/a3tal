@@ -2,12 +2,7 @@
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=Kia%20Sportage&limit=50&status=any",
-      "log_response": true
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=%D9%83%D9%8A%D8%A7%20%D8%B3%D8%A8%D9%88%D8%B1%D8%AA%D8%A7%D8%AC&limit=50&status=any",
+      "path": "/post/80901",
       "log_response": true
     }
   ],
