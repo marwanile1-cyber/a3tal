@@ -2,22 +2,17 @@
   "requests": [
     {
       "method": "GET",
-      "path": "/post/80414",
+      "path": "/search-posts?search=&limit=100&status=publish",
+      "body": {},
       "log_response": true
     },
     {
-      "method": "GET",
-      "path": "/post/80407",
-      "log_response": true
-    },
-    {
-      "method": "GET",
-      "path": "/post/79830",
-      "log_response": true
-    },
-    {
-      "method": "GET",
-      "path": "/post/80363",
+      "method": "POST",
+      "path": "/admin",
+      "body": {
+        "op": "terms",
+        "taxonomy": "category"
+      },
       "log_response": true
     }
   ],
