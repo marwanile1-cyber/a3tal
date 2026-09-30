@@ -1,10 +1,146 @@
 {
   "requests": [
     {
-      "method": "GET",
-      "path": "/post/80877",
+      "method": "POST",
+      "path": "/insert-images",
+      "body": {
+        "post_id": 82681,
+        "images": [
+          {
+            "url": "https://a3tal.com/wp-content/uploads/2026/09/kaiyi-x7-highline-interior-4k-scaled.webp",
+            "alt": "مقصورة كايي X7 ذات السبعة مقاعد والسقف البانورامي",
+            "caption": "تصميم حصري لأعطال.كوم يوضح تصورًا بصريًا لمقصورة SUV عائلية بسبعة مقاعد وتجهيزات الفئة.",
+            "after": "<h2>Highline أم Flagship: أين يذهب فرق السعر؟</h2>"
+          }
+        ]
+      },
+      "log_response": true
+    },
+    {
+      "method": "POST",
+      "path": "/insert-images",
+      "body": {
+        "post_id": 82682,
+        "images": [
+          {
+            "url": "https://a3tal.com/wp-content/uploads/2026/09/odometer-obd-modules-check-4k-scaled.webp",
+            "alt": "جهاز OBD يفحص وحدات ECU وABS لمقارنة بيانات عداد الكيلومترات",
+            "caption": "فحص وحدات متعددة قد يكشف تناقضات لا تظهر في رقم العداد على لوحة العدادات وحدها.",
+            "after": "<h2>افحص بيانات وحدات ABS والفتيس والـBCM</h2>"
+          }
+        ]
+      },
+      "log_response": true
+    },
+    {
+      "method": "POST",
+      "path": "/insert-images",
+      "body": {
+        "post_id": 82683,
+        "images": [
+          {
+            "url": "https://a3tal.com/wp-content/uploads/2026/09/ev-12v-high-voltage-system-cutaway-4k-scaled.webp",
+            "alt": "تصور تقني يوضح بطارية 12 فولت والبطارية عالية الجهد في سيارة كهربائية",
+            "caption": "تصميم حصري لأعطال.كوم يوضح الفرق بين شبكة 12 فولت والبطارية الرئيسية عالية الجهد.",
+            "after": "<h2>ما وظيفة بطارية 12 فولت في السيارة الكهربائية؟</h2>"
+          }
+        ]
+      },
+      "log_response": true
+    },
+    {
+      "method": "POST",
+      "path": "/insert-images",
+      "body": {
+        "post_id": 82684,
+        "images": [
+          {
+            "url": "https://a3tal.com/wp-content/uploads/2026/09/car-ac-drain-hose-underbody-4k-scaled.webp",
+            "alt": "خرطوم تصريف مياه التكييف أسفل السيارة مع خروج قطرات التكثيف",
+            "caption": "خرطوم صرف التكثيف يجب أن يسمح بخروج الماء أسفل السيارة بدل تجمعه داخل علبة المكيف أو المقصورة.",
+            "after": "<h2>أين يوجد خرطوم صرف المكيف؟</h2>"
+          }
+        ]
+      },
+      "log_response": true
+    },
+    {
+      "method": "POST",
+      "path": "/update-post",
+      "body": {
+        "id": 82681,
+        "status": "publish",
+        "featured_media": 82687,
+        "categories": [
+          374
+        ]
+      },
+      "log_response": true
+    },
+    {
+      "method": "POST",
+      "path": "/update-post",
+      "body": {
+        "id": 82682,
+        "status": "publish",
+        "featured_media": 82689,
+        "categories": [
+          20
+        ]
+      },
+      "log_response": true
+    },
+    {
+      "method": "POST",
+      "path": "/update-post",
+      "body": {
+        "id": 82683,
+        "status": "publish",
+        "featured_media": 82692,
+        "categories": [
+          14
+        ]
+      },
+      "log_response": true
+    },
+    {
+      "method": "POST",
+      "path": "/update-post",
+      "body": {
+        "id": 82684,
+        "status": "publish",
+        "featured_media": 82694,
+        "categories": [
+          18
+        ]
+      },
+      "log_response": true
+    },
+    {
+      "method": "POST",
+      "path": "/admin",
+      "body": {
+        "op": "cache_flush"
+      },
       "log_response": true
     }
   ],
-  "verify": []
+  "verify": [
+    {
+      "path": "/post/82681",
+      "log_response": true
+    },
+    {
+      "path": "/post/82682",
+      "log_response": true
+    },
+    {
+      "path": "/post/82683",
+      "log_response": true
+    },
+    {
+      "path": "/post/82684",
+      "log_response": true
+    }
+  ]
 }
