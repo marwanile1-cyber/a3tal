@@ -1,19 +1,17 @@
 {
   "requests": [
     {
-      "method": "GET",
-      "path": "/search-posts?search=Tiggo%208%20Pro&limit=50&status=any",
-      "log_response": true
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=%D8%AA%D9%8A%D8%AC%D9%88%208%20%D8%A8%D8%B1%D9%88&limit=50&status=any",
-      "log_response": true
-    },
-    {
-      "method": "GET",
-      "path": "/post/80788",
-      "log_response": true
+      "method": "POST",
+      "path": "/upload-image",
+      "log_response": true,
+      "body": {
+        "image_url": "https://chery-eg.com/media/BlogImages/key_visual_1_kZU0JnH.png",
+        "post_id": 80788,
+        "filename": "chery-tiggo-8-pro-egypt-discover.png",
+        "title": "شيري تيجو 8 برو في مصر",
+        "alt": "شيري تيجو 8 برو في مصر",
+        "set_featured": true
+      }
     }
   ],
   "verify": []
