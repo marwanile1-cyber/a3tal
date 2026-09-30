@@ -1,17 +1,14 @@
 {
   "requests": [
     {
-      "method": "POST",
-      "path": "/upload-image",
-      "log_response": true,
-      "body": {
-        "image_url": "https://chery-eg.com/media/BlogImages/key_visual_1_kZU0JnH.png",
-        "post_id": 80788,
-        "filename": "chery-tiggo-8-pro-egypt-discover.png",
-        "title": "شيري تيجو 8 برو في مصر",
-        "alt": "شيري تيجو 8 برو في مصر",
-        "set_featured": true
-      }
+      "method": "GET",
+      "path": "/search-posts?search=%D8%AA%D9%88%D9%83%D9%8A%D9%84%20%D8%B4%D9%8A%D8%B1%D9%8A&limit=30&status=any",
+      "log_response": true
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D9%85%D8%B1%D8%A7%D9%83%D8%B2%20%D8%B4%D9%8A%D8%B1%D9%8A&limit=30&status=any",
+      "log_response": true
     }
   ],
   "verify": []
