@@ -2,22 +2,17 @@
   "requests": [
     {
       "method": "GET",
-      "path": "/admin?op=file_read&path=themes%2Fa3tal-pro%2Fsingle.php",
+      "path": "/admin?op=file_read&path=themes%2Fa3tal-pro%2Finc%2Fschema.php",
       "log_response": true
     },
     {
       "method": "GET",
-      "path": "/admin?op=file_read&path=themes%2Fa3tal-pro%2Ffunctions.php",
+      "path": "/admin?op=file_read&path=themes%2Fa3tal-pro%2Finc%2Ftemplate-tags.php",
       "log_response": true
     },
     {
       "method": "GET",
-      "path": "/admin?op=file_read&path=themes%2Fa3tal-pro%2Ffooter.php",
-      "log_response": true
-    },
-    {
-      "method": "GET",
-      "path": "/admin?op=file_list&path=themes%2Fa3tal-pro%2Finc",
+      "path": "/admin?op=menus",
       "log_response": true
     }
   ],
