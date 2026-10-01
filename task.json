@@ -2,27 +2,17 @@
   "requests": [
     {
       "method": "GET",
-      "path": "/post/79943",
+      "path": "/admin?op=themes",
       "log_response": true
     },
     {
       "method": "GET",
-      "path": "/post/81108",
+      "path": "/admin?op=site_info",
       "log_response": true
     },
     {
       "method": "GET",
-      "path": "/post/80209",
-      "log_response": true
-    },
-    {
-      "method": "GET",
-      "path": "/post/81027",
-      "log_response": true
-    },
-    {
-      "method": "GET",
-      "path": "/post/80696",
+      "path": "/admin?op=file_list&root=wp-content/themes&depth=2",
       "log_response": true
     }
   ],
