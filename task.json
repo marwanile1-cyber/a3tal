@@ -2,17 +2,22 @@
   "requests": [
     {
       "method": "GET",
-      "path": "/post/80505",
+      "path": "/search-posts?search=Proton%20Saga&limit=20&status=any",
       "log_response": true
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=%D8%A3%D8%B1%D8%AE%D8%B5%20%D8%B3%D9%8A%D8%A7%D8%B1%D8%A7%D8%AA%20%D8%A3%D9%88%D8%AA%D9%88%D9%85%D8%A7%D8%AA%D9%8A%D9%83&limit=50&status=any",
+      "path": "/search-posts?search=Chery%20Arrizo%205&limit=20&status=any",
       "log_response": true
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=automatic%20cars%20egypt&limit=50&status=any",
+      "path": "/search-posts?search=Renault%20Taliant&limit=20&status=any",
+      "log_response": true
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=Accent%20RB&limit=20&status=any",
       "log_response": true
     }
   ],
