@@ -2,14 +2,9 @@
   "requests": [
     {
       "method": "GET",
-      "path": "/admin?op=user_upsert&id=1&display_name=%D9%81%D8%B1%D9%8A%D9%82%20%D8%A3%D8%B9%D8%B7%D8%A7%D9%84.%D9%83%D9%88%D9%85",
+      "path": "/admin?op=file_read&path=themes%2Fa3tal-pro%2Ffunctions.php",
       "log_response": true
     }
   ],
-  "verify": [
-    {
-      "path": "/admin?op=users&limit=5",
-      "log_response": true
-    }
-  ]
+  "verify": []
 }
