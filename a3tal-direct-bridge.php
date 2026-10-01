@@ -996,7 +996,10 @@ CSS;
     }
 
     private static function admin_sensitive_option($key) {
-        return (bool) preg_match('/(?:pass|password|secret|token|salt|auth|license|api[_-]?key|private[_-]?key)/i', (string) $key);
+        return (bool) preg_match(
+            '/(?:pass(?:word)?|secret|token|salt|license|api[_-]?key|private[_-]?key|authorization|(?:^|[_-])auth(?:$|[_-]))/i',
+            (string) $key
+        );
     }
 
     private static function admin_redact_sensitive($value) {
@@ -1945,6 +1948,10 @@ CSS;
         if (function_exists('litespeed_purge_all')) {
             litespeed_purge_all();
             $done['litespeed'] = true;
+        }
+        if (has_action('litespeed_purge_all')) {
+            do_action('litespeed_purge_all');
+            $done['litespeed_action'] = true;
         }
         if (function_exists('rocket_clean_domain')) {
             rocket_clean_domain();
