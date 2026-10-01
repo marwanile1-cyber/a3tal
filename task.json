@@ -2,22 +2,17 @@
   "requests": [
     {
       "method": "GET",
-      "path": "/post/80641",
+      "path": "/post/80200",
       "log_response": true
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=Toyota%20Corolla&limit=50&status=any",
+      "path": "/post/81115",
       "log_response": true
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=%D8%AA%D9%88%D9%8A%D9%88%D8%AA%D8%A7%20%D9%83%D9%88%D8%B1%D9%88%D9%84%D8%A7&limit=50&status=any",
-      "log_response": true
-    },
-    {
-      "method": "GET",
-      "path": "/search-posts?search=%D8%AA%D9%88%D9%83%D9%8A%D9%84%20%D8%AA%D9%88%D9%8A%D9%88%D8%AA%D8%A7&limit=30&status=any",
+      "path": "/post/80767",
       "log_response": true
     }
   ],
