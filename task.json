@@ -1,128 +1,29 @@
 {
   "requests": [
     {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": false,
-      "body": {
-        "op": "post_meta_delete",
-        "post_id": 79964,
-        "keys": [
-          "_yoast_wpseo_opengraph-image",
-          "_yoast_wpseo_opengraph-image-id",
-          "_yoast_wpseo_twitter-image",
-          "_yoast_wpseo_twitter-image-id"
-        ]
-      }
+      "method": "GET",
+      "path": "/search-posts?search=%D8%AF%D9%84%D9%8A%D9%84%D9%83%20%D8%A7%D9%84%D8%B4%D8%A7%D9%85%D9%84%20%D8%A3%D9%81%D8%B6%D9%84%20%D9%85%D8%B1%D8%A7%D9%83%D8%B2%20%D8%AE%D8%AF%D9%85%D8%A9%20%D8%BA%D8%A8%D9%88%D8%B1%20%D8%A3%D9%88%D8%AA%D9%88&limit=20&status=any",
+      "log_response": true
     },
     {
-      "method": "POST",
-      "path": "/update-post",
-      "log_response": false,
-      "body": {
-        "id": 79964
-      }
+      "method": "GET",
+      "path": "/search-posts?search=mansour%20chevrolet%20maintenance%20booking%20numbers%20branches&limit=20&status=any",
+      "log_response": true
     },
     {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": false,
-      "body": {
-        "op": "post_meta_delete",
-        "post_id": 80401,
-        "keys": [
-          "_yoast_wpseo_opengraph-image",
-          "_yoast_wpseo_opengraph-image-id",
-          "_yoast_wpseo_twitter-image",
-          "_yoast_wpseo_twitter-image-id"
-        ]
-      }
+      "method": "GET",
+      "path": "/search-posts?search=dtc%20p0342%20chevrolet&limit=20&status=any",
+      "log_response": true
     },
     {
-      "method": "POST",
-      "path": "/update-post",
-      "log_response": false,
-      "body": {
-        "id": 80401
-      }
+      "method": "GET",
+      "path": "/search-posts?search=gac%20empow%20maintenance%20schedule&limit=20&status=any",
+      "log_response": true
     },
     {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": false,
-      "body": {
-        "op": "post_meta_delete",
-        "post_id": 80696,
-        "keys": [
-          "_yoast_wpseo_opengraph-image",
-          "_yoast_wpseo_opengraph-image-id",
-          "_yoast_wpseo_twitter-image",
-          "_yoast_wpseo_twitter-image-id"
-        ]
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/update-post",
-      "log_response": false,
-      "body": {
-        "id": 80696
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": false,
-      "body": {
-        "op": "post_meta_delete",
-        "post_id": 79903,
-        "keys": [
-          "_yoast_wpseo_opengraph-image",
-          "_yoast_wpseo_opengraph-image-id",
-          "_yoast_wpseo_twitter-image",
-          "_yoast_wpseo_twitter-image-id"
-        ]
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/update-post",
-      "log_response": false,
-      "body": {
-        "id": 79903
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": false,
-      "body": {
-        "op": "post_meta_delete",
-        "post_id": 79958,
-        "keys": [
-          "_yoast_wpseo_opengraph-image",
-          "_yoast_wpseo_opengraph-image-id",
-          "_yoast_wpseo_twitter-image",
-          "_yoast_wpseo_twitter-image-id"
-        ]
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/update-post",
-      "log_response": false,
-      "body": {
-        "id": 79958
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": false,
-      "body": {
-        "op": "cache_flush",
-        "confirm": true
-      }
+      "method": "GET",
+      "path": "/search-posts?search=renault%20megane%20engine%20faults%2016%20vs%20turbo&limit=20&status=any",
+      "log_response": true
     }
   ],
   "verify": []
