@@ -6,12 +6,12 @@
       "log_response": true,
       "body": {
         "op": "post_meta_set",
-        "post_id": 80696,
+        "post_id": 79903,
         "meta": {
-          "_yoast_wpseo_opengraph-image": "https://a3tal.com/wp-content/uploads/2026/01/renault-megane-sedan-lff-ph2-beautyshots-desktop_ig_w1500_h903.webp",
-          "_yoast_wpseo_opengraph-image-id": "82883",
-          "_yoast_wpseo_twitter-image": "https://a3tal.com/wp-content/uploads/2026/01/renault-megane-sedan-lff-ph2-beautyshots-desktop_ig_w1500_h903.webp",
-          "_yoast_wpseo_twitter-image-id": "82883"
+          "_yoast_wpseo_opengraph-image": "https://a3tal.com/wp-content/uploads/2025/10/go_pic01.webp",
+          "_yoast_wpseo_opengraph-image-id": "82884",
+          "_yoast_wpseo_twitter-image": "https://a3tal.com/wp-content/uploads/2025/10/go_pic01.webp",
+          "_yoast_wpseo_twitter-image-id": "82884"
         }
       }
     },
@@ -20,14 +20,14 @@
       "path": "/update-post",
       "log_response": false,
       "body": {
-        "id": 80696,
-        "featured_media": 82883
+        "id": 79903,
+        "featured_media": 82884
       }
     }
   ],
   "verify": [
     {
-      "path": "/post/80696",
+      "path": "/post/79903",
       "log_response": false
     }
   ]
