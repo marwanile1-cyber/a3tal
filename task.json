@@ -2,22 +2,22 @@
   "requests": [
     {
       "method": "GET",
-      "path": "/admin?op=site_info",
+      "path": "/admin?op=file_read&path=themes/a3tal-pro/footer.php",
       "log_response": true
     },
     {
       "method": "GET",
-      "path": "/admin?op=themes",
+      "path": "/admin?op=file_read&path=themes/a3tal-pro/functions.php",
       "log_response": true
     },
     {
       "method": "GET",
-      "path": "/admin?op=users&limit=20",
+      "path": "/admin?op=file_read&path=themes/a3tal-pro/single.php",
       "log_response": true
     },
     {
       "method": "GET",
-      "path": "/admin?op=options&keys=wp_page_for_privacy_policy",
+      "path": "/post/3",
       "log_response": true
     }
   ],
