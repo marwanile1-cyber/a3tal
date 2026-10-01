@@ -999,6 +999,34 @@ CSS;
         return (bool) preg_match('/(?:pass|password|secret|token|salt|auth|license|api[_-]?key|private[_-]?key)/i', (string) $key);
     }
 
+    private static function admin_redact_sensitive($value) {
+        if (is_array($value)) {
+            $out = [];
+            foreach ($value as $key => $item) {
+                if (is_string($key) && self::admin_sensitive_option($key)) {
+                    $out[$key] = '[REDACTED]';
+                } else {
+                    $out[$key] = self::admin_redact_sensitive($item);
+                }
+            }
+            return $out;
+        }
+
+        if (is_object($value)) {
+            $copy = new stdClass();
+            foreach (get_object_vars($value) as $key => $item) {
+                if (self::admin_sensitive_option($key)) {
+                    $copy->{$key} = '[REDACTED]';
+                } else {
+                    $copy->{$key} = self::admin_redact_sensitive($item);
+                }
+            }
+            return $copy;
+        }
+
+        return $value;
+    }
+
     private static function admin_protected_option($key) {
         return in_array((string) $key, [
             self::OPTION_KEY,
@@ -1157,7 +1185,7 @@ CSS;
                 $out[$key] = '[REDACTED]';
                 continue;
             }
-            $out[$key] = get_option($key, null);
+            $out[$key] = self::admin_redact_sensitive(get_option($key, null));
         }
         return $out;
     }
