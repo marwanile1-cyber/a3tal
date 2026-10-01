@@ -2,51 +2,41 @@
   "requests": [
     {
       "method": "POST",
-      "path": "/upload-image-data",
+      "path": "/upload-image",
       "log_response": true,
       "body": {
         "post_id": 82853,
-        "image_base64": "data:application/vnd.openai.code-mode-image;base64,1SFD67P+Q6WxIuzSpgp1pg==",
+        "image_url": "https://sdmntprdenmarkeast.oaiusercontent.com/files/00000000-015c-8210-8c0b-93daf85bc086/raw?se=2026-10-01T13%3A43%3A58Z&sp=r&sv=2026-02-06&sr=b&scid=04a587f3-11f4-5dcc-9eee-ab3a74645ba4&skoid=a63e6f05-dc2f-4fa5-b0e3-b1cb9c0893bb&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-01T12%3A07%3A31Z&ske=2026-10-02T12%3A07%3A31Z&sks=b&skv=2026-02-06&sig=8Hc70sHAEti2MKVZAQRBFk02c5LOvaYXpyepEUDuhD4%3D",
         "filename": "arrizo-8-live-showroom.png",
-        "title": "شيري أريزو 8 داخل معرض",
+        "title": "شيري أريزو 8 داخل معرض سيارات",
         "alt": "شيري أريزو 8 داخل معرض سيارات",
-        "caption": "شيري أريزو 8 داخل معرض سيارات.",
-        "convert_webp": true,
-        "quality": 82,
-        "max_width": 1200,
         "set_featured": true
       }
     },
     {
       "method": "POST",
-      "path": "/upload-image-data",
+      "path": "/upload-image",
       "log_response": true,
       "body": {
         "post_id": 82853,
-        "image_base64": "data:application/vnd.openai.code-mode-image;base64,ZgpjbCdtQ9GnP472W/vhwQ==",
+        "image_url": "https://sdmntprnortheu.oaiusercontent.com/files/00000000-b0c8-81f4-8e0b-f884679919f9/raw?se=2026-10-01T13%3A44%3A09Z&sp=r&sv=2026-02-06&sr=b&scid=41e53a54-4861-5401-86a1-db947d61e369&skoid=a63e6f05-dc2f-4fa5-b0e3-b1cb9c0893bb&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-01T09%3A03%3A53Z&ske=2026-10-02T09%3A03%3A53Z&sks=b&skv=2026-02-06&sig=V5MAFmR/PuQZHcqSPUHmpYFTWV2Z5JjKEv3KAAwTzwY%3D",
         "filename": "arrizo-8-live-sunset.png",
         "title": "شيري أريزو 8 في لقطة خارجية",
         "alt": "شيري أريزو 8 في لقطة خارجية وقت الغروب",
-        "caption": "شيري أريزو 8 في لقطة خارجية وقت الغروب.",
-        "convert_webp": true,
-        "quality": 82,
-        "max_width": 1200
+        "set_featured": false
       }
     },
     {
       "method": "POST",
-      "path": "/upload-image-data",
+      "path": "/upload-image",
       "log_response": true,
       "body": {
         "post_id": 82853,
-        "image_base64": "data:application/vnd.openai.code-mode-image;base64,cLEHyTd5QKmZgUP3YKawHg==",
+        "image_url": "https://sdmntprnortheu.oaiusercontent.com/files/00000000-0b94-81f4-ad22-1fd994e283fd/raw?se=2026-10-01T13%3A44%3A12Z&sp=r&sv=2026-02-06&sr=b&scid=b65c0848-17d0-500d-b16a-42f1c348dfcc&skoid=a63e6f05-dc2f-4fa5-b0e3-b1cb9c0893bb&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-01T09%3A15%3A31Z&ske=2026-10-02T09%3A15%3A31Z&sks=b&skv=2026-02-06&sig=uSEcF7wgXhSM0wsBCVI/vJhBe6tfCcLLFkxARtzzKDo%3D",
         "filename": "arrizo-8-live-interior.png",
         "title": "مقصورة شيري أريزو 8",
         "alt": "مقصورة شيري أريزو 8 من الداخل",
-        "caption": "مقصورة شيري أريزو 8 من الداخل.",
-        "convert_webp": true,
-        "quality": 82,
-        "max_width": 1200
+        "set_featured": false
       }
     }
   ],
