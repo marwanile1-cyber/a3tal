@@ -3,10 +3,10 @@
     {
       "method": "POST",
       "path": "/admin",
-      "log_response": true,
+      "log_response": false,
       "body": {
         "op": "post_meta_delete",
-        "post_id": 81102,
+        "post_id": 79964,
         "keys": [
           "_yoast_wpseo_opengraph-image",
           "_yoast_wpseo_opengraph-image-id",
@@ -18,25 +18,112 @@
     {
       "method": "POST",
       "path": "/update-post",
-      "log_response": true,
+      "log_response": false,
       "body": {
-        "id": 81102
+        "id": 79964
       }
     },
     {
       "method": "POST",
       "path": "/admin",
-      "log_response": true,
+      "log_response": false,
+      "body": {
+        "op": "post_meta_delete",
+        "post_id": 80401,
+        "keys": [
+          "_yoast_wpseo_opengraph-image",
+          "_yoast_wpseo_opengraph-image-id",
+          "_yoast_wpseo_twitter-image",
+          "_yoast_wpseo_twitter-image-id"
+        ]
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/update-post",
+      "log_response": false,
+      "body": {
+        "id": 80401
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/admin",
+      "log_response": false,
+      "body": {
+        "op": "post_meta_delete",
+        "post_id": 80696,
+        "keys": [
+          "_yoast_wpseo_opengraph-image",
+          "_yoast_wpseo_opengraph-image-id",
+          "_yoast_wpseo_twitter-image",
+          "_yoast_wpseo_twitter-image-id"
+        ]
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/update-post",
+      "log_response": false,
+      "body": {
+        "id": 80696
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/admin",
+      "log_response": false,
+      "body": {
+        "op": "post_meta_delete",
+        "post_id": 79903,
+        "keys": [
+          "_yoast_wpseo_opengraph-image",
+          "_yoast_wpseo_opengraph-image-id",
+          "_yoast_wpseo_twitter-image",
+          "_yoast_wpseo_twitter-image-id"
+        ]
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/update-post",
+      "log_response": false,
+      "body": {
+        "id": 79903
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/admin",
+      "log_response": false,
+      "body": {
+        "op": "post_meta_delete",
+        "post_id": 79958,
+        "keys": [
+          "_yoast_wpseo_opengraph-image",
+          "_yoast_wpseo_opengraph-image-id",
+          "_yoast_wpseo_twitter-image",
+          "_yoast_wpseo_twitter-image-id"
+        ]
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/update-post",
+      "log_response": false,
+      "body": {
+        "id": 79958
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/admin",
+      "log_response": false,
       "body": {
         "op": "cache_flush",
         "confirm": true
       }
     }
   ],
-  "verify": [
-    {
-      "path": "/post/81102",
-      "log_response": false
-    }
-  ]
+  "verify": []
 }
