@@ -6,7 +6,7 @@
       "log_response": true,
       "body": {
         "op": "post_meta_delete",
-        "post_id": 80726,
+        "post_id": 80696,
         "keys": [
           "_yoast_wpseo_opengraph-image",
           "_yoast_wpseo_opengraph-image-id",
