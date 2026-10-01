@@ -2,80 +2,149 @@
   "requests": [
     {
       "method": "POST",
-      "path": "/upload-image",
+      "path": "/admin",
       "log_response": true,
       "body": {
+        "op": "post_meta_delete",
         "post_id": 81102,
-        "image_url": "https://hyundai-egypt.net/wp-content/uploads/2021/12/tucson-nx4-fmc-highlights-design-that-thrilling-and-timeless-pc-2.jpg",
-        "filename": "ghabbour-hotline-service-featured.jpg",
-        "title": "غبور أوتو وخدمات السيارات في مصر",
-        "alt": "سيارة هيونداي ضمن علامات غبور أوتو في مصر",
-        "set_featured": true
+        "keys": [
+          "_yoast_wpseo_opengraph-image",
+          "_yoast_wpseo_opengraph-image-id",
+          "_yoast_wpseo_twitter-image",
+          "_yoast_wpseo_twitter-image-id"
+        ]
       }
     },
     {
       "method": "POST",
-      "path": "/upload-image",
+      "path": "/update-post",
+      "log_response": false,
+      "body": {
+        "id": 81102
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/admin",
       "log_response": true,
       "body": {
+        "op": "post_meta_delete",
         "post_id": 79964,
-        "image_url": "https://www.chevroletarabia.com/content/dam/chevrolet/middle-east/egypt/english/index/vehicle-flyout/captiva-jellybean.png?imwidth=1920",
-        "filename": "mansour-chevrolet-service-featured.png",
-        "title": "توكيل منصور شيفروليه في مصر",
-        "alt": "شيفروليه في مصر ضمن خدمات توكيل منصور",
-        "set_featured": true
+        "keys": [
+          "_yoast_wpseo_opengraph-image",
+          "_yoast_wpseo_opengraph-image-id",
+          "_yoast_wpseo_twitter-image",
+          "_yoast_wpseo_twitter-image-id"
+        ]
       }
     },
     {
       "method": "POST",
-      "path": "/upload-image",
+      "path": "/update-post",
+      "log_response": false,
+      "body": {
+        "id": 79964
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/admin",
       "log_response": true,
       "body": {
+        "op": "post_meta_delete",
         "post_id": 80401,
-        "image_url": "https://jetouregypt.com/img/contact-us/banner.jpg",
-        "filename": "jetour-egypt-service-featured.jpg",
-        "title": "توكيل جيتور في مصر",
-        "alt": "جيتور مصر وخدمة العملاء ومراكز الخدمة",
-        "set_featured": true
+        "keys": [
+          "_yoast_wpseo_opengraph-image",
+          "_yoast_wpseo_opengraph-image-id",
+          "_yoast_wpseo_twitter-image",
+          "_yoast_wpseo_twitter-image-id"
+        ]
       }
     },
     {
       "method": "POST",
-      "path": "/upload-image",
+      "path": "/update-post",
+      "log_response": false,
+      "body": {
+        "id": 80401
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/admin",
       "log_response": true,
       "body": {
+        "op": "post_meta_delete",
         "post_id": 80696,
-        "image_url": "https://www.renault.com.eg/CountriesData/Egypt/images/AboutRenault2/renault-megane-sedan-lff-ph2-beautyshots-desktop_ig_w1500_h903.jpg",
-        "filename": "renault-megane-engine-featured.jpg",
-        "title": "رينو ميجان في مصر",
-        "alt": "رينو ميجان سيدان ومحركات 1.6 و1.3 تيربو",
-        "set_featured": true
+        "keys": [
+          "_yoast_wpseo_opengraph-image",
+          "_yoast_wpseo_opengraph-image-id",
+          "_yoast_wpseo_twitter-image",
+          "_yoast_wpseo_twitter-image-id"
+        ]
       }
     },
     {
       "method": "POST",
-      "path": "/upload-image",
+      "path": "/update-post",
+      "log_response": false,
+      "body": {
+        "id": 80696
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/admin",
       "log_response": true,
       "body": {
+        "op": "post_meta_delete",
         "post_id": 79903,
-        "image_url": "https://www.soueast-motor.com/img/go_pic01.jpg",
-        "filename": "soueast-models-featured.jpg",
-        "title": "سيارات SOUEAST",
-        "alt": "سيارات SOUEAST وموديلاتها الحالية",
-        "set_featured": true
+        "keys": [
+          "_yoast_wpseo_opengraph-image",
+          "_yoast_wpseo_opengraph-image-id",
+          "_yoast_wpseo_twitter-image",
+          "_yoast_wpseo_twitter-image-id"
+        ]
       }
     },
     {
       "method": "POST",
-      "path": "/upload-image",
+      "path": "/update-post",
+      "log_response": false,
+      "body": {
+        "id": 79903
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/admin",
       "log_response": true,
       "body": {
+        "op": "post_meta_delete",
         "post_id": 79958,
-        "image_url": "https://hyundai-egypt.net/wp-content/uploads/2021/12/CN7.jpg",
-        "filename": "hyundai-egypt-dealer-featured.jpg",
-        "title": "توكيل هيونداي في مصر",
-        "alt": "هيونداي مصر ومراكز الصيانة المعتمدة",
-        "set_featured": true
+        "keys": [
+          "_yoast_wpseo_opengraph-image",
+          "_yoast_wpseo_opengraph-image-id",
+          "_yoast_wpseo_twitter-image",
+          "_yoast_wpseo_twitter-image-id"
+        ]
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/update-post",
+      "log_response": false,
+      "body": {
+        "id": 79958
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/admin",
+      "log_response": true,
+      "body": {
+        "op": "cache_flush",
+        "confirm": true
       }
     }
   ],
