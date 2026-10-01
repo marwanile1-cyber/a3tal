@@ -201,6 +201,10 @@ CSS;
             '_yoast_wpseo_title',
             '_yoast_wpseo_metadesc',
             '_yoast_wpseo_canonical',
+            '_yoast_wpseo_opengraph-title',
+            '_yoast_wpseo_opengraph-description',
+            '_yoast_wpseo_twitter-title',
+            '_yoast_wpseo_twitter-description',
         ];
     }
 
@@ -301,13 +305,33 @@ CSS;
 
     private static function apply_meta($post_id, $meta) {
         if (!is_array($meta)) {
-            return;
+            return false;
         }
+
+        $changed = false;
         foreach (self::yoast_meta_keys() as $key) {
             if (array_key_exists($key, $meta)) {
                 update_post_meta($post_id, $key, sanitize_text_field((string) $meta[$key]));
+                $changed = true;
             }
         }
+        return $changed;
+    }
+
+    private static function refresh_seo_indexables($post_id, $meta_changed = false) {
+        if (!$meta_changed) {
+            return;
+        }
+
+        // Yoast builds its indexable presentation during post-save hooks. The
+        // bridge writes SEO meta after the first wp_update_post(), so perform
+        // one no-op post save after the meta write to make frontend metadata
+        // immediately reflect the new values.
+        if (defined('WPSEO_VERSION') || class_exists('WPSEO_Options')) {
+            wp_update_post(['ID' => (int) $post_id]);
+        }
+
+        clean_post_cache((int) $post_id);
     }
 
     public static function create_post(WP_REST_Request $request) {
@@ -343,7 +367,8 @@ CSS;
         if (!empty($data['featured_media'])) {
             set_post_thumbnail($id, (int) $data['featured_media']);
         }
-        self::apply_meta($id, $data['meta'] ?? []);
+        $meta_changed = self::apply_meta($id, $data['meta'] ?? []);
+        self::refresh_seo_indexables($id, $meta_changed);
 
         return new WP_REST_Response(self::post_payload(get_post($id)), 201);
     }
@@ -396,7 +421,8 @@ CSS;
             $media_id = (int) $data['featured_media'];
             $media_id ? set_post_thumbnail($id, $media_id) : delete_post_thumbnail($id);
         }
-        self::apply_meta($id, $data['meta'] ?? []);
+        $meta_changed = self::apply_meta($id, $data['meta'] ?? []);
+        self::refresh_seo_indexables($id, $meta_changed);
 
         clean_post_cache($id);
         return rest_ensure_response(self::post_payload(get_post($id)));
@@ -655,7 +681,7 @@ CSS;
         if (isset($post_data['tags'])) {
             wp_set_post_tags($post_id, self::normalize_terms($post_data['tags']), false);
         }
-        self::apply_meta($post_id, $post_data['meta'] ?? []);
+        $meta_changed = self::apply_meta($post_id, $post_data['meta'] ?? []);
 
         $content = get_post_field('post_content', $post_id);
         $media_results = [];
@@ -718,6 +744,7 @@ CSS;
             return $final;
         }
 
+        self::refresh_seo_indexables($post_id, $meta_changed);
         clean_post_cache($post_id);
 
         return rest_ensure_response([
@@ -930,7 +957,8 @@ CSS;
             delete_post_thumbnail($id);
         }
 
-        self::apply_meta($id, $s['meta'] ?? []);
+        $meta_changed = self::apply_meta($id, $s['meta'] ?? []);
+        self::refresh_seo_indexables($id, $meta_changed);
         array_splice($backups, $index, 1);
         update_option(self::BACKUPS_KEY, $backups, false);
 
