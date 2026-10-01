@@ -1,121 +1,29 @@
 {
   "requests": [
     {
-      "method": "POST",
-      "path": "/upload-image",
-      "log_response": true,
-      "body": {
-        "post_id": 82852,
-        "image_url": "https://www.chery-eg.com/media/images/TIGGO_8_PRO_MAX_car_img_2026-09-02_115334.888215.png",
-        "filename": "tiggo-8-pro-max-comparison.png",
-        "title": "تيجو 8 برو ماكس",
-        "alt": "شيري تيجو 8 برو ماكس في مقارنة مع جيتور T2",
-        "set_featured": true
-      }
+      "method": "GET",
+      "path": "/post/82852",
+      "log_response": true
     },
     {
-      "method": "POST",
-      "path": "/upload-image",
-      "log_response": true,
-      "body": {
-        "post_id": 82852,
-        "image_url": "https://jetouregypt.com/models/T2/t2_assets/images/carModel/t2/7_1.jpg",
-        "filename": "jetour-t2-comparison.jpg",
-        "title": "جيتور T2",
-        "alt": "جيتور T2 في مقارنة مع تيجو 8 برو ماكس",
-        "set_featured": false
-      }
+      "method": "GET",
+      "path": "/post/82853",
+      "log_response": true
     },
     {
-      "method": "POST",
-      "path": "/upload-image",
-      "log_response": true,
-      "body": {
-        "post_id": 82853,
-        "image_url": "https://www.chery-eg.com/media/images/ARRIZO_8_car_img_2026-09-02_114753.601839.png",
-        "filename": "chery-arrizo-8-review.png",
-        "title": "شيري أريزو 8",
-        "alt": "شيري أريزو 8 في مصر",
-        "set_featured": true
-      }
+      "method": "GET",
+      "path": "/post/82854",
+      "log_response": true
     },
     {
-      "method": "POST",
-      "path": "/upload-image",
-      "log_response": true,
-      "body": {
-        "post_id": 82853,
-        "image_url": "https://www.chery-eg.com/media/intDesignImages/Interior_main_banner_KG19x1m.jpg",
-        "filename": "chery-arrizo-8-interior.jpg",
-        "title": "مقصورة شيري أريزو 8",
-        "alt": "مقصورة شيري أريزو 8 والشاشة الداخلية",
-        "set_featured": false
-      }
+      "method": "GET",
+      "path": "/post/82855",
+      "log_response": true
     },
     {
-      "method": "POST",
-      "path": "/upload-image",
-      "log_response": true,
-      "body": {
-        "post_id": 82854,
-        "image_url": "https://globalassets.hunter.com/images/assets/hero-gray-slim-windshield-glass-repair.jpg/Zz02YjcxYTE5NGUzNGYxMWVmYTA1NGI2ZDlkNDYyMDgwZQ==",
-        "filename": "adas-windshield-calibration.jpg",
-        "title": "معايرة ADAS بعد تغيير الزجاج",
-        "alt": "معايرة أنظمة ADAS بعد تغيير الزجاج الأمامي",
-        "set_featured": true
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/upload-image",
-      "log_response": true,
-      "body": {
-        "post_id": 82854,
-        "image_url": "https://globalassets.hunter.com/images/assets/realshop-align-adas-schaefer-14.jpg/119216aab32e11efa8f21a6c2af46147",
-        "filename": "adas-calibration-workshop.jpg",
-        "title": "جهاز معايرة ADAS",
-        "alt": "معايرة كاميرا ورادار ADAS داخل ورشة",
-        "set_featured": false
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/upload-image",
-      "log_response": true,
-      "body": {
-        "post_id": 82855,
-        "image_url": "https://www.bmwgroup.com/en/news/general/2026/3series/_jcr_content/main/newsarticle/newscontentparsys/columncontrol_copy/columncontrolparsys/image_662004880.coreimg.jpeg/1790682570711/contentbild-1280x720px-bmw-m350-xdrive-037.jpeg",
-        "filename": "bmw-m350-48v-mild-hybrid.jpg",
-        "title": "BMW M350 بنظام 48V Mild Hybrid",
-        "alt": "BMW M350 الجديدة بنظام 48V Mild Hybrid",
-        "set_featured": true
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/upload-image",
-      "log_response": true,
-      "body": {
-        "post_id": 82855,
-        "image_url": "https://www.bmwgroup.com/en/news/general/2026/3series/_jcr_content/main/newsarticle/newscontentparsys/columncontrol_900738/columncontrolparsys/image.coreimg.jpeg/1790682978539/contentbild-1280x720px-bmw-m350-xdrive-048.jpeg",
-        "filename": "bmw-m350-48v-system.jpg",
-        "title": "BMW 3 Series الجديدة 48V",
-        "alt": "BMW 3 Series الجديدة وتقنية 48V Mild Hybrid",
-        "set_featured": false
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/upload-image",
-      "log_response": true,
-      "body": {
-        "post_id": 82856,
-        "image_url": "https://mag.toyota.co.uk/wp-content/uploads/sites/2/2021/05/Toyota-Servicing-2021-112-1536x1024.jpg",
-        "filename": "hybrid-battery-health-check.jpg",
-        "title": "فحص بطارية الهايبرد",
-        "alt": "فحص بطارية الهايبرد قبل شراء سيارة مستعملة",
-        "set_featured": true
-      }
+      "method": "GET",
+      "path": "/post/82856",
+      "log_response": true
     }
   ],
   "verify": []
