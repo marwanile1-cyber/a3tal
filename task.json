@@ -1,20 +1,10 @@
 {
   "requests": [
     {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": true,
-      "body": {
-        "op": "user_upsert",
-        "id": 1,
-        "display_name": "فريق أعطال.كوم"
-      }
-    }
-  ],
-  "verify": [
-    {
-      "path": "/admin?op=users&limit=5",
+      "method": "GET",
+      "path": "/admin?op=file_read&path=themes/a3tal-pro/inc/schema.php",
       "log_response": true
     }
-  ]
+  ],
+  "verify": []
 }
