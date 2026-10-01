@@ -18,124 +18,9 @@
     {
       "method": "POST",
       "path": "/update-post",
-      "log_response": false,
+      "log_response": true,
       "body": {
         "id": 81102
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": true,
-      "body": {
-        "op": "post_meta_delete",
-        "post_id": 79964,
-        "keys": [
-          "_yoast_wpseo_opengraph-image",
-          "_yoast_wpseo_opengraph-image-id",
-          "_yoast_wpseo_twitter-image",
-          "_yoast_wpseo_twitter-image-id"
-        ]
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/update-post",
-      "log_response": false,
-      "body": {
-        "id": 79964
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": true,
-      "body": {
-        "op": "post_meta_delete",
-        "post_id": 80401,
-        "keys": [
-          "_yoast_wpseo_opengraph-image",
-          "_yoast_wpseo_opengraph-image-id",
-          "_yoast_wpseo_twitter-image",
-          "_yoast_wpseo_twitter-image-id"
-        ]
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/update-post",
-      "log_response": false,
-      "body": {
-        "id": 80401
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": true,
-      "body": {
-        "op": "post_meta_delete",
-        "post_id": 80696,
-        "keys": [
-          "_yoast_wpseo_opengraph-image",
-          "_yoast_wpseo_opengraph-image-id",
-          "_yoast_wpseo_twitter-image",
-          "_yoast_wpseo_twitter-image-id"
-        ]
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/update-post",
-      "log_response": false,
-      "body": {
-        "id": 80696
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": true,
-      "body": {
-        "op": "post_meta_delete",
-        "post_id": 79903,
-        "keys": [
-          "_yoast_wpseo_opengraph-image",
-          "_yoast_wpseo_opengraph-image-id",
-          "_yoast_wpseo_twitter-image",
-          "_yoast_wpseo_twitter-image-id"
-        ]
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/update-post",
-      "log_response": false,
-      "body": {
-        "id": 79903
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": true,
-      "body": {
-        "op": "post_meta_delete",
-        "post_id": 79958,
-        "keys": [
-          "_yoast_wpseo_opengraph-image",
-          "_yoast_wpseo_opengraph-image-id",
-          "_yoast_wpseo_twitter-image",
-          "_yoast_wpseo_twitter-image-id"
-        ]
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/update-post",
-      "log_response": false,
-      "body": {
-        "id": 79958
       }
     },
     {
@@ -151,26 +36,6 @@
   "verify": [
     {
       "path": "/post/81102",
-      "log_response": false
-    },
-    {
-      "path": "/post/79964",
-      "log_response": false
-    },
-    {
-      "path": "/post/80401",
-      "log_response": false
-    },
-    {
-      "path": "/post/80696",
-      "log_response": false
-    },
-    {
-      "path": "/post/79903",
-      "log_response": false
-    },
-    {
-      "path": "/post/79958",
       "log_response": false
     }
   ]
