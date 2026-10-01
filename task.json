@@ -2,17 +2,17 @@
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=P0303&limit=20&status=any",
+      "path": "/post/56",
       "log_response": true
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=%D8%B9%D8%A7%D9%84%D9%85%20%D8%A3%D8%B9%D8%B7%D8%A7%D9%84%20%D8%A7%D9%84%D8%B3%D9%8A%D8%A7%D8%B1%D8%A7%D8%AA&limit=20&status=any",
+      "path": "/post/71",
       "log_response": true
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=%D9%85%D8%B1%D8%A7%D9%83%D8%B2%20%D8%AE%D8%AF%D9%85%D8%A9%20%D8%A7%D9%84%D8%B3%D9%8A%D8%A7%D8%B1%D8%A7%D8%AA%20%D9%81%D9%8A%20%D9%85%D8%B5%D8%B1&limit=20&status=any",
+      "path": "/post/124",
       "log_response": true
     }
   ],
