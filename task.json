@@ -5,16 +5,30 @@
       "path": "/admin",
       "log_response": true,
       "body": {
-        "op": "user_upsert",
-        "id": 1,
-        "display_name": "فريق أعطال.كوم"
+        "op": "post_meta_set",
+        "post_id": 80726,
+        "meta": {
+          "_yoast_wpseo_opengraph-image": "https://a3tal.com/wp-content/uploads/2026/01/jetour-egypt-maintenance-large.webp",
+          "_yoast_wpseo_opengraph-image-id": "82899",
+          "_yoast_wpseo_twitter-image": "https://a3tal.com/wp-content/uploads/2026/01/jetour-egypt-maintenance-large.webp",
+          "_yoast_wpseo_twitter-image-id": "82899"
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/update-post",
+      "log_response": false,
+      "body": {
+        "id": 80726,
+        "featured_media": 82899
       }
     }
   ],
   "verify": [
     {
-      "path": "/admin?op=users&limit=5",
-      "log_response": true
+      "path": "/post/80726",
+      "log_response": false
     }
   ]
 }
