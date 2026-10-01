@@ -1,23 +1,30 @@
 {
   "requests": [
     {
-      "method": "POST",
-      "path": "/upload-image",
-      "log_response": true,
-      "body": {
-        "post_id": 82844,
-        "image_url": "https://avatars.mds.yandex.net/get-autoru-vos/1975239/98c46030410ba4f22718e5810c71d03f/1200x900",
-        "filename": "chery-tiggo-8-pro-max-real-showroom.jpg",
-        "title": "شيري تيجو 8 برو ماكس داخل معرض",
-        "alt": "شيري تيجو 8 برو ماكس داخل معرض سيارات",
-        "set_featured": true
-      }
-    }
-  ],
-  "verify": [
+      "method": "GET",
+      "path": "/search-posts?search=%D8%AA%D9%8A%D8%AC%D9%88%208%20%D8%A8%D8%B1%D9%88%20%D9%85%D8%A7%D9%83%D8%B3%20%D8%AC%D9%8A%D8%AA%D9%88%D8%B1%20T2&limit=20&status=any",
+      "log_response": true
+    },
     {
-      "path": "/post/82844",
+      "method": "GET",
+      "path": "/search-posts?search=%D8%B1%D9%8A%D9%86%D9%88%20%D9%83%D8%A7%D8%B1%D8%AF%D9%8A%D8%A7%D9%86&limit=20&status=any",
+      "log_response": true
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D9%85%D8%B9%D8%A7%D9%8A%D8%B1%D8%A9%20ADAS&limit=20&status=any",
+      "log_response": true
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=48V%20Mild%20Hybrid&limit=20&status=any",
+      "log_response": true
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D9%81%D8%AD%D8%B5%20%D8%A8%D8%B7%D8%A7%D8%B1%D9%8A%D8%A9%20%D8%A7%D9%84%D9%87%D8%A7%D9%8A%D8%A8%D8%B1%D8%AF&limit=20&status=any",
       "log_response": true
     }
-  ]
+  ],
+  "verify": []
 }
