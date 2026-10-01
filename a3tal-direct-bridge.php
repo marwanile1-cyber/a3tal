@@ -872,7 +872,8 @@ CSS;
     public static function save_redirect(WP_REST_Request $request) {
         $data = $request->get_json_params();
         $source = '/' . ltrim((string) ($data['source_path'] ?? ''), '/');
-        $source = trailingslashit(wp_parse_url(home_url($source), PHP_URL_PATH));
+        $source_path = (string) wp_parse_url(home_url($source), PHP_URL_PATH);
+        $source = trailingslashit('/' . ltrim(rawurldecode($source_path), '/'));
         $target = esc_url_raw((string) ($data['target_url'] ?? ''));
         $code = (int) ($data['status_code'] ?? 301);
 
@@ -900,13 +901,16 @@ CSS;
             return;
         }
 
-        $path = wp_parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
-        $path = trailingslashit('/' . ltrim((string) $path, '/'));
+        $raw_path = (string) wp_parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+        $raw_path = trailingslashit('/' . ltrim($raw_path, '/'));
+        $decoded_path = trailingslashit('/' . ltrim(rawurldecode($raw_path), '/'));
 
-        if (isset($redirects[$path])) {
-            $item = $redirects[$path];
-            wp_safe_redirect($item['target'], (int) $item['code'], 'A3tal Direct Bridge');
-            exit;
+        foreach (array_values(array_unique([$raw_path, $decoded_path])) as $path) {
+            if (isset($redirects[$path])) {
+                $item = $redirects[$path];
+                wp_safe_redirect($item['target'], (int) $item['code'], 'A3tal Direct Bridge');
+                exit;
+            }
         }
     }
 
