@@ -6,10 +6,10 @@
       "log_response": true,
       "body": {
         "post_id": 80726,
-        "image_url": "https://jetouregypt.com/img/homePage/services.jpg",
-        "filename": "jetour-egypt-maintenance-service.jpg",
-        "title": "صيانة جيتور في مصر",
-        "alt": "صيانة جيتور ومراكز الخدمة في مصر",
+        "image_url": "https://jetouregypt.com/uploads/slider/img/T2.jpg",
+        "filename": "jetour-egypt-maintenance-large.jpg",
+        "title": "جيتور في مصر",
+        "alt": "سيارة جيتور في مصر ضمن دليل الصيانة والخدمة",
         "set_featured": true
       }
     }
@@ -17,7 +17,7 @@
   "verify": [
     {
       "path": "/post/80726",
-      "log_response": true
+      "log_response": false
     }
   ]
 }
