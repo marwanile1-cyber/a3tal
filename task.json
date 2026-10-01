@@ -2,17 +2,22 @@
   "requests": [
     {
       "method": "GET",
-      "path": "/admin?op=themes",
+      "path": "/admin?op=file_list&path=themes%2Fa3tal-pro",
       "log_response": true
     },
     {
       "method": "GET",
-      "path": "/admin?op=site_info",
+      "path": "/admin?op=post_meta&post_id=79943",
       "log_response": true
     },
     {
       "method": "GET",
-      "path": "/admin?op=file_list&root=wp-content/themes&depth=2",
+      "path": "/admin?op=users&limit=20",
+      "log_response": true
+    },
+    {
+      "method": "GET",
+      "path": "/admin?op=options&keys=page_for_privacy_policy,wp_page_for_privacy_policy",
       "log_response": true
     }
   ],
