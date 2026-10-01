@@ -1,34 +1,15 @@
 {
   "requests": [
     {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": true,
-      "body": {
-        "op": "post_meta_set",
-        "post_id": 79903,
-        "meta": {
-          "_yoast_wpseo_opengraph-image": "https://a3tal.com/wp-content/uploads/2025/10/go_pic01.webp",
-          "_yoast_wpseo_opengraph-image-id": "82884",
-          "_yoast_wpseo_twitter-image": "https://a3tal.com/wp-content/uploads/2025/10/go_pic01.webp",
-          "_yoast_wpseo_twitter-image-id": "82884"
-        }
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/update-post",
-      "log_response": false,
-      "body": {
-        "id": 79903,
-        "featured_media": 82884
-      }
+      "method": "GET",
+      "path": "/admin?op=user_upsert&id=1&display_name=%D9%81%D8%B1%D9%8A%D9%82%20%D8%A3%D8%B9%D8%B7%D8%A7%D9%84.%D9%83%D9%88%D9%85",
+      "log_response": true
     }
   ],
   "verify": [
     {
-      "path": "/post/79903",
-      "log_response": false
+      "path": "/admin?op=users&limit=5",
+      "log_response": true
     }
   ]
 }
