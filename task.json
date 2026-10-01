@@ -2,27 +2,27 @@
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=%D8%BA%D8%A8%D9%88%D8%B1%20%D8%A3%D9%88%D8%AA%D9%88&limit=20&status=any",
+      "path": "/post/79943",
       "log_response": true
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=%D8%A7%D9%84%D9%85%D9%86%D8%B5%D9%88%D8%B1%20%D8%B4%D9%8A%D9%81%D8%B1%D9%88%D9%84%D9%8A%D9%87&limit=20&status=any",
+      "path": "/post/79964",
       "log_response": true
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=P0342&limit=20&status=any",
+      "path": "/post/80209",
       "log_response": true
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=GAC%20Empow&limit=20&status=any",
+      "path": "/post/81027",
       "log_response": true
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=%D9%85%D9%8A%D8%AC%D8%A7%D9%86&limit=20&status=any",
+      "path": "/post/80696",
       "log_response": true
     }
   ],
