@@ -1,58 +1,29 @@
 {
   "requests": [
     {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": false,
-      "body": {
-        "op": "post_meta_delete",
-        "post_id": 80696,
-        "keys": [
-          "_yoast_wpseo_opengraph-image",
-          "_yoast_wpseo_opengraph-image-id",
-          "_yoast_wpseo_twitter-image",
-          "_yoast_wpseo_twitter-image-id"
-        ]
-      }
+      "method": "GET",
+      "path": "/post/79943",
+      "log_response": true
     },
     {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": false,
-      "body": {
-        "op": "post_meta_delete",
-        "post_id": 79903,
-        "keys": [
-          "_yoast_wpseo_opengraph-image",
-          "_yoast_wpseo_opengraph-image-id",
-          "_yoast_wpseo_twitter-image",
-          "_yoast_wpseo_twitter-image-id"
-        ]
-      }
+      "method": "GET",
+      "path": "/post/81108",
+      "log_response": true
     },
     {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": false,
-      "body": {
-        "op": "post_meta_delete",
-        "post_id": 79958,
-        "keys": [
-          "_yoast_wpseo_opengraph-image",
-          "_yoast_wpseo_opengraph-image-id",
-          "_yoast_wpseo_twitter-image",
-          "_yoast_wpseo_twitter-image-id"
-        ]
-      }
+      "method": "GET",
+      "path": "/post/80209",
+      "log_response": true
     },
     {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": false,
-      "body": {
-        "op": "cache_flush",
-        "confirm": true
-      }
+      "method": "GET",
+      "path": "/post/81027",
+      "log_response": true
+    },
+    {
+      "method": "GET",
+      "path": "/post/80696",
+      "log_response": true
     }
   ],
   "verify": []
