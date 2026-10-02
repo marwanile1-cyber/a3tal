@@ -2,7 +2,7 @@
 /**
  * Plugin Name: A3tal Direct Bridge
  * Description: Secure administrator-grade REST bridge for managing A3tal.com content, SEO, media, users, plugins, themes, settings and wp-content from trusted AI clients.
- * Version: 3.1.1
+ * Version: 3.1.2
  * Author: A3tal.com
  * Update URI: https://github.com/marwanile1-cyber/a3tal
  */
@@ -21,6 +21,7 @@ final class A3tal_Direct_Bridge {
         add_action('rest_api_init', [__CLASS__, 'register_routes']);
         add_action('admin_menu', [__CLASS__, 'admin_menu']);
         add_action('admin_init', [__CLASS__, 'register_settings']);
+        add_action('parse_request', [__CLASS__, 'maybe_redirect'], -99999);
         add_action('template_redirect', [__CLASS__, 'maybe_redirect'], -99999);
         add_action('wp_enqueue_scripts', [__CLASS__, 'enqueue_mobile_ux_patch'], 99);
     }
@@ -164,7 +165,7 @@ CSS;
         return rest_ensure_response([
             'ok' => true,
             'plugin' => 'A3tal Direct Bridge',
-            'version' => '3.1.1',
+            'version' => '3.1.2',
             'site' => home_url('/'),
             'time_gmt' => current_time('mysql', true),
             'routes' => [
