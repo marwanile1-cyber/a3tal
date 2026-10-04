@@ -32,10 +32,27 @@ get_header(); ?>
     33
   ); ?>
 <?php else: ?>
+  <?php
+    $guide_cat=get_category_by_slug('car-showrooms-guide');
+    if($guide_cat):
+      $guide_q=a3g_query(['cat'=>(int)$guide_cat->term_id,'posts_per_page'=>8]);
+      if($guide_q->have_posts()):
+  ?>
+    <section class="g-showroom-guides">
+      <div class="g-section-head">
+        <div><span>BUYER INTELLIGENCE</span><h2>دليل الشراء من معارض السيارات</h2><p>مش مجرد عناوين فروع. هنا هتعرف تختار المعرض، تفهم العرض، تحجز Test Drive، وتقفل الحجز والاستلام من غير مفاجآت.</p></div>
+        <a href="<?php echo esc_url(get_category_link($guide_cat)); ?>">كل أدلة المعارض</a>
+      </div>
+      <div class="g-showroom-guide-grid">
+        <?php while($guide_q->have_posts()):$guide_q->the_post();a3g_card(get_the_ID(),'g-showroom-guide-card');endwhile;wp_reset_postdata(); ?>
+      </div>
+    </section>
+  <?php endif; endif; ?>
+
   <?php a3g_legacy_section(
     [374,22],
     'قبل زيارة المعرض: الأسعار والمراجعات الحالية',
-    'دليل المعارض نفسه لسه بيتوثق، لكن أسعار ومراجعات السيارات الموجودة بالفعل متاحة هنا بدل صفحة فاضية.',
+    'قارن السعر والمواصفات والمراجعة قبل ما تروح المعرض، وكل صفحة تفضل على رابطها الأصلي.',
     12,
     [],
     374
