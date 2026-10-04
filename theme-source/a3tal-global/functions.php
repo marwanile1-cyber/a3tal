@@ -1,6 +1,6 @@
 <?php
 if (!defined('ABSPATH')) exit;
-define('A3G_VERSION','1.5.0');
+define('A3G_VERSION','1.5.1');
 
 function a3g_setup(){
   add_theme_support('title-tag');
@@ -202,3 +202,25 @@ function a3g_platform_card($post_id=0){
   </article>
   <?php
 }
+
+
+function a3g_platform_archive_seo(){
+  if(is_post_type_archive('a3_showroom')){
+    return [
+      'title'=>'معارض السيارات في مصر | الفروع المعتمدة ودليل الشراء | أعطال.كوم',
+      'desc'=>'دليل معارض السيارات في مصر: فروع معتمدة رسميًا، عناوين وأرقام ومواعيد ومصادر تحقق، مع أدلة الحجز وتجربة القيادة والاستلام والتقسيط.'
+    ];
+  }
+  return null;
+}
+add_filter('wpseo_title',function($title){$seo=a3g_platform_archive_seo();return $seo?$seo['title']:$title;},90);
+add_filter('wpseo_metadesc',function($desc){$seo=a3g_platform_archive_seo();return $seo?$seo['desc']:$desc;},90);
+add_filter('wpseo_opengraph_title',function($title){$seo=a3g_platform_archive_seo();return $seo?$seo['title']:$title;},90);
+add_filter('wpseo_opengraph_desc',function($desc){$seo=a3g_platform_archive_seo();return $seo?$seo['desc']:$desc;},90);
+add_filter('wpseo_twitter_title',function($title){$seo=a3g_platform_archive_seo();return $seo?$seo['title']:$title;},90);
+add_filter('wpseo_twitter_description',function($desc){$seo=a3g_platform_archive_seo();return $seo?$seo['desc']:$desc;},90);
+add_filter('document_title_parts',function($parts){
+  $seo=a3g_platform_archive_seo();
+  if($seo)$parts['title']='معارض السيارات في مصر';
+  return $parts;
+},90);
