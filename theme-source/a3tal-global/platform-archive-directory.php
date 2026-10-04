@@ -21,12 +21,12 @@ get_header(); ?>
 <div class="g-directory-body"><?php if($status): ?><span class="g-directory-badge g-status-<?php echo esc_attr($status->slug); ?>"><?php echo esc_html($status->name); ?></span><?php endif; ?><h3><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3><?php if($address): ?><p><?php echo esc_html($address); ?></p><?php endif; ?><div class="g-directory-mini-meta"><?php if($phone): ?><span>☎ <?php echo esc_html($phone); ?></span><?php endif; ?><?php if($checked): ?><small>تحقق: <?php echo esc_html($checked); ?></small><?php endif; ?></div><?php if($is_showroom): ?><div class="g-directory-card-actions"><?php if($phone): ?><a href="tel:<?php echo esc_attr(preg_replace('/[^0-9+]/','',$phone)); ?>">اتصال</a><?php endif; ?><?php if($map_url): ?><a href="<?php echo esc_url($map_url); ?>" rel="nofollow noopener" target="_blank">الخريطة</a><?php endif; ?><a href="<?php the_permalink(); ?>">كل التفاصيل</a></div><?php else: ?><a class="g-platform-more" href="<?php the_permalink(); ?>">عرض التفاصيل ←</a><?php endif; ?></div>
 </article>
 <?php endwhile; ?></div><div class="g-platform-pagination"><?php the_posts_pagination(['mid_size'=>2,'prev_text'=>'السابق','next_text'=>'التالي']); ?></div>
-<?php else: ?><div class="g-platform-empty"><span><?php echo $is_showroom?'🏢':'🔧'; ?></span><h2>لا توجد بيانات منشورة بهذه الفلاتر حاليًا</h2><p>لا تظهر الأنشطة في الدليل إلا بعد إضافة بياناتها وحالة التحقق بوضوح.</p></div><?php endif; ?>
+<?php else: ?><div class="g-platform-empty"><?php echo a3g_icon($is_showroom?'store':'wrench'); ?><h2>لا توجد نتائج منظمة بهذه الفلاتر حاليًا</h2><p><?php echo $is_showroom?'جرّب تغيير الفلاتر أو تصفح أدلة المعارض المنشورة بالأسفل.':'تصفح أدلة مراكز الخدمة المنشورة بالأسفل للوصول إلى الفروع والمعلومات المتاحة الآن.'; ?></p></div><?php endif; ?>
 <?php if(!$is_showroom): ?>
   <?php a3g_legacy_section(
     [33],
-    'مراكز الخدمة الموجودة بالفعل',
-    'الـ29 صفحة الحالية باقية على روابطها الأصلية، والدليل الجديد بيجمعها لحد ما نضيف لكل مركز حالة الاعتماد والماركات والخدمات والبيانات الموثقة.',
+    'أدلة مراكز الخدمة المتاحة',
+    'أدلة وفروع مراكز الخدمة المنشورة على أعطال، مع العناوين ووسائل التواصل والمعلومات المتاحة لكل مركز.',
     16,
     [],
     33
