@@ -8,6 +8,10 @@ final class A3CP_Admin {
         'a3_dtc' => ['label' => 'أكواد DTC', 'icon' => '⚙️'],
         'a3_service_center' => ['label' => 'مراكز الخدمة', 'icon' => '🔧'],
         'a3_showroom' => ['label' => 'معارض السيارات', 'icon' => '🏢'],
+        'a3_part' => ['label' => 'قطع الغيار', 'icon' => '⚙️'],
+        'a3_parts_vendor' => ['label' => 'أماكن بيع قطع الغيار', 'icon' => '🧰'],
+        'a3_listing' => ['label' => 'سيارات للبيع', 'icon' => '🏷️'],
+        'a3_maintenance_plan' => ['label' => 'جداول الصيانة', 'icon' => '🗓️'],
     ];
 
     public static function init(): void {
@@ -46,7 +50,7 @@ final class A3CP_Admin {
 
         echo '<div class="wrap a3cp-admin">';
         echo '<div class="a3cp-hero">';
-        echo '<div><span>A3TAL CORE PLATFORM</span><h1>من المقالات إلى منصة مركبات مترابطة</h1><p>طبقة البيانات الأساسية للسيارات والموتوسيكلات وأكواد الأعطال ومراكز الخدمة ومعارض السيارات. لا تغيّر روابط المقالات الحالية.</p></div>';
+        echo '<div><span>A3TAL CORE PLATFORM</span><h1>من المقالات إلى منصة مركبات مترابطة</h1><p>طبقة البيانات الأساسية للسيارات والموتوسيكلات وأكواد الأعطال ومراكز الخدمة والمعارض وقطع الغيار وسوق المستعمل وجداول الصيانة. لا تغيّر روابط المقالات الحالية.</p></div>';
         echo '<div class="a3cp-version">v' . esc_html(A3CP_VERSION) . '</div>';
         echo '</div>';
 
@@ -90,9 +94,20 @@ final class A3CP_Admin {
             $columns['a3cp_code'] = 'الكود';
             $columns['a3cp_severity'] = 'الخطورة';
             $columns['a3cp_checked'] = 'مراجعة المصدر';
-        } elseif (in_array($type, ['a3_service_center', 'a3_showroom'], true)) {
+        } elseif (in_array($type, ['a3_service_center', 'a3_showroom', 'a3_parts_vendor'], true)) {
             $columns['a3cp_phone'] = 'الهاتف';
             $columns['a3cp_checked'] = 'آخر تحقق';
+        } elseif ($type === 'a3_part') {
+            $columns['a3cp_part_number'] = 'رقم القطعة';
+            $columns['a3cp_price'] = 'السعر';
+            $columns['a3cp_checked'] = 'مراجعة المصدر';
+        } elseif ($type === 'a3_listing') {
+            $columns['a3cp_price'] = 'السعر';
+            $columns['a3cp_mileage'] = 'الكيلومترات';
+        } elseif ($type === 'a3_maintenance_plan') {
+            $columns['a3cp_vehicle'] = 'المركبة';
+            $columns['a3cp_interval'] = 'الفاصل';
+            $columns['a3cp_checked'] = 'مراجعة المصدر';
         }
 
         return $columns;
@@ -122,6 +137,25 @@ final class A3CP_Admin {
             case 'a3cp_phone':
                 echo esc_html((string) get_post_meta($post_id, '_a3_phone', true));
                 break;
+            case 'a3cp_part_number':
+                echo '<code>' . esc_html((string) get_post_meta($post_id, '_a3_part_number', true)) . '</code>';
+                break;
+            case 'a3cp_mileage':
+                $km = (int) get_post_meta($post_id, '_a3_listing_mileage_km', true);
+                echo $km > 0 ? esc_html(number_format_i18n($km) . ' كم') : '—';
+                break;
+            case 'a3cp_vehicle':
+                $entity = (int) get_post_meta($post_id, '_a3_vehicle_entity_id', true);
+                echo $entity > 0 ? esc_html(get_the_title($entity) ?: ('#' . $entity)) : '—';
+                break;
+            case 'a3cp_interval':
+                $km = (int) get_post_meta($post_id, '_a3_interval_km', true);
+                $mo = (int) get_post_meta($post_id, '_a3_interval_months', true);
+                $parts = [];
+                if ($km > 0) $parts[] = number_format_i18n($km) . ' كم';
+                if ($mo > 0) $parts[] = $mo . ' شهر';
+                echo $parts ? esc_html(implode(' / ', $parts)) : '—';
+                break;
         }
     }
 
@@ -140,7 +174,7 @@ final class A3CP_Admin {
         .a3cp-hero h1{color:#fff;margin:6px 0 8px;font-size:28px}
         .a3cp-hero p{margin:0;color:#b7c4cf;max-width:760px}
         .a3cp-version{padding:9px 12px;border:1px solid rgba(255,255,255,.14);border-radius:999px;color:#fff;white-space:nowrap}
-        .a3cp-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+        .a3cp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
         .a3cp-card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:18px;box-shadow:0 6px 22px rgba(15,23,42,.04)}
         .a3cp-card-icon{font-size:28px}.a3cp-card h2{margin:8px 0;font-size:17px}
         .a3cp-stats{display:flex;gap:10px;color:#64748b;font-size:11px}.a3cp-stats b{color:#0f172a}
