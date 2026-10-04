@@ -42,6 +42,96 @@ function a3g_excerpt($id=0,$words=22){
   $x=preg_replace('/\s+/u',' ',trim($x));
   return wp_trim_words($x,$words);
 }
+
+function a3g_post_views($id=0){
+  $id=$id?:get_the_ID();
+  return max(0,(int)get_post_meta($id,'post_views_count',true));
+}
+function a3g_views_label($id=0){
+  return number_format_i18n(a3g_post_views($id)).' مشاهدة';
+}
+
+add_action('rest_api_init',function(){
+  register_rest_route('a3tal/v1','/view/(?P<id>\\d+)',[
+    'methods'=>'POST',
+    'permission_callback'=>'__return_true',
+    'callback'=>function(WP_REST_Request $request){
+      global $wpdb;
+      $id=(int)$request['id'];
+      $post=get_post($id);
+      if(!$post || $post->post_status!=='publish' || $post->post_type!=='post'){
+        return new WP_Error('a3tal_view_not_found','Post not found.',['status'=>404]);
+      }
+
+      $ua=(string)($_SERVER['HTTP_USER_AGENT']??'');
+      if($ua==='' || preg_match('/bot|crawl|spider|slurp|bingpreview|facebookexternalhit|WhatsApp|TelegramBot|Google-InspectionTool/i',$ua)){
+        return rest_ensure_response(['ok'=>true,'count'=>a3g_post_views($id),'counted'=>false]);
+      }
+
+      $ip=(string)($_SERVER['REMOTE_ADDR']??'');
+      $fingerprint=substr(hash('sha256',$id.'|'.$ip.'|'.$ua),0,24);
+      $lock='a3g_view_'.$fingerprint;
+      if(get_transient($lock)){
+        return rest_ensure_response(['ok'=>true,'count'=>a3g_post_views($id),'counted'=>false]);
+      }
+      set_transient($lock,1,10*MINUTE_IN_SECONDS);
+
+      $updated=$wpdb->query($wpdb->prepare(
+        "UPDATE {$wpdb->postmeta} SET meta_value=CAST(meta_value AS UNSIGNED)+1 WHERE post_id=%d AND meta_key=%s",
+        $id,'post_views_count'
+      ));
+      if(!$updated){
+        add_post_meta($id,'post_views_count',1,true);
+      }
+      clean_post_cache($id);
+      return rest_ensure_response(['ok'=>true,'count'=>a3g_post_views($id),'counted'=>true]);
+    },
+  ]);
+});
+
+add_action('wp_footer',function(){
+  if(!is_singular('post'))return;
+  $id=get_queried_object_id();
+  $url=rest_url('a3tal/v1/view/'.$id);
+  ?>
+  <script>
+  (function(){
+    var endpoint=<?php echo wp_json_encode($url); ?>;
+    if(!endpoint)return;
+    fetch(endpoint,{method:'POST',credentials:'same-origin',keepalive:true,headers:{'Accept':'application/json'}})
+      .then(function(r){return r.ok?r.json():null;})
+      .then(function(d){
+        if(!d||typeof d.count==='undefined')return;
+        document.querySelectorAll('[data-a3-views]').forEach(function(el){
+          el.textContent=new Intl.NumberFormat('ar-EG').format(Number(d.count))+' مشاهدة';
+        });
+      }).catch(function(){});
+  })();
+  </script>
+  <?php
+},99);
+
+add_filter('manage_posts_columns',function($cols){
+  $out=[];
+  foreach($cols as $key=>$label){
+    $out[$key]=$label;
+    if($key==='title')$out['a3tal_views']='المشاهدات';
+  }
+  return $out;
+});
+add_action('manage_posts_custom_column',function($column,$post_id){
+  if($column==='a3tal_views')echo esc_html(number_format_i18n(a3g_post_views($post_id)));
+},10,2);
+add_filter('manage_edit-post_sortable_columns',function($cols){
+  $cols['a3tal_views']='a3tal_views';
+  return $cols;
+});
+add_action('pre_get_posts',function($query){
+  if(!is_admin()||!$query->is_main_query()||$query->get('orderby')!=='a3tal_views')return;
+  $query->set('meta_key','post_views_count');
+  $query->set('orderby','meta_value_num');
+});
+
 function a3g_read_time($id=0){$id=$id?:get_the_ID();$t=wp_strip_all_tags((string)get_post_field('post_content',$id));$w=preg_split('/\s+/u',trim($t));return max(1,(int)ceil(count(array_filter((array)$w))/220));}
 function a3g_is_diagnostic($id=0){$id=$id?:get_the_ID();return has_category([2,8,9,10,11,12,13,14,15,18,298],$id);}
 
@@ -65,6 +155,7 @@ function a3g_icon($name){
     'filter'=>'<svg viewBox="0 0 24 24"><path d="M4 4h16l-6 7v7l-4 2v-9L4 4Z"></path></svg>',
     'motorcycle'=>'<svg viewBox="0 0 24 24"><circle cx="5.5" cy="17.5" r="3.5"></circle><circle cx="18.5" cy="17.5" r="3.5"></circle><path d="M9 17.5h5l-3-6H8l-2.5 6"></path><path d="M13 11.5h3l2.5 6"></path><path d="M15 8h3"></path></svg>',
     'warning'=>'<svg viewBox="0 0 24 24"><path d="M12 3 2.8 20h18.4L12 3Z"></path><path d="M12 9v5"></path><path d="M12 17h.01"></path></svg>',
+    'eye'=>'<svg viewBox="0 0 24 24"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg>',
     'brain'=>'<svg viewBox="0 0 24 24"><path d="M9 4a3 3 0 0 0-3 3v1a3 3 0 0 0-2 3c0 1.3.8 2.5 2 3a3.5 3.5 0 0 0 3.5 4H12V6a3 3 0 0 0-3-2Z"></path><path d="M15 4a3 3 0 0 1 3 3v1a3 3 0 0 1 2 3c0 1.3-.8 2.5-2 3a3.5 3.5 0 0 1-3.5 4H12V6a3 3 0 0 1 3-2Z"></path><path d="M8 10h4M12 14h4"></path></svg>',
     'store'=>'<svg viewBox="0 0 24 24"><path d="M4 10v10h16V10"></path><path d="M3 10 5 4h14l2 6"></path><path d="M3 10c0 1.1.9 2 2 2s2-.9 2-2c0 1.1.9 2 2 2s2-.9 2-2c0 1.1.9 2 2 2s2-.9 2-2c0 1.1.9 2 2 2s2-.9 2-2c0 1.1.9 2 2 2s2-.9 2-2"></path></svg>',
     'tag'=>'<svg viewBox="0 0 24 24"><path d="M3 12V5h7l10 10-7 7L3 12Z"></path><circle cx="7.5" cy="8.5" r="1.2"></circle></svg>',
@@ -83,7 +174,7 @@ function a3g_card($id=0,$class=''){
       <?php if($cat): ?><a class="g-card-tag" href="<?php echo esc_url(get_category_link($cat)); ?>"><?php echo esc_html($cat->name); ?></a><?php endif; ?>
       <h3><a href="<?php echo esc_url(get_permalink($id)); ?>"><?php echo esc_html(get_the_title($id)); ?></a></h3>
       <p><?php echo esc_html(a3g_excerpt($id,15)); ?></p>
-      <div class="g-meta"><span><?php echo esc_html(get_the_modified_date('j M',$id)); ?></span><span><?php echo esc_html(a3g_read_time($id)); ?> دقائق</span></div>
+      <div class="g-meta"><span><?php echo esc_html(get_the_modified_date('j M',$id)); ?></span><span><?php echo esc_html(a3g_read_time($id)); ?> دقائق</span><span class="g-views-mini"><?php echo a3g_icon('eye'); ?><b><?php echo esc_html(number_format_i18n(a3g_post_views($id))); ?></b></span></div>
     </div>
   </article><?php
 }
