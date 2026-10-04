@@ -3,7 +3,7 @@
  * Plugin Name: A3tal Core Platform
  * Plugin URI: https://a3tal.com/
  * Description: Core data layer for A3tal.com cars, motorcycles, DTC codes, service centers and car showrooms.
- * Version: 0.2.0
+ * Version: 0.2.1
  * Author: A3tal.com
  * Requires at least: 6.4
  * Requires PHP: 8.0
@@ -12,7 +12,7 @@
 
 if (!defined('ABSPATH')) exit;
 
-define('A3CP_VERSION', '0.2.0');
+define('A3CP_VERSION', '0.2.1');
 define('A3CP_FILE', __FILE__);
 define('A3CP_DIR', plugin_dir_path(__FILE__));
 define('A3CP_URL', plugin_dir_url(__FILE__));
