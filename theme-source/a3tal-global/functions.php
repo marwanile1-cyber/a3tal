@@ -38,7 +38,7 @@ function a3g_excerpt($id=0,$words=22){
   $x=html_entity_decode($x,ENT_QUOTES|ENT_HTML5,'UTF-8');
   $x=preg_replace('~https?://\S+~u',' ',$x);
   $x=preg_replace('/\b(?:@context|@type|schema|sameAs)\b\s*[:=]\s*[^\s]+/iu',' ',$x);
-  $x=preg_replace('/^(?:المراجع الفني|المصدر المرجعي|المصدر|اقرأ أيضًا|رابط الموضوع)\s*[:：\-–—]?\s*/u','',$x);
+  $x=preg_replace('/^(?:مراجعة فنية|المراجع الفني|المصدر المرجعي|المصدر|اقرأ أيضًا|رابط الموضوع)\s*[:：\-–—]?\s*/u','',$x);
   $x=preg_replace('/\s+/u',' ',trim($x));
   return wp_trim_words($x,$words);
 }
