@@ -3,7 +3,7 @@ Theme Name: A3tal Global
 Theme URI: https://a3tal.com/
 Author: A3tal.com
 Description: Premium RTL automotive platform theme for A3tal.com.
-Version: 1.0.0
+Version: 1.0.1
 Requires at least: 6.4
 Requires PHP: 8.0
 Text Domain: a3tal-global
@@ -63,18 +63,16 @@ svg{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-l
 .g-menu-toggle{display:none}
 .g-mobile-menu{display:none;background:#0b1826;border-top:1px solid rgba(255,255,255,.07);padding:8px 18px 16px}
 .g-mobile-menu a{display:block;padding:10px 2px;border-bottom:1px solid rgba(255,255,255,.06);font-size:13px;font-weight:700;color:#e9eef3}
-.g-header-ticker{height:34px;background:#06101a;border-top:1px solid rgba(255,255,255,.055);border-bottom:1px solid rgba(255,255,255,.06);overflow:hidden}
-.g-header-ticker-row{height:100%;display:flex;align-items:center;gap:0}
-.g-ticker-label{height:100%;flex:0 0 auto;display:flex;align-items:center;gap:7px;padding:0 15px;background:linear-gradient(135deg,var(--g-orange),var(--g-orange2));color:#fff;font-size:9px;font-weight:900;white-space:nowrap}
-.g-ticker-label i{width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 0 0 4px rgba(255,255,255,.16);animation:gPulse 1.6s ease-in-out infinite}
-.g-ticker-window{min-width:0;flex:1;height:100%;overflow:hidden;direction:ltr}
-.g-ticker-track{height:100%;width:max-content;display:flex;align-items:center;gap:38px;padding-inline:24px;animation:gTicker 38s linear infinite;will-change:transform}
-.g-header-ticker:hover .g-ticker-track,.g-header-ticker:focus-within .g-ticker-track{animation-play-state:paused}
-.g-ticker-track a{direction:rtl;display:flex;align-items:center;gap:8px;color:#dbe4ec;font-size:9px;font-weight:700;white-space:nowrap}
-.g-ticker-track a:hover{color:#fff}
-.g-ticker-dot{width:4px;height:4px;border-radius:50%;background:#ff8a66;box-shadow:0 0 0 3px rgba(255,74,31,.10)}
-@keyframes gTicker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-@keyframes gPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.55;transform:scale(.8)}}
+.g-newsbar{height:36px;background:#07111c;border-top:1px solid rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.07);overflow:hidden}
+.g-newsbar-row{height:100%;display:flex;align-items:center;padding-inline:0}
+.g-newsbar-label{height:100%;flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:0 15px;background:linear-gradient(135deg,var(--g-orange),var(--g-orange2));color:#fff;font-size:10px;font-weight:900;white-space:nowrap;z-index:2}
+.g-newsbar-label i{width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 0 0 4px rgba(255,255,255,.15)}
+.g-newsbar-viewport{position:relative;min-width:0;flex:1;height:100%;overflow:hidden;direction:ltr;mask-image:linear-gradient(to right,transparent 0,#000 22px,#000 calc(100% - 22px),transparent 100%);-webkit-mask-image:linear-gradient(to right,transparent 0,#000 22px,#000 calc(100% - 22px),transparent 100%)}
+.g-newsbar-track{height:100%;width:max-content;display:flex;align-items:center;gap:42px;will-change:transform}
+.g-newsbar-group{height:100%;display:flex;align-items:center;gap:42px;flex:0 0 auto}
+.g-newsbar-group a{direction:rtl;display:inline-flex;align-items:center;gap:8px;height:100%;color:#dce4eb;font-size:10px;font-weight:700;white-space:nowrap;line-height:1}
+.g-newsbar-group a:hover{color:#fff}
+.g-newsbar-group a b{width:5px;height:5px;border-radius:50%;background:#ff805c;box-shadow:0 0 0 3px rgba(255,74,31,.10);flex:0 0 auto}
 
 /* hero */
 .g-hero-section{padding:18px 0 10px;background:linear-gradient(#eef2f6 0%,#f8fafc 100%)}
@@ -288,10 +286,10 @@ svg{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-l
   .g-brand .custom-logo{max-width:118px;max-height:42px}
   .g-logo-mark{width:39px;height:27px}.g-logo-copy strong{font-size:17px}.g-logo-copy small{font-size:8px}
   .g-head-loc{display:none}.g-head-search,.g-menu-toggle{width:37px;height:37px}
-  .g-header-ticker{height:31px}
-  .g-ticker-label{padding:0 10px;font-size:8px}
-  .g-ticker-track{gap:26px;padding-inline:16px;animation-duration:30s}
-  .g-ticker-track a{font-size:8px;max-width:300px;overflow:hidden;text-overflow:ellipsis}
+  .g-newsbar{height:32px}
+  .g-newsbar-label{padding:0 10px;font-size:8px}
+  .g-newsbar-track,.g-newsbar-group{gap:28px}
+  .g-newsbar-group a{font-size:8px}
   .g-hero-section{padding-top:0}
   .g-hero{min-height:490px;border-radius:0 0 17px 17px;background-position:center}
   .g-hero-content{padding:38px 16px 24px;text-align:right}
