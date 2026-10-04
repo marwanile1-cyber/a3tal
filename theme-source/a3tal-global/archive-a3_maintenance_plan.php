@@ -1,26 +1,41 @@
 <?php
 get_header();
 $selected=absint(get_query_var('vehicle_entity'));
-$vehicles=get_posts([
+$plan_ids=get_posts([
+  'post_type'=>'a3_maintenance_plan',
+  'post_status'=>'publish',
+  'numberposts'=>-1,
+  'fields'=>'ids',
+  'no_found_rows'=>true,
+]);
+$ready_vehicle_ids=[];
+foreach($plan_ids as $plan_id){
+  $entity_id=(int)get_post_meta($plan_id,'_a3_vehicle_entity_id',true);
+  if($entity_id>0)$ready_vehicle_ids[$entity_id]=$entity_id;
+}
+$ready_vehicle_ids=array_values($ready_vehicle_ids);
+$vehicles=$ready_vehicle_ids?get_posts([
   'post_type'=>['a3_car','a3_motorcycle'],
   'post_status'=>'publish',
   'numberposts'=>300,
+  'post__in'=>$ready_vehicle_ids,
   'orderby'=>'title',
   'order'=>'ASC',
-]);
+]):[];
 $selected_post=$selected?get_post($selected):null;
 ?>
 <section class="g-maintenance-hero"><div class="g-wrap g-maintenance-hero-grid">
   <div>
     <span>A3TAL MAINTENANCE</span>
     <h1>جدول صيانة يفهم عربيتك، مش جدول محفوظ</h1>
-    <p>اختر المركبة وشوف الصيانة بالكيلومتر والزمن، مع وضع خاص للاستخدام الشاق ومواصفات السوائل وأرقام القطع.</p>
+    <p>اختر من المركبات التي يتوفر لها جدول صيانة موثّق، وشاهد الاستحقاقات بالكيلومتر والزمن ومواصفات السوائل وأرقام القطع عند توفرها.</p>
     <form method="get" class="g-maintenance-select">
-      <label><small>اختر المركبة</small><select name="vehicle_entity" required><option value="">اختر السيارة أو الموتوسيكل</option><?php foreach($vehicles as $v): ?><option value="<?php echo esc_attr($v->ID); ?>" <?php selected($selected,$v->ID); ?>><?php echo esc_html($v->post_title); ?></option><?php endforeach; ?></select></label>
+      <label><small>اختر المركبة</small><select name="vehicle_entity" required><option value=""><?php echo $vehicles?'اختر السيارة أو الموتوسيكل':'لا توجد جداول مركبات منظمة بعد'; ?></option><?php foreach($vehicles as $v): ?><option value="<?php echo esc_attr($v->ID); ?>" <?php selected($selected,$v->ID); ?>><?php echo esc_html($v->post_title); ?></option><?php endforeach; ?></select></label>
       <button type="submit">عرض جدول الصيانة</button>
     </form>
   </div>
   <div class="g-maintenance-demo">
+    <small class="g-demo-label">مثال توضيحي للواجهة</small>
     <div class="g-maintenance-demo-ring"><span>90K</span><small>الصيانة القادمة</small></div>
     <div class="g-maintenance-demo-list"><span class="is-due"><b>زيت المحرك</b><small>مستحق الآن</small></span><span class="is-soon"><b>فلتر الهواء</b><small>باقي 1,500 كم</small></span><span class="is-ok"><b>سائل الفرامل</b><small>باقي 5 أشهر</small></span></div>
   </div>
@@ -87,13 +102,13 @@ $selected_post=$selected?get_post($selected):null;
       </article>
     <?php endforeach; ?>
   </section>
-  <?php else: ?><div class="g-platform-empty"><span>🗓️</span><h2>لسه مفيش جدول موثّق للموديل ده</h2><p>مش هنخترع فترات صيانة. هنضيفها بعد مراجعة دليل المالك أو مصدر الشركة.</p></div><?php endif; ?>
+  <?php else: ?><div class="g-platform-empty"><?php echo a3g_icon('calendar'); ?><h2>لا يوجد جدول موثّق لهذه المركبة حاليًا</h2><p>تصفح أدلة الصيانة المنشورة بالأسفل للحصول على المعلومات المتاحة، وسنظهر الموديل في قائمة الاختيار عند توفر جدول موثّق له.</p><a href="<?php echo esc_url(a3g_cat_link(86)); ?>">كل أدلة الصيانة</a></div><?php endif; ?>
 <?php endif; ?>
 
 <?php a3g_legacy_section(
   [86],
-  'جداول الصيانة المنشورة بالفعل',
-  'الـ31 صفحة الحالية تفضل على روابطها الأصلية وتظهر داخل مركز الصيانة الجديد، لحد ما نحول الجداول الأهم إلى Timeline تفاعلية مرتبطة بالموديل والعداد.',
+  'أدلة وجداول الصيانة المتاحة',
+  'مقالات وجداول صيانة منشورة تساعدك في الزيت والفلاتر والسوائل وفترات الفحص، مع الرجوع إلى دليل المالك للموديل عند تحديد المواعيد الدقيقة.',
   16,
   [],
   86
