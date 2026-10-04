@@ -28,7 +28,7 @@ $types=get_terms(['taxonomy'=>$type_tax,'hide_empty'=>false]);
 <main class="g-wrap g-platform-archive">
   <div class="g-platform-archive-head">
     <div><span>قاعدة بيانات أعطال</span><h2><?php echo $is_moto?'اختر الموتوسيكل المناسب':'اختر السيارة المناسبة'; ?></h2></div>
-    <b><?php global $wp_query; echo esc_html(number_format_i18n((int)$wp_query->found_posts)); ?> نتيجة</b>
+    <b><?php global $wp_query; $a3g_vehicle_count=(int)$wp_query->found_posts; echo esc_html((!$is_moto && $a3g_vehicle_count===0)?'أسعار ومراجعات متاحة':number_format_i18n($a3g_vehicle_count).' نتيجة'); ?></b>
   </div>
 
   <?php if(have_posts()): ?>
@@ -38,15 +38,15 @@ $types=get_terms(['taxonomy'=>$type_tax,'hide_empty'=>false]);
     <div class="g-platform-pagination"><?php the_posts_pagination(['mid_size'=>2,'prev_text'=>'السابق','next_text'=>'التالي']); ?></div>
   <?php elseif($is_moto): ?>
     <div class="g-platform-empty">
-      <span>🏍️</span>
+      <?php echo a3g_icon('motorcycle'); ?>
       <h2>لا توجد نتائج منشورة بهذه الفلاتر حاليًا</h2>
       <p>غيّر الفلاتر أو ارجع للقائمة الكاملة للموتوسيكلات المنشورة.</p>
       <a href="<?php echo esc_url(get_post_type_archive_link($type)); ?>">مسح الفلاتر</a>
     </div>
   <?php else: ?>
     <div class="g-platform-bridge-note">
-      <span>🚘</span>
-      <div><h2>قاعدة السيارات المنظمة بتتبني من المحتوى الموجود</h2><p>بدل ما نعمل صفحات جديدة تنافس مقالات الموقع القديمة، بنربط الأسعار والمراجعات والمقارنات الحالية هنا ونحوّل أهم الموديلات تدريجيًا إلى بيانات منظمة.</p></div>
+      <?php echo a3g_icon('car'); ?>
+      <div><h2>ابدأ من الأسعار والمراجعات المتاحة الآن</h2><p>تصفح أحدث أسعار السيارات والمراجعات والمقارنات المنشورة على أعطال، ثم استخدم ملفات الموديلات المنظمة فور إضافتها إلى قاعدة السيارات.</p><div class="g-platform-bridge-actions"><a href="<?php echo esc_url(a3g_cat_link(374)); ?>">أسعار السيارات</a><a href="<?php echo esc_url(a3g_cat_link(22)); ?>">مراجعات السيارات</a></div></div>
     </div>
   <?php endif; ?>
 
@@ -137,9 +137,9 @@ $types=get_terms(['taxonomy'=>$type_tax,'hide_empty'=>false]);
     <?php endif;endif; ?>
 
   <?php else: ?>
-    <?php a3g_legacy_section([374],'أسعار السيارات الجديدة','كل صفحات الأسعار الحالية تفضل على روابطها الأصلية وتظهر هنا داخل قسم السيارات.',8,[],374); ?>
+    <?php a3g_legacy_section([374],'أسعار السيارات الجديدة','أحدث أسعار السيارات المنشورة على أعطال، مرتبة للوصول السريع إلى السعر والمواصفات والتفاصيل.',8,[],374); ?>
     <?php a3g_legacy_section([22],'مراجعات السيارات','مراجعات وتجارب الشراء الموجودة بالفعل، من غير إنشاء نسخ جديدة لنفس النية.',6,[],22); ?>
-    <?php a3g_legacy_section([21],'مقارنات بين السيارات','المقارنات الحالية مرتبطة بقسم السيارات بدل ما تفضل معزولة في تصنيف منفصل.',6,[],21); ?>
+    <?php a3g_legacy_section([21],'مقارنات بين السيارات','مقارنات عملية تساعدك على مراجعة الفروق في المواصفات والتجهيزات قبل الشراء.',6,[],21); ?>
   <?php endif; ?>
 </main>
 <?php get_footer(); ?>
