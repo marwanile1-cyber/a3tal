@@ -1,0 +1,46 @@
+name: Build A3tal Core Platform
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "plugin-source/a3tal-core-platform/**"
+      - ".github/workflows/build-a3tal-core-platform.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: PHP lint
+        run: |
+          set -euo pipefail
+          find plugin-source/a3tal-core-platform -name '*.php' -print0 | xargs -0 -n1 php -l
+
+      - name: Build plugin zip
+        run: |
+          set -euo pipefail
+          mkdir -p plugin-builds
+          rm -f plugin-builds/a3tal-core-platform.zip
+          cd plugin-source
+          zip -qr ../plugin-builds/a3tal-core-platform.zip a3tal-core-platform
+          cd ..
+          unzip -l plugin-builds/a3tal-core-platform.zip
+
+      - name: Commit build
+        run: |
+          set -euo pipefail
+          git config user.name "A3tal Build Bot"
+          git config user.email "build@a3tal.com"
+          git add plugin-builds/a3tal-core-platform.zip
+          if git diff --cached --quiet; then
+            echo "No package changes"
+          else
+            git commit -m "Build A3tal Core Platform plugin"
+            git push
+          fi
