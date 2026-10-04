@@ -1,6 +1,6 @@
 <?php
 if (!defined('ABSPATH')) exit;
-define('A3G_VERSION','1.3.0');
+define('A3G_VERSION','1.4.0');
 
 function a3g_setup(){
   add_theme_support('title-tag');
@@ -98,6 +98,64 @@ function a3g_toc(){
   return $out;
 }
 
+
+
+function a3g_responsive_tables($content){
+  if(!is_singular()) return $content;
+  $content=preg_replace('/<div class=["\']g-table-wrap["\']>\s*(<table\b.*?<\/table>)\s*<\/div>/isu','$1',$content);
+  return preg_replace_callback('/<table\b[^>]*>.*?<\/table>/isu',static function($m){
+    return '<div class="g-table-wrap">'.$m[0].'</div>';
+  },$content);
+}
+add_filter('the_content','a3g_responsive_tables',20);
+
+function a3g_entity_related_post_ids($post_type){
+  $entity_ids=get_posts([
+    'post_type'=>$post_type,
+    'post_status'=>'publish',
+    'numberposts'=>-1,
+    'fields'=>'ids',
+    'no_found_rows'=>true,
+  ]);
+  $out=[];
+  foreach($entity_ids as $entity_id){
+    $raw=(string)get_post_meta($entity_id,'_a3_related_post_ids',true);
+    foreach(preg_split('/[^0-9]+/',$raw) as $id){
+      $id=(int)$id;if($id>0)$out[$id]=$id;
+    }
+  }
+  return array_values($out);
+}
+
+function a3g_legacy_section($category_ids,$title,$subtitle='',$limit=12,$exclude=[],$link_category=0){
+  $category_ids=array_values(array_filter(array_map('intval',(array)$category_ids)));
+  if(!$category_ids)return false;
+  $q=a3g_query([
+    'category__in'=>$category_ids,
+    'posts_per_page'=>(int)$limit,
+    'post__not_in'=>array_values(array_filter(array_map('intval',(array)$exclude))),
+  ]);
+  if(!$q->have_posts())return false;
+  $count=0;
+  foreach($category_ids as $cat_id){
+    $cat=get_category($cat_id);
+    if($cat&&!is_wp_error($cat))$count+=(int)$cat->count;
+  }
+  if(!$link_category)$link_category=$category_ids[0];
+  ?>
+  <section class="g-legacy-bridge">
+    <div class="g-section-head">
+      <div><span>من مكتبة أعطال الحالية</span><h2><?php echo esc_html($title); ?></h2><?php if($subtitle): ?><p><?php echo esc_html($subtitle); ?></p><?php endif; ?></div>
+      <div class="g-legacy-count"><?php echo esc_html(number_format_i18n($count)); ?> محتوى موجود بالفعل</div>
+    </div>
+    <div class="g-news-grid g-legacy-grid">
+      <?php while($q->have_posts()):$q->the_post();a3g_card(get_the_ID(),'g-legacy-card');endwhile;wp_reset_postdata(); ?>
+    </div>
+    <div class="g-legacy-more"><a href="<?php echo esc_url(a3g_cat_link($link_category)); ?>">عرض كل المحتوى القديم المرتبط ←</a></div>
+  </section>
+  <?php
+  return true;
+}
 
 function a3g_platform_link($post_type,$fallback='/'){
   $u=get_post_type_archive_link($post_type);
