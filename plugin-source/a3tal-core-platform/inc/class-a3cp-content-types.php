@@ -47,6 +47,7 @@ final class A3CP_Content_Types {
         add_filter('wp_robots', [__CLASS__, 'robots']);
         add_action('init', [__CLASS__, 'seed_reference_entities'], 40);
         add_action('init', [__CLASS__, 'seed_motorcycle_entities'], 41);
+        add_action('a3cp_seed_motorcycles', [__CLASS__, 'seed_motorcycle_entities']);
     }
 
     public static function register_all(): void {
