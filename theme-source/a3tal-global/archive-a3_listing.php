@@ -28,11 +28,11 @@ $conditions=get_terms(['taxonomy'=>'a3_listing_condition','hide_empty'=>false]);
       <div class="g-listing-body"><h3><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3><?php if($price>0): ?><strong><?php echo esc_html(number_format_i18n($price,0).' '.$cur); ?></strong><?php endif; ?><div class="g-listing-facts"><?php if($year): ?><span><?php echo esc_html($year); ?></span><?php endif; ?><?php if($km): ?><span><?php echo esc_html(number_format_i18n($km).' كم'); ?></span><?php endif; ?><?php if($loc): ?><span><?php echo esc_html($loc); ?></span><?php endif; ?></div><a class="g-platform-more" href="<?php the_permalink(); ?>">تفاصيل السيارة ←</a></div>
     </article>
   <?php endwhile; ?></div><div class="g-platform-pagination"><?php the_posts_pagination(['mid_size'=>2,'prev_text'=>'السابق','next_text'=>'التالي']); ?></div>
-  <?php else: ?><div class="g-platform-empty"><span>🏷️</span><h2>السوق لسه بيفتح أبوابه</h2><p>أول الإعلانات هتدخل من My Garage للمراجعة قبل النشر، بدل مهرجان الإعلانات المكررة والمجهولة المعتاد.</p><a href="<?php echo esc_url(home_url('/my-garage/')); ?>">اذهب إلى سيارتي</a></div><?php endif; ?>
+  <?php else: ?><div class="g-platform-empty"><?php echo a3g_icon('tag'); ?><h2>لا توجد سيارات معروضة للبيع حاليًا</h2><p>يمكن لمالك المركبة إضافة سيارته من «سيارتي»، ثم استكمال بيانات الإعلان والصور قبل النشر.</p><a href="<?php echo esc_url(home_url('/my-garage/')); ?>">إضافة سيارة للبيع</a></div><?php endif; ?>
 <?php a3g_legacy_section(
   [374,22],
   'محتوى يساعدك قبل شراء المستعمل',
-  'لحد ما تبدأ إعلانات السوق الفعلية، أسعار السيارات ومراجعاتها الحالية تظهر هنا بروابطها الأصلية بدل صفحة خالية.',
+  'راجع أسعار السيارات والمراجعات الحالية قبل شراء المستعمل، وقارن السعر والمواصفات وحالة السوق.',
   12,
   [],
   374
