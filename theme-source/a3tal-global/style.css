@@ -3,7 +3,7 @@ Theme Name: A3tal Global
 Theme URI: https://a3tal.com/
 Author: A3tal.com
 Description: Premium RTL automotive platform theme for A3tal.com.
-Version: 1.6.0
+Version: 1.7.0
 Requires at least: 6.4
 Requires PHP: 8.0
 Text Domain: a3tal-global
@@ -870,4 +870,48 @@ html,body{max-width:100%;overflow-x:hidden}
 @media(max-width:600px){
   .g-directory-card-actions{grid-template-columns:1fr 1fr}
   .g-directory-card-actions a:last-child{grid-column:1/-1}
+}
+
+
+/* =========================================================
+   A3tal Global 1.7 — Motorcycle Knowledge Hub
+   ========================================================= */
+.g-moto-brand-universe{margin-top:34px;padding:24px;border-radius:20px;background:linear-gradient(135deg,#081522,#112c43);color:#fff}
+.g-moto-brand-universe .g-section-head{margin-bottom:18px}
+.g-moto-brand-universe .g-section-head>div>span{color:#ff9b7e}
+.g-moto-brand-universe .g-section-head h2{color:#fff}
+.g-moto-brand-universe .g-section-head p{max-width:820px;margin:5px 0 0;color:#b6c4cf;font-size:10px;line-height:1.75}
+.g-moto-brand-universe .g-section-head>a{color:#fff;border:1px solid rgba(255,255,255,.12);padding:7px 10px;border-radius:8px;font-size:8px;font-weight:900}
+.g-moto-origin-groups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.g-moto-origin-group{padding:14px;border-radius:14px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.07)}
+.g-moto-origin-group h3{font-family:"Alexandria";font-size:11px;margin:0 0 9px;color:#fff}
+.g-moto-brand-chips{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.g-moto-brand-chips a{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 10px;border-radius:9px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.06);color:#eaf1f6}
+.g-moto-brand-chips a.is-live{background:rgba(255,74,31,.16);border-color:rgba(255,120,84,.28)}
+.g-moto-brand-chips b{font-size:9px}
+.g-moto-brand-chips small{font-size:6px;color:#93a7b8;white-space:nowrap}
+.g-moto-brand-chips .is-live small{color:#ffb39b}
+
+.g-moto-guide-zone{margin-top:34px;padding:25px;border-radius:20px;background:#f6f8fa;border:1px solid #e1e7ec}
+.g-moto-guide-zone .g-section-head>div>span{color:var(--g-orange)}
+.g-moto-guide-zone .g-section-head p{max-width:820px;margin:5px 0 0;color:#74818e;font-size:10px;line-height:1.75}
+.g-moto-guide-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+.g-moto-guide-card{background:#fff}
+.g-moto-guide-card .g-card-media{aspect-ratio:16/10}
+.g-moto-guide-card .g-card-body h3{font-size:11px;line-height:1.55}
+.g-moto-guide-card .g-card-body p{font-size:8px}
+
+@media(max-width:980px){
+  .g-moto-origin-groups{grid-template-columns:1fr}
+  .g-moto-guide-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:650px){
+  .g-moto-brand-universe,.g-moto-guide-zone{padding:15px;border-radius:15px}
+  .g-moto-brand-universe .g-section-head,.g-moto-guide-zone .g-section-head{align-items:flex-start;flex-direction:column}
+  .g-moto-brand-chips{grid-template-columns:1fr}
+  .g-moto-guide-grid{grid-template-columns:1fr}
+  .g-moto-guide-card{display:grid;grid-template-columns:105px minmax(0,1fr)}
+  .g-moto-guide-card .g-card-media{height:100%;aspect-ratio:auto}
+  .g-moto-guide-card .g-card-body{padding:10px}
+  .g-moto-guide-card .g-card-body p{display:none}
 }
