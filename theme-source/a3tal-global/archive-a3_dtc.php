@@ -1,11 +1,26 @@
-<?php get_header(); ?>
+<?php
+$searched_code=strtoupper(preg_replace('/[^A-Z0-9]/i','',(string)get_query_var('code')));
+$legacy_match_q=null;
+$legacy_match_count=0;
+if($searched_code!==''){
+  $legacy_match_q=new WP_Query([
+    'post_type'=>'post',
+    'post_status'=>'publish',
+    'cat'=>2,
+    's'=>$searched_code,
+    'posts_per_page'=>12,
+    'ignore_sticky_posts'=>true,
+  ]);
+  $legacy_match_count=(int)$legacy_match_q->found_posts;
+}
+get_header(); ?>
 <section class="g-platform-archive-hero g-dtc-archive-hero">
   <div class="g-wrap">
     <span>A3TAL DTC LIBRARY</span>
     <h1>مرجع أكواد أعطال السيارات OBD-II</h1>
     <p>ابحث بالكود مباشرة للوصول إلى المعنى والأعراض والأسباب وخطوات التشخيص قبل تغيير أي قطعة.</p>
     <form class="g-dtc-search" method="get">
-      <input type="text" name="code" value="<?php echo esc_attr((string)get_query_var('code')); ?>" placeholder="اكتب الكود مثل P0420" maxlength="8" autocomplete="off">
+      <input type="text" name="code" value="<?php echo esc_attr($searched_code); ?>" placeholder="اكتب الكود مثل P0420" maxlength="8" autocomplete="off">
       <button type="submit"><?php echo a3g_icon('search'); ?><span>بحث عن الكود</span></button>
     </form>
     <div class="g-dtc-family-links">
@@ -38,14 +53,27 @@
   </div>
   <div class="g-platform-pagination"><?php the_posts_pagination(['mid_size'=>2,'prev_text'=>'السابق','next_text'=>'التالي']); ?></div>
   <?php else: ?>
-  <div class="g-platform-empty"><span>⚙️</span><h2>لم نجد هذا الكود في قاعدة البيانات المنشورة بعد</h2><p>لن نملأ المرجع بتفسيرات غير مراجعة. سيتم نشر الأكواد بعد التحقق من تعريفها ومصادرها الفنية.</p></div>
+    <?php if($legacy_match_count>0): ?>
+      <div class="g-platform-empty g-dtc-legacy-hit"><?php echo a3g_icon('search'); ?><h2>وجدنا شرحًا منشورًا للكود <?php echo esc_html($searched_code); ?></h2><p>الكود لم يُضف بعد كصفحة مرجعية منظمة، لكن الشرح الفني الموجود على أعطال متاح مباشرة بالأسفل.</p></div>
+    <?php else: ?>
+      <div class="g-platform-empty"><?php echo a3g_icon('gear'); ?><h2>لم نجد شرحًا منشورًا للكود <?php echo esc_html($searched_code?:'المطلوب'); ?></h2><p>راجع كتابة الكود، أو تصفح شروحات أكواد الأعطال المتاحة في المكتبة.</p></div>
+    <?php endif; ?>
+  <?php endif; ?>
+
+  <?php if($legacy_match_count>0): ?>
+    <section class="g-legacy-bridge g-dtc-search-results">
+      <div class="g-section-head"><div><span>نتائج البحث الموحّد</span><h2>شروحات مطابقة للكود <?php echo esc_html($searched_code); ?></h2><p>نتائج من مقالات أعطال الحالية حتى تصل للشرح المتاح سواء كان داخل المرجع الجديد أو المكتبة القديمة.</p></div><div class="g-legacy-count"><?php echo esc_html(number_format_i18n($legacy_match_count)); ?> نتيجة</div></div>
+      <div class="g-news-grid g-legacy-grid">
+        <?php while($legacy_match_q->have_posts()):$legacy_match_q->the_post();a3g_card(get_the_ID(),'g-legacy-card');endwhile;wp_reset_postdata(); ?>
+      </div>
+    </section>
   <?php endif; ?>
   <?php
   $legacy_exclude=a3g_entity_related_post_ids('a3_dtc');
   a3g_legacy_section(
     [2],
-    'شروحات أكواد الأعطال الموجودة بالفعل',
-    'الـ68 مقال DTC الحاليين فضلوا على روابطهم الأصلية، والمرجع الجديد بيجمعهم بدل ما يخلق نسخ منافسة لهم.',
+    'كل شروحات أكواد الأعطال',
+    'شروحات تفصيلية لأكواد OBD-II تشمل المعنى والأعراض والأسباب وخطوات التشخيص قبل تغيير القطع.',
     18,
     $legacy_exclude,
     2
