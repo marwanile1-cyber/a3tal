@@ -50,7 +50,6 @@ final class A3CP_Ownership_Commerce {
         self::register_post_types();
         self::register_taxonomies();
         self::register_meta();
-        add_rewrite_rule('^my-garage/?$', 'index.php?a3tal_garage=1', 'top');
     }
     public static function query_vars(array $vars): array {
         foreach (['a3tal_garage','part_origin','part_category','vendor_status','listing_condition','vehicle_entity'] as $var) {
@@ -66,7 +65,7 @@ final class A3CP_Ownership_Commerce {
     }
 
     public static function frontend_assets(): void {
-        if (!get_query_var('a3tal_garage')) return;
+        if (!is_page('my-garage') && !get_query_var('a3tal_garage')) return;
         wp_enqueue_style('a3cp-garage', A3CP_URL . 'garage.css', [], A3CP_VERSION);
         wp_enqueue_script('a3cp-garage', A3CP_URL . 'garage.js', [], A3CP_VERSION, true);
         wp_localize_script('a3cp-garage', 'A3talGarage', [
@@ -697,7 +696,7 @@ final class A3CP_Ownership_Commerce {
                 unset($robots['index']);
             }
         }
-        if (is_singular('a3_maintenance_plan')) {
+        if (is_singular('a3_maintenance_plan') || is_page('my-garage') || get_query_var('a3tal_garage')) {
             $robots['noindex'] = true;
             unset($robots['index']);
         }
