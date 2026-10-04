@@ -861,3 +861,13 @@ html,body{max-width:100%;overflow-x:hidden}
   .g-directory-actions{grid-template-columns:1fr}
   .g-map-embed{height:235px}
 }
+
+
+.g-directory-mini-meta{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.g-directory-card-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:10px}
+.g-directory-card-actions a{display:flex;align-items:center;justify-content:center;min-height:34px;padding:6px 7px;border-radius:8px;background:#eef3f7;color:#26445f;font-size:7px;font-weight:900}
+.g-directory-card-actions a:last-child{background:#0d2235;color:#fff}
+@media(max-width:600px){
+  .g-directory-card-actions{grid-template-columns:1fr 1fr}
+  .g-directory-card-actions a:last-child{grid-column:1/-1}
+}
