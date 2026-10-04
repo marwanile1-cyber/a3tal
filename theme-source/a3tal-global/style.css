@@ -3,7 +3,7 @@ Theme Name: A3tal Global
 Theme URI: https://a3tal.com/
 Author: A3tal.com
 Description: Premium RTL automotive platform theme for A3tal.com.
-Version: 1.7.0
+Version: 1.7.1
 Requires at least: 6.4
 Requires PHP: 8.0
 Text Domain: a3tal-global
@@ -915,3 +915,16 @@ html,body{max-width:100%;overflow-x:hidden}
   .g-moto-guide-card .g-card-body{padding:10px}
   .g-moto-guide-card .g-card-body p{display:none}
 }
+
+
+/* Showroom editorial rebuild */
+.a3-directory-cta{margin:28px 0;padding:18px 20px;border-radius:16px;background:linear-gradient(135deg,#0a1826,#17334b);color:#fff}
+.a3-directory-cta strong{display:block;font-family:"Alexandria";font-size:17px;margin-bottom:6px}
+.a3-directory-cta p{margin:0 0 12px;color:#c9d5df;font-size:13px;line-height:1.8}
+.a3-directory-cta a{display:inline-flex;padding:9px 13px;border-radius:9px;background:var(--g-orange);color:#fff;font-size:11px;font-weight:900}
+.a3-editorial-sources{margin:30px 0 8px;padding:18px;border-radius:14px;background:#f6f8fa;border:1px solid #e0e6eb}
+.a3-editorial-sources h2{margin-top:0!important}
+.a3-editorial-sources ul{margin-bottom:10px}
+.a3-editorial-sources li{margin:7px 0}
+.a3-editorial-sources a{color:#176ed7;text-decoration:underline}
+.a3-editorial-sources small{color:#6f7e8b;line-height:1.7}
