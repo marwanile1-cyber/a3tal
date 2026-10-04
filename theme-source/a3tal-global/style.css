@@ -3,7 +3,7 @@ Theme Name: A3tal Global
 Theme URI: https://a3tal.com/
 Author: A3tal.com
 Description: Premium RTL automotive platform theme for A3tal.com.
-Version: 1.2.0
+Version: 1.3.0
 Requires at least: 6.4
 Requires PHP: 8.0
 Text Domain: a3tal-global
@@ -599,4 +599,86 @@ svg{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-l
  .g-maintenance-intro{grid-template-columns:1fr}
  .g-maintenance-selected{grid-template-columns:80px 1fr}.g-maintenance-selected>a{grid-column:1/-1;text-align:center}
  .g-maintenance-node-facts,.g-maintenance-tech{grid-template-columns:1fr 1fr}
+}
+
+
+/* =========================================================
+   A3tal Global 1.3 — Full platform homepage
+   ========================================================= */
+.g-platform-home-hero{padding-bottom:28px}
+.g-hero-platform{min-height:520px;display:flex;align-items:center}
+.g-hero-platform .g-hero-content{max-width:920px}
+.g-hero-platform h1{max-width:820px;font-size:clamp(42px,6vw,70px);line-height:1.15}
+.g-hero-platform p{max-width:760px;font-size:15px}
+.g-universal-search{max-width:860px}
+.g-hero-action-row{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:14px}
+.g-hero-action-row>a{min-height:68px;display:flex;align-items:center;gap:9px;padding:11px 12px;border-radius:12px;background:rgba(255,255,255,.075);border:1px solid rgba(255,255,255,.09);color:#fff;backdrop-filter:blur(10px)}
+.g-hero-action-row .g-icon svg{width:24px;height:24px;color:#ff8b68}
+.g-hero-action-row>a>span:last-child{display:block}
+.g-hero-action-row b,.g-hero-action-row small{display:block}
+.g-hero-action-row b{font-size:10px}.g-hero-action-row small{font-size:7px;color:#aebdcc;margin-top:2px}
+.g-platform-launcher{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-top:14px}
+.g-platform-launcher>a{min-height:92px;padding:13px 10px;border-radius:14px;background:#fff;border:1px solid var(--g-line);box-shadow:0 8px 26px rgba(15,30,48,.035);text-align:center;transition:.18s}
+.g-platform-launcher>a:hover{transform:translateY(-3px);box-shadow:var(--g-shadow-sm)}
+.g-launch-icon{display:block;font-size:26px;line-height:1}
+.g-platform-launcher b,.g-platform-launcher small{display:block}.g-platform-launcher b{margin-top:7px;font-size:10px}.g-platform-launcher small{margin-top:2px;color:#8894a0;font-size:7px}
+
+.g-home-os-section{padding-top:18px}
+.g-home-os{display:grid;grid-template-columns:1.08fr .92fr;gap:22px;padding:28px;border-radius:21px;background:
+ radial-gradient(circle at 12% 0%,rgba(255,74,31,.16),transparent 30%),
+ linear-gradient(135deg,#081522,#142f47);color:#fff;overflow:hidden}
+.g-home-os-copy>span{font-size:9px;color:#ff9b7e;font-weight:900;letter-spacing:.11em}
+.g-home-os-copy h2{font-family:"Alexandria";font-size:32px;line-height:1.3;margin:6px 0 8px}.g-home-os-copy p{color:#b7c4cf;max-width:680px;font-size:12px}
+.g-home-os-actions{display:flex;gap:8px;margin-top:16px}.g-home-os-actions a{padding:9px 13px;border-radius:9px;border:1px solid rgba(255,255,255,.12);color:#fff;font-size:9px;font-weight:900}.g-home-os-actions .is-primary{background:var(--g-orange);border-color:var(--g-orange)}
+.g-home-os-dashboard{padding:16px;border-radius:16px;background:rgba(255,255,255,.065);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(12px)}
+.g-os-car-head{display:flex;align-items:center;gap:9px}.g-os-car-head>span{font-size:24px}.g-os-car-head>div{flex:1}.g-os-car-head small,.g-os-car-head strong{display:block}.g-os-car-head small{color:#8fa2b3;font-size:7px}.g-os-car-head strong{font-family:"Alexandria";font-size:12px}.g-os-car-head>b{padding:4px 6px;border-radius:6px;background:#173f2b;color:#8df0b0;font-size:7px}
+.g-os-meter{margin-top:14px;padding:12px;border-radius:11px;background:rgba(255,255,255,.05)}.g-os-meter>div{display:flex;justify-content:space-between;align-items:end}.g-os-meter span{font-size:8px;color:#9eb0c0}.g-os-meter strong{font-family:"Alexandria";font-size:18px}.g-os-meter strong small{font-size:7px;color:#9fb0bf}.g-os-meter>i{display:block;height:6px;border-radius:999px;background:linear-gradient(90deg,var(--g-orange) var(--p),rgba(255,255,255,.12) 0);margin-top:8px}
+.g-os-services{display:grid;gap:7px;margin-top:10px}.g-os-services>span{display:grid;grid-template-columns:8px 1fr auto;align-items:center;gap:7px;padding:8px;border-radius:9px;background:rgba(255,255,255,.045)}.g-os-services i{width:7px;height:7px;border-radius:50%;background:#16a34a}.g-os-services .is-due i{background:#dc2626}.g-os-services .is-soon i{background:#f59e0b}.g-os-services b{font-size:8px}.g-os-services small{font-size:7px;color:#9fb0bf}
+
+.g-home-dtc-zone{padding-top:28px}
+.g-dtc-command{display:grid;grid-template-columns:1.12fr .88fr;gap:18px;padding:24px;border-radius:19px;background:#091522;color:#fff}
+.g-dtc-command-copy>span{font-size:9px;color:#ff9b7e;font-weight:900}.g-dtc-command h2{font-family:"Alexandria";font-size:29px;line-height:1.35;margin:5px 0}.g-dtc-command p{color:#aebcca;font-size:11px;max-width:680px}
+.g-dtc-command form{display:flex;gap:7px;margin-top:14px}.g-dtc-command input{min-width:0;flex:1;height:48px;padding:0 15px;border:0;border-radius:10px;background:#fff;color:#122437;font-family:monospace;font-size:20px;font-weight:900;text-transform:uppercase}.g-dtc-command button{border:0;border-radius:10px;background:var(--g-orange);color:#fff;padding:0 15px;display:flex;align-items:center;gap:6px;font-size:9px;font-weight:900}
+.g-dtc-letters{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}.g-dtc-letters span{padding:5px 7px;border-radius:7px;background:rgba(255,255,255,.05);font-size:7px;color:#9eb0c0}.g-dtc-letters b{color:#ff8e6e}
+.g-dtc-command-side{display:grid;gap:7px}.g-dtc-command-side>a,.g-dtc-preview-card{padding:12px;border-radius:11px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.07);display:grid;grid-template-columns:85px 1fr;gap:8px;align-items:center}.g-dtc-command-side>a>b,.g-dtc-preview-card>b{font-family:monospace;font-size:18px;color:#ff7652}.g-dtc-command-side>a>span,.g-dtc-preview-card>span{font-size:9px;color:#d7e0e7}.g-dtc-preview-card small{grid-column:2;color:#8ea0b1;font-size:7px}
+
+.g-home-moto-section{background:linear-gradient(180deg,#fff,#f7f9fb)}
+.g-home-moto-head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:18px}.g-home-moto-head>div>span{font-size:9px;color:var(--g-orange);font-weight:900}.g-home-moto-head h2{font-family:"Alexandria";font-size:27px;margin:3px 0}.g-home-moto-head p{max-width:760px;color:#788592;font-size:10px;margin:0}.g-home-moto-head>a{font-size:9px;font-weight:900;color:#176ed7}
+.g-moto-teaser-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.g-moto-teaser-grid>a{padding:18px;border-radius:14px;background:#fff;border:1px solid var(--g-line);text-align:center}.g-moto-teaser-grid span{display:block;font-size:31px}.g-moto-teaser-grid b{display:block;margin-top:7px;font-size:11px}.g-moto-teaser-grid small{display:block;margin-top:2px;color:#8995a1;font-size:7px}
+
+.g-home-ownership-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.g-home-module{padding:19px;border-radius:16px;background:#fff;border:1px solid var(--g-line);box-shadow:0 6px 20px rgba(15,30,48,.03)}
+.g-home-module-head span{font-size:8px;color:var(--g-orange);font-weight:900}.g-home-module-head h2{font-family:"Alexandria";font-size:18px;line-height:1.4;margin:3px 0 7px}.g-home-module>p{font-size:9px;color:#778491;line-height:1.7}
+.g-maintenance-mini-timeline{display:flex;align-items:center;gap:5px;margin:13px 0}.g-maintenance-mini-timeline span{min-width:58px;padding:8px 6px;border-radius:9px;background:#f5f7f9;text-align:center}.g-maintenance-mini-timeline b,.g-maintenance-mini-timeline small{display:block}.g-maintenance-mini-timeline b{color:#17314a;font-size:10px}.g-maintenance-mini-timeline small{font-size:6px;color:#8994a0}.g-maintenance-mini-timeline i{height:2px;flex:1;background:#e0e6eb}
+.g-home-module>a{font-size:8px;color:#176ed7;font-weight:900}
+.g-parts-origin-list,.g-market-mini{display:flex;gap:5px;flex-wrap:wrap;margin:12px 0}.g-parts-origin-list span,.g-market-mini span{padding:5px 7px;border-radius:7px;background:#f2f5f8;color:#516375;font-size:7px;font-weight:800}
+.g-module-links{display:flex;gap:7px;margin-top:10px}.g-module-links a{padding:7px 9px;border-radius:8px;background:#eef4f8;color:#24425f;font-size:8px;font-weight:900}.g-module-links a:first-child{background:#0d2235;color:#fff}
+
+.g-home-places-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.g-place-mega{display:flex;align-items:center;gap:12px;padding:17px;border-radius:14px;background:#fff;border:1px solid var(--g-line);transition:.18s}.g-place-mega:hover{transform:translateY(-3px);box-shadow:var(--g-shadow-sm)}.g-place-mega>span{font-size:31px}.g-place-mega b,.g-place-mega small{display:block}.g-place-mega b{font-family:"Alexandria";font-size:12px}.g-place-mega small{margin-top:3px;color:#87939f;font-size:7px}
+.g-fault-feed{display:grid;gap:8px;margin-top:12px}
+.g-trust-platform{margin-top:24px}
+
+@media(max-width:1100px){
+  .g-platform-launcher{grid-template-columns:repeat(4,1fr)}
+  .g-hero-action-row{grid-template-columns:repeat(2,1fr)}
+  .g-home-ownership-grid{grid-template-columns:1fr 1fr}.g-home-module:last-child{grid-column:1/-1}
+}
+@media(max-width:850px){
+  .g-home-os,.g-dtc-command{grid-template-columns:1fr}
+  .g-moto-teaser-grid{grid-template-columns:repeat(2,1fr)}
+  .g-home-places-grid{grid-template-columns:1fr}
+}
+@media(max-width:650px){
+  .g-hero-platform{min-height:0}.g-hero-platform h1{font-size:36px}
+  .g-platform-launcher{grid-template-columns:repeat(2,1fr)}
+  .g-hero-action-row{grid-template-columns:1fr}
+  .g-home-os{padding:19px}.g-home-os-copy h2{font-size:25px}
+  .g-home-os-actions{flex-wrap:wrap}
+  .g-dtc-command{padding:17px}.g-dtc-command h2{font-size:23px}.g-dtc-command form{flex-direction:column}.g-dtc-command button{min-height:43px}
+  .g-dtc-command-side>a,.g-dtc-preview-card{grid-template-columns:72px 1fr}
+  .g-home-moto-head{align-items:flex-start;flex-direction:column}
+  .g-moto-teaser-grid{grid-template-columns:1fr 1fr}
+  .g-home-ownership-grid{grid-template-columns:1fr}.g-home-module:last-child{grid-column:auto}
+  .g-maintenance-mini-timeline{overflow-x:auto}.g-maintenance-mini-timeline span{flex:0 0 auto}.g-maintenance-mini-timeline i{min-width:22px}
 }
