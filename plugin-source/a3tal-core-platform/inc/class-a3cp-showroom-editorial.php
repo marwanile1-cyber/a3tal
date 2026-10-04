@@ -32,6 +32,67 @@ final class A3CP_Showroom_Editorial {
         return '<div class="a3-directory-cta"><strong>تبحث عن معرض محدد؟</strong><p>استخدم دليل معارض أعطال.كوم للوصول إلى الفروع الموثقة والعنوان والهاتف والخريطة ومصدر التحقق.</p><a href="/car-showrooms/">فتح دليل معارض السيارات</a></div>';
     }
 
+    private static function variant_from_attachment(int $source_id, string $key, string $filename, string $alt, int $slot): int {
+        $existing = get_posts([
+            'post_type'=>'attachment',
+            'post_status'=>'inherit',
+            'posts_per_page'=>1,
+            'fields'=>'ids',
+            'meta_key'=>'_a3_asset_key',
+            'meta_value'=>$key,
+        ]);
+        if($existing) return (int)$existing[0];
+
+        $source = get_attached_file($source_id);
+        if(!$source || !file_exists($source)) return 0;
+
+        require_once ABSPATH.'wp-admin/includes/image.php';
+        $editor = wp_get_image_editor($source);
+        if(is_wp_error($editor)) return 0;
+
+        $size = $editor->get_size();
+        $w = (int)($size['width'] ?? 0);
+        $h = (int)($size['height'] ?? 0);
+        if($w < 300 || $h < 200) return 0;
+
+        $crop_w = (int)floor($w * .76);
+        $crop_h = (int)floor($crop_w / 1.5);
+        if($crop_h > $h){
+            $crop_h = (int)floor($h * .76);
+            $crop_w = (int)floor($crop_h * 1.5);
+        }
+
+        $positions = [
+            [0,0],
+            [max(0,$w-$crop_w),0],
+            [0,max(0,$h-$crop_h)],
+            [max(0,$w-$crop_w),max(0,$h-$crop_h)],
+        ];
+        [$x,$y] = $positions[$slot % 4];
+
+        $cropped = $editor->crop($x,$y,$crop_w,$crop_h,1200,800,false);
+        if(is_wp_error($cropped)) return 0;
+
+        $uploads = wp_upload_dir();
+        if(!empty($uploads['error'])) return 0;
+        $dest = trailingslashit($uploads['path']).sanitize_file_name($filename);
+        $saved = $editor->save($dest,'image/webp');
+        if(is_wp_error($saved)) return 0;
+
+        $attachment_id = wp_insert_attachment([
+            'post_mime_type'=>'image/webp',
+            'post_title'=>$alt,
+            'post_status'=>'inherit',
+        ], $saved['path']);
+        if(is_wp_error($attachment_id) || !$attachment_id) return 0;
+
+        $meta = wp_generate_attachment_metadata($attachment_id,$saved['path']);
+        wp_update_attachment_metadata($attachment_id,$meta);
+        update_post_meta($attachment_id,'_wp_attachment_image_alt',$alt);
+        update_post_meta($attachment_id,'_a3_asset_key',$key);
+        return (int)$attachment_id;
+    }
+
     public static function rebuild_guides_v2(): void {
         if ((string)get_option('a3cp_showroom_guides_v2') === 'done') return;
 
@@ -534,7 +595,15 @@ HTML
             update_post_meta($post->ID,'_a3_showroom_guide_checked_at','2026-10-04');
 
             if($fallbacks){
-                $media = $fallbacks[$i % count($fallbacks)];
+                $source_media = $fallbacks[$i % count($fallbacks)];
+                $variant = self::variant_from_attachment(
+                    $source_media,
+                    'showroom-guide-v2-'.$slug,
+                    'a3tal-'.$slug.'.webp',
+                    $article['title'],
+                    $i
+                );
+                $media = $variant ?: $source_media;
                 if($media && wp_attachment_is_image($media)){
                     set_post_thumbnail($post->ID,$media);
                 }
@@ -542,6 +611,6 @@ HTML
             $i++;
         }
 
-        if($ok) update_option('a3cp_showroom_guides_v2','done',false);
+        if($ok) update_option('a3cp_showroom_guides_v3','done',false);
     }
 }
