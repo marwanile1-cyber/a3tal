@@ -35,7 +35,7 @@ $showrooms=new WP_Query(['post_type'=>'a3_showroom','post_status'=>'publish','po
 
         <div class="g-hero-action-row">
           <a href="<?php echo esc_url(a3g_platform_link('a3_car','/cars/')); ?>"><?php echo a3g_icon('car'); ?><span><b>ابحث عن سيارة</b><small>أسعار ومواصفات ومراجعات</small></span></a>
-          <a href="<?php echo esc_url(a3g_platform_link('a3_motorcycle','/motorcycles/')); ?>">🏍️<span><b>الموتوسيكلات</b><small>سكوتر وموتوسيكل ومقارنات</small></span></a>
+          <a href="<?php echo esc_url(a3g_platform_link('a3_motorcycle','/motorcycles/')); ?>"><?php echo a3g_icon('motorcycle'); ?><span><b>الموتوسيكلات</b><small>سكوتر وموتوسيكل ومقارنات</small></span></a>
           <a href="<?php echo esc_url(a3g_platform_link('a3_dtc','/dtc/')); ?>"><?php echo a3g_icon('gear'); ?><span><b>فسّر كود عطل</b><small>مرجع DTC عربي</small></span></a>
           <a href="<?php echo esc_url(home_url('/my-garage/')); ?>"><?php echo a3g_icon('car'); ?><span><b>سيارتي</b><small>الصيانة والعداد والسجل</small></span></a>
         </div>
@@ -43,16 +43,16 @@ $showrooms=new WP_Query(['post_type'=>'a3_showroom','post_status'=>'publish','po
     </div>
 
     <div class="g-platform-launcher">
-      <a href="<?php echo esc_url(a3g_platform_link('a3_car','/cars/')); ?>"><span class="g-launch-icon">🚘</span><b>السيارات</b><small>الموديلات والأسعار</small></a>
-      <a href="<?php echo esc_url(a3g_platform_link('a3_motorcycle','/motorcycles/')); ?>"><span class="g-launch-icon">🏍️</span><b>الموتوسيكلات</b><small>السكوتر والموتوسيكل</small></a>
-      <a href="<?php echo esc_url(a3g_platform_link('a3_dtc','/dtc/')); ?>"><span class="g-launch-icon">⚠️</span><b>أكواد الأعطال</b><small>P / B / C / U</small></a>
-      <a href="<?php echo esc_url(a3g_cat_link(8)); ?>"><span class="g-launch-icon">🧠</span><b>تشخيص الأعطال</b><small>الأعراض والحلول</small></a>
-      <a href="<?php echo esc_url(a3g_platform_link('a3_maintenance_plan','/maintenance-schedules/')); ?>"><span class="g-launch-icon">🗓️</span><b>جداول الصيانة</b><small>حسب الموديل والعداد</small></a>
-      <a href="<?php echo esc_url(a3g_platform_link('a3_part','/parts/')); ?>"><span class="g-launch-icon">⚙️</span><b>قطع الغيار</b><small>OEM وAftermarket</small></a>
-      <a href="<?php echo esc_url(a3g_platform_link('a3_service_center','/service-centers/')); ?>"><span class="g-launch-icon">🔧</span><b>مراكز الخدمة</b><small>معتمد وموثّق ومستقل</small></a>
-      <a href="<?php echo esc_url(a3g_platform_link('a3_showroom','/car-showrooms/')); ?>"><span class="g-launch-icon">🏢</span><b>معارض السيارات</b><small>رسمي وموثّق وخاص</small></a>
-      <a href="<?php echo esc_url(a3g_platform_link('a3_listing','/cars-for-sale/')); ?>"><span class="g-launch-icon">🏷️</span><b>سوق السيارات</b><small>بيع وشراء المستعمل</small></a>
-      <a href="<?php echo esc_url(a3g_cat_link(21)); ?>"><span class="g-launch-icon">🆚</span><b>قارن</b><small>قبل ما تشتري</small></a>
+      <a href="<?php echo esc_url(a3g_platform_link('a3_car','/cars/')); ?>"><span class="g-launch-icon"><?php echo a3g_icon('car'); ?></span><b>السيارات</b><small>الموديلات والأسعار</small></a>
+      <a href="<?php echo esc_url(a3g_platform_link('a3_motorcycle','/motorcycles/')); ?>"><span class="g-launch-icon"><?php echo a3g_icon('motorcycle'); ?></span><b>الموتوسيكلات</b><small>السكوتر والموتوسيكل</small></a>
+      <a href="<?php echo esc_url(a3g_platform_link('a3_dtc','/dtc/')); ?>"><span class="g-launch-icon"><?php echo a3g_icon('warning'); ?></span><b>أكواد الأعطال</b><small>P / B / C / U</small></a>
+      <a href="<?php echo esc_url(a3g_cat_link(8)); ?>"><span class="g-launch-icon"><?php echo a3g_icon('brain'); ?></span><b>تشخيص الأعطال</b><small>الأعراض والحلول</small></a>
+      <a href="<?php echo esc_url(a3g_platform_link('a3_maintenance_plan','/maintenance-schedules/')); ?>"><span class="g-launch-icon"><?php echo a3g_icon('calendar'); ?></span><b>جداول الصيانة</b><small>حسب الموديل والعداد</small></a>
+      <a href="<?php echo esc_url(a3g_platform_link('a3_part','/parts/')); ?>"><span class="g-launch-icon"><?php echo a3g_icon('gear'); ?></span><b>قطع الغيار</b><small>OEM وAftermarket</small></a>
+      <a href="<?php echo esc_url(a3g_platform_link('a3_service_center','/service-centers/')); ?>"><span class="g-launch-icon"><?php echo a3g_icon('wrench'); ?></span><b>مراكز الخدمة</b><small>معتمد وموثّق ومستقل</small></a>
+      <a href="<?php echo esc_url(a3g_platform_link('a3_showroom','/car-showrooms/')); ?>"><span class="g-launch-icon"><?php echo a3g_icon('store'); ?></span><b>معارض السيارات</b><small>رسمي وموثّق وخاص</small></a>
+      <a href="<?php echo esc_url(a3g_platform_link('a3_listing','/cars-for-sale/')); ?>"><span class="g-launch-icon"><?php echo a3g_icon('tag'); ?></span><b>سوق السيارات</b><small>بيع وشراء المستعمل</small></a>
+      <a href="<?php echo esc_url(a3g_cat_link(21)); ?>"><span class="g-launch-icon"><?php echo a3g_icon('compare'); ?></span><b>قارن</b><small>قبل ما تشتري</small></a>
     </div>
   </div>
 </section>
@@ -67,7 +67,7 @@ $showrooms=new WP_Query(['post_type'=>'a3_showroom','post_status'=>'publish','po
         <div class="g-home-os-actions"><a class="is-primary" href="<?php echo esc_url(home_url('/my-garage/')); ?>">افتح سيارتي</a><a href="<?php echo esc_url(a3g_platform_link('a3_maintenance_plan','/maintenance-schedules/')); ?>">شوف جداول الصيانة</a></div>
       </div>
       <div class="g-home-os-dashboard">
-        <div class="g-os-car-head"><span>🚘</span><div><small>سيارتي</small><strong>جراج رقمي كامل</strong></div><b>LIVE</b></div>
+        <div class="g-os-car-head"><span><?php echo a3g_icon('car'); ?></span><div><small>سيارتي</small><strong>جراج رقمي كامل</strong></div><b>LIVE</b></div>
         <div class="g-os-meter"><div><span>عداد المركبة</span><strong>87,450 <small>كم</small></strong></div><i style="--p:72%"></i></div>
         <div class="g-os-services">
           <span class="is-due"><i></i><b>زيت المحرك</b><small>مستحق الآن</small></span>
@@ -121,10 +121,10 @@ $showrooms=new WP_Query(['post_type'=>'a3_showroom','post_status'=>'publish','po
       <div class="g-platform-grid"><?php while($motos->have_posts()):$motos->the_post();a3g_platform_card();endwhile;wp_reset_postdata(); ?></div>
     <?php else: ?>
       <div class="g-moto-teaser-grid">
-        <a href="<?php echo esc_url(add_query_arg('vehicle_type','scooter',a3g_platform_link('a3_motorcycle','/motorcycles/'))); ?>"><span>🛵</span><b>سكوتر</b><small>عملي للمدينة والتنقل اليومي</small></a>
-        <a href="<?php echo esc_url(add_query_arg('vehicle_type','commuter',a3g_platform_link('a3_motorcycle','/motorcycles/'))); ?>"><span>🏍️</span><b>اقتصادي</b><small>استهلاك وتشغيل يومي</small></a>
-        <a href="<?php echo esc_url(add_query_arg('vehicle_type','sport',a3g_platform_link('a3_motorcycle','/motorcycles/'))); ?>"><span>🏁</span><b>رياضي</b><small>أداء وتجهيزات ومقارنات</small></a>
-        <a href="<?php echo esc_url(add_query_arg('vehicle_type','electric',a3g_platform_link('a3_motorcycle','/motorcycles/'))); ?>"><span>⚡</span><b>كهربائي</b><small>بطارية ومدى وشحن</small></a>
+        <a href="<?php echo esc_url(add_query_arg('vehicle_type','scooter',a3g_platform_link('a3_motorcycle','/motorcycles/'))); ?>"><span><?php echo a3g_icon('motorcycle'); ?></span><b>سكوتر</b><small>عملي للمدينة والتنقل اليومي</small></a>
+        <a href="<?php echo esc_url(add_query_arg('vehicle_type','commuter',a3g_platform_link('a3_motorcycle','/motorcycles/'))); ?>"><span><?php echo a3g_icon('motorcycle'); ?></span><b>اقتصادي</b><small>استهلاك وتشغيل يومي</small></a>
+        <a href="<?php echo esc_url(add_query_arg('vehicle_type','sport',a3g_platform_link('a3_motorcycle','/motorcycles/'))); ?>"><span><?php echo a3g_icon('bolt'); ?></span><b>رياضي</b><small>أداء وتجهيزات ومقارنات</small></a>
+        <a href="<?php echo esc_url(add_query_arg('vehicle_type','electric',a3g_platform_link('a3_motorcycle','/motorcycles/'))); ?>"><span><?php echo a3g_icon('bolt'); ?></span><b>كهربائي</b><small>بطارية ومدى وشحن</small></a>
       </div>
     <?php endif; ?>
   </div>
@@ -170,9 +170,9 @@ $showrooms=new WP_Query(['post_type'=>'a3_showroom','post_status'=>'publish','po
   <div class="g-wrap g-home-places-wrap">
     <div class="g-section-head"><div><span>A3TAL PLACES</span><h2>مراكز الخدمة والمعارض</h2></div><a href="<?php echo esc_url(a3g_platform_link('a3_service_center','/service-centers/')); ?>">استكشف الدليل</a></div>
     <div class="g-home-places-grid">
-      <a class="g-place-mega" href="<?php echo esc_url(a3g_platform_link('a3_service_center','/service-centers/')); ?>"><span>🔧</span><div><b>مراكز الخدمة</b><small>معتمد رسميًا، موثّق من أعطال، ومستقل</small></div></a>
-      <a class="g-place-mega" href="<?php echo esc_url(a3g_platform_link('a3_showroom','/car-showrooms/')); ?>"><span>🏢</span><div><b>معارض السيارات</b><small>رسمي، موثّق، وخاص</small></div></a>
-      <a class="g-place-mega" href="<?php echo esc_url(a3g_platform_link('a3_parts_vendor','/parts-stores/')); ?>"><span>🧰</span><div><b>بائعو قطع الغيار</b><small>رسمي، موثّق، ومستقل</small></div></a>
+      <a class="g-place-mega" href="<?php echo esc_url(a3g_platform_link('a3_service_center','/service-centers/')); ?>"><span><?php echo a3g_icon('wrench'); ?></span><div><b>مراكز الخدمة</b><small>معتمد رسميًا، موثّق من أعطال، ومستقل</small></div></a>
+      <a class="g-place-mega" href="<?php echo esc_url(a3g_platform_link('a3_showroom','/car-showrooms/')); ?>"><span><?php echo a3g_icon('store'); ?></span><div><b>معارض السيارات</b><small>رسمي، موثّق، وخاص</small></div></a>
+      <a class="g-place-mega" href="<?php echo esc_url(a3g_platform_link('a3_parts_vendor','/parts-stores/')); ?>"><span><?php echo a3g_icon('gear'); ?></span><div><b>بائعو قطع الغيار</b><small>رسمي، موثّق، ومستقل</small></div></a>
     </div>
   </div>
 </section>
