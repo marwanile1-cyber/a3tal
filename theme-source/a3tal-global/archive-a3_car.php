@@ -1,1 +1,1 @@
-<?php $a3g_vehicle_type='a3_car'; require get_template_directory().'/template-parts/archive-vehicle.php'; ?>
+<?php $a3g_vehicle_type='a3_car'; require get_template_directory().'/platform-archive-vehicle.php'; ?>
