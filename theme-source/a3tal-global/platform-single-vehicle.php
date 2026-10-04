@@ -43,7 +43,19 @@ $related=a3g_related_post_ids();
         'الوقود'=>a3cp_field('_a3_fuel'),
         'نظام الجر'=>a3cp_field('_a3_drivetrain'),
       ];
-      if(!$is_moto)$specs['المقاعد']=a3cp_field('_a3_seats');
+      if($is_moto){
+        $specs['بلد العلامة / المنشأ المرجعي']=a3cp_field('_a3_origin_country');
+        $specs['التبريد']=a3cp_field('_a3_cooling');
+        $specs['الفرامل الأمامية']=a3cp_field('_a3_front_brake');
+        $specs['الفرامل الخلفية']=a3cp_field('_a3_rear_brake');
+        $specs['نوع الإطارات']=a3cp_field('_a3_tyre_type');
+        $specs['سعة الخزان']=a3cp_field('_a3_tank_l')?a3cp_field('_a3_tank_l').' لتر':'';
+        $specs['الوزن']=a3cp_field('_a3_weight_kg')?a3cp_field('_a3_weight_kg').' كجم':'';
+        $specs['الاستخدام الأنسب']=a3cp_field('_a3_use_case');
+        $specs['الضمان']=a3cp_field('_a3_warranty');
+      }else{
+        $specs['المقاعد']=a3cp_field('_a3_seats');
+      }
       foreach($specs as $label=>$value): if($value==='')continue; ?>
         <div><small><?php echo esc_html($label); ?></small><strong><?php echo esc_html($value); ?></strong></div>
       <?php endforeach; ?>
