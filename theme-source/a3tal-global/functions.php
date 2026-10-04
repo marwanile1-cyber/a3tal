@@ -1,6 +1,6 @@
 <?php
 if (!defined('ABSPATH')) exit;
-define('A3G_VERSION','1.6.0');
+define('A3G_VERSION','1.7.0');
 
 function a3g_setup(){
   add_theme_support('title-tag');
@@ -207,8 +207,16 @@ function a3g_platform_card($post_id=0){
 function a3g_platform_archive_seo(){
   if(is_post_type_archive('a3_showroom')){
     return [
+      'short'=>'معارض السيارات في مصر',
       'title'=>'معارض السيارات في مصر | الفروع المعتمدة ودليل الشراء | أعطال.كوم',
       'desc'=>'دليل معارض السيارات في مصر: فروع معتمدة رسميًا، عناوين وأرقام ومواعيد ومصادر تحقق، مع أدلة الحجز وتجربة القيادة والاستلام والتقسيط.'
+    ];
+  }
+  if(is_post_type_archive('a3_motorcycle')){
+    return [
+      'short'=>'الموتوسيكلات والسكوتر في مصر',
+      'title'=>'الموتوسيكلات والسكوتر في مصر | الماركات والمواصفات والصيانة | أعطال.كوم',
+      'desc'=>'دليل شامل للموتوسيكلات والسكوتر في مصر: TVS وBajaj والياباني والهندي والصيني، مواصفات ومقارنات وشراء وصيانة وقطع غيار وأعطال.'
     ];
   }
   return null;
@@ -221,7 +229,7 @@ add_filter('wpseo_twitter_title',function($title){$seo=a3g_platform_archive_seo(
 add_filter('wpseo_twitter_description',function($desc){$seo=a3g_platform_archive_seo();return $seo?$seo['desc']:$desc;},90);
 add_filter('document_title_parts',function($parts){
   $seo=a3g_platform_archive_seo();
-  if($seo)$parts['title']='معارض السيارات في مصر';
+  if($seo)$parts['title']=$seo['short']??$seo['title'];
   return $parts;
 },90);
 
