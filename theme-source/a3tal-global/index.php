@@ -7,7 +7,7 @@ $cat=a3g_primary_cat(); $diag=a3g_is_diagnostic(); ?>
     <?php if($cat): ?><span class="g-article-tag"><?php echo esc_html($cat->name); ?></span><?php endif; ?>
     <h1><?php the_title(); ?></h1>
     <p><?php echo esc_html(a3g_excerpt(get_the_ID(),28)); ?></p>
-    <div class="g-article-meta"><span>آخر تحديث: <?php echo esc_html(get_the_modified_date('j F Y')); ?></span><span><?php echo esc_html(a3g_read_time()); ?> دقائق قراءة</span><span>فريق أعطال.كوم</span></div>
+    <div class="g-article-meta"><span>آخر تحديث: <?php echo esc_html(get_the_modified_date('j F Y')); ?></span><span><?php echo esc_html(a3g_read_time()); ?> دقائق قراءة</span><span class="g-article-views"><?php echo a3g_icon('eye'); ?><b data-a3-views><?php echo esc_html(a3g_views_label()); ?></b></span><span>فريق أعطال.كوم</span></div>
   </div>
 </section>
 <div class="g-wrap g-article-layout">
