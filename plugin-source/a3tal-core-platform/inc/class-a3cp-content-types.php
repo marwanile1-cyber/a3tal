@@ -56,6 +56,8 @@ final class A3CP_Content_Types {
         add_action('a3cp_seed_showroom_featured_v1', [__CLASS__, 'seed_showroom_featured_v1']);
         add_action('init', [__CLASS__, 'enrich_showroom_directory_v2'], 46);
         add_action('a3cp_enrich_showrooms_v2', [__CLASS__, 'enrich_showroom_directory_v2']);
+        add_action('init', [__CLASS__, 'seed_showroom_custom_media_v2'], 47);
+        add_action('a3cp_seed_showroom_custom_media_v2', [__CLASS__, 'seed_showroom_custom_media_v2']);
     }
 
     public static function register_all(): void {
@@ -955,6 +957,95 @@ final class A3CP_Content_Types {
         }
 
         if ($ok) update_option('a3cp_showroom_enrich_v2', 'done', false);
+    }
+
+    private static function showroom_asset(string $key, string $url, string $filename, string $alt): int {
+        $existing = get_posts([
+            'post_type' => 'attachment',
+            'post_status' => 'inherit',
+            'posts_per_page' => 1,
+            'fields' => 'ids',
+            'meta_key' => '_a3_asset_key',
+            'meta_value' => $key,
+        ]);
+        if ($existing) return (int) $existing[0];
+
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+        require_once ABSPATH . 'wp-admin/includes/media.php';
+        require_once ABSPATH . 'wp-admin/includes/image.php';
+
+        $tmp = download_url($url, 45);
+        if (is_wp_error($tmp)) return 0;
+
+        $file = ['name' => $filename, 'tmp_name' => $tmp];
+        $id = media_handle_sideload($file, 0, $alt);
+
+        if (is_wp_error($id)) {
+            @unlink($tmp);
+            return 0;
+        }
+
+        update_post_meta($id, '_wp_attachment_image_alt', $alt);
+        update_post_meta($id, '_a3_asset_key', $key);
+        return (int) $id;
+    }
+
+    public static function seed_showroom_custom_media_v2(): void {
+        if ((string) get_option('a3cp_showroom_custom_media_v2') === 'done') return;
+
+        $base = 'https://raw.githubusercontent.com/marwanile1-cyber/a3tal/main/assets/showrooms/';
+        $exterior = self::showroom_asset(
+            'showroom-official-exterior-v2',
+            $base . 'showroom-official-exterior.webp',
+            'a3tal-showroom-official-exterior.webp',
+            'معرض سيارات حديث بتصميم احترافي من أعطال.كوم'
+        );
+        $interior = self::showroom_asset(
+            'showroom-premium-interior-v2',
+            $base . 'showroom-premium-interior.webp',
+            'a3tal-showroom-premium-interior.webp',
+            'صالة عرض سيارات حديثة بتصميم احترافي من أعطال.كوم'
+        );
+
+        if (!$exterior || !$interior) return;
+
+        $showroom_map = [
+            'toyota-egypt-cairo-festival-city-showroom' => $exterior,
+            'toyota-egypt-sheikh-zayed-showroom' => $interior,
+            'toyota-egypt-madinaty-showroom' => $exterior,
+            'toyota-egypt-abbassia-showroom' => $interior,
+            'mg-mansour-new-cairo-showroom' => $exterior,
+            'mg-mansour-madinaty-showroom' => $interior,
+            'mg-mansour-smouha-showroom' => $exterior,
+            'mg-mansour-mansoura-showroom' => $interior,
+            'chery-gb-abbas-el-akkad-showroom' => $exterior,
+            'chery-kernel-fifth-settlement-showroom' => $interior,
+        ];
+
+        $guide_map = [
+            'dealer-vs-authorized-distributor-vs-private-showroom-egypt' => $interior,
+            'how-to-verify-car-showroom-authorized-egypt' => $exterior,
+            'new-car-delivery-checklist-egypt' => $interior,
+            'test-drive-before-buying-car-egypt' => $exterior,
+            'car-showroom-finance-hidden-costs-egypt' => $interior,
+            'car-overprice-egypt-dealership-guide' => $exterior,
+            'questions-before-booking-new-car-egypt' => $interior,
+            'compare-car-showroom-offers-egypt' => $exterior,
+        ];
+
+        $ok = true;
+        foreach ($showroom_map as $slug => $media_id) {
+            $post = get_page_by_path($slug, OBJECT, 'a3_showroom');
+            if (!$post instanceof WP_Post) { $ok = false; continue; }
+            set_post_thumbnail($post->ID, $media_id);
+        }
+        foreach ($guide_map as $slug => $media_id) {
+            $post = get_page_by_path($slug, OBJECT, 'post');
+            if (!$post instanceof WP_Post) { $ok = false; continue; }
+            set_post_thumbnail($post->ID, $media_id);
+        }
+
+        if ($ok) update_option('a3cp_showroom_custom_media_v2', 'done', false);
     }
 
     public static function robots(array $robots): array {
