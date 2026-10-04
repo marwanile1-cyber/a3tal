@@ -47,6 +47,8 @@ final class A3CP_Content_Types {
         add_filter('wp_robots', [__CLASS__, 'robots']);
         add_action('init', [__CLASS__, 'seed_reference_entities'], 40);
         add_action('init', [__CLASS__, 'seed_motorcycle_entities'], 41);
+        add_action('init', [__CLASS__, 'seed_car_entities_v1'], 41);
+        add_action('a3cp_seed_cars_v1', [__CLASS__, 'seed_car_entities_v1']);
         add_action('a3cp_seed_motorcycles', [__CLASS__, 'seed_motorcycle_entities']);
         add_action('init', [__CLASS__, 'seed_service_centers_v1'], 42);
         add_action('a3cp_seed_service_centers_v1', [__CLASS__, 'seed_service_centers_v1']);
@@ -668,6 +670,129 @@ final class A3CP_Content_Types {
         }
 
         if ($all_ready) update_option('a3cp_service_center_seed_v1', 'done', false);
+    }
+
+
+    public static function seed_car_entities_v1(): void {
+        if ((string) get_option('a3cp_car_seed_v1') === 'done') return;
+
+        $brands = [
+            'byd'=>'BYD','chery'=>'Chery','xpeng'=>'XPENG','geely'=>'Geely',
+            'opel'=>'Opel','haval'=>'Haval','soueast'=>'SOUEAST',
+        ];
+        foreach ($brands as $slug=>$name) {
+            if (!term_exists($slug,'a3_brand')) wp_insert_term($name,'a3_brand',['slug'=>$slug]);
+        }
+
+        $items = [
+            [
+                'slug'=>'byd-sealion-6-ev-2027','title'=>'BYD Sealion 6 EV 2027','brand'=>'byd','body'=>'suv',
+                'year'=>2027,'price_min'=>1749900,'price_max'=>1799000,'engine'=>0,'power'=>215,'torque'=>310,
+                'transmission'=>'منظومة دفع كهربائية','fuel'=>'كهرباء','drivetrain'=>'','seats'=>0,
+                'related'=>83167,'featured'=>83174,'source'=>'https://a3tal.com/byd-sealion-6-ev-price-egypt/',
+                'summary'=>'SUV كهربائية ببطارية 71.8 kWh ومدى معلن 420 كم WLTP، مع سعر يبدأ من 1,749,900 جنيه لنسخ 2027 وقت آخر مراجعة.'
+            ],
+            [
+                'slug'=>'chery-tiggo-9-egypt','title'=>'Chery Tiggo 9','brand'=>'chery','body'=>'suv',
+                'year'=>0,'price_min'=>2100000,'price_max'=>2100000,'engine'=>1500,'power'=>0,'torque'=>440,
+                'transmission'=>'DHT ثلاث سرعات','fuel'=>'PHEV','drivetrain'=>'','seats'=>0,
+                'related'=>83037,'featured'=>83039,'source'=>'https://a3tal.com/chery-tiggo-9-egypt-price-specs-review/',
+                'summary'=>'SUV كبيرة هجينة قابلة للشحن بمحرك 1.5 تيربو وبطارية 19.43 kWh وعزم 440 نيوتن.متر، بسعر يبدأ من 2,100,000 جنيه وقت آخر مراجعة.'
+            ],
+            [
+                'slug'=>'chery-arrizo-8-egypt','title'=>'Chery Arrizo 8','brand'=>'chery','body'=>'sedan',
+                'year'=>0,'price_min'=>1300000,'price_max'=>1300000,'engine'=>1600,'power'=>197,'torque'=>290,
+                'transmission'=>'7DCT Wet','fuel'=>'بنزين','drivetrain'=>'','seats'=>0,
+                'related'=>82853,'featured'=>82871,'source'=>'https://a3tal.com/chery-arrizo-8-egypt-review-price-specs/',
+                'summary'=>'سيدان بمحرك 1.6 تيربو بقوة 197 حصان وعزم 290 نيوتن.متر وناقل 7DCT Wet، بسعر يبدأ من 1,300,000 جنيه وقت آخر مراجعة.'
+            ],
+            [
+                'slug'=>'chery-tiggo-8-pro-max-egypt','title'=>'Chery Tiggo 8 Pro Max','brand'=>'chery','body'=>'suv',
+                'year'=>0,'price_min'=>1620000,'price_max'=>1620000,'engine'=>1600,'power'=>197,'torque'=>290,
+                'transmission'=>'7DCT Wet','fuel'=>'بنزين','drivetrain'=>'','seats'=>7,
+                'related'=>82844,'featured'=>82851,'source'=>'https://a3tal.com/chery-tiggo-8-pro-max-egypt-price-specs/',
+                'summary'=>'SUV عائلية بسبعة مقاعد ومحرك 1.6 تيربو 197 حصان وناقل 7DCT Wet، بسعر يبدأ من 1,620,000 جنيه وقت آخر مراجعة.'
+            ],
+            [
+                'slug'=>'xpeng-p7-plus-super-reev-egypt','title'=>'XPENG P7+ Super REEV','brand'=>'xpeng','body'=>'sedan',
+                'year'=>0,'price_min'=>2199900,'price_max'=>2199900,'engine'=>1500,'power'=>242,'torque'=>450,
+                'transmission'=>'منظومة REEV','fuel'=>'REEV','drivetrain'=>'RWD','seats'=>5,
+                'related'=>82612,'featured'=>82618,'source'=>'https://a3tal.com/xpeng-p7-plus-super-reev-price-specs-egypt/',
+                'summary'=>'Fastback بمدى ممتد REEV، بقوة 242 حصان وعزم 450 نيوتن.متر ودفع خلفي، بسعر 2,199,900 جنيه وقت آخر مراجعة.'
+            ],
+            [
+                'slug'=>'xpeng-g7-super-reev-egypt','title'=>'XPENG G7 Super REEV','brand'=>'xpeng','body'=>'suv',
+                'year'=>0,'price_min'=>2249900,'price_max'=>2249900,'engine'=>1500,'power'=>293,'torque'=>450,
+                'transmission'=>'منظومة REEV','fuel'=>'REEV','drivetrain'=>'RWD','seats'=>5,
+                'related'=>82606,'featured'=>82607,'source'=>'https://a3tal.com/xpeng-g7-super-reev-price-specs-egypt/',
+                'summary'=>'SUV بمدى ممتد REEV وبطارية 55.8 kWh، بقوة 293 حصان وعزم 450 نيوتن.متر ودفع خلفي، بسعر 2,249,900 جنيه.'
+            ],
+            [
+                'slug'=>'geely-monjaro-em-i-egypt','title'=>'Geely Monjaro EM-i','brand'=>'geely','body'=>'suv',
+                'year'=>0,'price_min'=>1699000,'price_max'=>1999900,'engine'=>1499,'power'=>0,'torque'=>0,
+                'transmission'=>'منظومة هجينة قابلة للشحن','fuel'=>'PHEV','drivetrain'=>'FWD / e-AWD حسب الفئة','seats'=>5,
+                'related'=>82582,'featured'=>82579,'source'=>'https://a3tal.com/geely-monjaro-em-i-price-specs-egypt/',
+                'summary'=>'SUV كبيرة PHEV تتوفر بدفع أمامي أو e-AWD حسب الفئة، بأسعار من 1,699,000 إلى 1,999,900 جنيه وقت آخر مراجعة.'
+            ],
+            [
+                'slug'=>'opel-frontera-egypt','title'=>'Opel Frontera','brand'=>'opel','body'=>'suv',
+                'year'=>0,'price_min'=>1230000,'price_max'=>1230000,'engine'=>1200,'power'=>130,'torque'=>230,
+                'transmission'=>'أوتوماتيك 6 سرعات','fuel'=>'بنزين','drivetrain'=>'FWD','seats'=>7,
+                'related'=>82603,'featured'=>82604,'source'=>'https://a3tal.com/opel-frontera-price-specs-egypt/',
+                'summary'=>'SUV عائلية بسبعة مقاعد ومحرك 1.2 تيربو 130 حصان وناقل أوتوماتيك 6 سرعات ودفع أمامي، بسعر 1,230,000 جنيه.'
+            ],
+            [
+                'slug'=>'haval-v7-egypt','title'=>'Haval V7','brand'=>'haval','body'=>'suv',
+                'year'=>0,'price_min'=>1825000,'price_max'=>2100000,'engine'=>1500,'power'=>0,'torque'=>0,
+                'transmission'=>'2DHT / 4DHT حسب الفئة','fuel'=>'HEV / PHEV','drivetrain'=>'FWD / AWD حسب الفئة','seats'=>5,
+                'related'=>82550,'featured'=>81431,'source'=>'https://a3tal.com/haval-v7-price-specs-egypt/',
+                'summary'=>'SUV هجينة تتوفر HEV أمامية أو PHEV بدفع كلي، بأسعار من 1,825,000 إلى 2,100,000 جنيه حسب الفئة وقت آخر مراجعة.'
+            ],
+            [
+                'slug'=>'soueast-s05-2027-egypt','title'=>'SOUEAST S05 2027','brand'=>'soueast','body'=>'crossover',
+                'year'=>2027,'price_min'=>1070000,'price_max'=>1070000,'engine'=>1500,'power'=>156,'torque'=>230,
+                'transmission'=>'6 Wet DCT','fuel'=>'بنزين','drivetrain'=>'FWD','seats'=>0,
+                'related'=>82554,'featured'=>82555,'source'=>'https://a3tal.com/soueast-s05-price-specs-egypt/',
+                'summary'=>'كروس أوفر مدمجة بمحرك 1.5 تيربو 156 حصان وعزم 230 نيوتن.متر وناقل 6 Wet DCT، بسعر 1,070,000 جنيه.'
+            ],
+        ];
+
+        $all_ready=true;
+        foreach($items as $item){
+            $existing=get_page_by_path($item['slug'],OBJECT,'a3_car');
+            if($existing instanceof WP_Post) continue;
+
+            $full_url=esc_url($item['source']);
+            $content='<p>هذا ملف بيانات منظم للموديل داخل قاعدة سيارات أعطال. يعرض المواصفات والسعر التي أمكن التحقق منها وقت آخر مراجعة، بينما تبقى المراجعة الكاملة والتحليل ونقاط الشراء في المقال الأصلي.</p>';
+            $content.='<p><a class="g-primary-btn" href="'.$full_url.'">قراءة المراجعة الكاملة والسعر المحدث</a></p>';
+            $content.='<h2>كيف تستخدم هذه البيانات؟</h2><p>طابق الفئة وسنة الموديل والمواصفات مع عرض السعر المكتوب قبل الحجز، لأن الأسعار والتجهيزات قد تتغير. الحقول غير المؤكدة لا نملؤها بتقديرات.</p>';
+
+            $id=wp_insert_post([
+                'post_type'=>'a3_car','post_status'=>'publish','post_title'=>$item['title'],
+                'post_name'=>$item['slug'],'post_excerpt'=>$item['summary'],'post_content'=>$content,
+            ],true);
+            if(is_wp_error($id)){ $all_ready=false; continue; }
+
+            $meta=[
+                '_a3_year'=>$item['year'],'_a3_price_min'=>$item['price_min'],'_a3_price_max'=>$item['price_max'],
+                '_a3_currency'=>'EGP','_a3_engine_cc'=>$item['engine'],'_a3_power_hp'=>$item['power'],
+                '_a3_torque_nm'=>$item['torque'],'_a3_transmission'=>$item['transmission'],'_a3_fuel'=>$item['fuel'],
+                '_a3_drivetrain'=>$item['drivetrain'],'_a3_seats'=>$item['seats'],
+                '_a3_source_url'=>$item['source'],'_a3_source_checked_at'=>'2026-10-04',
+                '_a3_related_post_ids'=>(string)$item['related'],
+                '_yoast_wpseo_meta-robots-noindex'=>'1',
+            ];
+            foreach($meta as $key=>$value) update_post_meta($id,$key,$value);
+
+            if(!empty($item['featured']) && wp_attachment_is_image((int)$item['featured'])){
+                set_post_thumbnail($id,(int)$item['featured']);
+            }
+            wp_set_object_terms($id,$item['brand'],'a3_brand',false);
+            wp_set_object_terms($id,'egypt','a3_market',false);
+            wp_set_object_terms($id,$item['body'],'a3_car_body',false);
+        }
+
+        if($all_ready) update_option('a3cp_car_seed_v1','done',false);
     }
 
     public static function seed_showroom_batch_v1(): void {
