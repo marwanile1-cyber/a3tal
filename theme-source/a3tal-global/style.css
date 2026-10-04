@@ -983,3 +983,10 @@ html,body{max-width:100%;overflow-x:hidden}
 .g-os-car-head>span .g-icon svg,.g-place-mega>span .g-icon svg,.g-moto-teaser-grid span .g-icon svg{width:25px;height:25px}
 .g-place-mega>span,.g-moto-teaser-grid span{color:#29445e}
 @media(max-width:650px){.g-hero-platform h1{font-size:33px}.g-platform-launcher small{font-size:8px}.g-hero-action-row small{font-size:8px}}
+
+/* persistent article views */
+.g-article-views,.g-views-mini{display:inline-flex!important;align-items:center;gap:4px}
+.g-article-views .g-icon svg{width:15px;height:15px}
+.g-article-views b{font-weight:700}
+.g-views-mini .g-icon svg{width:12px;height:12px}
+.g-views-mini b{font-weight:700}
