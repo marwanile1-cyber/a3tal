@@ -50,8 +50,8 @@ final class A3CP_Ownership_Commerce {
         self::register_post_types();
         self::register_taxonomies();
         self::register_meta();
-        add_rewrite_rule('^my-garage/?
-
+        add_rewrite_rule('^my-garage/?$', 'index.php?a3tal_garage=1', 'top');
+    }
     public static function query_vars(array $vars): array {
         foreach (['a3tal_garage','part_origin','part_category','vendor_status','listing_condition','vehicle_entity'] as $var) {
             $vars[] = $var;
