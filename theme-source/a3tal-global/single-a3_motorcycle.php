@@ -1,1 +1,1 @@
-<?php require get_template_directory().'/template-parts/single-vehicle.php'; ?>
+<?php require get_template_directory().'/platform-single-vehicle.php'; ?>
