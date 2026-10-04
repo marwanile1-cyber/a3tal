@@ -8,4 +8,41 @@
 <article class="g-vehicle-panel g-entry"><?php the_content(); ?></article>
 <?php if($lat&&$lng): ?><div class="g-vehicle-panel"><div class="g-section-head"><div><span>الموقع</span><h2>الموقع الجغرافي</h2></div></div><a class="g-map-link" href="https://www.google.com/maps?q=<?php echo esc_attr($lat.','.$lng); ?>" rel="nofollow noopener" target="_blank"><?php echo a3g_icon('pin'); ?><span>فتح الموقع على الخريطة</span></a></div><?php endif; ?>
 <?php if($source): ?><div class="g-source-note"><span>مرجع التحقق</span><a href="<?php echo esc_url($source); ?>" rel="nofollow noopener" target="_blank">فتح المصدر الرسمي</a></div><?php endif; ?>
+
+<?php if($is_showroom):
+  $brand_terms=get_the_terms(get_the_ID(),'a3_brand');
+  $brand_term=($brand_terms&&!is_wp_error($brand_terms))?($brand_terms[0]??null):null;
+  $tax_query=$brand_term?[['taxonomy'=>'a3_brand','field'=>'term_id','terms'=>(int)$brand_term->term_id]]:[];
+  $related=new WP_Query([
+    'post_type'=>'a3_showroom','post_status'=>'publish','posts_per_page'=>4,
+    'post__not_in'=>[get_the_ID()],'tax_query'=>$tax_query,'ignore_sticky_posts'=>true
+  ]);
+  if($related->have_posts()):
+?>
+<section class="g-directory-related">
+  <div class="g-section-head"><div><span>SAME BRAND</span><h2>فروع أخرى من <?php echo esc_html($brand_term?$brand_term->name:'نفس الماركة'); ?></h2></div><a href="<?php echo esc_url(add_query_arg('brand',$brand_term?$brand_term->slug:'',get_post_type_archive_link('a3_showroom'))); ?>">كل الفروع</a></div>
+  <div class="g-directory-grid g-directory-related-grid">
+    <?php while($related->have_posts()):$related->the_post();$rstatus=a3g_directory_status();$raddress=a3cp_field('_a3_address'); ?>
+    <article class="g-directory-card">
+      <a class="g-directory-media" href="<?php the_permalink(); ?>"><?php if(has_post_thumbnail()){the_post_thumbnail('medium_large',['loading'=>'lazy']);}else{echo '<span class="g-fallback">A3TAL</span>';} ?></a>
+      <div class="g-directory-body"><?php if($rstatus): ?><span class="g-directory-badge g-status-<?php echo esc_attr($rstatus->slug); ?>"><?php echo esc_html($rstatus->name); ?></span><?php endif; ?><h3><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3><?php if($raddress): ?><p><?php echo esc_html($raddress); ?></p><?php endif; ?></div>
+    </article>
+    <?php endwhile;wp_reset_postdata(); ?>
+  </div>
+</section>
+<?php endif;
+
+$guide_cat=get_category_by_slug('car-showrooms-guide');
+if($guide_cat):
+  $guide_q=a3g_query(['cat'=>(int)$guide_cat->term_id,'posts_per_page'=>4]);
+  if($guide_q->have_posts()):
+?>
+<section class="g-directory-buy-guides">
+  <div class="g-section-head"><div><span>BEFORE YOU BUY</span><h2>اقرأ ده قبل الحجز والاستلام</h2></div><a href="<?php echo esc_url(get_category_link($guide_cat)); ?>">كل الأدلة</a></div>
+  <div class="g-showroom-guide-grid">
+    <?php while($guide_q->have_posts()):$guide_q->the_post();a3g_card(get_the_ID(),'g-showroom-guide-card');endwhile;wp_reset_postdata(); ?>
+  </div>
+</section>
+<?php endif;endif;endif; ?>
+
 </main><?php endwhile;get_footer(); ?>
