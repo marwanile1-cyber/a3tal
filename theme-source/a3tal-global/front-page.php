@@ -11,6 +11,7 @@ $reviews=a3g_query(['category__in'=>[22,21],'posts_per_page'=>3]);
 $faults=a3g_query(['category__in'=>[8,13,2,18],'posts_per_page'=>4]);
 $news=a3g_query(['posts_per_page'=>4,'post__not_in'=>$hero_id?[$hero_id]:[]]);
 
+$cars=new WP_Query(['post_type'=>'a3_car','post_status'=>'publish','posts_per_page'=>6,'ignore_sticky_posts'=>true,'orderby'=>'date','order'=>'DESC']);
 $motos=new WP_Query(['post_type'=>'a3_motorcycle','post_status'=>'publish','posts_per_page'=>3,'ignore_sticky_posts'=>true]);
 $dtcs=new WP_Query(['post_type'=>'a3_dtc','post_status'=>'publish','posts_per_page'=>4,'ignore_sticky_posts'=>true]);
 $parts=new WP_Query(['post_type'=>'a3_part','post_status'=>'publish','posts_per_page'=>4,'ignore_sticky_posts'=>true]);
@@ -53,6 +54,23 @@ $showrooms=new WP_Query(['post_type'=>'a3_showroom','post_status'=>'publish','po
       <a href="<?php echo esc_url(a3g_platform_link('a3_showroom','/car-showrooms/')); ?>"><span class="g-launch-icon"><?php echo a3g_icon('store'); ?></span><b>معارض السيارات</b><small>رسمي وموثّق وخاص</small></a>
       <a href="<?php echo esc_url(a3g_platform_link('a3_listing','/cars-for-sale/')); ?>"><span class="g-launch-icon"><?php echo a3g_icon('tag'); ?></span><b>سوق السيارات</b><small>بيع وشراء المستعمل</small></a>
       <a href="<?php echo esc_url(a3g_cat_link(21)); ?>"><span class="g-launch-icon"><?php echo a3g_icon('compare'); ?></span><b>قارن</b><small>قبل ما تشتري</small></a>
+    </div>
+  </div>
+</section>
+
+<?php if($cars->have_posts()): ?>
+<section class="g-section g-home-cars-section">
+  <div class="g-wrap">
+    <div class="g-section-head">
+      <div>
+        <span>A3TAL CARS DATABASE</span>
+        <h2>سيارات مضافة حديثًا</h2>
+        <p>سعر ومواصفات أساسية موثقة لكل موديل، مع رابط للمراجعة الكاملة والتفاصيل قبل الشراء.</p>
+      </div>
+      <a href="<?php echo esc_url(a3g_platform_link('a3_car','/cars/')); ?>">عرض كل السيارات</a>
+    </div>
+    <div class="g-platform-grid g-home-car-grid">
+      <?php while($cars->have_posts()):$cars->the_post();a3g_platform_card();endwhile;wp_reset_postdata(); ?>
     </div>
   </div>
 </section>
