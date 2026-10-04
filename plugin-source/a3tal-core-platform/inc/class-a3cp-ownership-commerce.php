@@ -44,6 +44,8 @@ final class A3CP_Ownership_Commerce {
         add_filter('template_include', [__CLASS__, 'garage_template'], 99);
         add_action('wp_enqueue_scripts', [__CLASS__, 'frontend_assets']);
         add_action('pre_get_posts', [__CLASS__, 'filter_commerce_archives'], 12);
+        add_action('init', [__CLASS__, 'seed_verified_vendors'], 42);
+        add_action('a3cp_seed_verified_vendors', [__CLASS__, 'seed_verified_vendors']);
     }
 
     public static function register_all(): void {
@@ -688,6 +690,43 @@ final class A3CP_Ownership_Commerce {
         }
     }
 
+    public static function seed_verified_vendors(): void {
+        if ((string) get_option('a3cp_verified_vendor_seed_v1') === 'done') return;
+
+        if (!term_exists('tvs', 'a3_brand')) {
+            wp_insert_term('TVS', 'a3_brand', ['slug' => 'tvs']);
+        }
+
+        $slug = 'ezz-elcv-tvs-authorized-distributor-egypt';
+        $existing = get_page_by_path($slug, OBJECT, 'a3_parts_vendor');
+
+        if (!$existing instanceof WP_Post) {
+            $id = wp_insert_post([
+                'post_type' => 'a3_parts_vendor',
+                'post_status' => 'publish',
+                'post_title' => 'عز إل سي في — موزع TVS المعتمد في مصر',
+                'post_name' => $slug,
+                'post_excerpt' => 'موزع TVS المعتمد في مصر كما يظهر في صفحة قطع الغيار الأصلية الرسمية للشركة، بالعجوزة في الجيزة.',
+                'post_content' => '<p>تُدرج هذه الصفحة الجهة بصفتها موزع TVS المعتمد في مصر وفق صفحة قطع الغيار الأصلية وخدمة TVS مصر. حالة «رسمي» هنا تعني وجود مصدر رسمي يذكر جهة التوزيع، ولا تمثل تقييمًا تجاريًا من أعطال.كوم.</p>',
+            ], true);
+
+            if (is_wp_error($id)) return;
+
+            update_post_meta($id, '_a3_phone', '01201566609');
+            update_post_meta($id, '_a3_address', '13 شارع دكتور شاهين، العجوزة، الجيزة، مصر');
+            update_post_meta($id, '_a3_official_source_url', 'https://www.tvsmotor.com/ar/eg/service/genuine-parts');
+            update_post_meta($id, '_a3_source_checked_at', '2026-10-04');
+            update_post_meta($id, '_a3_delivery_available', 0);
+            update_post_meta($id, '_a3_entity_stub', '1');
+
+            wp_set_object_terms($id, 'official-distributor', 'a3_vendor_status', false);
+            wp_set_object_terms($id, 'tvs', 'a3_brand', false);
+            wp_set_object_terms($id, 'egypt', 'a3_market', false);
+        }
+
+        update_option('a3cp_verified_vendor_seed_v1', 'done', false);
+    }
+
     public static function robots(array $robots): array {
         if (is_post_type_archive(['a3_part', 'a3_parts_vendor', 'a3_listing', 'a3_maintenance_plan'])) {
             global $wp_query;
@@ -696,7 +735,12 @@ final class A3CP_Ownership_Commerce {
                 unset($robots['index']);
             }
         }
-        if (is_singular('a3_maintenance_plan') || is_page('my-garage') || get_query_var('a3tal_garage')) {
+        if (
+            (is_singular(['a3_part','a3_parts_vendor','a3_listing']) && get_post_meta(get_queried_object_id(), '_a3_entity_stub', true))
+            || is_singular('a3_maintenance_plan')
+            || is_page('my-garage')
+            || get_query_var('a3tal_garage')
+        ) {
             $robots['noindex'] = true;
             unset($robots['index']);
         }
