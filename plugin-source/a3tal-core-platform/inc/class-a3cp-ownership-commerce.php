@@ -37,6 +37,8 @@ final class A3CP_Ownership_Commerce {
         add_action('rest_api_init', [__CLASS__, 'register_rest_routes']);
         add_action('a3cp_daily_reminders', [__CLASS__, 'process_due_reminders']);
         add_action('transition_post_status', [__CLASS__, 'protect_listing_publish'], 10, 3);
+        add_action('add_meta_boxes', [__CLASS__, 'add_meta_boxes']);
+        add_action('save_post', [__CLASS__, 'save_meta_boxes'], 10, 2);
     }
 
     public static function register_all(): void {
@@ -172,7 +174,9 @@ final class A3CP_Ownership_Commerce {
 
         self::meta('a3_maintenance_plan', '_a3_vehicle_entity_id', 'integer', 'absint');
         self::meta('a3_maintenance_plan', '_a3_interval_km', 'integer', 'absint');
+        self::meta('a3_maintenance_plan', '_a3_first_due_km', 'integer', 'absint');
         self::meta('a3_maintenance_plan', '_a3_interval_months', 'integer', 'absint');
+        self::meta('a3_maintenance_plan', '_a3_first_due_months', 'integer', 'absint');
         self::meta('a3_maintenance_plan', '_a3_severe_interval_km', 'integer', 'absint');
         self::meta('a3_maintenance_plan', '_a3_severe_interval_months', 'integer', 'absint');
         self::meta('a3_maintenance_plan', '_a3_service_action', 'string', 'sanitize_text_field');
@@ -370,9 +374,16 @@ final class A3CP_Ownership_Commerce {
         ]);
 
         register_rest_route('a3tal-platform/v1', '/garage/(?P<id>\d+)/maintenance', [
-            'methods' => WP_REST_Server::CREATABLE,
-            'callback' => [__CLASS__, 'rest_add_service_event'],
-            'permission_callback' => [__CLASS__, 'rest_logged_in'],
+            [
+                'methods' => WP_REST_Server::READABLE,
+                'callback' => [__CLASS__, 'rest_maintenance_status'],
+                'permission_callback' => [__CLASS__, 'rest_logged_in'],
+            ],
+            [
+                'methods' => WP_REST_Server::CREATABLE,
+                'callback' => [__CLASS__, 'rest_add_service_event'],
+                'permission_callback' => [__CLASS__, 'rest_logged_in'],
+            ],
         ]);
 
         register_rest_route('a3tal-platform/v1', '/garage/(?P<id>\d+)/sell', [
@@ -601,4 +612,120 @@ final class A3CP_Ownership_Commerce {
             $wpdb->update($table, ['last_notified_at' => current_time('mysql')], ['id' => (int) $row->id]);
         }
     }
+
+
+    public static function add_meta_boxes(): void {
+        add_meta_box('a3cp_part_data', 'بيانات قطعة الغيار — A3tal Parts', [__CLASS__, 'render_part_box'], 'a3_part', 'normal', 'high');
+        add_meta_box('a3cp_vendor_data', 'بيانات البائع — A3tal Parts', [__CLASS__, 'render_vendor_box'], 'a3_parts_vendor', 'normal', 'high');
+        add_meta_box('a3cp_listing_data', 'بيانات الإعلان — A3tal Marketplace', [__CLASS__, 'render_listing_box'], 'a3_listing', 'normal', 'high');
+        add_meta_box('a3cp_maintenance_data', 'جدول الصيانة — A3tal Maintenance', [__CLASS__, 'render_maintenance_box'], 'a3_maintenance_plan', 'normal', 'high');
+    }
+
+    private static function box_nonce(): void {
+        wp_nonce_field('a3cp_ownership_meta', 'a3cp_ownership_nonce');
+    }
+
+    private static function input(WP_Post $post, string $key, string $label, string $type = 'text', string $placeholder = ''): void {
+        $value = get_post_meta($post->ID, $key, true);
+        echo '<p><label for="' . esc_attr($key) . '"><strong>' . esc_html($label) . '</strong></label>';
+        if ($type === 'textarea') {
+            echo '<textarea class="widefat" rows="3" id="' . esc_attr($key) . '" name="' . esc_attr($key) . '" placeholder="' . esc_attr($placeholder) . '">' . esc_textarea((string) $value) . '</textarea>';
+        } elseif ($type === 'checkbox') {
+            echo '<br><label><input type="checkbox" id="' . esc_attr($key) . '" name="' . esc_attr($key) . '" value="1" ' . checked((bool) $value, true, false) . '> نعم</label>';
+        } else {
+            $step = $type === 'number' ? ' step="0.01"' : '';
+            echo '<input class="widefat" type="' . esc_attr($type) . '" id="' . esc_attr($key) . '" name="' . esc_attr($key) . '" value="' . esc_attr((string) $value) . '" placeholder="' . esc_attr($placeholder) . '"' . $step . '>';
+        }
+        echo '</p>';
+    }
+
+    public static function render_part_box(WP_Post $post): void {
+        self::box_nonce();
+        self::input($post, '_a3_part_number', 'رقم القطعة');
+        self::input($post, '_a3_oem_number', 'رقم OEM');
+        self::input($post, '_a3_part_manufacturer', 'الشركة المصنعة');
+        self::input($post, '_a3_price_min', 'أقل سعر', 'number');
+        self::input($post, '_a3_price_max', 'أعلى سعر', 'number');
+        self::input($post, '_a3_currency', 'العملة', 'text', 'EGP / SAR / AED');
+        self::input($post, '_a3_vehicle_entity_ids', 'معرّفات المركبات المتوافقة', 'text', 'مثال: 101,205,330');
+        self::input($post, '_a3_source_url', 'مصدر البيانات', 'url');
+        self::input($post, '_a3_source_checked_at', 'تاريخ المراجعة', 'date');
+        echo '<p><em>لا تستخدم فئة «بديل اقتصادي / صيني» لوصف قطعة مزيفة تحمل علامة أصلية بشكل غير قانوني. القطع المقلدة تُذكر للتحذير منها فقط.</em></p>';
+    }
+
+    public static function render_vendor_box(WP_Post $post): void {
+        self::box_nonce();
+        self::input($post, '_a3_phone', 'الهاتف');
+        self::input($post, '_a3_whatsapp', 'واتساب');
+        self::input($post, '_a3_address', 'العنوان', 'textarea');
+        self::input($post, '_a3_hours', 'ساعات العمل', 'textarea');
+        self::input($post, '_a3_delivery_available', 'يوجد شحن / توصيل', 'checkbox');
+        self::input($post, '_a3_official_source_url', 'مصدر التحقق', 'url');
+        self::input($post, '_a3_source_checked_at', 'تاريخ التحقق', 'date');
+    }
+
+    public static function render_listing_box(WP_Post $post): void {
+        self::box_nonce();
+        self::input($post, '_a3_vehicle_entity_id', 'معرّف السيارة داخل أعطال', 'number');
+        self::input($post, '_a3_listing_year', 'سنة الموديل', 'number');
+        self::input($post, '_a3_listing_mileage_km', 'عداد الكيلومترات', 'number');
+        self::input($post, '_a3_listing_price', 'السعر المطلوب', 'number');
+        self::input($post, '_a3_listing_currency', 'العملة', 'text', 'EGP');
+        self::input($post, '_a3_listing_location', 'الموقع');
+        self::input($post, '_a3_listing_owner_count', 'عدد الملاك السابقين', 'number');
+        self::input($post, '_a3_listing_expires_at', 'انتهاء الإعلان', 'date');
+        echo '<p><strong>خصوصية:</strong> رقم اللوحة وVIN لا يظهران في الصفحة العامة. الإعلان المرسل من المستخدم يدخل Pending للمراجعة قبل النشر.</p>';
+    }
+
+    public static function render_maintenance_box(WP_Post $post): void {
+        self::box_nonce();
+        self::input($post, '_a3_vehicle_entity_id', 'معرّف المركبة', 'number');
+        self::input($post, '_a3_first_due_km', 'أول استحقاق بالكيلومتر', 'number');
+        self::input($post, '_a3_interval_km', 'التكرار كل كم كيلومتر', 'number');
+        self::input($post, '_a3_first_due_months', 'أول استحقاق بعد كم شهر', 'number');
+        self::input($post, '_a3_interval_months', 'التكرار كل كم شهر', 'number');
+        self::input($post, '_a3_severe_interval_km', 'الاستخدام الشاق: كل كم كيلومتر', 'number');
+        self::input($post, '_a3_severe_interval_months', 'الاستخدام الشاق: كل كم شهر', 'number');
+        self::input($post, '_a3_service_action', 'الإجراء', 'text', 'فحص / تغيير / تنظيف / ضبط');
+        self::input($post, '_a3_fluid_spec', 'مواصفة الزيت / السائل');
+        self::input($post, '_a3_fluid_quantity', 'الكمية');
+        self::input($post, '_a3_part_numbers', 'أرقام القطع المرتبطة');
+        self::input($post, '_a3_estimated_minutes', 'الوقت التقديري بالدقائق', 'number');
+        self::input($post, '_a3_source_url', 'المصدر الرسمي', 'url');
+        self::input($post, '_a3_source_checked_at', 'تاريخ مراجعة المصدر', 'date');
+    }
+
+    public static function save_meta_boxes(int $post_id, WP_Post $post): void {
+        if (!in_array($post->post_type, array_keys(self::TYPES), true)) return;
+        if (!isset($_POST['a3cp_ownership_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['a3cp_ownership_nonce'])), 'a3cp_ownership_meta')) return;
+        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+        if (wp_is_post_revision($post_id) || !current_user_can('edit_post', $post_id)) return;
+
+        $keys = [
+            '_a3_part_number','_a3_oem_number','_a3_part_manufacturer','_a3_price_min','_a3_price_max','_a3_currency','_a3_vehicle_entity_ids','_a3_source_url','_a3_source_checked_at',
+            '_a3_phone','_a3_whatsapp','_a3_address','_a3_hours','_a3_delivery_available','_a3_official_source_url',
+            '_a3_vehicle_entity_id','_a3_listing_year','_a3_listing_mileage_km','_a3_listing_price','_a3_listing_currency','_a3_listing_location','_a3_listing_owner_count','_a3_listing_expires_at',
+            '_a3_first_due_km','_a3_interval_km','_a3_first_due_months','_a3_interval_months','_a3_severe_interval_km','_a3_severe_interval_months','_a3_service_action','_a3_fluid_spec','_a3_fluid_quantity','_a3_part_numbers','_a3_estimated_minutes'
+        ];
+        $numeric = ['_a3_price_min','_a3_price_max','_a3_vehicle_entity_id','_a3_listing_year','_a3_listing_mileage_km','_a3_listing_price','_a3_listing_owner_count','_a3_first_due_km','_a3_interval_km','_a3_first_due_months','_a3_interval_months','_a3_severe_interval_km','_a3_severe_interval_months','_a3_estimated_minutes'];
+        $urls = ['_a3_source_url','_a3_official_source_url'];
+        $areas = ['_a3_address','_a3_hours'];
+
+        foreach ($keys as $key) {
+            if ($key === '_a3_delivery_available') {
+                update_post_meta($post_id, $key, isset($_POST[$key]) ? 1 : 0);
+                continue;
+            }
+            if (!array_key_exists($key, $_POST)) continue;
+            $raw = wp_unslash($_POST[$key]);
+            if (in_array($key, $numeric, true)) $value = self::sanitize_number($raw);
+            elseif (in_array($key, $urls, true)) $value = esc_url_raw((string) $raw);
+            elseif (in_array($key, $areas, true)) $value = sanitize_textarea_field((string) $raw);
+            else $value = sanitize_text_field((string) $raw);
+
+            if ($value === '' || $value === null) delete_post_meta($post_id, $key);
+            else update_post_meta($post_id, $key, $value);
+        }
+    }
+
 }
