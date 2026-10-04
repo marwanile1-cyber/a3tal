@@ -279,3 +279,21 @@ function a3g_showroom_social_image($image=''){
 }
 add_filter('wpseo_opengraph_image','a3g_showroom_social_image',99);
 add_filter('wpseo_twitter_image','a3g_showroom_social_image',99);
+
+
+/* Structured car data hubs initially stay out of the index while their source buying guides remain canonical search targets. */
+function a3g_structured_car_robots($robots){
+  if(is_singular('a3_car')){
+    $robots['noindex']=true;
+    unset($robots['index']);
+    $robots['follow']=true;
+  }
+  return $robots;
+}
+add_filter('wp_robots','a3g_structured_car_robots',99);
+
+function a3g_structured_car_yoast_robots($robots){
+  if(is_singular('a3_car')) return 'noindex, follow';
+  return $robots;
+}
+add_filter('wpseo_robots','a3g_structured_car_yoast_robots',99);
