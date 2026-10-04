@@ -54,6 +54,8 @@ final class A3CP_Content_Types {
         add_action('a3cp_seed_showroom_guides_v1', [__CLASS__, 'seed_showroom_guides_v1']);
         add_action('init', [__CLASS__, 'seed_showroom_featured_v1'], 45);
         add_action('a3cp_seed_showroom_featured_v1', [__CLASS__, 'seed_showroom_featured_v1']);
+        add_action('init', [__CLASS__, 'enrich_showroom_directory_v2'], 46);
+        add_action('a3cp_enrich_showrooms_v2', [__CLASS__, 'enrich_showroom_directory_v2']);
     }
 
     public static function register_all(): void {
@@ -219,6 +221,14 @@ final class A3CP_Content_Types {
             self::meta($type, '_a3_official_source_url', 'string', 'esc_url_raw');
             self::meta($type, '_a3_source_checked_at', 'string', 'sanitize_text_field');
         }
+
+        self::meta('a3_showroom', '_a3_email', 'string', 'sanitize_email');
+        self::meta('a3_showroom', '_a3_booking_url', 'string', 'esc_url_raw');
+        self::meta('a3_showroom', '_a3_maps_query', 'string', 'sanitize_text_field');
+        self::meta('a3_showroom', '_a3_services', 'string', 'sanitize_textarea_field');
+        self::meta('a3_showroom', '_a3_staff_public', 'string', 'sanitize_textarea_field');
+        self::meta('a3_showroom', '_a3_staff_source_url', 'string', 'esc_url_raw');
+        self::meta('a3_showroom', '_a3_data_note', 'string', 'sanitize_textarea_field');
 
         self::meta('a3_dtc', '_a3_dtc_code', 'string', [__CLASS__, 'sanitize_dtc_code']);
         self::meta('a3_dtc', '_a3_dtc_system', 'string', 'sanitize_text_field');
@@ -880,6 +890,71 @@ final class A3CP_Content_Types {
         if ($ok) {
             update_option('a3cp_showroom_featured_seed_v1', 'done', false);
         }
+    }
+
+    public static function enrich_showroom_directory_v2(): void {
+        if ((string) get_option('a3cp_showroom_enrich_v2') === 'done') return;
+
+        $brand_defaults = [
+            'toyota' => [
+                'email' => 'Customer.Care@toyotaegypt.com.eg',
+                'booking' => 'https://toyota.com.eg/en/test-drive',
+                'services' => "بيع سيارات جديدة\nحجز تجربة قيادة عبر Toyota Egypt\nاستفسارات الحجز والتسليم\nعروض وتمويل حسب المتاح",
+                'note' => 'تويوتا مصر تنشر شبكة الفروع رسميًا وتوفر حجز تجربة قيادة إلكترونيًا. الرقم 16550 هو خط خدمة العملاء الرسمي.',
+            ],
+            'mg' => [
+                'email' => '',
+                'booking' => 'https://www.mgmotor.com.eg/contact-us/',
+                'services' => "بيع سيارات MG الجديدة\nطلب تجربة قيادة\nطلب عرض سعر\nاستفسارات التمويل والحجز والتسليم",
+                'note' => 'MG Motor Egypt تنشر عنوان الفرع ورقم الاتصال وساعات العمل، وتوفر طلب Test Drive أو عرض سعر عبر موقعها الرسمي.',
+            ],
+            'chery' => [
+                'email' => '',
+                'booking' => 'https://chery-eg.com/en/test_drive',
+                'services' => "بيع سيارات شيري الجديدة\nحجز تجربة قيادة\nتسجيل اهتمام بالموديل\nاستفسارات العروض والتقسيط",
+                'note' => 'Chery Egypt تنشر الفروع وأرقام الاتصال وساعات العمل وتوفر نموذج Test Drive رسمي واختيار المعرض داخل الطلب.',
+            ],
+        ];
+
+        $items = [
+            'toyota-egypt-cairo-festival-city-showroom' => ['brand'=>'toyota'],
+            'toyota-egypt-sheikh-zayed-showroom' => ['brand'=>'toyota'],
+            'toyota-egypt-madinaty-showroom' => ['brand'=>'toyota'],
+            'toyota-egypt-abbassia-showroom' => ['brand'=>'toyota'],
+            'mg-mansour-new-cairo-showroom' => ['brand'=>'mg'],
+            'mg-mansour-madinaty-showroom' => ['brand'=>'mg'],
+            'mg-mansour-smouha-showroom' => ['brand'=>'mg'],
+            'mg-mansour-mansoura-showroom' => ['brand'=>'mg'],
+            'chery-gb-abbas-el-akkad-showroom' => ['brand'=>'chery'],
+            'chery-kernel-fifth-settlement-showroom' => ['brand'=>'chery'],
+        ];
+
+        $ok = true;
+        foreach ($items as $slug => $cfg) {
+            $post = get_page_by_path($slug, OBJECT, 'a3_showroom');
+            if (!$post instanceof WP_Post) {
+                $ok = false;
+                continue;
+            }
+
+            $brand = $cfg['brand'];
+            $defaults = $brand_defaults[$brand];
+            $address = (string) get_post_meta($post->ID, '_a3_address', true);
+
+            update_post_meta($post->ID, '_a3_email', $defaults['email']);
+            update_post_meta($post->ID, '_a3_booking_url', $defaults['booking']);
+            update_post_meta($post->ID, '_a3_maps_query', $address);
+            update_post_meta($post->ID, '_a3_services', $defaults['services']);
+            update_post_meta($post->ID, '_a3_data_note', $defaults['note']);
+
+            // Names are intentionally added only when a public professional source
+            // clearly ties the person to this exact branch. Never infer or guess staff.
+            if (!get_post_meta($post->ID, '_a3_staff_public', true)) {
+                update_post_meta($post->ID, '_a3_staff_public', '');
+            }
+        }
+
+        if ($ok) update_option('a3cp_showroom_enrich_v2', 'done', false);
     }
 
     public static function robots(array $robots): array {
