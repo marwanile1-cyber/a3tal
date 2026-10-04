@@ -3,7 +3,7 @@ Theme Name: A3tal Global
 Theme URI: https://a3tal.com/
 Author: A3tal.com
 Description: Premium RTL automotive platform theme for A3tal.com.
-Version: 1.0.1
+Version: 1.1.0
 Requires at least: 6.4
 Requires PHP: 8.0
 Text Domain: a3tal-global
@@ -329,4 +329,142 @@ svg{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-l
   .g-article-hero{padding:25px 0 20px}.g-article-head h1{font-size:31px}.g-article-head>p{font-size:12px}
   .g-article-layout{padding:18px 0 42px}.g-article-card{padding:14px;border-radius:13px}.g-entry{font-size:15px}.g-entry h2{font-size:21px}.g-entry h3{font-size:17px}
   .g-archive-grid{grid-template-columns:1fr;padding-top:18px}.g-archive-head h1{font-size:28px}
+}
+
+
+/* =========================================================
+   A3tal Platform entities: cars, motorcycles, DTC, directories
+   ========================================================= */
+.g-platform-archive-hero{padding:54px 0 34px;background:
+  radial-gradient(circle at 12% 0%,rgba(255,74,31,.16),transparent 28%),
+  linear-gradient(135deg,#07131f,#10283d);color:#fff;border-bottom:1px solid rgba(255,255,255,.06)}
+.g-platform-archive-hero>.g-wrap>span{display:inline-flex;color:#ff9a7d;font-weight:900;font-size:10px;letter-spacing:.1em}
+.g-platform-archive-hero h1{font-family:"Alexandria";font-size:clamp(34px,5vw,54px);line-height:1.25;margin:7px 0 8px}
+.g-platform-archive-hero p{margin:0;color:#b9c6d2;max-width:800px;font-size:14px}
+.g-platform-filter{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) auto;gap:9px;margin-top:25px;padding:9px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:15px;backdrop-filter:blur(10px)}
+.g-platform-filter label{min-width:0;padding:7px 10px;background:#fff;border-radius:9px;color:#17283a}
+.g-platform-filter small{display:block;color:#8592a0;font-size:8px;margin-bottom:2px}
+.g-platform-filter select,.g-platform-filter input{display:block;width:100%;height:28px;border:0;outline:0;background:transparent;color:#111827;font-weight:700;font-size:11px}
+.g-platform-filter button,.g-dtc-search button{border:0;border-radius:10px;background:linear-gradient(135deg,var(--g-orange),var(--g-orange2));color:#fff;font-weight:900;display:flex;align-items:center;justify-content:center;gap:6px;padding:0 18px}
+.g-platform-filter button .g-icon svg{width:17px;height:17px}
+.g-platform-archive{padding:34px 0 64px}
+.g-platform-archive-head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:20px}
+.g-platform-archive-head span{font-size:9px;color:var(--g-orange);font-weight:900}
+.g-platform-archive-head h2{font-family:"Alexandria";font-size:25px;margin:2px 0 0}
+.g-platform-archive-head>b{font-size:10px;color:#6b7785;background:#fff;border:1px solid var(--g-line);padding:7px 10px;border-radius:999px}
+.g-platform-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}
+.g-platform-card{background:#fff;border:1px solid var(--g-line);border-radius:16px;overflow:hidden;box-shadow:0 6px 22px rgba(15,30,48,.045);transition:.2s}
+.g-platform-card:hover{transform:translateY(-4px);box-shadow:var(--g-shadow)}
+.g-platform-media{display:block;aspect-ratio:16/10;background:#e9eef3;overflow:hidden}
+.g-platform-media img{width:100%;height:100%;object-fit:cover;transition:.3s}
+.g-platform-card:hover .g-platform-media img{transform:scale(1.035)}
+.g-platform-body{padding:15px}
+.g-platform-kickers{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:7px}
+.g-platform-kickers span{padding:3px 7px;border-radius:6px;background:#eff4f8;color:#435468;font-size:8px;font-weight:800}
+.g-platform-body h3{font-family:"Alexandria";font-size:15px;line-height:1.55;margin:0 0 5px}
+.g-platform-price{display:block;color:var(--g-orange);font-size:12px;margin-bottom:5px}
+.g-platform-body p{font-size:10px;color:#778291;line-height:1.7;margin:0 0 10px}
+.g-platform-more{display:inline-flex;color:#176ed7;font-weight:800;font-size:9px}
+.g-platform-pagination{margin-top:28px}
+.g-platform-pagination .nav-links{display:flex;justify-content:center;gap:6px}
+.g-platform-pagination .page-numbers{min-width:34px;height:34px;padding:0 8px;border-radius:8px;background:#fff;border:1px solid var(--g-line);display:grid;place-items:center;font-size:10px;font-weight:800}
+.g-platform-pagination .current{background:var(--g-dark);color:#fff;border-color:var(--g-dark)}
+.g-platform-empty{padding:50px 24px;background:#fff;border:1px solid var(--g-line);border-radius:18px;text-align:center}
+.g-platform-empty>span{font-size:44px}.g-platform-empty h2{font-family:"Alexandria";font-size:21px;margin:10px 0 6px}.g-platform-empty p{color:#75808d;max-width:650px;margin:0 auto 14px;font-size:12px}.g-platform-empty a{display:inline-flex;padding:8px 12px;border-radius:9px;background:var(--g-dark);color:#fff;font-size:10px;font-weight:800}
+
+/* vehicle single */
+.g-vehicle-hero{padding:34px 0;background:linear-gradient(180deg,#fff,#f6f8fb);border-bottom:1px solid var(--g-line)}
+.g-vehicle-hero-grid{display:grid;grid-template-columns:1fr .95fr;gap:34px;align-items:center}
+.g-vehicle-copy h1{font-family:"Alexandria";font-size:clamp(34px,5vw,54px);line-height:1.3;margin:9px 0}
+.g-vehicle-copy>p{color:#687586;max-width:720px;margin:0;font-size:13px}
+.g-vehicle-tags{display:flex;gap:6px;flex-wrap:wrap}
+.g-vehicle-tags span{padding:4px 8px;border-radius:999px;background:#edf3f8;color:#334a60;font-size:9px;font-weight:800}
+.g-vehicle-price-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:16px}
+.g-vehicle-price-row strong{color:var(--g-orange);font-family:"Alexandria";font-size:21px}
+.g-vehicle-price-row small{color:#8a95a1}
+.g-vehicle-image{min-height:330px;border-radius:20px;overflow:hidden;background:#e9eef3;box-shadow:var(--g-shadow-sm)}
+.g-vehicle-image img{width:100%;height:100%;min-height:330px;object-fit:cover}
+.g-vehicle-tabs{position:sticky;top:106px;z-index:70;background:rgba(255,255,255,.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--g-line)}
+.g-vehicle-tabs>.g-wrap{display:flex;gap:22px;overflow-x:auto}
+.g-vehicle-tabs a{padding:13px 0;font-size:10px;font-weight:800;color:#536273;white-space:nowrap;border-bottom:2px solid transparent}
+.g-vehicle-tabs a:hover{color:var(--g-orange);border-color:var(--g-orange)}
+.g-vehicle-main{padding:25px 0 64px;display:grid;gap:16px}
+.g-vehicle-panel{background:#fff;border:1px solid var(--g-line);border-radius:17px;padding:22px;box-shadow:0 6px 22px rgba(15,30,48,.035)}
+.g-spec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.g-spec-grid>div{padding:13px;border-radius:11px;background:#f8fafc;border:1px solid #edf1f4}
+.g-spec-grid small{display:block;color:#8994a1;font-size:8px;margin-bottom:3px}
+.g-spec-grid strong{font-size:12px;color:#203246}
+.g-source-note{margin-top:14px;padding:11px 13px;background:#f6f9fc;border:1px solid #e4eaf0;border-radius:10px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:9px;color:#667585}
+.g-source-note a{color:#176ed7;font-weight:800}
+
+/* DTC */
+.g-dtc-archive-hero{background:
+  radial-gradient(circle at 14% 10%,rgba(255,74,31,.20),transparent 28%),
+  linear-gradient(135deg,#07111c,#111f2d)}
+.g-dtc-search{display:flex;max-width:720px;gap:8px;margin-top:24px;background:#fff;padding:7px;border-radius:12px}
+.g-dtc-search input{min-width:0;flex:1;height:47px;border:0;outline:0;padding:0 12px;text-transform:uppercase;font-family:monospace;font-size:18px;font-weight:900;color:#122236}
+.g-dtc-search button{min-width:145px}
+.g-dtc-family-links{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
+.g-dtc-family-links span{display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:#c2ccd6;font-size:9px}
+.g-dtc-family-links b{display:grid;place-items:center;width:21px;height:21px;border-radius:6px;background:rgba(255,74,31,.16);color:#ff8b69}
+.g-dtc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.g-dtc-card{background:#fff;border:1px solid var(--g-line);border-radius:15px;overflow:hidden;transition:.2s}
+.g-dtc-card:hover{transform:translateY(-3px);box-shadow:var(--g-shadow-sm)}
+.g-dtc-card>a{display:block;padding:18px}
+.g-dtc-code{display:inline-flex;padding:5px 8px;border-radius:7px;background:#091522;color:#ff7651;font-family:monospace;font-weight:900;font-size:19px;letter-spacing:.04em}
+.g-dtc-card>a>span{display:block;color:#778494;font-size:9px;margin-top:8px}
+.g-dtc-card h3{font-family:"Alexandria";font-size:14px;line-height:1.55;margin:5px 0}
+.g-dtc-card p{font-size:10px;color:#798493;margin:0}
+.g-dtc-card footer{display:flex;justify-content:space-between;gap:8px;margin-top:13px;padding-top:11px;border-top:1px solid #edf1f4;color:#788493;font-size:8px}
+.g-dtc-card footer b{color:#176ed7}
+.g-dtc-single-hero{padding:45px 0;background:
+  radial-gradient(circle at 12% 12%,rgba(255,74,31,.18),transparent 28%),
+  linear-gradient(135deg,#07111c,#10263a);color:#fff}
+.g-dtc-single-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:30px;align-items:center}
+.g-dtc-single-grid>div>span{color:#ff8e6e;font-size:10px;font-weight:900}
+.g-dtc-single-grid h1{font-family:monospace;font-size:clamp(52px,8vw,88px);line-height:1;margin:9px 0 2px;color:#ff673f}
+.g-dtc-single-grid h2{font-family:"Alexandria";font-size:24px;line-height:1.45;margin:0}
+.g-dtc-single-grid p{color:#b8c5d0;max-width:700px}
+.g-dtc-single-grid aside{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.g-dtc-single-grid aside div{padding:14px;border-radius:11px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)}
+.g-dtc-single-grid aside small{display:block;color:#8fa1b2;font-size:8px}.g-dtc-single-grid aside strong{display:block;margin-top:3px;font-size:11px}
+.g-dtc-single-main{padding:25px 0 64px;display:grid;gap:15px}
+.g-dtc-drive-note{padding:16px 18px;border-radius:13px;background:#fff7f3;border:1px solid #ffd8cb}.g-dtc-drive-note b{color:var(--g-orange);font-family:"Alexandria";font-size:13px}.g-dtc-drive-note p{margin:4px 0 0;color:#5f6975;font-size:11px}
+
+/* directories */
+.g-directory-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.g-directory-card{background:#fff;border:1px solid var(--g-line);border-radius:15px;overflow:hidden;box-shadow:0 6px 20px rgba(15,30,48,.035)}
+.g-directory-media{display:block;aspect-ratio:16/9;background:#e9eef3;overflow:hidden}.g-directory-media img{width:100%;height:100%;object-fit:cover}
+.g-directory-body{padding:15px}.g-directory-body h3{font-family:"Alexandria";font-size:15px;margin:7px 0 5px}.g-directory-body p{color:#758291;font-size:10px;margin:0 0 9px}.g-directory-body>div{display:flex;justify-content:space-between;gap:8px;color:#667482;font-size:9px;margin-bottom:8px}
+.g-directory-badge{display:inline-flex;padding:4px 7px;border-radius:6px;font-size:8px;font-weight:900}
+.g-status-official{background:#ecfdf3;color:#087a45}.g-status-verified{background:#edf5ff;color:#176ed7}.g-status-independent{background:#f4f4f5;color:#52525b}
+.g-directory-single-hero{padding:35px 0;background:linear-gradient(180deg,#fff,#f6f8fb);border-bottom:1px solid var(--g-line)}
+.g-directory-single-grid{display:grid;grid-template-columns:1fr .85fr;gap:28px;align-items:center}.g-directory-single-grid h1{font-family:"Alexandria";font-size:clamp(32px,4.6vw,50px);margin:10px 0 6px}.g-directory-single-grid p{color:#6f7b89}
+.g-directory-feature{height:300px;border-radius:18px;overflow:hidden;background:#e9eef3}.g-directory-feature img{width:100%;height:100%;object-fit:cover}
+.g-directory-actions{display:flex;gap:8px;margin-top:13px}.g-directory-actions a{display:inline-flex;padding:8px 13px;border-radius:9px;background:var(--g-dark);color:#fff;font-size:10px;font-weight:800}.g-directory-actions a+ a{background:var(--g-orange)}
+.g-directory-single-main{padding:24px 0 64px;display:grid;gap:15px}
+.g-directory-facts{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.g-directory-facts>div{padding:14px;border-radius:12px;background:#fff;border:1px solid var(--g-line)}.g-directory-facts small{display:block;color:#8995a2;font-size:8px}.g-directory-facts strong{display:block;margin-top:3px;font-size:11px}
+.g-map-link{min-height:120px;border-radius:12px;background:linear-gradient(135deg,#eef3f7,#e5ebf0);border:1px solid #dce3ea;display:flex;align-items:center;justify-content:center;gap:8px;color:#176ed7;font-weight:900;font-size:11px}.g-map-link .g-icon svg{width:24px;height:24px}
+
+@media(max-width:1050px){
+  .g-platform-grid{grid-template-columns:repeat(3,1fr)}
+  .g-platform-filter{grid-template-columns:repeat(2,1fr)}
+  .g-platform-filter button{min-height:48px}
+  .g-vehicle-hero-grid,.g-directory-single-grid{grid-template-columns:1fr}
+  .g-vehicle-image{min-height:280px}
+  .g-dtc-grid,.g-directory-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:700px){
+  .g-platform-archive-hero{padding:37px 0 25px}
+  .g-platform-archive-hero h1{font-size:33px}
+  .g-platform-filter{grid-template-columns:1fr;padding:7px}
+  .g-platform-grid,.g-dtc-grid,.g-directory-grid{grid-template-columns:1fr}
+  .g-platform-archive-head{align-items:flex-start;flex-direction:column}
+  .g-platform-card{display:grid;grid-template-columns:125px minmax(0,1fr)}
+  .g-platform-media{height:100%;aspect-ratio:auto}.g-platform-body{padding:12px}.g-platform-body h3{font-size:13px}.g-platform-body p{display:none}
+  .g-vehicle-copy h1{font-size:33px}.g-vehicle-image,.g-vehicle-image img{min-height:230px}
+  .g-vehicle-tabs{top:94px}.g-vehicle-panel{padding:15px}.g-spec-grid{grid-template-columns:1fr 1fr}.g-source-note{align-items:flex-start;flex-direction:column}
+  .g-dtc-search{flex-direction:column}.g-dtc-search button{min-height:44px}.g-dtc-family-links{display:grid;grid-template-columns:1fr 1fr}
+  .g-dtc-single-grid{grid-template-columns:1fr}.g-dtc-single-grid h1{font-size:58px}.g-dtc-single-grid aside{grid-template-columns:1fr 1fr}
+  .g-directory-facts{grid-template-columns:1fr}.g-directory-feature{height:230px}
 }
