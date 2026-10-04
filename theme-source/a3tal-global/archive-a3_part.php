@@ -48,12 +48,12 @@ $cats=get_terms(['taxonomy'=>'a3_part_category','hide_empty'=>false]);
       </div>
     </article>
   <?php endwhile; ?></div><div class="g-platform-pagination"><?php the_posts_pagination(['mid_size'=>2,'prev_text'=>'السابق','next_text'=>'التالي']); ?></div>
-  <?php else: ?><div class="g-platform-bridge-note"><span>⚙️</span><div><h2>كتالوج القطع المنظم لسه بيتبني</h2><p>بدل إنشاء صفحات مكررة، بنربط محتوى قطع الغيار الحالي بالقسم الجديد ثم نحول القطع المهمة تدريجيًا إلى بيانات OEM وتوافق وأسعار وبائعين.</p></div></div><?php endif; ?>
+  <?php else: ?><div class="g-platform-bridge-note"><?php echo a3g_icon('gear'); ?><div><h2>ابدأ من أدلة قطع الغيار المتاحة</h2><p>تصفح الشروحات الحالية عن القطع الأصلية والبدائل والتوافق والشراء، واستخدم الكتالوج المنظم عندما تظهر القطعة المطلوبة ضمن النتائج.</p><div class="g-platform-bridge-actions"><a href="<?php echo esc_url(a3g_cat_link(85)); ?>">كل أدلة قطع الغيار</a><a href="<?php echo esc_url(get_post_type_archive_link('a3_parts_vendor')); ?>">أماكن البيع</a></div></div></div><?php endif; ?>
 
   <?php a3g_legacy_section(
     [85],
-    'محتوى قطع الغيار الموجود بالفعل',
-    'مقالات قطع الغيار الحالية تظهر هنا بروابطها الأصلية، بينما الكتالوج الجديد يضيف فوقها التوافق وأرقام القطع وأماكن البيع.',
+    'أدلة قطع الغيار المتاحة',
+    'شروحات عملية عن قطع الغيار والتوافق والبدائل والشراء، مع الوصول إلى أماكن البيع عند توفر بيانات موثقة.',
     16,
     [],
     85
