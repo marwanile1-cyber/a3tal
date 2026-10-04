@@ -1,3 +1,12 @@
+<?php
+$g_header_ticker_q = a3g_query(['posts_per_page'=>8]);
+$g_header_ticker_items = [];
+while($g_header_ticker_q->have_posts()){
+  $g_header_ticker_q->the_post();
+  $g_header_ticker_items[] = ['title'=>get_the_title(),'url'=>get_permalink()];
+}
+wp_reset_postdata();
+?>
 <!doctype html>
 <html <?php language_attributes(); ?>>
 <head>
@@ -25,6 +34,20 @@
       <button class="g-menu-toggle" type="button" aria-expanded="false" aria-label="فتح القائمة"><?php echo a3g_icon('menu'); ?></button>
     </div>
   </div>
+  <?php if($g_header_ticker_items): ?>
+  <div class="g-header-ticker" aria-label="أحدث أخبار ومقالات أعطال.كوم">
+    <div class="g-wrap g-header-ticker-row">
+      <span class="g-ticker-label"><i></i>الأحدث</span>
+      <div class="g-ticker-window">
+        <div class="g-ticker-track">
+          <?php foreach(array_merge($g_header_ticker_items,$g_header_ticker_items) as $item): ?>
+            <a href="<?php echo esc_url($item['url']); ?>"><span class="g-ticker-dot"></span><?php echo esc_html($item['title']); ?></a>
+          <?php endforeach; ?>
+        </div>
+      </div>
+    </div>
+  </div>
+  <?php endif; ?>
   <nav class="g-mobile-menu" aria-label="قائمة الجوال">
     <a href="<?php echo esc_url(a3g_cat_link(374)); ?>">أسعار السيارات</a>
     <a href="<?php echo esc_url(a3g_cat_link(22)); ?>">المراجعات</a>
