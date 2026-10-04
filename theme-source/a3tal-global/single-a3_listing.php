@@ -1,0 +1,12 @@
+<?php get_header(); while(have_posts()):the_post();
+$price=(float)get_post_meta(get_the_ID(),'_a3_listing_price',true);$cur=(string)get_post_meta(get_the_ID(),'_a3_listing_currency',true);$km=(int)get_post_meta(get_the_ID(),'_a3_listing_mileage_km',true);$year=(int)get_post_meta(get_the_ID(),'_a3_listing_year',true);$loc=(string)get_post_meta(get_the_ID(),'_a3_listing_location',true);$phone=(string)get_post_meta(get_the_ID(),'_a3_listing_contact_phone',true);$owners=(int)get_post_meta(get_the_ID(),'_a3_listing_owner_count',true);$entity=(int)get_post_meta(get_the_ID(),'_a3_vehicle_entity_id',true);
+?>
+<section class="g-listing-single-hero"><div class="g-wrap g-listing-single-grid">
+  <div><div class="g-breadcrumb"><a href="<?php echo esc_url(home_url('/')); ?>">الرئيسية</a><span>›</span><a href="<?php echo esc_url(get_post_type_archive_link('a3_listing')); ?>">سيارات للبيع</a></div><span>A3TAL MARKET</span><h1><?php the_title(); ?></h1><?php if($price>0): ?><strong class="g-listing-big-price"><?php echo esc_html(number_format_i18n($price,0).' '.$cur); ?></strong><?php endif; ?><div class="g-listing-facts g-listing-single-facts"><?php if($year): ?><span>موديل <?php echo esc_html($year); ?></span><?php endif; ?><?php if($km): ?><span><?php echo esc_html(number_format_i18n($km).' كم'); ?></span><?php endif; ?><?php if($loc): ?><span><?php echo esc_html($loc); ?></span><?php endif; ?><?php if($owners): ?><span><?php echo esc_html($owners); ?> مالك سابق</span><?php endif; ?></div><?php if($phone): ?><a class="g-listing-call" href="tel:<?php echo esc_attr(preg_replace('/[^0-9+]/','',$phone)); ?>">تواصل مع البائع</a><?php endif; ?></div>
+  <div class="g-listing-single-image"><?php if(has_post_thumbnail()){the_post_thumbnail('full',['loading'=>'eager']);}else{echo '<span class="g-fallback">A3TAL MARKET</span>';} ?></div>
+</div></section>
+<main class="g-wrap g-listing-single-main">
+  <article class="g-vehicle-panel g-entry"><?php the_content(); ?></article>
+  <?php if($entity&&get_post_status($entity)==='publish'): ?><section class="g-vehicle-panel g-listing-entity-link"><div><span>قاعدة بيانات أعطال</span><h2>راجع مواصفات ومحتوى الموديل</h2></div><a href="<?php echo esc_url(get_permalink($entity)); ?>"><?php echo esc_html(get_the_title($entity)); ?> ←</a></section><?php endif; ?>
+  <div class="g-market-safety"><strong>تنبيه للمشتري:</strong><span>عاين السيارة وافحص المستندات والحالة الفنية قبل أي دفع. أعطال.كوم لا يضمن الصفقة بين الطرفين.</span></div>
+</main><?php endwhile;get_footer(); ?>
