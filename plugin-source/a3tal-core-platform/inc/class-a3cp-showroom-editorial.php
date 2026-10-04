@@ -46,47 +46,55 @@ final class A3CP_Showroom_Editorial {
         $source = get_attached_file($source_id);
         if(!$source || !file_exists($source)) return 0;
 
-        require_once ABSPATH.'wp-admin/includes/image.php';
-        $editor = wp_get_image_editor($source);
-        if(is_wp_error($editor)) return 0;
+        $info = @getimagesize($source);
+        if(!$info || empty($info[0]) || empty($info[1])) return 0;
+        $w=(int)$info[0]; $h=(int)$info[1];
 
-        $size = $editor->get_size();
-        $w = (int)($size['width'] ?? 0);
-        $h = (int)($size['height'] ?? 0);
-        if($w < 300 || $h < 200) return 0;
+        $mime=(string)($info['mime']??'');
+        $src=null;
+        if($mime==='image/webp' && function_exists('imagecreatefromwebp')) $src=@imagecreatefromwebp($source);
+        elseif($mime==='image/jpeg' && function_exists('imagecreatefromjpeg')) $src=@imagecreatefromjpeg($source);
+        elseif($mime==='image/png' && function_exists('imagecreatefrompng')) $src=@imagecreatefrompng($source);
+        if(!$src) return 0;
 
-        $crop_w = (int)floor($w * .76);
-        $crop_h = (int)floor($crop_w / 1.5);
-        if($crop_h > $h){
-            $crop_h = (int)floor($h * .76);
-            $crop_w = (int)floor($crop_h * 1.5);
+        $crop_w=(int)floor($w*.76);
+        $crop_h=(int)floor($crop_w/1.5);
+        if($crop_h>$h){
+            $crop_h=(int)floor($h*.76);
+            $crop_w=(int)floor($crop_h*1.5);
         }
 
-        $positions = [
+        $positions=[
             [0,0],
             [max(0,$w-$crop_w),0],
             [0,max(0,$h-$crop_h)],
             [max(0,$w-$crop_w),max(0,$h-$crop_h)],
         ];
-        [$x,$y] = $positions[$slot % 4];
+        [$x,$y]=$positions[$slot%4];
 
-        $cropped = $editor->crop($x,$y,$crop_w,$crop_h,1200,800,false);
-        if(is_wp_error($cropped)) return 0;
+        $dst=imagecreatetruecolor(1200,800);
+        if(!$dst){ imagedestroy($src); return 0; }
+        imagecopyresampled($dst,$src,0,0,$x,$y,1200,800,$crop_w,$crop_h);
 
-        $uploads = wp_upload_dir();
-        if(!empty($uploads['error'])) return 0;
-        $dest = trailingslashit($uploads['path']).sanitize_file_name($filename);
-        $saved = $editor->save($dest,'image/webp');
-        if(is_wp_error($saved)) return 0;
+        $uploads=wp_upload_dir();
+        if(!empty($uploads['error'])){ imagedestroy($src); imagedestroy($dst); return 0; }
+        $jpg_name=preg_replace('/\.webp$/i','.jpg',$filename);
+        if(!str_ends_with(strtolower($jpg_name),'.jpg')) $jpg_name.='.jpg';
+        $dest=trailingslashit($uploads['path']).sanitize_file_name($jpg_name);
 
-        $attachment_id = wp_insert_attachment([
-            'post_mime_type'=>'image/webp',
+        $saved=function_exists('imagejpeg') ? @imagejpeg($dst,$dest,88) : false;
+        imagedestroy($src); imagedestroy($dst);
+        if(!$saved || !file_exists($dest)) return 0;
+
+        require_once ABSPATH.'wp-admin/includes/image.php';
+        $attachment_id=wp_insert_attachment([
+            'post_mime_type'=>'image/jpeg',
             'post_title'=>$alt,
             'post_status'=>'inherit',
-        ], $saved['path']);
-        if(is_wp_error($attachment_id) || !$attachment_id) return 0;
+        ],$dest);
+        if(is_wp_error($attachment_id)||!$attachment_id) return 0;
 
-        $meta = wp_generate_attachment_metadata($attachment_id,$saved['path']);
+        $meta=wp_generate_attachment_metadata($attachment_id,$dest);
         wp_update_attachment_metadata($attachment_id,$meta);
         update_post_meta($attachment_id,'_wp_attachment_image_alt',$alt);
         update_post_meta($attachment_id,'_a3_asset_key',$key);
@@ -598,7 +606,7 @@ HTML
                 $source_media = $fallbacks[$i % count($fallbacks)];
                 $variant = self::variant_from_attachment(
                     $source_media,
-                    'showroom-guide-v2-'.$slug,
+                    'showroom-guide-v4-'.$slug,
                     'a3tal-'.$slug.'.webp',
                     $article['title'],
                     $i
@@ -611,6 +619,6 @@ HTML
             $i++;
         }
 
-        if($ok) update_option('a3cp_showroom_guides_v3','done',false);
+        if($ok) update_option('a3cp_showroom_guides_v4','done',false);
     }
 }
