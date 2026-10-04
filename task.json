@@ -2,7 +2,7 @@
   "requests": [
     {
       "method": "GET",
-      "path": "/admin?op=terms&taxonomy=category",
+      "path": "/status",
       "log_response": true,
       "body": {}
     },
