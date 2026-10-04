@@ -48,6 +48,8 @@ final class A3CP_Content_Types {
         add_action('init', [__CLASS__, 'seed_reference_entities'], 40);
         add_action('init', [__CLASS__, 'seed_motorcycle_entities'], 41);
         add_action('a3cp_seed_motorcycles', [__CLASS__, 'seed_motorcycle_entities']);
+        add_action('init', [__CLASS__, 'seed_service_centers_v1'], 42);
+        add_action('a3cp_seed_service_centers_v1', [__CLASS__, 'seed_service_centers_v1']);
         add_action('init', [__CLASS__, 'seed_showroom_batch_v1'], 43);
         add_action('a3cp_seed_showrooms_v1', [__CLASS__, 'seed_showroom_batch_v1']);
         add_action('init', [__CLASS__, 'seed_showroom_guides_v1'], 44);
@@ -589,6 +591,83 @@ final class A3CP_Content_Types {
         if ($all_ready) {
             update_option('a3cp_motorcycle_seed_v1', 'done', false);
         }
+    }
+
+
+    public static function seed_service_centers_v1(): void {
+        if ((string) get_option('a3cp_service_center_seed_v1') === 'done') return;
+
+        if (!term_exists('fiat', 'a3_brand')) {
+            wp_insert_term('Fiat', 'a3_brand', ['slug' => 'fiat']);
+        }
+
+        $source = 'https://www.fiat.com.eg/ar/tools/dealer-locator';
+        $hours = 'السبت إلى الخميس: 9:00 ص–5:00 م. اتصل قبل الزيارة لتأكيد الموعد ونوع الخدمة.';
+        $items = [
+            [
+                'slug' => 'fiat-dynamics-katameya-1-service-center',
+                'title' => 'مركز صيانة فيات داينامكس القطامية 1',
+                'address' => 'القطامية – ميدان المروحة، امتداد محمد زكي، القاهرة',
+            ],
+            [
+                'slug' => 'fiat-dynamics-katameya-2-service-center',
+                'title' => 'مركز صيانة فيات داينامكس القطامية 2',
+                'address' => 'القطامية – امتداد ميدان المروحة، جزء من حي مدينة نصر، القاهرة',
+            ],
+            [
+                'slug' => 'fiat-dynamics-alexandria-amreya-service-center',
+                'title' => 'مركز صيانة فيات داينامكس الإسكندرية – العامرية',
+                'address' => 'العامرية، طريق القاهرة–الإسكندرية الصحراوي، الإسكندرية',
+            ],
+            [
+                'slug' => 'fiat-dynamics-damietta-service-center',
+                'title' => 'مركز صيانة فيات داينامكس دمياط',
+                'address' => 'محطة موبيل للوقود، طريق بورسعيد–دمياط، شطا، دمياط',
+            ],
+            [
+                'slug' => 'fiat-dynamics-hurghada-service-center',
+                'title' => 'مركز صيانة فيات داينامكس الغردقة',
+                'address' => '117/109 شارع الحجاز، قبل مدخل النجدة، أمام شارع الخدمات الحكومية، الغردقة، البحر الأحمر',
+            ],
+        ];
+
+        $all_ready = true;
+        foreach ($items as $item) {
+            $existing = get_page_by_path($item['slug'], OBJECT, 'a3_service_center');
+            if ($existing instanceof WP_Post) continue;
+
+            $content = '<h2>بيانات المركز</h2>';
+            $content .= '<p>هذا المركز ظاهر ضمن قائمة مراكز خدمة Fiat Egypt الرسمية وقت آخر تحقق. استخدم الرقم الرئيسي لخدمة عملاء فيات لتأكيد الموعد ونوع الصيانة المتاح في الفرع قبل التحرك.</p>';
+            $content .= '<h2>قبل زيارة مركز الصيانة</h2>';
+            $content .= '<ul><li>جهّز رقم الشاسيه VIN وسنة الموديل وعداد السيارة.</li><li>اذكر نوع الصيانة أو العطل عند الحجز.</li><li>اطلب تأكيد توافر القطع أو الخدمة المطلوبة قبل الزيارة.</li><li>لأعطال Check Engine اطلب قراءة الأكواد والتشخيص قبل تغيير القطع.</li></ul>';
+            $content .= '<p>راجع أيضًا <a href="' . esc_url(home_url('/fiat-authorized-service-centers-egypt/')) . '">دليل مراكز صيانة فيات في مصر</a> للمعلومات العامة عن شبكة الخدمة والحجز.</p>';
+
+            $id = wp_insert_post([
+                'post_type' => 'a3_service_center',
+                'post_status' => 'publish',
+                'post_title' => $item['title'],
+                'post_name' => $item['slug'],
+                'post_excerpt' => 'مركز خدمة Fiat Egypt رسمي مدرج في محدد الفروع، مع العنوان ورقم الحجز ومصدر التحقق.',
+                'post_content' => $content,
+            ], true);
+
+            if (is_wp_error($id)) {
+                $all_ready = false;
+                continue;
+            }
+
+            update_post_meta($id, '_a3_phone', '19984');
+            update_post_meta($id, '_a3_address', $item['address']);
+            update_post_meta($id, '_a3_hours', $hours);
+            update_post_meta($id, '_a3_official_source_url', $source);
+            update_post_meta($id, '_a3_source_checked_at', '2026-10-04');
+
+            wp_set_object_terms($id, 'fiat', 'a3_brand', false);
+            wp_set_object_terms($id, 'egypt', 'a3_market', false);
+            wp_set_object_terms($id, 'official', 'a3_directory_status', false);
+        }
+
+        if ($all_ready) update_option('a3cp_service_center_seed_v1', 'done', false);
     }
 
     public static function seed_showroom_batch_v1(): void {
