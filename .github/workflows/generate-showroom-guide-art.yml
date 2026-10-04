@@ -1,0 +1,50 @@
+name: Generate Showroom Guide Artwork
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/generate-showroom-guide-art.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate eight unique guide images
+        run: |
+          set -euo pipefail
+          mkdir -p assets/showrooms/guides
+
+          SRC1="assets/showrooms/showroom-official-exterior.webp"
+          SRC2="assets/showrooms/showroom-premium-interior.webp"
+
+          command -v convert >/dev/null
+
+          convert "$SRC1" -crop 76%x76%+0+0 +repage -resize 1200x800^ -gravity center -extent 1200x800 -quality 88 assets/showrooms/guides/dealer-types-guide.webp
+          convert "$SRC1" -gravity northeast -crop 76%x76%+0+0 +repage -resize 1200x800^ -gravity center -extent 1200x800 -modulate 100,103,100 -quality 88 assets/showrooms/guides/showroom-verification-guide.webp
+          convert "$SRC1" -gravity southwest -crop 76%x76%+0+0 +repage -resize 1200x800^ -gravity center -extent 1200x800 -contrast -quality 88 assets/showrooms/guides/new-car-delivery-checklist.webp
+          convert "$SRC1" -gravity southeast -crop 76%x76%+0+0 +repage -resize 1200x800^ -gravity center -extent 1200x800 -modulate 104,98,100 -quality 88 assets/showrooms/guides/test-drive-guide.webp
+
+          convert "$SRC2" -crop 76%x76%+0+0 +repage -resize 1200x800^ -gravity center -extent 1200x800 -quality 88 assets/showrooms/guides/finance-hidden-costs.webp
+          convert "$SRC2" -gravity northeast -crop 76%x76%+0+0 +repage -resize 1200x800^ -gravity center -extent 1200x800 -modulate 98,105,100 -quality 88 assets/showrooms/guides/overprice-guide.webp
+          convert "$SRC2" -gravity southwest -crop 76%x76%+0+0 +repage -resize 1200x800^ -gravity center -extent 1200x800 -contrast -quality 88 assets/showrooms/guides/questions-before-booking.webp
+          convert "$SRC2" -gravity southeast -crop 76%x76%+0+0 +repage -resize 1200x800^ -gravity center -extent 1200x800 -modulate 102,100,100 -quality 88 assets/showrooms/guides/compare-showroom-offers.webp
+
+          ls -lh assets/showrooms/guides
+
+      - name: Commit generated artwork
+        run: |
+          git config user.name "A3tal Automation"
+          git config user.email "actions@users.noreply.github.com"
+          git add assets/showrooms/guides
+          if git diff --cached --quiet; then
+            echo "No image changes."
+            exit 0
+          fi
+          git commit -m "Generate unique showroom guide artwork"
+          git push
