@@ -36,13 +36,24 @@ $types=get_terms(['taxonomy'=>$type_tax,'hide_empty'=>false]);
       <?php while(have_posts()):the_post();a3g_platform_card();endwhile; ?>
     </div>
     <div class="g-platform-pagination"><?php the_posts_pagination(['mid_size'=>2,'prev_text'=>'السابق','next_text'=>'التالي']); ?></div>
-  <?php else: ?>
+  <?php elseif($is_moto): ?>
     <div class="g-platform-empty">
-      <span><?php echo $is_moto?'🏍️':'🚘'; ?></span>
+      <span>🏍️</span>
       <h2>لا توجد نتائج منشورة بهذه الفلاتر حاليًا</h2>
-      <p>نحن لا ننشر مركبة داخل قاعدة البيانات قبل مراجعة بياناتها ومصدرها. غيّر الفلاتر أو عد لاحقًا بعد إضافة البيانات الموثقة.</p>
+      <p>غيّر الفلاتر أو ارجع للقائمة الكاملة للموتوسيكلات المنشورة.</p>
       <a href="<?php echo esc_url(get_post_type_archive_link($type)); ?>">مسح الفلاتر</a>
     </div>
+  <?php else: ?>
+    <div class="g-platform-bridge-note">
+      <span>🚘</span>
+      <div><h2>قاعدة السيارات المنظمة بتتبني من المحتوى الموجود</h2><p>بدل ما نعمل صفحات جديدة تنافس مقالات الموقع القديمة، بنربط الأسعار والمراجعات والمقارنات الحالية هنا ونحوّل أهم الموديلات تدريجيًا إلى بيانات منظمة.</p></div>
+    </div>
+  <?php endif; ?>
+
+  <?php if(!$is_moto): ?>
+    <?php a3g_legacy_section([374],'أسعار السيارات الجديدة','كل صفحات الأسعار الحالية تفضل على روابطها الأصلية وتظهر هنا داخل قسم السيارات.',8,[],374); ?>
+    <?php a3g_legacy_section([22],'مراجعات السيارات','مراجعات وتجارب الشراء الموجودة بالفعل، من غير إنشاء نسخ جديدة لنفس النية.',6,[],22); ?>
+    <?php a3g_legacy_section([21],'مقارنات بين السيارات','المقارنات الحالية مرتبطة بقسم السيارات بدل ما تفضل معزولة في تصنيف منفصل.',6,[],21); ?>
   <?php endif; ?>
 </main>
 <?php get_footer(); ?>
