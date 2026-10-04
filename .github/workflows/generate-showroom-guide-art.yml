@@ -48,3 +48,5 @@ jobs:
           fi
           git commit -m "Generate unique showroom guide artwork"
           git push
+
+# trigger-refresh: 2026-10-04-showroom-art
