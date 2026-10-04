@@ -1,6 +1,6 @@
 <?php
 if (!defined('ABSPATH')) exit;
-define('A3G_VERSION','1.7.1');
+define('A3G_VERSION','1.7.2');
 
 function a3g_setup(){
   add_theme_support('title-tag');
