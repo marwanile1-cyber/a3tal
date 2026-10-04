@@ -3,7 +3,7 @@ Theme Name: A3tal Global
 Theme URI: https://a3tal.com/
 Author: A3tal.com
 Description: Premium RTL automotive platform theme for A3tal.com.
-Version: 1.4.1
+Version: 1.5.0
 Requires at least: 6.4
 Requires PHP: 8.0
 Text Domain: a3tal-global
@@ -797,4 +797,33 @@ html,body{max-width:100%;overflow-x:hidden}
   .g-platform-card{grid-template-columns:96px minmax(0,1fr)}
   .g-legacy-grid .g-card{grid-template-columns:96px minmax(0,1fr)}
   .g-table-wrap table{min-width:520px}
+}
+
+
+/* =========================================================
+   A3tal Global 1.5 — Showroom Intelligence
+   ========================================================= */
+.g-showroom-guides{margin-top:34px;padding:26px;border-radius:20px;background:linear-gradient(135deg,#091522,#132f47);color:#fff}
+.g-showroom-guides .g-section-head{margin-bottom:18px}
+.g-showroom-guides .g-section-head>div>span{color:#ff9b7e}
+.g-showroom-guides .g-section-head h2{color:#fff}
+.g-showroom-guides .g-section-head p{max-width:760px;margin:5px 0 0;color:#b8c6d2;font-size:10px}
+.g-showroom-guides .g-section-head>a{color:#fff;border:1px solid rgba(255,255,255,.12);padding:7px 10px;border-radius:8px}
+.g-showroom-guide-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.g-showroom-guide-card{background:#fff;color:var(--g-ink);border:0;overflow:hidden}
+.g-showroom-guide-card .g-card-media{aspect-ratio:16/10}
+.g-showroom-guide-card .g-card-body h3{font-size:12px;line-height:1.6}
+.g-showroom-guide-card .g-card-body p{font-size:8px}
+.g-directory-card{transition:.18s}
+.g-directory-card:hover{transform:translateY(-4px);box-shadow:var(--g-shadow)}
+.g-directory-badge.g-status-official{background:#eaf8f0;color:#0b7b44;border:1px solid #c9ecd9}
+@media(max-width:980px){.g-showroom-guide-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){
+  .g-showroom-guides{padding:16px;border-radius:15px}
+  .g-showroom-guides .g-section-head{align-items:flex-start;flex-direction:column}
+  .g-showroom-guide-grid{grid-template-columns:1fr}
+  .g-showroom-guide-card{display:grid;grid-template-columns:105px minmax(0,1fr)}
+  .g-showroom-guide-card .g-card-media{height:100%;aspect-ratio:auto}
+  .g-showroom-guide-card .g-card-body{padding:10px}
+  .g-showroom-guide-card .g-card-body p{display:none}
 }
