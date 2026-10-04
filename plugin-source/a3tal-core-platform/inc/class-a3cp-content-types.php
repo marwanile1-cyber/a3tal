@@ -45,6 +45,7 @@ final class A3CP_Content_Types {
         add_filter('query_vars', [__CLASS__, 'query_vars']);
         add_action('pre_get_posts', [__CLASS__, 'filter_entity_archives']);
         add_filter('wp_robots', [__CLASS__, 'robots']);
+        add_action('init', [__CLASS__, 'seed_reference_entities'], 40);
     }
 
     public static function register_all(): void {
@@ -382,7 +383,105 @@ final class A3CP_Content_Types {
         }
     }
 
+    public static function seed_reference_entities(): void {
+        if ((string) get_option('a3cp_dtc_reference_seed_v1') === 'done') return;
+
+        $items = [
+            [
+                'code' => 'P0420',
+                'slug' => 'p0420-catalyst-efficiency-bank-1',
+                'title' => 'P0420 — كفاءة المحول الحفاز أقل من الحد Bank 1',
+                'system' => 'المحرك / الانبعاثات',
+                'severity' => 'medium',
+                'drive' => 'يمكن أن تستمر السيارة في العمل، لكن تجاهل السبب لفترة طويلة قد يخفي مشكلة احتراق أو عادم أعمق. شخّص السبب قبل استبدال المحول الحفاز.',
+            ],
+            [
+                'code' => 'P0430',
+                'slug' => 'p0430-catalyst-efficiency-bank-2',
+                'title' => 'P0430 — كفاءة المحول الحفاز أقل من الحد Bank 2',
+                'system' => 'المحرك / الانبعاثات',
+                'severity' => 'medium',
+                'drive' => 'لا يعني الكود وحده أن المحول الحفاز تالف. افحص أسباب الاحتراق وحساسات الأكسجين وتسريب العادم قبل قرار الاستبدال.',
+            ],
+            [
+                'code' => 'P0335',
+                'slug' => 'p0335-crankshaft-position-sensor',
+                'title' => 'P0335 — عطل دائرة حساس موضع عمود الكرنك CKP',
+                'system' => 'المحرك / إدارة الإشعال والحقن',
+                'severity' => 'high',
+                'drive' => 'قد يسبب الكود تقطيعًا أو توقف المحرك أو عدم إعادة التشغيل. إذا ظهرت أعراض توقف مفاجئ فالأولوية للتشخيص بدل مواصلة القيادة.',
+            ],
+            [
+                'code' => 'P0342',
+                'slug' => 'dtc-p0342-chevrolet',
+                'title' => 'P0342 — إشارة منخفضة في دائرة حساس الكامة A',
+                'system' => 'المحرك / حساس موضع عمود الكامة',
+                'severity' => 'medium',
+                'drive' => 'ابدأ بفحص التغذية والأرضي والأسلاك والإشارة. الكود لا يثبت وحده أن حساس الكامة نفسه تالف.',
+            ],
+        ];
+
+        $all_ready = true;
+
+        foreach ($items as $item) {
+            $existing = get_posts([
+                'post_type' => 'a3_dtc',
+                'post_status' => 'any',
+                'posts_per_page' => 1,
+                'fields' => 'ids',
+                'meta_key' => '_a3_dtc_code',
+                'meta_value' => $item['code'],
+            ]);
+            if ($existing) continue;
+
+            $source = get_page_by_path($item['slug'], OBJECT, 'post');
+            if (!$source instanceof WP_Post || $source->post_status !== 'publish') {
+                $all_ready = false;
+                continue;
+            }
+
+            $excerpt = get_the_excerpt($source);
+            if (!$excerpt) {
+                $excerpt = wp_trim_words(wp_strip_all_tags((string) $source->post_content), 34);
+            }
+
+            $content = '<p>هذه صفحة مرجعية سريعة للكود <strong>' . esc_html($item['code']) . '</strong> داخل قاعدة أكواد أعطال.كوم. تم ربطها بالشرح الفني المنشور بالفعل حتى لا نكرر نفس نية البحث في صفحتين.</p>';
+            $content .= '<p><a href="' . esc_url(get_permalink($source)) . '">اقرأ الشرح الكامل للكود وخطوات التشخيص ←</a></p>';
+
+            $id = wp_insert_post([
+                'post_type' => 'a3_dtc',
+                'post_status' => 'publish',
+                'post_title' => $item['title'],
+                'post_name' => strtolower($item['code']),
+                'post_excerpt' => wp_strip_all_tags($excerpt),
+                'post_content' => $content,
+            ], true);
+
+            if (is_wp_error($id)) {
+                $all_ready = false;
+                continue;
+            }
+
+            update_post_meta($id, '_a3_dtc_code', $item['code']);
+            update_post_meta($id, '_a3_dtc_system', $item['system']);
+            update_post_meta($id, '_a3_severity', $item['severity']);
+            update_post_meta($id, '_a3_drive_advice', $item['drive']);
+            update_post_meta($id, '_a3_code_scope', 'generic');
+            update_post_meta($id, '_a3_related_post_ids', (string) $source->ID);
+            update_post_meta($id, '_a3_entity_stub', '1');
+            wp_set_object_terms($id, 'p-powertrain', 'a3_dtc_family', false);
+        }
+
+        if ($all_ready) {
+            update_option('a3cp_dtc_reference_seed_v1', 'done', false);
+        }
+    }
+
     public static function robots(array $robots): array {
+        if (is_singular('a3_dtc') && get_post_meta(get_queried_object_id(), '_a3_entity_stub', true)) {
+            $robots['noindex'] = true;
+            unset($robots['index']);
+        }
         if (is_post_type_archive(array_keys(self::TYPES))) {
             global $wp_query;
             if ($wp_query instanceof WP_Query && (int) $wp_query->found_posts === 0) {
