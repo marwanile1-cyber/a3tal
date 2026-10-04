@@ -1,12 +1,15 @@
-<?php get_header(); while(have_posts()):the_post();$type=get_post_type();$is_showroom=$type==='a3_showroom';$status=a3g_directory_status();$phone=a3cp_field('_a3_phone');$whatsapp=a3cp_field('_a3_whatsapp');$address=a3cp_field('_a3_address');$hours=a3cp_field('_a3_hours');$lat=a3cp_field('_a3_lat');$lng=a3cp_field('_a3_lng');$source=a3cp_field('_a3_official_source_url');$checked=a3cp_field('_a3_source_checked_at'); ?>
+<?php get_header(); while(have_posts()):the_post();$type=get_post_type();$is_showroom=$type==='a3_showroom';$status=a3g_directory_status();$phone=a3cp_field('_a3_phone');$whatsapp=a3cp_field('_a3_whatsapp');$address=a3cp_field('_a3_address');$hours=a3cp_field('_a3_hours');$lat=a3cp_field('_a3_lat');$lng=a3cp_field('_a3_lng');$source=a3cp_field('_a3_official_source_url');$checked=a3cp_field('_a3_source_checked_at');$email=$is_showroom?a3cp_field('_a3_email'):'';$booking=$is_showroom?a3cp_field('_a3_booking_url'):'';$maps_query=$is_showroom?a3cp_field('_a3_maps_query'):'';$services=$is_showroom?a3cp_field('_a3_services'):'';$staff=$is_showroom?a3cp_field('_a3_staff_public'):'';$staff_source=$is_showroom?a3cp_field('_a3_staff_source_url'):'';$data_note=$is_showroom?a3cp_field('_a3_data_note'):'';$map_query=($lat&&$lng)?($lat.','.$lng):($maps_query?:$address);$map_url=$map_query?'https://www.google.com/maps/search/?api=1&query='.rawurlencode($map_query):''; ?>
 <section class="g-directory-single-hero"><div class="g-wrap g-directory-single-grid">
-<div><div class="g-breadcrumb"><a href="<?php echo esc_url(home_url('/')); ?>">الرئيسية</a><span>›</span><a href="<?php echo esc_url(get_post_type_archive_link($type)); ?>"><?php echo $is_showroom?'معارض السيارات':'مراكز الخدمة'; ?></a></div><?php if($status): ?><span class="g-directory-badge g-status-<?php echo esc_attr($status->slug); ?>"><?php echo esc_html($status->name); ?></span><?php endif; ?><h1><?php the_title(); ?></h1><?php if($address): ?><p><?php echo esc_html($address); ?></p><?php endif; ?><div class="g-directory-actions"><?php if($phone): ?><a href="tel:<?php echo esc_attr(preg_replace('/[^0-9+]/','',$phone)); ?>">اتصال</a><?php endif; ?><?php if($whatsapp): ?><a href="https://wa.me/<?php echo esc_attr(preg_replace('/[^0-9]/','',$whatsapp)); ?>" rel="nofollow noopener" target="_blank">واتساب</a><?php endif; ?></div></div>
+<div><div class="g-breadcrumb"><a href="<?php echo esc_url(home_url('/')); ?>">الرئيسية</a><span>›</span><a href="<?php echo esc_url(get_post_type_archive_link($type)); ?>"><?php echo $is_showroom?'معارض السيارات':'مراكز الخدمة'; ?></a></div><?php if($status): ?><span class="g-directory-badge g-status-<?php echo esc_attr($status->slug); ?>"><?php echo esc_html($status->name); ?></span><?php endif; ?><h1><?php the_title(); ?></h1><?php if($address): ?><p><?php echo esc_html($address); ?></p><?php endif; ?><div class="g-directory-actions"><?php if($phone): ?><a href="tel:<?php echo esc_attr(preg_replace('/[^0-9+]/','',$phone)); ?>">☎ اتصال</a><?php endif; ?><?php if($map_url): ?><a href="<?php echo esc_url($map_url); ?>" rel="nofollow noopener" target="_blank">📍 الخريطة</a><?php endif; ?><?php if($booking): ?><a href="<?php echo esc_url($booking); ?>" rel="nofollow noopener" target="_blank">🚘 احجز تجربة قيادة</a><?php endif; ?><?php if($whatsapp): ?><a href="https://wa.me/<?php echo esc_attr(preg_replace('/[^0-9]/','',$whatsapp)); ?>" rel="nofollow noopener" target="_blank">واتساب</a><?php endif; ?></div></div>
 <div class="g-directory-feature"><?php if(has_post_thumbnail()){the_post_thumbnail('large',['loading'=>'eager']);}else{echo '<span class="g-fallback">A3TAL</span>';} ?></div>
 </div></section>
 <main class="g-wrap g-directory-single-main">
-<div class="g-directory-facts"><?php if($phone): ?><div><small>الهاتف</small><strong><?php echo esc_html($phone); ?></strong></div><?php endif; ?><?php if($hours): ?><div><small>ساعات العمل</small><strong><?php echo nl2br(esc_html($hours)); ?></strong></div><?php endif; ?><?php if($checked): ?><div><small>آخر تحقق</small><strong><?php echo esc_html($checked); ?></strong></div><?php endif; ?></div>
+<div class="g-directory-facts"><?php if($phone): ?><div><small>الهاتف</small><strong><?php echo esc_html($phone); ?></strong></div><?php endif; ?><?php if($email): ?><div><small>البريد</small><strong><a href="mailto:<?php echo esc_attr($email); ?>"><?php echo esc_html($email); ?></a></strong></div><?php endif; ?><?php if($hours): ?><div><small>ساعات العمل</small><strong><?php echo nl2br(esc_html($hours)); ?></strong></div><?php endif; ?><?php if($checked): ?><div><small>آخر تحقق</small><strong><?php echo esc_html($checked); ?></strong></div><?php endif; ?></div>
+<?php if($data_note): ?><div class="g-live-data-note"><b>بيانات حية موثقة</b><p><?php echo esc_html($data_note); ?></p></div><?php endif; ?>
+<?php if($services): ?><section class="g-vehicle-panel g-showroom-services"><div class="g-section-head"><div><span>الخدمات</span><h2>إيه اللي تقدر تعمله من خلال المعرض؟</h2></div></div><div class="g-service-chip-grid"><?php foreach(array_filter(array_map('trim',preg_split('/\r\n|\r|\n/',$services))) as $service): ?><span>✓ <?php echo esc_html($service); ?></span><?php endforeach; ?></div></section><?php endif; ?>
 <article class="g-vehicle-panel g-entry"><?php the_content(); ?></article>
-<?php if($lat&&$lng): ?><div class="g-vehicle-panel"><div class="g-section-head"><div><span>الموقع</span><h2>الموقع الجغرافي</h2></div></div><a class="g-map-link" href="https://www.google.com/maps?q=<?php echo esc_attr($lat.','.$lng); ?>" rel="nofollow noopener" target="_blank"><?php echo a3g_icon('pin'); ?><span>فتح الموقع على الخريطة</span></a></div><?php endif; ?>
+<?php if($map_query): ?><section class="g-vehicle-panel g-showroom-map"><div class="g-section-head"><div><span>الموقع</span><h2>مكان المعرض على الخريطة</h2></div><a href="<?php echo esc_url($map_url); ?>" rel="nofollow noopener" target="_blank">فتح في خرائط Google</a></div><div class="g-map-embed"><iframe loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=<?php echo esc_attr(rawurlencode($map_query)); ?>&output=embed" title="خريطة <?php echo esc_attr(get_the_title()); ?>"></iframe></div><p class="g-map-address"><?php echo esc_html($address); ?></p></section><?php endif; ?>
+<?php if($staff): ?><section class="g-vehicle-panel g-showroom-staff"><div class="g-section-head"><div><span>الفريق</span><h2>أسماء مهنية منشورة للفرع</h2></div></div><div class="g-staff-list"><?php foreach(array_filter(array_map('trim',preg_split('/\r\n|\r|\n/',$staff))) as $person): ?><div><span>👤</span><strong><?php echo esc_html($person); ?></strong></div><?php endforeach; ?></div><?php if($staff_source): ?><a class="g-staff-source" href="<?php echo esc_url($staff_source); ?>" rel="nofollow noopener" target="_blank">مصدر الأسماء المهنية</a><?php endif; ?></section><?php endif; ?>
 <?php if($source): ?><div class="g-source-note"><span>مرجع التحقق</span><a href="<?php echo esc_url($source); ?>" rel="nofollow noopener" target="_blank">فتح المصدر الرسمي</a></div><?php endif; ?>
 
 <?php if($is_showroom):
@@ -44,5 +47,27 @@ if($guide_cat):
   </div>
 </section>
 <?php endif;endif;endif; ?>
+
+<?php if($is_showroom):
+  $schema=[
+    '@context'=>'https://schema.org',
+    '@type'=>'AutoDealer',
+    'name'=>get_the_title(),
+    'url'=>get_permalink(),
+    'telephone'=>$phone?:null,
+    'email'=>$email?:null,
+    'address'=>[
+      '@type'=>'PostalAddress',
+      'streetAddress'=>$address,
+      'addressCountry'=>'EG'
+    ],
+    'hasMap'=>$map_url?:null,
+    'sameAs'=>$source?[$source]:[],
+    'image'=>has_post_thumbnail()?get_the_post_thumbnail_url(get_the_ID(),'full'):null,
+  ];
+  $schema=array_filter($schema,static fn($v)=>$v!==null&&$v!==''&&$v!==[]);
+?>
+<script type="application/ld+json"><?php echo wp_json_encode($schema,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES); ?></script>
+<?php endif; ?>
 
 </main><?php endwhile;get_footer(); ?>
