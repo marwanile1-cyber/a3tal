@@ -1,1 +1,1 @@
-<?php require get_template_directory().'/template-parts/archive-directory.php'; ?>
+<?php require get_template_directory().'/platform-archive-directory.php'; ?>
