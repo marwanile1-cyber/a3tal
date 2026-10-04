@@ -119,8 +119,15 @@ final class A3CP_Admin {
                 echo esc_html((string) get_post_meta($post_id, '_a3_year', true));
                 break;
             case 'a3cp_price':
-                $price = function_exists('a3cp_vehicle_price') ? a3cp_vehicle_price($post_id) : '';
-                echo $price !== '' ? esc_html($price) : '—';
+                $post_type = get_post_type($post_id);
+                if ($post_type === 'a3_listing') {
+                    $price = (float) get_post_meta($post_id, '_a3_listing_price', true);
+                    $currency = (string) get_post_meta($post_id, '_a3_listing_currency', true);
+                    echo $price > 0 ? esc_html(number_format_i18n($price, 0) . ($currency ? ' ' . $currency : '')) : '—';
+                } else {
+                    $price = function_exists('a3cp_vehicle_price') ? a3cp_vehicle_price($post_id) : '';
+                    echo $price !== '' ? esc_html($price) : '—';
+                }
                 break;
             case 'a3cp_checked':
                 $date = (string) get_post_meta($post_id, '_a3_source_checked_at', true);
