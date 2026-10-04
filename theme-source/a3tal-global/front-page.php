@@ -151,7 +151,7 @@ $showrooms=new WP_Query(['post_type'=>'a3_showroom','post_status'=>'publish','po
 
       <div class="g-home-module g-module-market">
         <div class="g-home-module-head"><span>A3TAL MARKET</span><h2>بيع سيارتك من ملفها</h2></div>
-        <div class="g-market-mini"><span>📷 صور</span><span>📍 موقع</span><span>🧾 سجل صيانة</span><span>🛣️ عداد</span></div>
+        <div class="g-market-mini"><span>صور واضحة</span><span>الموقع</span><span>سجل الصيانة</span><span>العداد</span></div>
         <p>لو سيارتك موجودة في My Garage، بياناتها الأساسية تنتقل للإعلان بدل ما تعيد إدخالها من الصفر.</p>
         <div class="g-module-links"><a href="<?php echo esc_url(a3g_platform_link('a3_listing','/cars-for-sale/')); ?>">سيارات للبيع</a><a href="<?php echo esc_url(home_url('/my-garage/')); ?>">بيع سيارتي</a></div>
       </div>
