@@ -56,7 +56,7 @@ $related=a3g_related_post_ids();
       }else{
         $specs['المقاعد']=a3cp_field('_a3_seats');
       }
-      foreach($specs as $label=>$value): if($value==='')continue; ?>
+      foreach($specs as $label=>$value): if($value===''||$value===0||$value===0.0||$value==='0')continue; ?>
         <div><small><?php echo esc_html($label); ?></small><strong><?php echo esc_html($value); ?></strong></div>
       <?php endforeach; ?>
     </div>
