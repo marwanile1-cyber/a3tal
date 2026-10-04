@@ -48,6 +48,15 @@ $cats=get_terms(['taxonomy'=>'a3_part_category','hide_empty'=>false]);
       </div>
     </article>
   <?php endwhile; ?></div><div class="g-platform-pagination"><?php the_posts_pagination(['mid_size'=>2,'prev_text'=>'السابق','next_text'=>'التالي']); ?></div>
-  <?php else: ?><div class="g-platform-empty"><span>⚙️</span><h2>الكتالوج لسه بيتعبّى ببيانات موثقة</h2><p>مش هنحط أرقام قطع وأسعار من الذاكرة. كل قطعة هتنزل مرتبطة بمصدر ومركبات متوافقة.</p></div><?php endif; ?>
+  <?php else: ?><div class="g-platform-bridge-note"><span>⚙️</span><div><h2>كتالوج القطع المنظم لسه بيتبني</h2><p>بدل إنشاء صفحات مكررة، بنربط محتوى قطع الغيار الحالي بالقسم الجديد ثم نحول القطع المهمة تدريجيًا إلى بيانات OEM وتوافق وأسعار وبائعين.</p></div></div><?php endif; ?>
+
+  <?php a3g_legacy_section(
+    [85],
+    'محتوى قطع الغيار الموجود بالفعل',
+    'مقالات قطع الغيار الحالية تظهر هنا بروابطها الأصلية، بينما الكتالوج الجديد يضيف فوقها التوافق وأرقام القطع وأماكن البيع.',
+    16,
+    [],
+    85
+  ); ?>
 </main>
 <?php get_footer(); ?>
