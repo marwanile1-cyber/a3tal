@@ -1,18 +1,12 @@
 {
   "requests": [
     {
-      "method": "GET",
-      "path": "/admin?op=themes",
-      "log_response": true,
-      "body": {}
-    },
-    {
       "method": "POST",
       "path": "/admin",
       "log_response": true,
       "body": {
         "op": "file_read",
-        "path": "themes/a3tal-global/functions.php"
+        "path": "themes/a3tal-global/front-page.php"
       }
     },
     {
@@ -21,7 +15,7 @@
       "log_response": true,
       "body": {
         "op": "file_read",
-        "path": "themes/a3tal-global/archive-a3_dtc.php"
+        "path": "themes/a3tal-global/platform-archive-vehicle.php"
       }
     },
     {
@@ -30,7 +24,34 @@
       "log_response": true,
       "body": {
         "op": "file_read",
-        "path": "themes/a3tal-global/archive-a3_maintenance_plan.php"
+        "path": "themes/a3tal-global/platform-archive-directory.php"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/admin",
+      "log_response": true,
+      "body": {
+        "op": "file_read",
+        "path": "themes/a3tal-global/archive-a3_part.php"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/admin",
+      "log_response": true,
+      "body": {
+        "op": "file_read",
+        "path": "themes/a3tal-global/archive-a3_listing.php"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/admin",
+      "log_response": true,
+      "body": {
+        "op": "file_read",
+        "path": "themes/a3tal-global/style.css"
       }
     }
   ],
