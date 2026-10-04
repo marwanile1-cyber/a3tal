@@ -61,14 +61,14 @@ final class A3CP_Ownership_Commerce {
 
     public static function garage_template(string $template): string {
         if (!get_query_var('a3tal_garage')) return $template;
-        $candidate = A3CP_DIR . 'templates/my-garage.php';
+        $candidate = A3CP_DIR . 'my-garage.php';
         return file_exists($candidate) ? $candidate : $template;
     }
 
     public static function frontend_assets(): void {
         if (!get_query_var('a3tal_garage')) return;
-        wp_enqueue_style('a3cp-garage', A3CP_URL . 'assets/garage.css', [], A3CP_VERSION);
-        wp_enqueue_script('a3cp-garage', A3CP_URL . 'assets/garage.js', [], A3CP_VERSION, true);
+        wp_enqueue_style('a3cp-garage', A3CP_URL . 'garage.css', [], A3CP_VERSION);
+        wp_enqueue_script('a3cp-garage', A3CP_URL . 'garage.js', [], A3CP_VERSION, true);
         wp_localize_script('a3cp-garage', 'A3talGarage', [
             'rest' => esc_url_raw(rest_url('a3tal-platform/v1/')),
             'nonce' => wp_create_nonce('wp_rest'),
