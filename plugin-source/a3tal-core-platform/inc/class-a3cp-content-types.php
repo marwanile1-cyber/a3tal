@@ -52,6 +52,8 @@ final class A3CP_Content_Types {
         add_action('a3cp_seed_showrooms_v1', [__CLASS__, 'seed_showroom_batch_v1']);
         add_action('init', [__CLASS__, 'seed_showroom_guides_v1'], 44);
         add_action('a3cp_seed_showroom_guides_v1', [__CLASS__, 'seed_showroom_guides_v1']);
+        add_action('init', [__CLASS__, 'seed_showroom_featured_v1'], 45);
+        add_action('a3cp_seed_showroom_featured_v1', [__CLASS__, 'seed_showroom_featured_v1']);
     }
 
     public static function register_all(): void {
@@ -826,6 +828,57 @@ final class A3CP_Content_Types {
 
         if ($ok) {
             update_option('a3cp_showroom_guides_seed_v1', 'done', false);
+        }
+    }
+
+    public static function seed_showroom_featured_v1(): void {
+        if ((string) get_option('a3cp_showroom_featured_seed_v1') === 'done') return;
+
+        $showroom_media = [
+            'toyota-egypt-cairo-festival-city-showroom' => 81116,
+            'toyota-egypt-sheikh-zayed-showroom' => 80768,
+            'toyota-egypt-madinaty-showroom' => 80771,
+            'toyota-egypt-abbassia-showroom' => 80762,
+            'mg-mansour-new-cairo-showroom' => 81499,
+            'mg-mansour-madinaty-showroom' => 80881,
+            'mg-mansour-smouha-showroom' => 80691,
+            'mg-mansour-mansoura-showroom' => 80198,
+            'chery-gb-abbas-el-akkad-showroom' => 83039,
+            'chery-kernel-fifth-settlement-showroom' => 82871,
+        ];
+
+        $guide_media = [
+            'dealer-vs-authorized-distributor-vs-private-showroom-egypt' => 81116,
+            'how-to-verify-car-showroom-authorized-egypt' => 83039,
+            'new-car-delivery-checklist-egypt' => 81499,
+            'test-drive-before-buying-car-egypt' => 82871,
+            'car-showroom-finance-hidden-costs-egypt' => 80198,
+            'car-overprice-egypt-dealership-guide' => 80691,
+            'questions-before-booking-new-car-egypt' => 80768,
+            'compare-car-showroom-offers-egypt' => 80881,
+        ];
+
+        $ok = true;
+        foreach ($showroom_media as $slug => $media_id) {
+            $post = get_page_by_path($slug, OBJECT, 'a3_showroom');
+            if (!$post instanceof WP_Post || !wp_attachment_is_image($media_id)) {
+                $ok = false;
+                continue;
+            }
+            set_post_thumbnail($post->ID, $media_id);
+        }
+
+        foreach ($guide_media as $slug => $media_id) {
+            $post = get_page_by_path($slug, OBJECT, 'post');
+            if (!$post instanceof WP_Post || !wp_attachment_is_image($media_id)) {
+                $ok = false;
+                continue;
+            }
+            set_post_thumbnail($post->ID, $media_id);
+        }
+
+        if ($ok) {
+            update_option('a3cp_showroom_featured_seed_v1', 'done', false);
         }
     }
 
