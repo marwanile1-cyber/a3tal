@@ -675,6 +675,7 @@ final class A3CP_Content_Types {
 
     public static function seed_car_entities_v1(): void {
         if ((string) get_option('a3cp_car_seed_v1') === 'done') return;
+        if (!add_option('a3cp_car_seed_v1_lock', (string) time(), '', false)) return;
 
         $brands = [
             'byd'=>'BYD','chery'=>'Chery','xpeng'=>'XPENG','geely'=>'Geely',
@@ -793,6 +794,7 @@ final class A3CP_Content_Types {
         }
 
         if($all_ready) update_option('a3cp_car_seed_v1','done',false);
+        delete_option('a3cp_car_seed_v1_lock');
     }
 
     public static function seed_showroom_batch_v1(): void {
