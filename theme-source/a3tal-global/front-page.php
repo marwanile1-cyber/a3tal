@@ -74,6 +74,7 @@ $showrooms=new WP_Query(['post_type'=>'a3_showroom','post_status'=>'publish','po
     </div>
   </div>
 </section>
+<?php endif; ?>
 
 <section class="g-section g-home-os-section">
   <div class="g-wrap">
