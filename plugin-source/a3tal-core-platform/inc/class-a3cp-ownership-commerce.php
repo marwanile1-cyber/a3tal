@@ -39,6 +39,7 @@ final class A3CP_Ownership_Commerce {
         add_action('transition_post_status', [__CLASS__, 'protect_listing_publish'], 10, 3);
         add_action('add_meta_boxes', [__CLASS__, 'add_meta_boxes']);
         add_action('save_post', [__CLASS__, 'save_meta_boxes'], 10, 2);
+        add_filter('wp_robots', [__CLASS__, 'robots']);
     }
 
     public static function register_all(): void {
@@ -590,6 +591,21 @@ final class A3CP_Ownership_Commerce {
         if (!get_post_meta($post->ID, '_a3_listing_expires_at', true)) {
             update_post_meta($post->ID, '_a3_listing_expires_at', gmdate('Y-m-d', time() + 45 * DAY_IN_SECONDS));
         }
+    }
+
+    public static function robots(array $robots): array {
+        if (is_post_type_archive(['a3_part', 'a3_parts_vendor', 'a3_listing', 'a3_maintenance_plan'])) {
+            global $wp_query;
+            if ($wp_query instanceof WP_Query && (int) $wp_query->found_posts === 0) {
+                $robots['noindex'] = true;
+                unset($robots['index']);
+            }
+        }
+        if (is_singular('a3_maintenance_plan')) {
+            $robots['noindex'] = true;
+            unset($robots['index']);
+        }
+        return $robots;
     }
 
     public static function process_due_reminders(): void {
