@@ -46,6 +46,7 @@ final class A3CP_Content_Types {
         add_action('pre_get_posts', [__CLASS__, 'filter_entity_archives']);
         add_filter('wp_robots', [__CLASS__, 'robots']);
         add_action('init', [__CLASS__, 'seed_reference_entities'], 40);
+        add_action('init', [__CLASS__, 'seed_motorcycle_entities'], 41);
     }
 
     public static function register_all(): void {
@@ -477,8 +478,88 @@ final class A3CP_Content_Types {
         }
     }
 
+    public static function seed_motorcycle_entities(): void {
+        if ((string) get_option('a3cp_motorcycle_seed_v1') === 'done') return;
+
+        if (!term_exists('tvs', 'a3_brand')) {
+            wp_insert_term('TVS', 'a3_brand', ['slug' => 'tvs']);
+        }
+
+        $items = [
+            [
+                'slug' => 'tvs-apache-rtr-160-4v-egypt',
+                'title' => 'TVS Apache RTR 160 4V',
+                'type' => 'sport',
+                'engine' => 160,
+                'transmission' => 'يدوي 5 سرعات',
+                'fuel' => 'بنزين',
+                'source' => 'https://www.tvsmotor.com/ar/eg/our-products/tvs-apache-rtr-160-4v',
+                'excerpt' => 'دراجة رياضية بمحرك 4 صمامات مبرد بالزيت، وسعة فعلية 159.7 سم³، وناقل حركة من 5 سرعات بحسب TVS مصر.',
+                'content' => '<h2>بيانات سريعة</h2><ul><li>السعة الفعلية: 159.7 سم³.</li><li>محرك 4 أشواط مبرد بالزيت.</li><li>ناقل حركة 5 سرعات.</li><li>خزان وقود 12 لتر.</li></ul><p>هذه صفحة بيانات أولية مرتبطة بالمصدر الرسمي لـTVS مصر، وسيتم توسيعها بالمراجعة والصيانة والأعطال وقطع الغيار قبل فتحها للفهرسة.</p>',
+            ],
+            [
+                'slug' => 'tvs-raider-125-egypt',
+                'title' => 'TVS Raider 125',
+                'type' => 'commuter',
+                'engine' => 125,
+                'transmission' => 'يدوي 5 سرعات',
+                'fuel' => 'بنزين',
+                'source' => 'https://www.tvsmotor.com/ar/eg/our-products/tvs-raider',
+                'excerpt' => 'موتوسيكل تنقل يومي بمحرك سعة فعلية 124.76 سم³، وقدرة معلنة 12.9 حصان وناقل 5 سرعات بحسب TVS مصر.',
+                'content' => '<h2>بيانات سريعة</h2><ul><li>السعة الفعلية: 124.76 سم³.</li><li>القدرة المعلنة: 12.9 حصان عند 8000 دورة/دقيقة.</li><li>ناقل حركة 5 سرعات.</li><li>خزان وقود 10 لترات.</li></ul><p>هذه صفحة بيانات أولية من المصدر الرسمي لـTVS مصر، وسيتم استكمالها بالمراجعة والصيانة والأعطال وقطع الغيار.</p>',
+            ],
+            [
+                'slug' => 'tvs-ntorq-125-re-egypt',
+                'title' => 'TVS Ntorq 125 RE',
+                'type' => 'scooter',
+                'engine' => 125,
+                'transmission' => 'أوتوماتيك',
+                'fuel' => 'بنزين',
+                'source' => 'https://www.tvsmotor.com/ar/eg/our-products/tvs-ntorq-125-re',
+                'excerpt' => 'سكوتر بمحرك 124.79 سم³ ثلاثي الصمامات، بقدرة 6.9 كيلوواط وعزم 10.5 نيوتن متر بحسب TVS مصر.',
+                'content' => '<h2>بيانات سريعة</h2><ul><li>السعة الفعلية: 124.79 سم³.</li><li>القدرة المعلنة: 6.9 كيلوواط عند 7500 دورة/دقيقة.</li><li>العزم المعلن: 10.5 نيوتن متر عند 5500 دورة/دقيقة.</li><li>خزان الوقود 5 لترات.</li></ul><p>هذه صفحة بيانات أولية من المصدر الرسمي لـTVS مصر، وسيتم استكمالها بالمراجعة والصيانة والأعطال وقطع الغيار.</p>',
+            ],
+        ];
+
+        $all_ready = true;
+
+        foreach ($items as $item) {
+            $existing = get_page_by_path($item['slug'], OBJECT, 'a3_motorcycle');
+            if ($existing instanceof WP_Post) continue;
+
+            $id = wp_insert_post([
+                'post_type' => 'a3_motorcycle',
+                'post_status' => 'publish',
+                'post_title' => $item['title'],
+                'post_name' => $item['slug'],
+                'post_excerpt' => $item['excerpt'],
+                'post_content' => $item['content'],
+            ], true);
+
+            if (is_wp_error($id)) {
+                $all_ready = false;
+                continue;
+            }
+
+            update_post_meta($id, '_a3_engine_cc', $item['engine']);
+            update_post_meta($id, '_a3_transmission', $item['transmission']);
+            update_post_meta($id, '_a3_fuel', $item['fuel']);
+            update_post_meta($id, '_a3_source_url', $item['source']);
+            update_post_meta($id, '_a3_source_checked_at', '2026-10-04');
+            update_post_meta($id, '_a3_entity_stub', '1');
+
+            wp_set_object_terms($id, 'tvs', 'a3_brand', false);
+            wp_set_object_terms($id, 'egypt', 'a3_market', false);
+            wp_set_object_terms($id, $item['type'], 'a3_motorcycle_type', false);
+        }
+
+        if ($all_ready) {
+            update_option('a3cp_motorcycle_seed_v1', 'done', false);
+        }
+    }
+
     public static function robots(array $robots): array {
-        if (is_singular('a3_dtc') && get_post_meta(get_queried_object_id(), '_a3_entity_stub', true)) {
+        if (is_singular(['a3_dtc','a3_motorcycle','a3_car']) && get_post_meta(get_queried_object_id(), '_a3_entity_stub', true)) {
             $robots['noindex'] = true;
             unset($robots['index']);
         }
