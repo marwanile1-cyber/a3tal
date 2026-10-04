@@ -1,10 +1,6 @@
 name: Generate Showroom Guide Artwork
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - ".github/workflows/generate-showroom-guide-art.yml"
   workflow_dispatch:
 
 permissions:
@@ -22,6 +18,10 @@ jobs:
 
           SRC1="assets/showrooms/showroom-official-exterior.webp"
           SRC2="assets/showrooms/showroom-premium-interior.webp"
+
+          # These legacy source files are currently invalid/truncated WebP assets.
+          # Keep this workflow manual-only until valid source artwork replaces them.
+          identify "$SRC1" "$SRC2"
 
           if ! command -v convert >/dev/null 2>&1; then
             sudo apt-get update -qq
