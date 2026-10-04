@@ -12,10 +12,6 @@ $faults=a3g_query(['category__in'=>[8,13,2,18],'posts_per_page'=>4]);
 $care=a3g_query(['category__in'=>[86,3,85],'posts_per_page'=>4]);
 $service=a3g_query(['cat'=>33,'posts_per_page'=>3]);
 $news=a3g_query(['posts_per_page'=>4,'post__not_in'=>$hero_id?[$hero_id]:[]]);
-$ticker=a3g_query(['posts_per_page'=>6,'post__not_in'=>$hero_id?[$hero_id]:[]]);
-$ticker_items=[];
-while($ticker->have_posts()){$ticker->the_post();$ticker_items[]=['title'=>get_the_title(),'url'=>get_permalink()];}
-wp_reset_postdata();
 ?>
 <main class="g-home">
 
@@ -39,18 +35,6 @@ wp_reset_postdata();
           <button type="submit"><?php echo a3g_icon('search'); ?><span>بحث</span></button>
         </form>
       </div>
-      <?php if($ticker_items): ?>
-      <div class="g-latest-ticker" aria-label="أحدث التحديثات">
-        <span class="g-ticker-label">الأحدث</span>
-        <div class="g-ticker-window">
-          <div class="g-ticker-track">
-            <?php foreach(array_merge($ticker_items,$ticker_items) as $item): ?>
-              <a href="<?php echo esc_url($item['url']); ?>"><span class="g-ticker-dot"></span><?php echo esc_html($item['title']); ?></a>
-            <?php endforeach; ?>
-          </div>
-        </div>
-      </div>
-      <?php endif; ?>
     </div>
 
     <div class="g-quick-grid">
