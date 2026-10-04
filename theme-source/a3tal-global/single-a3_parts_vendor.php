@@ -1,0 +1,13 @@
+<?php get_header(); while(have_posts()):the_post();
+$status=get_the_terms(get_the_ID(),'a3_vendor_status');$st=($status&&!is_wp_error($status))?$status[0]:null;
+$phone=(string)get_post_meta(get_the_ID(),'_a3_phone',true);$wa=(string)get_post_meta(get_the_ID(),'_a3_whatsapp',true);$addr=(string)get_post_meta(get_the_ID(),'_a3_address',true);$hours=(string)get_post_meta(get_the_ID(),'_a3_hours',true);$delivery=(bool)get_post_meta(get_the_ID(),'_a3_delivery_available',true);$src=(string)get_post_meta(get_the_ID(),'_a3_official_source_url',true);$checked=(string)get_post_meta(get_the_ID(),'_a3_source_checked_at',true);
+?>
+<section class="g-directory-single-hero"><div class="g-wrap g-directory-single-grid">
+  <div><div class="g-breadcrumb"><a href="<?php echo esc_url(home_url('/')); ?>">الرئيسية</a><span>›</span><a href="<?php echo esc_url(get_post_type_archive_link('a3_parts_vendor')); ?>">أماكن بيع قطع الغيار</a></div><?php if($st): ?><span class="g-vendor-badge g-vendor-<?php echo esc_attr($st->slug); ?>"><?php echo esc_html($st->name); ?></span><?php endif; ?><h1><?php the_title(); ?></h1><?php if($addr): ?><p><?php echo esc_html($addr); ?></p><?php endif; ?><div class="g-directory-actions"><?php if($phone): ?><a href="tel:<?php echo esc_attr(preg_replace('/[^0-9+]/','',$phone)); ?>">اتصال</a><?php endif; ?><?php if($wa): ?><a href="https://wa.me/<?php echo esc_attr(preg_replace('/[^0-9]/','',$wa)); ?>" target="_blank" rel="nofollow noopener">واتساب</a><?php endif; ?></div></div>
+  <div class="g-directory-feature"><?php if(has_post_thumbnail()){the_post_thumbnail('large',['loading'=>'eager']);}else{echo '<span class="g-fallback">A3TAL PARTS</span>';} ?></div>
+</div></section>
+<main class="g-wrap g-directory-single-main">
+  <div class="g-directory-facts"><?php if($phone): ?><div><small>الهاتف</small><strong><?php echo esc_html($phone); ?></strong></div><?php endif; ?><?php if($hours): ?><div><small>ساعات العمل</small><strong><?php echo nl2br(esc_html($hours)); ?></strong></div><?php endif; ?><?php if($delivery): ?><div><small>الشحن</small><strong>التوصيل متاح</strong></div><?php endif; ?><?php if($checked): ?><div><small>آخر تحقق</small><strong><?php echo esc_html($checked); ?></strong></div><?php endif; ?></div>
+  <article class="g-vehicle-panel g-entry"><?php the_content(); ?></article>
+  <?php if($src): ?><div class="g-source-note"><span>مرجع التحقق</span><a href="<?php echo esc_url($src); ?>" target="_blank" rel="nofollow noopener">فتح المصدر</a></div><?php endif; ?>
+</main><?php endwhile;get_footer(); ?>
