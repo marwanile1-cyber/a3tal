@@ -292,44 +292,93 @@ final class A3CP_Content_Types {
         $vars[] = 'market';
         $vars[] = 'year';
         $vars[] = 'vehicle_type';
+        $vars[] = 'code';
+        $vars[] = 'directory_status';
         return $vars;
     }
 
     public static function filter_entity_archives(WP_Query $query): void {
         if (is_admin() || !$query->is_main_query()) return;
+
         $type = $query->get('post_type');
-        if (!in_array($type, ['a3_car', 'a3_motorcycle'], true)) return;
-
-        $query->set('posts_per_page', 24);
-        $query->set('orderby', ['modified' => 'DESC', 'title' => 'ASC']);
-
-        $tax_query = [];
-        $brand = sanitize_title((string) get_query_var('brand'));
-        $market = sanitize_title((string) get_query_var('market'));
-        if ($brand !== '') {
-            $tax_query[] = ['taxonomy' => 'a3_brand', 'field' => 'slug', 'terms' => $brand];
+        if (is_array($type)) {
+            $type = reset($type);
         }
-        if ($market !== '') {
-            $tax_query[] = ['taxonomy' => 'a3_market', 'field' => 'slug', 'terms' => $market];
+        $type = (string) $type;
+
+        if (in_array($type, ['a3_car', 'a3_motorcycle'], true)) {
+            $query->set('posts_per_page', 24);
+            $query->set('orderby', ['modified' => 'DESC', 'title' => 'ASC']);
+
+            $tax_query = [];
+            $brand = sanitize_title((string) get_query_var('brand'));
+            $market = sanitize_title((string) get_query_var('market'));
+            if ($brand !== '') {
+                $tax_query[] = ['taxonomy' => 'a3_brand', 'field' => 'slug', 'terms' => $brand];
+            }
+            if ($market !== '') {
+                $tax_query[] = ['taxonomy' => 'a3_market', 'field' => 'slug', 'terms' => $market];
+            }
+
+            $vehicle_type = sanitize_title((string) get_query_var('vehicle_type'));
+            if ($vehicle_type !== '') {
+                $taxonomy = $type === 'a3_car' ? 'a3_car_body' : 'a3_motorcycle_type';
+                $tax_query[] = ['taxonomy' => $taxonomy, 'field' => 'slug', 'terms' => $vehicle_type];
+            }
+
+            if ($tax_query) {
+                $query->set('tax_query', count($tax_query) > 1 ? array_merge(['relation' => 'AND'], $tax_query) : $tax_query);
+            }
+
+            $year = absint(get_query_var('year'));
+            if ($year >= 1950 && $year <= 2100) {
+                $query->set('meta_query', [[
+                    'key' => '_a3_year',
+                    'value' => $year,
+                    'compare' => '=',
+                    'type' => 'NUMERIC',
+                ]]);
+            }
+            return;
         }
 
-        $vehicle_type = sanitize_title((string) get_query_var('vehicle_type'));
-        if ($vehicle_type !== '') {
-            $taxonomy = $type === 'a3_car' ? 'a3_car_body' : 'a3_motorcycle_type';
-            $tax_query[] = ['taxonomy' => $taxonomy, 'field' => 'slug', 'terms' => $vehicle_type];
-        }
-        if ($tax_query) {
-            $query->set('tax_query', count($tax_query) > 1 ? array_merge(['relation' => 'AND'], $tax_query) : $tax_query);
+        if ($type === 'a3_dtc') {
+            $query->set('posts_per_page', 40);
+            $query->set('orderby', 'title');
+            $query->set('order', 'ASC');
+
+            $code = self::sanitize_dtc_code((string) get_query_var('code'));
+            if ($code !== '') {
+                $query->set('meta_query', [[
+                    'key' => '_a3_dtc_code',
+                    'value' => $code,
+                    'compare' => '=',
+                ]]);
+            }
+            return;
         }
 
-        $year = absint(get_query_var('year'));
-        if ($year >= 1950 && $year <= 2100) {
-            $query->set('meta_query', [[
-                'key' => '_a3_year',
-                'value' => $year,
-                'compare' => '=',
-                'type' => 'NUMERIC',
-            ]]);
+        if (in_array($type, ['a3_service_center', 'a3_showroom'], true)) {
+            $query->set('posts_per_page', 24);
+            $query->set('orderby', ['modified' => 'DESC', 'title' => 'ASC']);
+
+            $tax_query = [];
+            $brand = sanitize_title((string) get_query_var('brand'));
+            $market = sanitize_title((string) get_query_var('market'));
+            $status = sanitize_title((string) get_query_var('directory_status'));
+
+            if ($brand !== '') {
+                $tax_query[] = ['taxonomy' => 'a3_brand', 'field' => 'slug', 'terms' => $brand];
+            }
+            if ($market !== '') {
+                $tax_query[] = ['taxonomy' => 'a3_market', 'field' => 'slug', 'terms' => $market];
+            }
+            if ($status !== '') {
+                $tax_query[] = ['taxonomy' => 'a3_directory_status', 'field' => 'slug', 'terms' => $status];
+            }
+            if ($tax_query) {
+                $query->set('tax_query', count($tax_query) > 1 ? array_merge(['relation' => 'AND'], $tax_query) : $tax_query);
+            }
         }
     }
 
