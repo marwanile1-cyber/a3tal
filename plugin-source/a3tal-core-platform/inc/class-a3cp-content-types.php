@@ -58,6 +58,10 @@ final class A3CP_Content_Types {
         add_action('a3cp_enrich_showrooms_v2', [__CLASS__, 'enrich_showroom_directory_v2']);
         add_action('init', [__CLASS__, 'seed_showroom_custom_media_v2'], 47);
         add_action('a3cp_seed_showroom_custom_media_v2', [__CLASS__, 'seed_showroom_custom_media_v2']);
+        add_action('init', [__CLASS__, 'seed_motorcycle_expansion_v2'], 48);
+        add_action('a3cp_seed_motorcycle_expansion_v2', [__CLASS__, 'seed_motorcycle_expansion_v2']);
+        add_action('init', [__CLASS__, 'seed_motorcycle_guides_v1'], 49);
+        add_action('a3cp_seed_motorcycle_guides_v1', [__CLASS__, 'seed_motorcycle_guides_v1']);
     }
 
     public static function register_all(): void {
@@ -201,9 +205,9 @@ final class A3CP_Content_Types {
             self::meta($type, '_a3_price_min', 'number', [__CLASS__, 'sanitize_number']);
             self::meta($type, '_a3_price_max', 'number', [__CLASS__, 'sanitize_number']);
             self::meta($type, '_a3_currency', 'string', 'sanitize_text_field');
-            self::meta($type, '_a3_engine_cc', 'integer', 'absint');
-            self::meta($type, '_a3_power_hp', 'integer', 'absint');
-            self::meta($type, '_a3_torque_nm', 'integer', 'absint');
+            self::meta($type, '_a3_engine_cc', 'number', [__CLASS__, 'sanitize_number']);
+            self::meta($type, '_a3_power_hp', 'number', [__CLASS__, 'sanitize_number']);
+            self::meta($type, '_a3_torque_nm', 'number', [__CLASS__, 'sanitize_number']);
             self::meta($type, '_a3_transmission', 'string', 'sanitize_text_field');
             self::meta($type, '_a3_fuel', 'string', 'sanitize_text_field');
             self::meta($type, '_a3_drivetrain', 'string', 'sanitize_text_field');
@@ -212,6 +216,16 @@ final class A3CP_Content_Types {
             self::meta($type, '_a3_related_post_ids', 'string', [__CLASS__, 'sanitize_id_list']);
         }
         self::meta('a3_car', '_a3_seats', 'integer', 'absint');
+
+        self::meta('a3_motorcycle', '_a3_cooling', 'string', 'sanitize_text_field');
+        self::meta('a3_motorcycle', '_a3_front_brake', 'string', 'sanitize_text_field');
+        self::meta('a3_motorcycle', '_a3_rear_brake', 'string', 'sanitize_text_field');
+        self::meta('a3_motorcycle', '_a3_tyre_type', 'string', 'sanitize_text_field');
+        self::meta('a3_motorcycle', '_a3_tank_l', 'number', [__CLASS__, 'sanitize_number']);
+        self::meta('a3_motorcycle', '_a3_weight_kg', 'number', [__CLASS__, 'sanitize_number']);
+        self::meta('a3_motorcycle', '_a3_warranty', 'string', 'sanitize_text_field');
+        self::meta('a3_motorcycle', '_a3_use_case', 'string', 'sanitize_text_field');
+        self::meta('a3_motorcycle', '_a3_origin_country', 'string', 'sanitize_text_field');
 
         foreach (['a3_service_center', 'a3_showroom'] as $type) {
             self::meta($type, '_a3_phone', 'string', 'sanitize_text_field');
@@ -1046,6 +1060,287 @@ final class A3CP_Content_Types {
         }
 
         if ($ok) update_option('a3cp_showroom_custom_media_v2', 'done', false);
+    }
+
+    private static function motorcycle_asset(string $key, string $url, string $filename, string $alt): int {
+        $existing = get_posts([
+            'post_type' => 'attachment',
+            'post_status' => 'inherit',
+            'posts_per_page' => 1,
+            'fields' => 'ids',
+            'meta_key' => '_a3_asset_key',
+            'meta_value' => $key,
+        ]);
+        if ($existing) return (int) $existing[0];
+
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+        require_once ABSPATH . 'wp-admin/includes/media.php';
+        require_once ABSPATH . 'wp-admin/includes/image.php';
+
+        $tmp = download_url($url, 45);
+        if (is_wp_error($tmp)) return 0;
+
+        $file = ['name' => $filename, 'tmp_name' => $tmp];
+        $id = media_handle_sideload($file, 0, $alt);
+        if (is_wp_error($id)) {
+            @unlink($tmp);
+            return 0;
+        }
+
+        update_post_meta($id, '_wp_attachment_image_alt', $alt);
+        update_post_meta($id, '_a3_asset_key', $key);
+        return (int) $id;
+    }
+
+    public static function seed_motorcycle_expansion_v2(): void {
+        if ((string) get_option('a3cp_motorcycle_expansion_v2') === 'done') return;
+
+        $brands = [
+            'tvs'=>'TVS','bajaj'=>'Bajaj','honda'=>'Honda','yamaha'=>'Yamaha','suzuki'=>'Suzuki',
+            'kawasaki'=>'Kawasaki','ktm'=>'KTM','bmw-motorrad'=>'BMW Motorrad','ducati'=>'Ducati',
+            'triumph'=>'Triumph','harley-davidson'=>'Harley-Davidson','royal-enfield'=>'Royal Enfield',
+            'hero'=>'Hero','benelli'=>'Benelli','keeway'=>'Keeway','cfmoto'=>'CFMOTO','qjmotor'=>'QJMotor',
+            'zontes'=>'Zontes','voge'=>'Voge','lifan'=>'Lifan','loncin'=>'Loncin','haojue'=>'Haojue',
+            'dayun'=>'Dayun','sym'=>'SYM','kymco'=>'Kymco','piaggio'=>'Piaggio','vespa'=>'Vespa',
+            'aprilia'=>'Aprilia','peugeot-motocycles'=>'Peugeot Motocycles'
+        ];
+        foreach($brands as $slug=>$name){
+            if(!term_exists($slug,'a3_brand')) wp_insert_term($name,'a3_brand',['slug'=>$slug]);
+        }
+
+        $types = [
+            'commuter'=>'استخدام يومي',
+            'sport'=>'رياضي',
+            'scooter'=>'سكوتر',
+            'adventure'=>'Adventure',
+            'touring'=>'Touring',
+            'cruiser'=>'Cruiser',
+            'off-road'=>'Off-road',
+            'electric'=>'كهربائي',
+            'cub'=>'Cub / Underbone',
+        ];
+        foreach($types as $slug=>$name){
+            if(!term_exists($slug,'a3_motorcycle_type')) wp_insert_term($name,'a3_motorcycle_type',['slug'=>$slug]);
+        }
+
+        $items = [
+            [
+                'slug'=>'bajaj-pulsar-180-egypt',
+                'title'=>'Bajaj Pulsar 180 في مصر',
+                'brand'=>'bajaj','type'=>'sport','origin'=>'الهند',
+                'engine'=>178.06,'power'=>17.02,'torque'=>14.22,'trans'=>'يدوي 5 سرعات','fuel'=>'بنزين',
+                'cooling'=>'تبريد هواء','front'=>'قرص 260 مم','rear'=>'قرص 230 مم','tyres'=>'Tubeless',
+                'tank'=>15,'weight'=>147,'warranty'=>'راجع الوكيل أو الموزع وقت الشراء','use'=>'تنقل يومي بطابع رياضي',
+                'source'=>'https://www.bajajauto.com/ar-eg/bikes/pulsar-180',
+                'image'=>'https://cdn.bajajauto.com/ar-eg/-/media/globalbajajauto/common-media/product-detail-page-banners/latam/pulsar-180.webp',
+                'excerpt'=>'Bajaj Pulsar 180 بمحرك 178.06 سم³ وقوة 17.02 PS وعزم 14.22 نيوتن متر مع ناقل 5 سرعات وفرامل قرصية أمامية وخلفية.',
+                'content'=>'<h2>نظرة عامة على Bajaj Pulsar 180</h2><p>Pulsar 180 من الموديلات التي تعرضها Bajaj رسميًا للسوق المصري. تركيبتها تميل للاستخدام اليومي مع شكل رياضي، وتعتمد على محرك DTS-i أحادي الأسطوانة رباعي الأشواط ومبرد بالهواء.</p><h2>المحرك والأداء</h2><p>السعة الرسمية 178.06 سم³، والقوة القصوى 17.02 PS عند 8500 دورة/دقيقة، والعزم 14.22 نيوتن متر عند 6500 دورة/دقيقة. ناقل الحركة من 5 سرعات.</p><h2>الفرامل والإطارات</h2><p>الفرامل الأمامية قرص 260 مم والخلفية قرص 230 مم، والإطاران بدون أنبوب داخلي. ده يضعها أعلى من فئة الدراجات الاقتصادية ذات الطنابير البسيطة من ناحية تجهيزات الفرامل.</p><h2>الأبعاد والاستخدام</h2><p>الوزن الفارغ المعلن 147 كجم، والخلوص الأرضي 150 مم، وسعة خزان الوقود 15 لتر. قبل الشراء جرّب وضعية القيادة والوزن أثناء المناورة البطيئة، خصوصًا لو دي أول دراجة لك.</p><h2>قبل الشراء في مصر</h2><ul><li>تأكد من سنة الموديل والفئة الفعلية.</li><li>اسأل عن الضمان وشبكة الصيانة وقطع الاستهلاك.</li><li>راجع توافر تيل الفرامل والسلسلة والتروس والفلاتر قبل الحجز.</li><li>لا تعتمد على سعر قديم أو إعلان غير مؤرخ؛ السعر والتوافر يتغيران.</li></ul><p><small>المصدر المرجعي: Bajaj Auto Egypt. آخر مراجعة للبيانات: 4 أكتوبر 2026.</small></p>'
+            ],
+            [
+                'slug'=>'bajaj-boxer-150-hd-egypt',
+                'title'=>'Bajaj Boxer 150 HD في مصر',
+                'brand'=>'bajaj','type'=>'commuter','origin'=>'الهند',
+                'engine'=>144.8,'power'=>12,'torque'=>12.55,'trans'=>'يدوي 5 سرعات','fuel'=>'بنزين',
+                'cooling'=>'تبريد هواء','front'=>'طنبورة 130 مم','rear'=>'طنبورة 130 مم','tyres'=>'Tube type',
+                'tank'=>11,'weight'=>125,'warranty'=>'12 شهرًا أو 30,000 كم وفق صفحة Bajaj Egypt','use'=>'استخدام يومي ومسافات وتشغيل عملي',
+                'source'=>'https://www.bajajauto.com/ar-eg/bikes/boxer-150hd',
+                'image'=>'https://cdn.bajajauto.com/ar-eg/-/media/globalbajajauto/common-media/360/latam/boxer-150-hd/red/00.webp',
+                'excerpt'=>'Bajaj Boxer 150 HD بمحرك 144.8 سم³ وقدرة 12 PS وناقل 5 سرعات وخزان 11 لتر، موجه للاستخدام العملي اليومي.',
+                'content'=>'<h2>نظرة عامة على Bajaj Boxer 150 HD</h2><p>Boxer 150 HD واحدة من الدراجات التي تعرضها Bajaj رسميًا في مصر، وموقعها الطبيعي هو الاستخدام العملي اليومي والطرق التي تحتاج بساطة واعتمادية أكثر من التجهيزات الرياضية.</p><h2>المحرك وناقل الحركة</h2><p>المحرك 144.8 سم³، أحادي الأسطوانة رباعي الأشواط ومبرد بالهواء، بقوة 12 PS عند 7500 دورة/دقيقة وعزم 12.55 نيوتن متر عند 5000 دورة/دقيقة، مع ناقل من 5 سرعات.</p><h2>التعليق والراحة</h2><p>تعليق أمامي تلسكوبي وتعليق خلفي SNS، ومقعد طويل وواسع نسبيًا. الخلوص والأبعاد يجعلونها أقرب لفلسفة التشغيل العملي من الموتوسيكل الرياضي.</p><h2>الفرامل والإطارات</h2><p>الفرامل الأمامية والخلفية طنابير ميكانيكية 130 مم، والإطارات من النوع الأنبوبي. لو استخدامك سريع أو على طرق مفتوحة، خليك واعي إن تجهيز الفرامل مختلف عن دراجات بقرص أمامي أو ABS.</p><h2>التجهيزات والضمان</h2><p>صفحة Bajaj Egypt تذكر منفذ USB ومؤشر تروس، كما تذكر ضمان 12 شهرًا لمسافة 30,000 كم. راجع شروط الضمان المكتوبة وقت الشراء لأن الشروط الفعلية قد ترتبط بسياسة الوكيل والصيانة الدورية.</p><p><small>المصدر المرجعي: Bajaj Auto Egypt. آخر مراجعة للبيانات: 4 أكتوبر 2026.</small></p>'
+            ],
+        ];
+
+        $ok=true;
+        foreach($items as $item){
+            $post=get_page_by_path($item['slug'],OBJECT,'a3_motorcycle');
+            if(!$post instanceof WP_Post){
+                $id=wp_insert_post([
+                    'post_type'=>'a3_motorcycle','post_status'=>'publish','post_title'=>$item['title'],
+                    'post_name'=>$item['slug'],'post_excerpt'=>$item['excerpt'],'post_content'=>$item['content']
+                ],true);
+                if(is_wp_error($id)){ $ok=false; continue; }
+                $post=get_post($id);
+            }
+            $id=(int)$post->ID;
+            update_post_meta($id,'_a3_engine_cc',$item['engine']);
+            update_post_meta($id,'_a3_power_hp',$item['power']);
+            update_post_meta($id,'_a3_torque_nm',$item['torque']);
+            update_post_meta($id,'_a3_transmission',$item['trans']);
+            update_post_meta($id,'_a3_fuel',$item['fuel']);
+            update_post_meta($id,'_a3_cooling',$item['cooling']);
+            update_post_meta($id,'_a3_front_brake',$item['front']);
+            update_post_meta($id,'_a3_rear_brake',$item['rear']);
+            update_post_meta($id,'_a3_tyre_type',$item['tyres']);
+            update_post_meta($id,'_a3_tank_l',$item['tank']);
+            update_post_meta($id,'_a3_weight_kg',$item['weight']);
+            update_post_meta($id,'_a3_warranty',$item['warranty']);
+            update_post_meta($id,'_a3_use_case',$item['use']);
+            update_post_meta($id,'_a3_origin_country',$item['origin']);
+            update_post_meta($id,'_a3_source_url',$item['source']);
+            update_post_meta($id,'_a3_source_checked_at','2026-10-04');
+            wp_set_object_terms($id,$item['brand'],'a3_brand',false);
+            wp_set_object_terms($id,'egypt','a3_market',false);
+            wp_set_object_terms($id,$item['type'],'a3_motorcycle_type',false);
+
+            if(!has_post_thumbnail($id)){
+                $media=self::motorcycle_asset('moto-'.$item['slug'],$item['image'],$item['slug'].'.webp',$item['title']);
+                if($media) set_post_thumbnail($id,$media);
+            }
+        }
+
+        // Enrich the existing TVS entities with richer structured motorcycle fields.
+        $tvs=[
+            'tvs-apache-rtr-160-4v-egypt'=>['origin'=>'الهند','cooling'=>'تبريد بالزيت','tank'=>12,'use'=>'رياضي يومي'],
+            'tvs-raider-125-egypt'=>['origin'=>'الهند','cooling'=>'تبريد هواء','tank'=>10,'use'=>'تنقل يومي'],
+            'tvs-ntorq-125-re-egypt'=>['origin'=>'الهند','cooling'=>'تبريد هواء','tank'=>5,'front'=>'قرص 220 مم مع SBT','use'=>'سكوتر للمدينة'],
+        ];
+        foreach($tvs as $slug=>$meta){
+            $post=get_page_by_path($slug,OBJECT,'a3_motorcycle');
+            if(!$post instanceof WP_Post) continue;
+            update_post_meta($post->ID,'_a3_origin_country',$meta['origin']);
+            update_post_meta($post->ID,'_a3_cooling',$meta['cooling']);
+            update_post_meta($post->ID,'_a3_tank_l',$meta['tank']);
+            update_post_meta($post->ID,'_a3_use_case',$meta['use']);
+            if(!empty($meta['front'])) update_post_meta($post->ID,'_a3_front_brake',$meta['front']);
+        }
+
+        if($ok) update_option('a3cp_motorcycle_expansion_v2','done',false);
+    }
+
+    public static function seed_motorcycle_guides_v1(): void {
+        if ((string) get_option('a3cp_motorcycle_guides_v1') === 'done') return;
+
+        $term=term_exists('motorcycle-guide','category');
+        if(!$term){
+            $term=wp_insert_term('دليل الموتوسيكلات','category',[
+                'slug'=>'motorcycle-guide',
+                'description'=>'دليل شراء وصيانة ومقارنة الموتوسيكلات والسكوتر وقطع الغيار في مصر.'
+            ]);
+        }
+        if(is_wp_error($term)) return;
+        $cat_id=is_array($term)?(int)$term['term_id']:(int)$term;
+
+        $guides=[
+            [
+                'slug'=>'motorcycle-brands-egypt-complete-guide',
+                'title'=>'دليل ماركات الموتوسيكلات في مصر: الياباني والهندي والصيني والأوروبي',
+                'excerpt'=>'مرجع شامل لماركات الموتوسيكلات والسكوتر من Honda وYamaha وSuzuki وTVS وBajaj إلى CFMOTO وQJMotor وZontes وLifan وLoncin وغيرها.',
+                'content'=>'<h2>خريطة ماركات الموتوسيكلات</h2><p>سوق الموتوسيكلات لا يتوقف عند الياباني. فيه مدارس مختلفة: الياباني المعروف بالاعتمادية وانتشار الخبرة، الهندي الذي يركز غالبًا على التشغيل اليومي والقيمة، التايواني القوي في السكوتر، الأوروبي الذي يغطي الأداء والـTouring والـPremium، والصيني الذي أصبح فيه فرق ضخم بين مصنع يصنع دراجات اقتصادية بسيطة وعلامة تنافس في فئات متوسطة وكبيرة.</p><h2>الماركات اليابانية</h2><p><strong>Honda، Yamaha، Suzuki، Kawasaki</strong> هي الأسماء اليابانية الأساسية. قبل شراء أي موديل في مصر لا يكفي اسم العلامة؛ الأهم هو توافر الموديل نفسه وقطع صيانته ومصدره المحلي.</p><h2>الماركات الهندية</h2><p><strong>TVS، Bajaj، Hero، Royal Enfield</strong>. Bajaj تعرض رسميًا في مصر Pulsar 180 وBoxer 150 HD، وTVS لديها حضور رسمي بمنتجات مثل Apache RTR 160 4V وRaider 125 وNtorq 125 RE. الهندي مهم جدًا لمن يبحث عن تشغيل يومي وقطع استهلاك وتكلفة ملكية معقولة.</p><h2>الماركات التايوانية</h2><p><strong>SYM وKymco</strong> من أشهر الأسماء في عالم السكوتر. عند المقارنة ركّز على توفر السيور والرولات وقطع الـCVT والبلاستيك والفرامل، لأن السكوتر له نمط صيانة مختلف عن الموتوسيكل اليدوي.</p><h2>الماركات الأوروبية والأمريكية</h2><p><strong>BMW Motorrad، Ducati، Triumph، KTM، Aprilia، Piaggio، Vespa، Peugeot Motocycles، Harley-Davidson</strong>. هنا تكلفة الصيانة والقطع والتخصص الفني تصبح جزءًا من قرار الشراء، خصوصًا مع المحركات الأكبر والإلكترونيات وأنظمة التعليق والفرامل المتقدمة.</p><h2>الماركات الصينية الحديثة</h2><p><strong>CFMOTO، QJMotor، Zontes، Voge</strong> تمثل الجيل الصيني الأحدث الذي يركز على التصميم والتقنيات والفئات المتوسطة والكبيرة. CFMOTO تعرض عالميًا عائلات SR وNK وMT وCL، وQJMotor تملك تشكيلة واسعة من الرياضي والـNaked والـTouring.</p><h2>الماركات الصينية الاقتصادية</h2><p><strong>Lifan، Loncin، Haojue، Dayun</strong> وأسماء صينية أخرى تظهر بدرجات مختلفة حسب المستورد والسوق. Lifan مثلًا شركة صينية كبيرة لديها Street وCruiser وScooter وOff-road وE-bike، وLoncin لها تاريخ صناعي ومحركات ومنتجات مرتبطة بالسوق المصري. هنا لا تشتري على اسم البلد فقط: اسأل عن كود المحرك، مصدر القطع، الوكيل الفعلي، وتوافر قطع الكهرباء والفتيس والبلاستيك.</p><h2>Benelli وKeeway</h2><p>العلامتان لهما هوية تسويقية مختلفة، لكنهما اليوم ضمن منظومة صناعية مرتبطة بمجموعة Qianjiang الصينية. لذلك الحكم عليهما بكلمة «إيطالي» أو «صيني» فقط يضيّع الصورة. المهم الموديل والمصنع والمنصة والمحرك وخدمة ما بعد البيع.</p><h2>إزاي تستخدم الدليل؟</h2><ul><li>اختار السعة ونوع الاستخدام أولًا.</li><li>بعدها الماركة والموديل.</li><li>راجع توفر قطع الاستهلاك قبل الشراء.</li><li>اسأل عن مركز خدمة يفهم نفس المحرك أو المنصة.</li><li>لا تعتمد على سمعة بلد المنشأ وحدها.</li></ul><p>أعطال.كوم سيعامل كل موديل ككيان مستقل: مواصفات، أعطال، صيانة، قطع غيار ومصادر، بدل أحكام عامة من نوع الياباني لا يعطل والصيني كله واحد، لأن البشرية عاشت طويلًا بما يكفي مع هذا النوع من الحكم الكسول.</p>'
+            ],
+            [
+                'slug'=>'chinese-motorcycles-egypt-guide',
+                'title'=>'الموتوسيكلات الصيني في مصر: من CFMOTO وQJMotor لحد Lifan وLoncin',
+                'excerpt'=>'دليل عملي لفهم فروق الموتوسيكلات الصينية الحديثة والاقتصادية، وأهم ما يجب فحصه قبل الشراء وقطع الغيار والصيانة.',
+                'content'=>'<h2>الصيني مش فئة واحدة</h2><p>أكبر غلطة في سوق الموتوسيكلات إن كلمة «صيني» تتقال كأن كل المصانع بتنتج نفس الحاجة. في الصين شركات ضخمة لها R&D ومنتجات عالمية وفئات كبيرة، وفي نفس الوقت توجد دراجات اقتصادية بسيطة تُباع تحت أسماء تجارية مختلفة حسب المستورد.</p><h2>CFMOTO</h2><p>من أبرز العلامات الصينية الحديثة، ولديها عائلات SR الرياضية وNK الـNaked وMT الـAdventure وCL الكلاسيكية. الشركة نفسها تعرض منتجات من 125 سم³ وحتى فئات أكبر بكثير.</p><h2>QJMotor</h2><p>علامة تابعة لصانع كبير بدأ نشاطه منذ الثمانينيات، وله حضور عالمي واسع. مهم عند الشراء معرفة اسم الموديل العالمي وكود المحرك لأن الأسماء التجارية قد تختلف بين الأسواق.</p><h2>Zontes وVoge</h2><p>علامتان تستهدفان غالبًا شريحة أعلى من الصيني الاقتصادي التقليدي، مع اهتمام أكبر بالتجهيزات والإلكترونيات والمحركات المتوسطة. قرار الشراء هنا يجب أن يربط المواصفات بخدمة ما بعد البيع والقطع المحلية.</p><h2>Lifan وLoncin</h2><p>Lifan لديها خطوط Street وCruiser وScooter وOff-road وE-bike، بينما Loncin شركة صناعية كبيرة في المحركات والدراجات ولها تاريخ تعاون وتصنيع مرتبط بمصر. عند شراء موديل اقتصادي يحمل منصة أو محركًا من هذه المدارس، كود المحرك أهم من شكل الملصق على التانك.</p><h2>Haojue وDayun</h2><p>أسماء صينية معروفة في الدراجات العملية والـCommuter والسكوتر حسب السوق. لا تفترض توفر كل موديل عالميًا في مصر؛ وجود العلامة شيء وتوفر الموديل والدعم المحلي شيء آخر.</p><h2>قبل شراء موتوسيكل صيني</h2><ul><li>صور رقم الشاسيه وكود المحرك.</li><li>اسأل عن تيل الفرامل والسلسلة والتروس والبوجيه والفلاتر.</li><li>اعرف هل الكهرباء والـECU والحساسات لها بدائل أم لا.</li><li>تحقق من وكيل أو مستورد حالي وليس اسمًا قديمًا على إعلان.</li><li>راجع سوق المستعمل لأن سهولة إعادة البيع جزء من تكلفة الملكية.</li></ul><h2>متى يكون الصيني منطقيًا؟</h2><p>عندما يعطيك تجهيزًا أو سعة أو سعرًا مناسبًا وتكون القطع والخدمة متاحة للموديل نفسه. ومتى يكون صفقة سيئة؟ عندما تشتري مواصفات على الورق ولا تستطيع العثور على قطعة استهلاك بعد أول عطل بسيط.</p>'
+            ],
+            [
+                'slug'=>'japanese-vs-indian-vs-chinese-motorcycle',
+                'title'=>'ياباني ولا هندي ولا صيني؟ اختار الموتوسيكل على الاستخدام مش الجنسية',
+                'excerpt'=>'مقارنة عملية بين مدارس الموتوسيكلات اليابانية والهندية والصينية من حيث الاستخدام والصيانة والقطع وإعادة البيع.',
+                'content'=>'<h2>الجنسية لوحدها مش مواصفة</h2><p>بلد المنشأ تعطيك خلفية عن الصناعة، لكنها لا تقول لك وحدها إن موديلًا معينًا مناسب لك. فيه صيني حديث بتجهيزات قوية، وهندي عملي جدًا، وياباني قديم حالته سيئة يخسّرك أكثر من الاثنين.</p><h2>الياباني</h2><p>يمتاز غالبًا بتاريخ طويل في المحركات والشاسيه وانتشار خبرة الصيانة، لكن السعر وقطع بعض الموديلات المستوردة قد يكونان مرتفعين.</p><h2>الهندي</h2><p>TVS وBajaj وHero وRoyal Enfield مدارس مختلفة، لكن السوق الهندي بطبيعته دفع الشركات للاهتمام بالاستخدام اليومي والتحمل وكفاءة التشغيل.</p><h2>الصيني</h2><p>الفارق بين CFMOTO أو QJMotor وبين دراجة اقتصادية مجهولة المصدر كبير جدًا. افصل بين الشركة والموديل والمستورد، ولا تشتري على جملة «كله صيني» أو «الصيني بقى زي الياباني» لأنها جمل مريحة وكسولة، والسوق مش بيدفع فاتورتك بعدين.</p><h2>المقارنة الصح</h2><p>قارن قطع الغيار، مركز الخدمة، الفرامل، الإطارات، وزن الدراجة، استهلاكك اليومي، إعادة البيع، وسجل الموديل نفسه. النتيجة أحيانًا تكون ياباني، وأحيانًا هندي، وأحيانًا صيني محترم.</p>'
+            ],
+            [
+                'slug'=>'scooter-vs-motorcycle-egypt',
+                'title'=>'سكوتر ولا موتوسيكل؟ الفرق في الاستخدام والصيانة والتكلفة',
+                'excerpt'=>'مقارنة بين السكوتر والموتوسيكل اليدوي في المدينة والدليفري والمسافات والصيانة والـCVT والراحة.',
+                'content'=>'<h2>السكوتر مش موتوسيكل من غير غيارات وخلاص</h2><p>السكوتر له تصميم واستخدام وصيانة مختلفة، خصوصًا مع ناقل CVT والسيور والرولات ومساحات التخزين ووضعية الجلوس.</p><h2>السكوتر للمدينة</h2><p>مريح في الزحام، سهل في التوقف والتحرك، وغالبًا عملي في التخزين. لكنه يحتاج اهتمامًا بصيانة الـCVT والسيور والرولات وعدم تجاهل صوت النقل.</p><h2>الموتوسيكل اليدوي</h2><p>يعطيك تحكمًا مباشرًا في الغيارات ويناسب طيفًا واسعًا من السعات والاستخدامات، من الـCommuter وحتى Adventure وSport.</p><h2>الدليفري</h2><p>الاختيار يعتمد على الحمولة والمسافات وسهولة الصيانة واستهلاك الإطارات والفرامل، مش على شكل الدراجة وحده.</p><h2>قبل القرار</h2><p>جرّب وضعية الجلوس، سهولة المناورة، مساحة التخزين، تكلفة القطع الدورية، وخبرة الورش المتاحة للموديل.</p>'
+            ],
+            [
+                'slug'=>'motorcycle-engine-sizes-125-150-160-200-250',
+                'title'=>'125 ولا 150 ولا 160 ولا 200 ولا 250 سي سي؟ افهم السعة قبل الشراء',
+                'excerpt'=>'شرح عملي لفروق سعات الموتوسيكلات الشائعة وتأثيرها على الاستخدام والوزن والحرارة والسرعات والصيانة.',
+                'content'=>'<h2>السي سي مش ترتيب جودة</h2><p>السعة الأكبر لا تعني أن الدراجة أحسن لكل شخص. محرك 125 أو 150 قد يكون أنسب للزحام والتشغيل اليومي، بينما 200 أو 250 يديك مرونة أكبر خارج المدينة لكنه قد يأتي بوزن وتكلفة أعلى.</p><h2>125–150 سي سي</h2><p>فئة عملية للمدينة والتنقل اليومي، وتنتشر فيها دراجات وسكوترات كثيرة. ركّز على العزم عند السرعات المنخفضة وتوفر القطع أكثر من رقم القوة وحده.</p><h2>160–180 سي سي</h2><p>منطقة وسط تجمع الاستخدام اليومي مع أداء أعلى نسبيًا، مثل TVS Apache RTR 160 4V وBajaj Pulsar 180.</p><h2>200–250 سي سي</h2><p>قد تناسب الطرق المفتوحة والمسافات أكثر حسب التصميم، لكن معها يزيد تأثير جودة الفرامل والإطارات والتبريد وخبرة الصيانة.</p><h2>اختار على وزنك وطريقك</h2><p>راكب خفيف داخل المدينة احتياجه مختلف عن شخص يسافر بطريق سريع أو يحمل راكبًا ثانيًا يوميًا. السعة جزء من المعادلة، مش المعادلة كلها.</p>'
+            ],
+            [
+                'slug'=>'used-motorcycle-buying-checklist-egypt',
+                'title'=>'شراء موتوسيكل مستعمل: Checklist قبل ما تدفع جنيه',
+                'excerpt'=>'قائمة فحص للموتوسيكل المستعمل تشمل الشاسيه والمحرك والدخان والتبريد والكهرباء والفرامل والإطارات والسلسلة والأوراق.',
+                'content'=>'<h2>ابدأ بالأوراق والهوية</h2><p>طابق رقم الشاسيه والمحرك مع المستندات قبل ما تدخل في قصة صوت الموتور. أي اختلاف هنا أهم من لمعان الخزان.</p><h2>افحص التشغيل بارد</h2><p>اطلب تشغيل الدراجة وهي باردة إن أمكن. لاحظ سهولة التشغيل والدخان والأصوات غير الطبيعية وثبات السلانسية بعد التسخين.</p><h2>السلسلة والتروس</h2><p>افحص الشد والتآكل والأسنان. مجموعة مهملة تعطيك فكرة عن نمط صيانة المالك حتى قبل فتح المحرك.</p><h2>الفرامل والإطارات</h2><p>راجع سمك التيل أو حالة الطنابير، حالة الأقراص، تشققات الإطارات وتاريخها، وأي تسريب من المساعدين.</p><h2>الكهرباء</h2><p>جرب الأنوار والإشارات والمارش والعداد والشحن، وافحص أي توصيلات عشوائية أو أسلاك مقطوعة ومجمعة.</p><h2>تجربة القيادة</h2><p>اسمع الفتيس، جرّب الفرامل، راقب استقامة الدركسيون، ولاحظ إذا كانت الدراجة تسحب ناحية معينة. لو مش فاهم في الموديل خده لفني يعرفه بدل ما تدفع رسوم دورة تعليمية بعد الشراء.</p>'
+            ],
+            [
+                'slug'=>'motorcycle-maintenance-schedule-guide',
+                'title'=>'جدول صيانة الموتوسيكل: إيه يتراجع كل فترة؟',
+                'excerpt'=>'مرجع عملي لتنظيم زيت المحرك والسلسلة والفرامل والإطارات والفلاتر والبوجيه والبطارية والتبريد بدون افتراض أرقام موحدة لكل موديل.',
+                'content'=>'<h2>مفيش جدول واحد لكل الموتوسيكلات</h2><p>الفترات الدقيقة لازم تأتي من دليل المالك للموديل. لكن فيه مجموعات بنود لازم تتكرر في أي خطة صيانة منظمة.</p><h2>زيت المحرك</h2><p>استخدم اللزوجة والمواصفة التي يحددها المصنع وراقب المستوى والتسريب. لا تنقل فترة تغيير من موديل لموديل لأن سعة الزيت وطبيعة المحرك والاستخدام تختلف.</p><h2>السلسلة والتروس</h2><p>تنظيف وتشحيم وضبط الشد وفحص التآكل بشكل دوري، خصوصًا مع المطر والتراب والاستخدام اليومي.</p><h2>الفرامل</h2><p>راجع التيل أو الأحذية، سائل الفرامل في الأنظمة الهيدروليكية، حالة الخراطيم والأقراص.</p><h2>الإطارات</h2><p>ضغط صحيح وحالة نقشة وتشققات وعمر الإطار. الإطار الرخيص أو القديم يفسد أفضل فرامل في الدنيا، لأن الفيزياء ما بتحترمش الميزانية.</p><h2>التبريد والفلتر والبوجيه</h2><p>حسب نوع المحرك: تبريد هواء أو زيت أو سائل. راجع الفلاتر والبوجيه وسائل التبريد حسب دليل الموديل.</p><h2>البطارية والشحن</h2><p>ضعف المارش أو الإضاءة قد يكون بطارية أو شحنًا أو توصيلات، فلا تبدأ بشراء بطارية كل مرة.</p>'
+            ],
+            [
+                'slug'=>'motorcycle-genuine-vs-aftermarket-parts',
+                'title'=>'قطع غيار الموتوسيكل: أصلي ولا Aftermarket ولا تجاري؟',
+                'excerpt'=>'كيف تفرّق بين OEM وAftermarket والبدائل التجارية، ومتى تكون القطعة الأصلية مهمة ومتى ينفع البديل المحترم.',
+                'content'=>'<h2>مش كل بديل وحش ومش كل علبة عليها شعار مضمونة</h2><p>OEM تعني قطعة بمواصفة الصانع، بينما Aftermarket قد يكون من شركة ممتازة أو اقتصادية. المشكلة الحقيقية في القطعة مجهولة المصدر أو غير المطابقة.</p><h2>قطع ما ينفعش تستهين بها</h2><p>الفرامل والإطارات وأجزاء التوجيه وبعض مكونات المحرك والكهرباء الحساسة تستحق مصدرًا معروفًا ومواصفة واضحة.</p><h2>رقم القطعة أهم من شكلها</h2><p>في موديلات كثيرة القطعة تشبه أخرى لكن المقاس أو الفيشة أو المعايرة مختلفة. استخدم Part Number أو كود واضح للموديل وسنة الصنع.</p><h2>الصيني تحديدًا</h2><p>بعض المحركات الصينية تشترك في عائلات وأكواد، وده قد يسهل البدائل، لكن ما ينفعش تفترض التوافق لأن الموتور شكله واحد. كود المحرك والمقاسات هما الفيصل.</p>'
+            ],
+            [
+                'slug'=>'delivery-motorcycle-buying-guide',
+                'title'=>'اختيار موتوسيكل للدليفري: احسب التشغيل قبل سعر الشراء',
+                'excerpt'=>'دليل اختيار موتوسيكل أو سكوتر للدليفري بناءً على استهلاك القطع والراحة والتحميل والتوقف المتكرر والصيانة.',
+                'content'=>'<h2>الدليفري استخدام قاسي</h2><p>عدد ساعات التشغيل والتوقف والانطلاق والحمولة يخلي المعيار مختلف عن شخص يركب 20 كم في اليوم.</p><h2>ركز على قطع الاستهلاك</h2><p>تيل الفرامل، الإطارات، السلسلة والتروس، الكلتش أو الـCVT، الزيت والفلاتر. سعر شراء أقل مع قطع نادرة ممكن يقلب أغلى اختيار بعد شهور.</p><h2>وضعية القيادة</h2><p>جرب المقعد والدركسيون ومساحة القدمين وحمل الصندوق. ألم الظهر واليد بعد خمس ساعات مش بند مكتوب في الكتالوج لكنه حقيقي جدًا.</p><h2>السعة</h2><p>السعة الصغيرة قد تكون منطقية داخل المدينة، لكن الحمولة والطريق والسرعات المطلوبة قد تحتاج عزمًا أكبر. اختار سيناريو عملك لا رأي صاحبك.</p>'
+            ],
+            [
+                'slug'=>'fuel-injection-vs-carburetor-motorcycle',
+                'title'=>'حقن إلكتروني ولا كربراتير في الموتوسيكل؟',
+                'excerpt'=>'الفرق بين EFI والكربراتير في التشغيل والصيانة والحساسات واستهلاك الوقود وسهولة الإصلاح.',
+                'content'=>'<h2>الكربراتير أبسط ميكانيكيًا</h2><p>يعتمد على دوائر وقود ميكانيكية وضبط، ويمكن لفنيين كثيرين التعامل معه. لكنه يتأثر بالضبط والاتساخ والارتفاع والحرارة أكثر.</p><h2>EFI أدق في التحكم</h2><p>الحقن الإلكتروني يستخدم حساسات وECU للتحكم في الوقود، وغالبًا يعطي تشغيلًا أكثر ثباتًا وانبعاثات وتحكمًا أفضل، لكنه يضيف مضخة وحساسات ووحدة تحكم يجب تشخيصها بدل التخمين.</p><h2>مين أحسن؟</h2><p>الموديل وتنفيذ النظام وخدمة ما بعد البيع أهم من اسم التقنية. EFI سيئ الصيانة لا يتحول فجأة إلى سحر، وكربراتير مضبوط ممكن يخدم سنين.</p>'
+            ],
+            [
+                'slug'=>'abs-cbs-disc-drum-motorcycle-brakes',
+                'title'=>'ABS وCBS وديسك وطنبورة: افهم فرامل الموتوسيكل قبل الشراء',
+                'excerpt'=>'شرح مبسط لأنظمة فرامل الموتوسيكلات والسكوتر والفرق بين ABS وCBS والقرص والطنبورة وما الذي تبحث عنه في المواصفات.',
+                'content'=>'<h2>القرص والطنبورة نوع فرامل، ABS وCBS أنظمة مساعدة</h2><p>الديسك أو القرص يختلف عن الطنبورة في التصميم والتبريد والاستجابة، بينما ABS يمنع قفل العجلة في ظروف معينة، وCBS يوزع جزءًا من قوة الفرملة بين العجلتين في أنظمة معينة.</p><h2>ABS</h2><p>ميزة أمان مهمة خصوصًا على الأسطح الزلقة والفرملة القوية، لكن وجوده لا يعوض إطارًا سيئًا أو مسافة أمان معدومة.</p><h2>CBS</h2><p>شائع في بعض السكوترات والدراجات الصغيرة ويساعد على توزيع الفرملة، لكنه ليس نفس وظيفة ABS.</p><h2>الطنبورة</h2><p>أبسط وأقل تكلفة في تطبيقات كثيرة، لكنها مختلفة في تبديد الحرارة والإحساس مقارنة بالقرص.</p><h2>قبل الشراء</h2><p>اعرف بالضبط تجهيز الفئة التي ستشتريها، لأن نفس الموديل قد يختلف بين سوق وآخر أو بين فئة وأخرى.</p>'
+            ],
+            [
+                'slug'=>'new-motorcycle-delivery-checklist',
+                'title'=>'Checklist استلام موتوسيكل زيرو من المعرض',
+                'excerpt'=>'قائمة استلام موتوسيكل جديد: الشاسيه، المحرك، العدادات، الفرامل، الإطارات، السوائل، المفاتيح والمستندات.',
+                'content'=>'<h2>طابق الأرقام أولًا</h2><p>رقم الشاسيه ورقم المحرك والموديل واللون وسنة الصنع يجب أن تتطابق مع المستندات.</p><h2>افحص قبل التشغيل</h2><p>راجع الدهان والبلاستيك والمرايات والجنوط والإطارات وأي خدوش نقل أو تخزين.</p><h2>شغل كل شيء</h2><p>المارش والأنوار والإشارات والعداد والكلاكس والـABS أو لمبات التحذير إن وجدت.</p><h2>الفرامل والسوائل</h2><p>تأكد من مستوى السوائل الظاهر وعدم وجود تسريب، وجرب ضغط الفرامل قبل التحرك.</p><h2>المفاتيح والكتيبات</h2><p>استلم المفتاح الاحتياطي ودليل المالك وكتيب الضمان وأي عدة أو ملحقات تأتي مع الموديل.</p><h2>قبل ما تمشي</h2><p>صوّر العداد وحالة الدراجة وأرقامها، واسأل عن أول صيانة وشروط الضمان كتابةً.</p>'
+            ],
+            [
+                'slug'=>'motorcycle-tyres-guide-egypt',
+                'title'=>'إطارات الموتوسيكل: المقاس والضغط والعمر أهم من الاسم على الجنب',
+                'excerpt'=>'دليل لفهم مقاسات إطارات الموتوسيكل والـTubeless والأنبوبي والضغط والتشققات وتاريخ التصنيع.',
+                'content'=>'<h2>المقاس جزء من تصميم الدراجة</h2><p>لا تغير عرض أو ارتفاع الإطار عشوائيًا لمجرد شكل أعرض. المقاس يؤثر على المناورة والارتفاع وقراءة السرعة والخلوص.</p><h2>Tubeless ولا Tube</h2><p>كل نظام له جنط وتصميم مناسب. لا تفترض إمكانية التحويل من غير مراجعة فنية صحيحة.</p><h2>الضغط</h2><p>اتبع ضغط المصنع حسب الحمولة. الضغط القليل أو الزائد يغير التماسك والتآكل والحرارة.</p><h2>العمر والحالة</h2><p>راجع التشققات والتصلب والتآكل غير المنتظم وتاريخ التصنيع. النقشة وحدها لا تقول إن الإطار حالته ممتازة.</p>'
+            ],
+            [
+                'slug'=>'motorcycle-oil-guide',
+                'title'=>'زيت الموتوسيكل: اللزوجة وJASO أهم من حكاية الزيت التقيل والخفيف',
+                'excerpt'=>'كيف تختار زيت الموتوسيكل من دليل المالك وتفهم اللزوجة وJASO والكلتش المبلل ومواعيد الفحص.',
+                'content'=>'<h2>ابدأ من دليل المالك</h2><p>اللزوجة والمواصفة وسعة الزيت تختلف بين المحركات، لذلك مفيش رقم يصلح لكل الموتوسيكلات.</p><h2>JASO والكلتش</h2><p>كثير من الموتوسيكلات اليدوية تستخدم زيتًا مشتركًا للمحرك والفتيس مع كلتش مبلل، وهنا مواصفة الزيت مهمة حتى لا تؤثر الإضافات على الكلتش.</p><h2>راقب المستوى</h2><p>نقص الزيت أخطر من اختيار ماركة أقل شهرة. افحص بالطريقة التي يحددها المصنع وعلى سطح مستوٍ.</p><h2>الاستخدام القاسي</h2><p>الحرارة والزحام والتشغيل الطويل قد تجعل ظروفك مختلفة عن الاستخدام المثالي. اتبع جدول المصنع وحدود الاستخدام الشاق إن كانت مذكورة بدل اختراع فترة تغيير من عندنا.</p>'
+            ],
+        ];
+
+        $ok=true;
+        foreach($guides as $guide){
+            $existing=get_page_by_path($guide['slug'],OBJECT,'post');
+            if($existing instanceof WP_Post) continue;
+            $id=wp_insert_post([
+                'post_type'=>'post','post_status'=>'publish','post_title'=>$guide['title'],
+                'post_name'=>$guide['slug'],'post_excerpt'=>$guide['excerpt'],
+                'post_content'=>$guide['content'],'post_category'=>[$cat_id]
+            ],true);
+            if(is_wp_error($id)){ $ok=false; continue; }
+            update_post_meta($id,'_yoast_wpseo_title',$guide['title'].' | أعطال.كوم');
+            update_post_meta($id,'_yoast_wpseo_metadesc',$guide['excerpt']);
+            update_post_meta($id,'_a3_motorcycle_guide','1');
+        }
+
+        // Reuse genuine motorcycle entity imagery for guide cards until each guide receives bespoke art.
+        $thumbs=get_posts([
+            'post_type'=>'a3_motorcycle','post_status'=>'publish','posts_per_page'=>8,
+            'fields'=>'ids','meta_query'=>[['key'=>'_thumbnail_id','compare'=>'EXISTS']]
+        ]);
+        if($thumbs){
+            $posts=get_posts(['post_type'=>'post','post_status'=>'publish','posts_per_page'=>30,'category'=>$cat_id]);
+            $i=0;
+            foreach($posts as $post){
+                if(!has_post_thumbnail($post->ID)){
+                    $src_id=$thumbs[$i % count($thumbs)];
+                    $media=(int)get_post_thumbnail_id($src_id);
+                    if($media) set_post_thumbnail($post->ID,$media);
+                    $i++;
+                }
+            }
+        }
+
+        if($ok) update_option('a3cp_motorcycle_guides_v1','done',false);
     }
 
     public static function robots(array $robots): array {
