@@ -1,6 +1,6 @@
 <?php
 if (!defined('ABSPATH')) exit;
-define('A3G_VERSION','1.7.2');
+define('A3G_VERSION','1.7.3');
 
 function a3g_setup(){
   add_theme_support('title-tag');
@@ -24,7 +24,24 @@ function a3g_cat_link($id){$u=get_category_link((int)$id);return is_wp_error($u)
 function a3g_search($q=''){return add_query_arg('s',$q,home_url('/'));}
 function a3g_query($args=[]){return new WP_Query(wp_parse_args($args,['post_type'=>'post','post_status'=>'publish','ignore_sticky_posts'=>true]));}
 function a3g_primary_cat($id=0){$id=$id?:get_the_ID();$c=get_the_category($id);return $c?($c[0]??null):null;}
-function a3g_excerpt($id=0,$words=22){$id=$id?:get_the_ID();$x=get_the_excerpt($id);if(!$x)$x=wp_strip_all_tags((string)get_post_field('post_content',$id));return wp_trim_words($x,$words);}
+function a3g_excerpt($id=0,$words=22){
+  $id=$id?:get_the_ID();
+  $manual=trim((string)get_post_field('post_excerpt',$id));
+  if($manual!=='') return wp_trim_words(wp_strip_all_tags($manual),$words);
+
+  $x=(string)get_post_field('post_content',$id);
+  $x=preg_replace('#<script\b[^>]*>.*?</script>#isu',' ',$x);
+  $x=preg_replace('#<style\b[^>]*>.*?</style>#isu',' ',$x);
+  $x=preg_replace('#<!--.*?-->#s',' ',$x);
+  $x=strip_shortcodes($x);
+  $x=wp_strip_all_tags($x,true);
+  $x=html_entity_decode($x,ENT_QUOTES|ENT_HTML5,'UTF-8');
+  $x=preg_replace('~https?://\S+~u',' ',$x);
+  $x=preg_replace('/\b(?:@context|@type|schema|sameAs)\b\s*[:=]\s*[^\s]+/iu',' ',$x);
+  $x=preg_replace('/^(?:المراجع الفني|المصدر المرجعي|المصدر|اقرأ أيضًا|رابط الموضوع)\s*[:：\-–—]?\s*/u','',$x);
+  $x=preg_replace('/\s+/u',' ',trim($x));
+  return wp_trim_words($x,$words);
+}
 function a3g_read_time($id=0){$id=$id?:get_the_ID();$t=wp_strip_all_tags((string)get_post_field('post_content',$id));$w=preg_split('/\s+/u',trim($t));return max(1,(int)ceil(count(array_filter((array)$w))/220));}
 function a3g_is_diagnostic($id=0){$id=$id?:get_the_ID();return has_category([2,8,9,10,11,12,13,14,15,18,298],$id);}
 
@@ -46,6 +63,11 @@ function a3g_icon($name){
     'calendar'=>'<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M7 3v4M17 3v4M3 10h18"></path></svg>',
     'oil'=>'<svg viewBox="0 0 24 24"><path d="M12 3s6 7 6 12a6 6 0 1 1-12 0c0-5 6-12 6-12Z"></path></svg>',
     'filter'=>'<svg viewBox="0 0 24 24"><path d="M4 4h16l-6 7v7l-4 2v-9L4 4Z"></path></svg>',
+    'motorcycle'=>'<svg viewBox="0 0 24 24"><circle cx="5.5" cy="17.5" r="3.5"></circle><circle cx="18.5" cy="17.5" r="3.5"></circle><path d="M9 17.5h5l-3-6H8l-2.5 6"></path><path d="M13 11.5h3l2.5 6"></path><path d="M15 8h3"></path></svg>',
+    'warning'=>'<svg viewBox="0 0 24 24"><path d="M12 3 2.8 20h18.4L12 3Z"></path><path d="M12 9v5"></path><path d="M12 17h.01"></path></svg>',
+    'brain'=>'<svg viewBox="0 0 24 24"><path d="M9 4a3 3 0 0 0-3 3v1a3 3 0 0 0-2 3c0 1.3.8 2.5 2 3a3.5 3.5 0 0 0 3.5 4H12V6a3 3 0 0 0-3-2Z"></path><path d="M15 4a3 3 0 0 1 3 3v1a3 3 0 0 1 2 3c0 1.3-.8 2.5-2 3a3.5 3.5 0 0 1-3.5 4H12V6a3 3 0 0 1 3-2Z"></path><path d="M8 10h4M12 14h4"></path></svg>',
+    'store'=>'<svg viewBox="0 0 24 24"><path d="M4 10v10h16V10"></path><path d="M3 10 5 4h14l2 6"></path><path d="M3 10c0 1.1.9 2 2 2s2-.9 2-2c0 1.1.9 2 2 2s2-.9 2-2c0 1.1.9 2 2 2s2-.9 2-2c0 1.1.9 2 2 2s2-.9 2-2c0 1.1.9 2 2 2s2-.9 2-2"></path></svg>',
+    'tag'=>'<svg viewBox="0 0 24 24"><path d="M3 12V5h7l10 10-7 7L3 12Z"></path><circle cx="7.5" cy="8.5" r="1.2"></circle></svg>',
     'menu'=>'<svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>'
   ];
   return '<span class="g-icon" aria-hidden="true">'.($icons[$name]??$icons['car']).'</span>';
@@ -145,13 +167,13 @@ function a3g_legacy_section($category_ids,$title,$subtitle='',$limit=12,$exclude
   ?>
   <section class="g-legacy-bridge">
     <div class="g-section-head">
-      <div><span>من مكتبة أعطال الحالية</span><h2><?php echo esc_html($title); ?></h2><?php if($subtitle): ?><p><?php echo esc_html($subtitle); ?></p><?php endif; ?></div>
-      <div class="g-legacy-count"><?php echo esc_html(number_format_i18n($count)); ?> محتوى موجود بالفعل</div>
+      <div><span>من مكتبة أعطال</span><h2><?php echo esc_html($title); ?></h2><?php if($subtitle): ?><p><?php echo esc_html($subtitle); ?></p><?php endif; ?></div>
+      <div class="g-legacy-count"><?php echo esc_html(number_format_i18n($count)); ?> دليل ومقال متاح</div>
     </div>
     <div class="g-news-grid g-legacy-grid">
       <?php while($q->have_posts()):$q->the_post();a3g_card(get_the_ID(),'g-legacy-card');endwhile;wp_reset_postdata(); ?>
     </div>
-    <div class="g-legacy-more"><a href="<?php echo esc_url(a3g_cat_link($link_category)); ?>">عرض كل المحتوى القديم المرتبط ←</a></div>
+    <div class="g-legacy-more"><a href="<?php echo esc_url(a3g_cat_link($link_category)); ?>">عرض كل الأدلة والمقالات ←</a></div>
   </section>
   <?php
   return true;
