@@ -224,3 +224,28 @@ add_filter('document_title_parts',function($parts){
   if($seo)$parts['title']='معارض السيارات في مصر';
   return $parts;
 },90);
+
+
+function a3g_showroom_social_image($image=''){
+  if(is_singular('a3_showroom') && has_post_thumbnail()){
+    $featured=get_the_post_thumbnail_url(get_queried_object_id(),'full');
+    if($featured) return $featured;
+  }
+  if(is_post_type_archive('a3_showroom')){
+    $ids=get_posts([
+      'post_type'=>'attachment',
+      'post_status'=>'inherit',
+      'posts_per_page'=>1,
+      'fields'=>'ids',
+      'meta_key'=>'_a3_asset_key',
+      'meta_value'=>'showroom-official-exterior-v2',
+    ]);
+    if($ids){
+      $src=wp_get_attachment_image_url((int)$ids[0],'full');
+      if($src) return $src;
+    }
+  }
+  return $image;
+}
+add_filter('wpseo_opengraph_image','a3g_showroom_social_image',99);
+add_filter('wpseo_twitter_image','a3g_showroom_social_image',99);
