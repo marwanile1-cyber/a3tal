@@ -3,7 +3,7 @@ Theme Name: A3tal Global
 Theme URI: https://a3tal.com/
 Author: A3tal.com
 Description: Premium RTL automotive platform theme for A3tal.com.
-Version: 1.5.1
+Version: 1.6.0
 Requires at least: 6.4
 Requires PHP: 8.0
 Text Domain: a3tal-global
@@ -826,4 +826,38 @@ html,body{max-width:100%;overflow-x:hidden}
   .g-showroom-guide-card .g-card-media{height:100%;aspect-ratio:auto}
   .g-showroom-guide-card .g-card-body{padding:10px}
   .g-showroom-guide-card .g-card-body p{display:none}
+}
+
+
+/* =========================================================
+   A3tal Global 1.6 — Live Showroom Directory
+   ========================================================= */
+.g-live-data-note{display:flex;align-items:flex-start;gap:10px;margin:14px 0 18px;padding:12px 14px;border-radius:12px;background:#eef8f3;border:1px solid #cfe9dc}
+.g-live-data-note b{flex:0 0 auto;font-size:9px;color:#11764b}
+.g-live-data-note p{margin:0;font-size:9px;color:#51675d}
+.g-showroom-services{margin-top:16px}
+.g-service-chip-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.g-service-chip-grid span{display:block;padding:10px 12px;border-radius:10px;background:#f6f8fa;border:1px solid #e3e8ed;font-size:9px;font-weight:800;color:#2d4256}
+.g-showroom-map{margin-top:16px}
+.g-showroom-map .g-section-head>a{font-size:8px;font-weight:900;color:#176ed7}
+.g-map-embed{height:360px;border-radius:14px;overflow:hidden;background:#e9eef3;border:1px solid #dce3e9}
+.g-map-embed iframe{width:100%;height:100%;border:0}
+.g-map-address{margin:9px 0 0;color:#71808e;font-size:9px}
+.g-showroom-staff{margin-top:16px}
+.g-staff-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.g-staff-list>div{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;background:#f7f9fb;border:1px solid #e2e7ec}
+.g-staff-list strong{font-size:9px}
+.g-staff-source{display:inline-flex;margin-top:9px;font-size:8px;font-weight:900;color:#176ed7}
+.g-directory-actions{flex-wrap:wrap}
+.g-directory-actions a{display:inline-flex;align-items:center;justify-content:center}
+@media(max-width:700px){
+  .g-live-data-note{flex-direction:column}
+  .g-service-chip-grid,.g-staff-list{grid-template-columns:1fr}
+  .g-map-embed{height:280px}
+  .g-directory-actions{display:grid;grid-template-columns:1fr 1fr;width:100%}
+  .g-directory-actions a{min-height:42px}
+}
+@media(max-width:430px){
+  .g-directory-actions{grid-template-columns:1fr}
+  .g-map-embed{height:235px}
 }
