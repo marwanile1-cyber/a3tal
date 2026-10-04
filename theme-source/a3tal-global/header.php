@@ -35,14 +35,21 @@ wp_reset_postdata();
     </div>
   </div>
   <?php if($g_header_ticker_items): ?>
-  <div class="g-header-ticker" aria-label="أحدث أخبار ومقالات أعطال.كوم">
-    <div class="g-wrap g-header-ticker-row">
-      <span class="g-ticker-label"><i></i>الأحدث</span>
-      <div class="g-ticker-window">
-        <div class="g-ticker-track">
-          <?php foreach(array_merge($g_header_ticker_items,$g_header_ticker_items) as $item): ?>
-            <a href="<?php echo esc_url($item['url']); ?>"><span class="g-ticker-dot"></span><?php echo esc_html($item['title']); ?></a>
-          <?php endforeach; ?>
+  <div class="g-newsbar" aria-label="آخر أخبار ومقالات أعطال.كوم">
+    <div class="g-wrap g-newsbar-row">
+      <span class="g-newsbar-label"><i></i>آخر الأخبار</span>
+      <div class="g-newsbar-viewport" data-a3tal-news-ticker>
+        <div class="g-newsbar-track">
+          <div class="g-newsbar-group">
+            <?php foreach($g_header_ticker_items as $item): ?>
+              <a href="<?php echo esc_url($item['url']); ?>"><b></b><?php echo esc_html($item['title']); ?></a>
+            <?php endforeach; ?>
+          </div>
+          <div class="g-newsbar-group" aria-hidden="true">
+            <?php foreach($g_header_ticker_items as $item): ?>
+              <a tabindex="-1" href="<?php echo esc_url($item['url']); ?>"><b></b><?php echo esc_html($item['title']); ?></a>
+            <?php endforeach; ?>
+          </div>
         </div>
       </div>
     </div>
