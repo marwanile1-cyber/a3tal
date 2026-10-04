@@ -29,4 +29,12 @@ $conditions=get_terms(['taxonomy'=>'a3_listing_condition','hide_empty'=>false]);
     </article>
   <?php endwhile; ?></div><div class="g-platform-pagination"><?php the_posts_pagination(['mid_size'=>2,'prev_text'=>'السابق','next_text'=>'التالي']); ?></div>
   <?php else: ?><div class="g-platform-empty"><span>🏷️</span><h2>السوق لسه بيفتح أبوابه</h2><p>أول الإعلانات هتدخل من My Garage للمراجعة قبل النشر، بدل مهرجان الإعلانات المكررة والمجهولة المعتاد.</p><a href="<?php echo esc_url(home_url('/my-garage/')); ?>">اذهب إلى سيارتي</a></div><?php endif; ?>
+<?php a3g_legacy_section(
+  [374,22],
+  'محتوى يساعدك قبل شراء المستعمل',
+  'لحد ما تبدأ إعلانات السوق الفعلية، أسعار السيارات ومراجعاتها الحالية تظهر هنا بروابطها الأصلية بدل صفحة خالية.',
+  12,
+  [],
+  374
+); ?>
 </main><?php get_footer(); ?>
