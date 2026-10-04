@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#06121f"/><stop offset=".55" stop-color="#0f2d49"/><stop offset="1" stop-color="#07101b"/></linearGradient>
+ <linearGradient id="card" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#163a58"/><stop offset="1" stop-color="#0c2235"/></linearGradient>
+ <linearGradient id="silver" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f2f6f9"/><stop offset=".45" stop-color="#8796a2"/><stop offset="1" stop-color="#d6e0e7"/></linearGradient>
+ <filter id="glow"><feGaussianBlur stdDeviation="12"/></filter>
+</defs>
+<rect width="1600" height="900" fill="url(#bg)"/>
+<circle cx="1320" cy="170" r="180" fill="#1bc7ff" opacity=".14" filter="url(#glow)"/>
+<text x="90" y="100" font-family="Arial, sans-serif" font-size="52" font-weight="800" fill="#fff">BYD SEALION 6 EV</text>
+<text x="92" y="145" font-family="Arial, sans-serif" font-size="24" fill="#82dfff">LOCAL EGYPT SPEC SNAPSHOT • A3tal.com</text>
+<g transform="translate(130 190)">
+ <path d="M90 220 C135 150 210 105 310 90 L510 68 C600 62 700 92 760 142 L835 215 C852 233 848 270 828 286 L785 315 L95 315 C55 315 36 286 50 255 Z" fill="url(#silver)" stroke="#d6e6f0" stroke-width="4"/>
+ <path d="M290 97 C365 75 510 72 585 88 C652 102 703 126 742 166 L774 201 L225 201 C242 157 258 120 290 97 Z" fill="#0b263b" stroke="#8ba2b3" stroke-width="4"/>
+ <circle cx="245" cy="315" r="64" fill="#0a1016"/><circle cx="245" cy="315" r="38" fill="#b9c7d0"/>
+ <circle cx="660" cy="315" r="64" fill="#0a1016"/><circle cx="660" cy="315" r="38" fill="#b9c7d0"/>
+ <path d="M71 238 L160 225" stroke="#53d7ff" stroke-width="11" stroke-linecap="round"/>
+ <path d="M714 218 L810 230" stroke="#fff" stroke-width="10" stroke-linecap="round"/>
+ <text x="690" y="270" font-family="Arial, sans-serif" font-size="26" font-weight="800" fill="#253846">BYD</text>
+</g>
+<g transform="translate(80 590)">
+ <g><rect x="0" y="0" width="270" height="220" rx="28" fill="url(#card)" stroke="#2ac9ff" stroke-opacity=".4"/><text x="30" y="48" font-family="Arial" font-size="20" fill="#8edfff">BATTERY</text><text x="30" y="112" font-family="Arial" font-size="48" font-weight="800" fill="#fff">71.8</text><text x="30" y="151" font-family="Arial" font-size="26" fill="#8edfff">kWh • LFP</text><text x="30" y="190" font-family="Arial" font-size="18" fill="#c8d7e3">Blade Battery</text></g>
+ <g transform="translate(295 0)"><rect width="270" height="220" rx="28" fill="url(#card)" stroke="#2ac9ff" stroke-opacity=".4"/><text x="30" y="48" font-family="Arial" font-size="20" fill="#8edfff">WLTP RANGE</text><text x="30" y="112" font-family="Arial" font-size="48" font-weight="800" fill="#fff">420</text><text x="30" y="151" font-family="Arial" font-size="26" fill="#8edfff">KM</text><text x="30" y="190" font-family="Arial" font-size="18" fill="#c8d7e3">Combined cycle</text></g>
+ <g transform="translate(590 0)"><rect width="270" height="220" rx="28" fill="url(#card)" stroke="#2ac9ff" stroke-opacity=".4"/><text x="30" y="48" font-family="Arial" font-size="20" fill="#8edfff">DC CHARGE</text><text x="30" y="112" font-family="Arial" font-size="48" font-weight="800" fill="#fff">115</text><text x="30" y="151" font-family="Arial" font-size="26" fill="#8edfff">kW MAX</text><text x="30" y="190" font-family="Arial" font-size="18" fill="#c8d7e3">30–80% • 27 min</text></g>
+ <g transform="translate(885 0)"><rect width="270" height="220" rx="28" fill="url(#card)" stroke="#2ac9ff" stroke-opacity=".4"/><text x="30" y="48" font-family="Arial" font-size="20" fill="#8edfff">POWER</text><text x="30" y="112" font-family="Arial" font-size="48" font-weight="800" fill="#fff">215</text><text x="30" y="151" font-family="Arial" font-size="26" fill="#8edfff">HP</text><text x="30" y="190" font-family="Arial" font-size="18" fill="#c8d7e3">310 N·m torque</text></g>
+ <g transform="translate(1180 0)"><rect width="270" height="220" rx="28" fill="url(#card)" stroke="#2ac9ff" stroke-opacity=".4"/><text x="30" y="48" font-family="Arial" font-size="20" fill="#8edfff">BOOT</text><text x="30" y="112" font-family="Arial" font-size="48" font-weight="800" fill="#fff">425</text><text x="30" y="151" font-family="Arial" font-size="26" fill="#8edfff">LITRES</text><text x="30" y="190" font-family="Arial" font-size="18" fill="#c8d7e3">Egypt brochure</text></g>
+</g>
+<text x="1510" y="860" text-anchor="end" font-family="Arial" font-size="18" fill="#718da3">Source: BYD Egypt local brochure • 04 Oct 2026</text>
+</svg>
