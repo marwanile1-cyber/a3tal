@@ -1,0 +1,20 @@
+name: Validate A3tal Platform Integration
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "plugin-source/a3tal-core-platform/**"
+      - "theme-source/a3tal-global/**"
+      - ".github/workflows/validate-a3tal-platform.yml"
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint platform PHP
+        run: |
+          set -euo pipefail
+          find plugin-source/a3tal-core-platform theme-source/a3tal-global -name '*.php' -print0 | xargs -0 -n1 php -l
