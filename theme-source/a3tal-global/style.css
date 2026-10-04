@@ -3,7 +3,7 @@ Theme Name: A3tal Global
 Theme URI: https://a3tal.com/
 Author: A3tal.com
 Description: Premium RTL automotive platform theme for A3tal.com.
-Version: 1.3.0
+Version: 1.4.0
 Requires at least: 6.4
 Requires PHP: 8.0
 Text Domain: a3tal-global
@@ -681,4 +681,118 @@ svg{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-l
   .g-moto-teaser-grid{grid-template-columns:1fr 1fr}
   .g-home-ownership-grid{grid-template-columns:1fr}.g-home-module:last-child{grid-column:auto}
   .g-maintenance-mini-timeline{overflow-x:auto}.g-maintenance-mini-timeline span{flex:0 0 auto}.g-maintenance-mini-timeline i{min-width:22px}
+}
+
+
+/* =========================================================
+   A3tal Global 1.4 — Mobile containment + legacy bridges
+   ========================================================= */
+html,body{max-width:100%;overflow-x:hidden}
+.g-wrap,
+.g-vehicle-hero-grid,
+.g-vehicle-main,
+.g-vehicle-panel,
+.g-platform-archive,
+.g-platform-grid,
+.g-directory-grid,
+.g-dtc-grid,
+.g-commerce-main,
+.g-maintenance-main,
+.g-entry{min-width:0;max-width:100%}
+.g-vehicle-hero-grid>*,
+.g-directory-single-grid>*,
+.g-part-single-grid>*,
+.g-listing-single-grid>*,
+.g-dtc-single-grid>*{min-width:0}
+.g-vehicle-image,
+.g-vehicle-image img,
+.g-directory-feature,
+.g-directory-feature img,
+.g-part-single-image,
+.g-part-single-image img,
+.g-listing-single-image,
+.g-listing-single-image img{max-width:100%}
+.g-entry img,
+.g-entry iframe,
+.g-entry video,
+.g-entry embed,
+.g-entry object{max-width:100%;height:auto}
+.g-entry pre,.g-entry code{max-width:100%;overflow-wrap:anywhere;word-break:break-word}
+.g-table-wrap{display:block;width:100%;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-inline:contain;border-radius:10px}
+.g-table-wrap table{width:max-content;min-width:100%;max-width:none;margin:0}
+.g-entry table{margin:0}
+.g-spec-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g-spec-grid>div{min-width:0}
+.g-spec-grid strong{display:block;min-width:0;overflow-wrap:anywhere;word-break:break-word}
+.g-vehicle-tabs{max-width:100vw;overflow:hidden}
+.g-vehicle-tabs>.g-wrap{max-width:100%;scrollbar-width:none}
+.g-vehicle-tabs>.g-wrap::-webkit-scrollbar{display:none}
+
+.g-platform-bridge-note{display:flex;align-items:flex-start;gap:14px;padding:20px;margin-bottom:22px;border:1px solid #dfe6ed;border-radius:16px;background:linear-gradient(135deg,#fbfcfd,#f4f7fa)}
+.g-platform-bridge-note>span{font-size:34px;line-height:1}
+.g-platform-bridge-note h2{font-family:"Alexandria";font-size:17px;margin:0 0 5px}
+.g-platform-bridge-note p{margin:0;color:#73808d;font-size:10px}
+.g-legacy-bridge{margin-top:28px;padding-top:24px;border-top:1px solid var(--g-line)}
+.g-legacy-bridge .g-section-head{margin-bottom:14px}
+.g-legacy-bridge .g-section-head p{margin:4px 0 0;color:#788491;font-size:9px;max-width:800px}
+.g-legacy-count{padding:6px 9px;border-radius:8px;background:#eef3f7;color:#4d6072;font-size:8px;font-weight:900;white-space:nowrap}
+.g-legacy-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;overflow:visible}
+.g-legacy-grid .g-card{min-width:0}
+.g-legacy-more{display:flex;justify-content:center;margin-top:14px}
+.g-legacy-more a{display:inline-flex;padding:8px 11px;border-radius:9px;background:#0d2235;color:#fff;font-size:8px;font-weight:900}
+
+@media(max-width:900px){
+  .g-legacy-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:700px){
+  .g-wrap{width:calc(100% - 20px);max-width:calc(100% - 20px)}
+  .g-vehicle-hero{padding:22px 0}
+  .g-vehicle-hero-grid{gap:16px}
+  .g-vehicle-copy h1{font-size:30px;line-height:1.35;overflow-wrap:anywhere}
+  .g-vehicle-copy>p{font-size:11px;line-height:1.8}
+  .g-vehicle-image{width:100%;min-height:0;aspect-ratio:16/10;border-radius:14px}
+  .g-vehicle-image img{width:100%;height:100%;min-height:0;object-fit:cover}
+  .g-vehicle-tabs{top:88px}
+  .g-vehicle-tabs>.g-wrap{gap:18px;padding-inline:0}
+  .g-vehicle-tabs a{padding:10px 0;font-size:9px}
+  .g-vehicle-main{padding:14px 0 82px;gap:11px}
+  .g-vehicle-panel{width:100%;padding:12px;border-radius:13px;overflow:hidden}
+  .g-spec-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+  .g-spec-grid>div{padding:10px}
+  .g-spec-grid strong{font-size:10px}
+  .g-entry{font-size:14px;line-height:1.85}
+  .g-entry h2{font-size:19px;margin:25px 0 10px;padding-right:8px}
+  .g-entry h3{font-size:16px;margin:20px 0 8px}
+  .g-entry ul,.g-entry ol{padding-right:18px}
+  .g-table-wrap{margin:14px 0;border:1px solid #e1e6ec}
+  .g-table-wrap table{min-width:560px;font-size:11px}
+  .g-entry th,.g-entry td{padding:8px;white-space:normal}
+  .g-source-note{width:100%;overflow-wrap:anywhere}
+  .g-source-note a{max-width:100%;overflow-wrap:anywhere}
+  .g-platform-archive{padding-inline:0}
+  .g-platform-card{grid-template-columns:108px minmax(0,1fr)}
+  .g-platform-media{min-width:0}
+  .g-platform-body{min-width:0}
+  .g-platform-body h3{overflow-wrap:anywhere}
+  .g-dtc-card,.g-directory-card,.g-part-card,.g-listing-card{min-width:0}
+  .g-dtc-card h3,.g-directory-card h3,.g-part-card h3,.g-listing-card h3{overflow-wrap:anywhere}
+  .g-platform-bridge-note{padding:14px;gap:10px}
+  .g-platform-bridge-note>span{font-size:27px}
+  .g-platform-bridge-note h2{font-size:14px}
+  .g-legacy-bridge{margin-top:20px;padding-top:18px}
+  .g-legacy-bridge .g-section-head{align-items:flex-start;flex-direction:column;gap:7px}
+  .g-legacy-grid{display:grid;grid-template-columns:1fr;gap:10px;overflow:visible}
+  .g-legacy-grid .g-card{display:grid;grid-template-columns:112px minmax(0,1fr);border-radius:12px}
+  .g-legacy-grid .g-card-media{height:100%;min-height:112px;aspect-ratio:auto}
+  .g-legacy-grid .g-card-body{padding:10px}
+  .g-legacy-grid .g-card-body h3{font-size:11px;line-height:1.55}
+  .g-legacy-grid .g-card-body p{display:none}
+  .g-legacy-grid .g-meta{font-size:7px}
+}
+@media(max-width:430px){
+  .g-wrap{width:calc(100% - 16px);max-width:calc(100% - 16px)}
+  .g-spec-grid{grid-template-columns:1fr}
+  .g-platform-card{grid-template-columns:96px minmax(0,1fr)}
+  .g-legacy-grid .g-card{grid-template-columns:96px minmax(0,1fr)}
+  .g-table-wrap table{min-width:520px}
 }
