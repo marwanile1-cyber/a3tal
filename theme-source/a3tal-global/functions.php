@@ -1,6 +1,6 @@
 <?php
 if (!defined('ABSPATH')) exit;
-define('A3G_VERSION','1.0.1');
+define('A3G_VERSION','1.1.0');
 
 function a3g_setup(){
   add_theme_support('title-tag');
@@ -96,4 +96,51 @@ function a3g_toc(){
   $content=(string)get_post_field('post_content',get_the_ID());preg_match_all('/<h2[^>]*>(.*?)<\/h2>/isu',$content,$m);$out=[];
   foreach($m[1]??[] as $raw){$t=trim(wp_strip_all_tags($raw));if($t)$out[]=['t'=>$t,'id'=>sanitize_title($t)];}
   return $out;
+}
+
+
+function a3g_platform_link($post_type,$fallback='/'){
+  $u=get_post_type_archive_link($post_type);
+  return $u ?: home_url($fallback);
+}
+function a3g_term_names($post_id,$taxonomy){
+  $terms=get_the_terms($post_id,$taxonomy);
+  if(!$terms||is_wp_error($terms))return [];
+  return array_values(array_map(static fn($t)=>$t->name,$terms));
+}
+function a3g_first_term($post_id,$taxonomy){
+  $names=a3g_term_names($post_id,$taxonomy);
+  return $names[0]??'';
+}
+function a3g_related_post_ids($post_id=0){
+  $post_id=$post_id?:get_the_ID();
+  $raw=(string)get_post_meta($post_id,'_a3_related_post_ids',true);
+  return array_values(array_filter(array_map('absint',preg_split('/[^0-9]+/',$raw))));
+}
+function a3g_directory_status($post_id=0){
+  $post_id=$post_id?:get_the_ID();
+  $terms=get_the_terms($post_id,'a3_directory_status');
+  if(!$terms||is_wp_error($terms))return null;
+  return $terms[0]??null;
+}
+function a3g_platform_card($post_id=0){
+  $post_id=$post_id?:get_the_ID();
+  $type=get_post_type($post_id);
+  $year=(string)get_post_meta($post_id,'_a3_year',true);
+  $price=function_exists('a3cp_vehicle_price')?a3cp_vehicle_price($post_id):'';
+  $brand=a3g_first_term($post_id,'a3_brand');
+  ?>
+  <article class="g-platform-card">
+    <a class="g-platform-media" href="<?php echo esc_url(get_permalink($post_id)); ?>">
+      <?php if(has_post_thumbnail($post_id)){echo get_the_post_thumbnail($post_id,'large',['loading'=>'lazy']);}else{echo '<span class="g-fallback">A3TAL</span>';} ?>
+    </a>
+    <div class="g-platform-body">
+      <div class="g-platform-kickers"><?php if($brand): ?><span><?php echo esc_html($brand); ?></span><?php endif; ?><?php if($year): ?><span><?php echo esc_html($year); ?></span><?php endif; ?></div>
+      <h3><a href="<?php echo esc_url(get_permalink($post_id)); ?>"><?php echo esc_html(get_the_title($post_id)); ?></a></h3>
+      <?php if($price): ?><strong class="g-platform-price"><?php echo esc_html($price); ?></strong><?php endif; ?>
+      <p><?php echo esc_html(a3g_excerpt($post_id,18)); ?></p>
+      <a class="g-platform-more" href="<?php echo esc_url(get_permalink($post_id)); ?>">عرض التفاصيل ←</a>
+    </div>
+  </article>
+  <?php
 }
