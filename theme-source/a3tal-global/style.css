@@ -3,7 +3,7 @@ Theme Name: A3tal Global
 Theme URI: https://a3tal.com/
 Author: A3tal.com
 Description: Premium RTL automotive platform theme for A3tal.com.
-Version: 1.1.0
+Version: 1.2.0
 Requires at least: 6.4
 Requires PHP: 8.0
 Text Domain: a3tal-global
@@ -467,4 +467,136 @@ svg{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-l
   .g-dtc-search{flex-direction:column}.g-dtc-search button{min-height:44px}.g-dtc-family-links{display:grid;grid-template-columns:1fr 1fr}
   .g-dtc-single-grid{grid-template-columns:1fr}.g-dtc-single-grid h1{font-size:58px}.g-dtc-single-grid aside{grid-template-columns:1fr 1fr}
   .g-directory-facts{grid-template-columns:1fr}.g-directory-feature{height:230px}
+}
+
+
+/* =========================================================
+   A3tal Global 1.2 — Platform nav, parts, market, maintenance
+   ========================================================= */
+.g-platform-nav{gap:14px}
+.g-platform-nav>.g-nav-item{position:relative;height:72px;display:flex;align-items:center}
+.g-platform-nav>.g-nav-item>a{height:100%;display:flex;align-items:center}
+.g-platform-nav .g-nav-drop{position:absolute;top:62px;right:-12px;min-width:205px;padding:8px;background:#fff;color:#17283a;border:1px solid #e5eaf0;border-radius:12px;box-shadow:0 18px 48px rgba(0,0,0,.16);opacity:0;visibility:hidden;transform:translateY(7px);transition:.18s;z-index:150}
+.g-platform-nav .g-nav-item:hover .g-nav-drop,.g-platform-nav .g-nav-item:focus-within .g-nav-drop{opacity:1;visibility:visible;transform:none}
+.g-platform-nav .g-nav-drop a{display:block;padding:8px 9px;border-radius:8px;color:#405164;font-size:10px}
+.g-platform-nav .g-nav-drop a:hover{background:#f5f7fa;color:#0c1e30}
+.g-mycar-link{display:flex!important;align-items:center;gap:5px;padding:7px 10px!important;border:1px solid rgba(255,255,255,.11);border-radius:9px;background:rgba(255,255,255,.05)}
+.g-mycar-link .g-icon svg{width:16px;height:16px;color:#ff7953}
+
+/* commerce shared */
+.g-commerce-hero{padding:52px 0 34px;background:
+ radial-gradient(circle at 12% 0%,rgba(255,74,31,.18),transparent 30%),
+ linear-gradient(135deg,#07131f,#10283d);color:#fff}
+.g-commerce-hero>.g-wrap>span{display:inline-flex;color:#ff9a7d;font-size:10px;font-weight:900;letter-spacing:.1em}
+.g-commerce-hero h1{font-family:"Alexandria";font-size:clamp(34px,5vw,54px);line-height:1.25;margin:7px 0 8px}
+.g-commerce-hero p{max-width:820px;color:#b9c6d2;margin:0;font-size:14px}
+.g-commerce-filter{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) auto;gap:9px;margin-top:24px;padding:9px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:15px}
+.g-commerce-filter label{min-width:0;padding:7px 10px;background:#fff;color:#17283a;border-radius:9px}
+.g-commerce-filter small{display:block;color:#8693a0;font-size:8px;margin-bottom:1px}
+.g-commerce-filter select,.g-commerce-filter input{width:100%;height:29px;border:0;outline:0;background:transparent;color:#111827;font-size:10px;font-weight:800}
+.g-commerce-filter button{border:0;border-radius:10px;padding:0 17px;background:linear-gradient(135deg,var(--g-orange),var(--g-orange2));color:#fff;font-weight:900;display:flex;align-items:center;justify-content:center;gap:6px}
+.g-commerce-main{padding:34px 0 64px}
+.g-commerce-head{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:20px}
+.g-commerce-head>div>span{font-size:9px;color:var(--g-orange);font-weight:900;letter-spacing:.08em}
+.g-commerce-head h2{font-family:"Alexandria";font-size:25px;margin:2px 0 0}
+.g-commerce-head>a,.g-commerce-actions a{font-size:9px;color:#176ed7;font-weight:900}
+.g-commerce-actions{display:flex;gap:8px}
+.g-part-trust-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.g-part-trust-row span{display:inline-flex;align-items:center;gap:6px;padding:5px 8px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:#ccd6df;font-size:8px}
+.g-part-trust-row b{color:#ff9678}
+
+/* parts */
+.g-parts-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.g-part-card{background:#fff;border:1px solid var(--g-line);border-radius:15px;overflow:hidden;box-shadow:0 6px 20px rgba(15,30,48,.035);transition:.18s}
+.g-part-card:hover{transform:translateY(-4px);box-shadow:var(--g-shadow-sm)}
+.g-part-media{display:block;aspect-ratio:4/3;background:#edf1f4;overflow:hidden}
+.g-part-media img{width:100%;height:100%;object-fit:cover}
+.g-part-body{padding:14px}
+.g-part-badges{display:flex;gap:5px;flex-wrap:wrap}
+.g-part-badges span{padding:3px 6px;border-radius:6px;background:#eef4f8;color:#3d5368;font-size:7px;font-weight:900}
+.g-part-body h3{font-family:"Alexandria";font-size:13px;line-height:1.55;margin:7px 0}
+.g-part-numbers{display:flex;gap:8px;flex-wrap:wrap;color:#7a8794}.g-part-numbers small{font-size:8px}.g-part-numbers b{font-family:monospace;color:#203347}
+.g-part-price{display:block;color:var(--g-orange);font-family:"Alexandria";font-size:12px;margin:8px 0}
+.g-part-single-hero{padding:36px 0;background:linear-gradient(180deg,#fff,#f5f7fa);border-bottom:1px solid var(--g-line)}
+.g-part-single-grid{display:grid;grid-template-columns:1fr .9fr;gap:30px;align-items:center}
+.g-part-single-grid h1{font-family:"Alexandria";font-size:clamp(32px,4.8vw,50px);line-height:1.35;margin:9px 0}
+.g-part-single-grid p{color:#687586}
+.g-part-hero-numbers{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.g-part-hero-numbers span{padding:9px 11px;border-radius:10px;background:#f1f4f7;border:1px solid #e3e8ed}.g-part-hero-numbers small{display:block;color:#8994a1;font-size:7px}.g-part-hero-numbers b{font-family:monospace;font-size:11px}
+.g-part-hero-price{margin-top:13px;color:#778391;font-size:10px}.g-part-hero-price strong{display:block;color:var(--g-orange);font-family:"Alexandria";font-size:20px}
+.g-part-single-image{height:330px;border-radius:18px;overflow:hidden;background:#e9eef3}.g-part-single-image img{width:100%;height:100%;object-fit:cover}
+.g-part-single-main{padding:24px 0 64px;display:grid;gap:14px}
+.g-fitment-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.g-fitment-grid a{display:flex;align-items:center;gap:8px;padding:10px;border-radius:10px;background:#f8fafc;border:1px solid #edf1f4;font-size:9px;font-weight:800}.g-fitment-grid .g-icon svg{width:20px;height:20px;color:#405a72}
+.g-part-buy-box{display:flex;align-items:center;justify-content:space-between;gap:20px}.g-part-buy-box>div>span{font-size:8px;color:var(--g-orange);font-weight:900}.g-part-buy-box h2{font-family:"Alexandria";margin:2px 0}.g-part-buy-box p{margin:0;color:#778391;font-size:10px}.g-part-buy-box>a{padding:9px 13px;border-radius:9px;background:var(--g-dark);color:#fff;font-size:9px;font-weight:900}
+
+/* parts vendors */
+.g-vendor-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.g-vendor-card{background:#fff;border:1px solid var(--g-line);border-radius:15px;overflow:hidden;box-shadow:0 6px 20px rgba(15,30,48,.035)}
+.g-vendor-media{display:block;aspect-ratio:16/9;background:#e9eef3;overflow:hidden}.g-vendor-media img{width:100%;height:100%;object-fit:cover}
+.g-vendor-body{padding:14px}.g-vendor-body h3{font-family:"Alexandria";font-size:14px;margin:7px 0 4px}.g-vendor-body p{margin:0 0 8px;color:#768290;font-size:9px}
+.g-vendor-badge{display:inline-flex;padding:4px 7px;border-radius:6px;font-size:7px;font-weight:900}
+.g-vendor-official-distributor{background:#ecfdf3;color:#087a45}.g-vendor-verified{background:#edf5ff;color:#176ed7}.g-vendor-independent{background:#f1f2f4;color:#555f69}
+.g-vendor-meta{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:8px;color:#657484;font-size:8px}.g-vendor-meta small{color:#929ca7}
+
+/* marketplace */
+.g-market-hero-actions{display:flex;gap:8px;margin-top:16px}.g-market-hero-actions a{padding:8px 11px;border-radius:9px;background:#fff;color:#142536;font-size:9px;font-weight:900}.g-market-hero-actions a+ a{background:rgba(255,255,255,.07);color:#fff;border:1px solid rgba(255,255,255,.1)}
+.g-listing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.g-listing-card{background:#fff;border:1px solid var(--g-line);border-radius:16px;overflow:hidden;box-shadow:0 6px 20px rgba(15,30,48,.04)}
+.g-listing-media{display:block;aspect-ratio:16/10;position:relative;background:#e9eef3;overflow:hidden}.g-listing-media img{width:100%;height:100%;object-fit:cover}.g-listing-condition{position:absolute;top:10px;right:10px;padding:4px 7px;border-radius:7px;background:rgba(9,21,34,.88);color:#fff;font-size:7px;font-weight:900}
+.g-listing-body{padding:14px}.g-listing-body h3{font-family:"Alexandria";font-size:14px;margin:0 0 4px}.g-listing-body>strong{display:block;color:var(--g-orange);font-family:"Alexandria";font-size:15px}
+.g-listing-facts{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}.g-listing-facts span{padding:4px 7px;border-radius:7px;background:#f2f5f8;color:#526476;font-size:8px;font-weight:800}
+.g-listing-single-hero{padding:38px 0;background:linear-gradient(180deg,#fff,#f5f7fa);border-bottom:1px solid var(--g-line)}
+.g-listing-single-grid{display:grid;grid-template-columns:1fr .95fr;gap:30px;align-items:center}.g-listing-single-grid>div>span{color:var(--g-orange);font-size:9px;font-weight:900}.g-listing-single-grid h1{font-family:"Alexandria";font-size:clamp(32px,4.8vw,50px);margin:7px 0}
+.g-listing-big-price{display:block;color:var(--g-orange);font-family:"Alexandria";font-size:24px}.g-listing-single-facts{margin:12px 0}
+.g-listing-call{display:inline-flex;padding:9px 14px;border-radius:9px;background:var(--g-dark);color:#fff;font-size:9px;font-weight:900}
+.g-listing-single-image{height:340px;border-radius:18px;overflow:hidden;background:#e9eef3}.g-listing-single-image img{width:100%;height:100%;object-fit:cover}
+.g-listing-single-main{padding:24px 0 64px;display:grid;gap:14px}.g-listing-entity-link{display:flex;align-items:center;justify-content:space-between;gap:16px}.g-listing-entity-link span{font-size:8px;color:var(--g-orange);font-weight:900}.g-listing-entity-link h2{font-family:"Alexandria";margin:2px 0}.g-listing-entity-link>a{color:#176ed7;font-size:9px;font-weight:900}
+.g-market-safety{display:flex;gap:8px;padding:12px 14px;border-radius:11px;background:#fff7f3;border:1px solid #ffd6c9;color:#69534c;font-size:9px}.g-market-safety strong{color:#b93f20}
+
+/* maintenance hub */
+.g-maintenance-hero{padding:46px 0 34px;background:
+ radial-gradient(circle at 10% 0%,rgba(255,74,31,.19),transparent 29%),
+ linear-gradient(135deg,#07131f,#10283d);color:#fff}
+.g-maintenance-hero-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:30px;align-items:center}
+.g-maintenance-hero-grid>div>span{color:#ff9a7c;font-size:10px;font-weight:900;letter-spacing:.1em}.g-maintenance-hero h1{font-family:"Alexandria";font-size:clamp(34px,5vw,54px);line-height:1.3;margin:7px 0}.g-maintenance-hero p{color:#bac7d2;max-width:760px}
+.g-maintenance-select{display:flex;gap:8px;margin-top:20px;padding:7px;border-radius:12px;background:#fff;max-width:700px}.g-maintenance-select label{min-width:0;flex:1;padding:5px 8px}.g-maintenance-select small{display:block;color:#8a96a2;font-size:7px}.g-maintenance-select select{width:100%;border:0;outline:0;height:30px;font-size:10px;font-weight:800}.g-maintenance-select button{border:0;border-radius:9px;background:var(--g-orange);color:#fff;padding:0 14px;font-size:9px;font-weight:900}
+.g-maintenance-demo{padding:18px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);display:flex;align-items:center;gap:18px}.g-maintenance-demo-ring{width:110px;height:110px;flex:0 0 auto;border-radius:50%;display:grid;place-items:center;align-content:center;background:conic-gradient(var(--g-orange) 0 285deg,rgba(255,255,255,.1) 285deg)}.g-maintenance-demo-ring span{font-family:"Alexandria";font-size:22px}.g-maintenance-demo-ring small{font-size:7px;color:#c0ccd7}
+.g-maintenance-demo-list{display:grid;gap:7px;flex:1}.g-maintenance-demo-list span{display:flex;justify-content:space-between;gap:8px;padding:8px 10px;border-radius:9px;background:rgba(255,255,255,.05);border-right:3px solid #16a34a}.g-maintenance-demo-list .is-due{border-right-color:#dc2626}.g-maintenance-demo-list .is-soon{border-right-color:#f59e0b}.g-maintenance-demo-list b{font-size:9px}.g-maintenance-demo-list small{font-size:7px;color:#9eb0c0}
+.g-maintenance-main{padding:30px 0 68px}
+.g-maintenance-intro{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.g-maintenance-intro>div{padding:17px;border-radius:14px;background:#fff;border:1px solid var(--g-line)}.g-maintenance-intro span{color:var(--g-orange);font-family:"Alexandria";font-weight:900}.g-maintenance-intro h2{font-family:"Alexandria";font-size:14px;margin:6px 0 4px}.g-maintenance-intro p{font-size:9px;color:#788593;margin:0}
+.g-maintenance-cta{margin-top:14px;padding:22px;border-radius:16px;background:linear-gradient(135deg,#0b1d2d,#173650);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:24px}.g-maintenance-cta span{font-size:8px;color:#ff9b80;font-weight:900}.g-maintenance-cta h2{font-family:"Alexandria";margin:3px 0}.g-maintenance-cta p{margin:0;color:#aebdca;font-size:10px}.g-maintenance-cta>a{flex:0 0 auto;padding:9px 13px;border-radius:9px;background:var(--g-orange);color:#fff;font-size:9px;font-weight:900}
+.g-maintenance-selected{display:grid;grid-template-columns:115px 1fr auto;gap:15px;align-items:center;padding:15px;border-radius:15px;background:#fff;border:1px solid var(--g-line);margin-bottom:22px}.g-maintenance-selected>div:first-child{height:85px;border-radius:10px;overflow:hidden;background:#e9eef3}.g-maintenance-selected img{width:100%;height:100%;object-fit:cover}.g-maintenance-selected span{font-size:8px;color:var(--g-orange);font-weight:900}.g-maintenance-selected h2{font-family:"Alexandria";font-size:20px;margin:2px 0}.g-maintenance-selected p{margin:0;color:#798592;font-size:9px}.g-maintenance-selected>a{padding:8px 11px;border-radius:9px;background:var(--g-dark);color:#fff;font-size:9px;font-weight:900}
+.g-maintenance-timeline{position:relative;display:grid;gap:14px;padding-right:42px}.g-maintenance-rail{position:absolute;right:17px;top:20px;bottom:20px;width:2px;background:linear-gradient(var(--g-orange),#dbe2e8)}
+.g-maintenance-node{position:relative;display:grid;grid-template-columns:1fr}.g-maintenance-node-point{position:absolute;right:-42px;top:18px;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:#fff;border:3px solid var(--g-orange);z-index:2}.g-maintenance-node-point b{font-size:8px;color:#23384d}
+.g-maintenance-node-card{padding:16px;border-radius:14px;background:#fff;border:1px solid var(--g-line);box-shadow:0 5px 18px rgba(15,30,48,.03)}.g-maintenance-node-top{display:flex;align-items:center;justify-content:space-between;gap:8px}.g-maintenance-node-top span{font-size:8px;color:var(--g-orange);font-weight:900}.g-maintenance-node-top b{font-size:8px;color:#71808e}.g-maintenance-node h3{font-family:"Alexandria";font-size:15px;margin:6px 0 10px}
+.g-maintenance-node-facts{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.g-maintenance-node-facts span,.g-maintenance-tech span{padding:8px;border-radius:9px;background:#f7f9fb}.g-maintenance-node-facts small,.g-maintenance-tech small{display:block;color:#8b96a2;font-size:7px}.g-maintenance-node-facts b{font-size:9px}.g-maintenance-node-facts .is-severe{background:#fff6f1;color:#b34b2c}
+.g-maintenance-tech{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:7px;font-size:8px}.g-maintenance-node-card footer{display:flex;justify-content:space-between;gap:8px;margin-top:9px;padding-top:8px;border-top:1px solid #eef1f4;color:#8994a1;font-size:7px}.g-maintenance-node-card footer a{color:#176ed7;font-weight:900}
+
+@media(max-width:1120px){
+ .g-platform-nav{gap:9px}.g-platform-nav a{font-size:10px}
+ .g-parts-grid{grid-template-columns:repeat(3,1fr)}
+ .g-commerce-filter{grid-template-columns:repeat(2,1fr)}.g-commerce-filter button{min-height:46px}
+ .g-maintenance-intro{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:860px){
+ .g-platform-nav{display:none}
+ .g-part-single-grid,.g-listing-single-grid,.g-maintenance-hero-grid{grid-template-columns:1fr}
+ .g-vendor-grid,.g-listing-grid{grid-template-columns:repeat(2,1fr)}
+ .g-parts-grid{grid-template-columns:repeat(2,1fr)}
+ .g-maintenance-demo{max-width:540px}
+}
+@media(max-width:600px){
+ .g-commerce-hero{padding:36px 0 25px}.g-commerce-hero h1{font-size:32px}
+ .g-commerce-filter{grid-template-columns:1fr}
+ .g-commerce-head{align-items:flex-start;flex-direction:column}
+ .g-parts-grid,.g-vendor-grid,.g-listing-grid{grid-template-columns:1fr}
+ .g-part-single-image,.g-listing-single-image{height:240px}
+ .g-fitment-grid{grid-template-columns:1fr}
+ .g-part-buy-box,.g-listing-entity-link,.g-maintenance-cta{align-items:flex-start;flex-direction:column}
+ .g-market-hero-actions{flex-wrap:wrap}
+ .g-maintenance-select{flex-direction:column}.g-maintenance-select button{min-height:42px}
+ .g-maintenance-demo{align-items:flex-start;flex-direction:column}.g-maintenance-demo-ring{width:92px;height:92px}
+ .g-maintenance-intro{grid-template-columns:1fr}
+ .g-maintenance-selected{grid-template-columns:80px 1fr}.g-maintenance-selected>a{grid-column:1/-1;text-align:center}
+ .g-maintenance-node-facts,.g-maintenance-tech{grid-template-columns:1fr 1fr}
 }
