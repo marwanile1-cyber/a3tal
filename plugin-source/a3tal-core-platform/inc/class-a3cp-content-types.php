@@ -52,6 +52,8 @@ final class A3CP_Content_Types {
         add_action('a3cp_seed_motorcycles', [__CLASS__, 'seed_motorcycle_entities']);
         add_action('init', [__CLASS__, 'seed_service_centers_v1'], 42);
         add_action('a3cp_seed_service_centers_v1', [__CLASS__, 'seed_service_centers_v1']);
+        add_action('init', [__CLASS__, 'seed_service_centers_v2'], 42);
+        add_action('a3cp_seed_service_centers_v2', [__CLASS__, 'seed_service_centers_v2']);
         add_action('init', [__CLASS__, 'seed_showroom_batch_v1'], 43);
         add_action('a3cp_seed_showrooms_v1', [__CLASS__, 'seed_showroom_batch_v1']);
         add_action('init', [__CLASS__, 'seed_showroom_guides_v1'], 44);
@@ -852,6 +854,77 @@ final class A3CP_Content_Types {
 
         if($all_ready) update_option('a3cp_car_seed_v1','done',false);
         delete_option('a3cp_car_seed_v1_lock');
+    }
+
+    public static function seed_service_centers_v2(): void {
+        if ((string) get_option('a3cp_service_center_seed_v2') === 'done') return;
+
+        if (!term_exists('skoda', 'a3_brand')) {
+            wp_insert_term('Skoda', 'a3_brand', ['slug' => 'skoda']);
+        }
+
+        $source = 'https://www.skoda-egypt.com/_doc/53344415-51f6-40aa-8da5-80e8d82fd810';
+        $items = [
+            [
+                'slug' => 'skoda-kayan-new-cairo-service-center',
+                'title' => 'مركز صيانة سكودا كيان نيو كايرو',
+                'address' => 'قطعة 29 و30، ميدان المروحة، القطامية، القاهرة الجديدة، القاهرة',
+                'city' => 'القاهرة الجديدة',
+                'gov' => 'القاهرة',
+            ],
+            [
+                'slug' => 'skoda-express-sheikh-zayed-service-center',
+                'title' => 'مركز خدمة سكودا السريعة – الشيخ زايد',
+                'address' => 'محور 26 يوليو، بجوار محطة Chill Out الخمايل، الشيخ زايد، الجيزة',
+                'city' => 'الشيخ زايد',
+                'gov' => 'الجيزة',
+            ],
+            [
+                'slug' => 'skoda-express-new-cairo-service-center',
+                'title' => 'مركز خدمة سكودا السريعة – القاهرة الجديدة',
+                'address' => 'أمام كايرو فيستيفال سيتي، الطريق الدائري، القاهرة الجديدة، القاهرة',
+                'city' => 'القاهرة الجديدة',
+                'gov' => 'القاهرة',
+            ],
+        ];
+
+        $all_ready = true;
+        foreach ($items as $item) {
+            $existing = get_page_by_path($item['slug'], OBJECT, 'a3_service_center');
+            if ($existing instanceof WP_Post) continue;
+
+            $content = '<h2>بيانات المركز</h2>';
+            $content .= '<p>هذا الموقع ظاهر ضمن مواد خدمة Škoda Egypt / Kayan الرسمية وقت آخر تحقق. استخدم الخط الساخن 19112 لتأكيد الموعد ونوع الخدمة المتاح قبل التحرك.</p>';
+            $content .= '<h2>قبل الزيارة</h2><ul><li>جهز رقم الشاسيه VIN وسنة الموديل والعداد.</li><li>اذكر نوع الصيانة أو رسالة العطل عند الحجز.</li><li>أكد توافر القطعة أو الخدمة المطلوبة إذا كانت الزيارة لإصلاح محدد.</li></ul>';
+            $content .= '<p>راجع أيضًا <a href="' . esc_url(home_url('/skoda-egypt-service-centers-locations/')) . '">دليل مراكز صيانة سكودا في مصر</a>.</p>';
+
+            $id = wp_insert_post([
+                'post_type' => 'a3_service_center',
+                'post_status' => 'publish',
+                'post_title' => $item['title'],
+                'post_name' => $item['slug'],
+                'post_excerpt' => 'مركز خدمة سكودا مدرج في مواد Kayan / Škoda Egypt الرسمية، مع العنوان والخط الساخن ومصدر التحقق.',
+                'post_content' => $content,
+            ], true);
+
+            if (is_wp_error($id)) {
+                $all_ready = false;
+                continue;
+            }
+
+            update_post_meta($id, '_a3_phone', '19112');
+            update_post_meta($id, '_a3_address', $item['address']);
+            update_post_meta($id, '_a3_city', $item['city']);
+            update_post_meta($id, '_a3_governorate', $item['gov']);
+            update_post_meta($id, '_a3_official_source_url', $source);
+            update_post_meta($id, '_a3_source_checked_at', '2026-10-05');
+
+            wp_set_object_terms($id, 'skoda', 'a3_brand', false);
+            wp_set_object_terms($id, 'egypt', 'a3_market', false);
+            wp_set_object_terms($id, 'official', 'a3_directory_status', false);
+        }
+
+        if ($all_ready) update_option('a3cp_service_center_seed_v2', 'done', false);
     }
 
     public static function seed_showroom_batch_v1(): void {
