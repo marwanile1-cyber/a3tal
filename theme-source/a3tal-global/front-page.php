@@ -66,7 +66,7 @@ $showrooms=new WP_Query(['post_type'=>'a3_showroom','post_status'=>'publish','po
       <a href="<?php echo esc_url(a3g_platform_link('a3_service_center','/service-centers/')); ?>"><span class="g-launch-icon"><?php echo a3g_icon('wrench'); ?></span><b>مراكز الخدمة</b><small>معتمد وموثّق ومستقل</small></a>
       <a href="<?php echo esc_url(a3g_platform_link('a3_showroom','/car-showrooms/')); ?>"><span class="g-launch-icon"><?php echo a3g_icon('store'); ?></span><b>معارض السيارات</b><small>رسمي وموثّق وخاص</small></a>
       <a href="<?php echo esc_url(a3g_platform_link('a3_listing','/cars-for-sale/')); ?>"><span class="g-launch-icon"><?php echo a3g_icon('tag'); ?></span><b>سوق السيارات</b><small>بيع وشراء المستعمل</small></a>
-      <a href="<?php echo esc_url(a3g_cat_link(21)); ?>"><span class="g-launch-icon"><?php echo a3g_icon('compare'); ?></span><b>قارن</b><small>قبل ما تشتري</small></a>
+      <a href="<?php echo esc_url(a3g_cat_link(21)); ?>"><span class="g-launch-icon"><?php echo a3g_icon('compare'); ?></span><b>المقارنات</b><small>مقارنات منشورة قبل الشراء</small></a>
     </div>
   </div>
 </section>
@@ -99,7 +99,7 @@ $showrooms=new WP_Query(['post_type'=>'a3_showroom','post_status'=>'publish','po
         <div class="g-home-os-actions"><a class="is-primary" href="<?php echo esc_url(home_url('/my-garage/')); ?>">افتح سيارتي</a><a href="<?php echo esc_url(a3g_platform_link('a3_maintenance_plan','/maintenance-schedules/')); ?>">شوف جداول الصيانة</a></div>
       </div>
       <div class="g-home-os-dashboard">
-        <div class="g-os-car-head"><span><?php echo a3g_icon('car'); ?></span><div><small>سيارتي</small><strong>جراج رقمي كامل</strong></div><b>LIVE</b></div>
+        <div class="g-os-car-head"><span><?php echo a3g_icon('car'); ?></span><div><small>سيارتي</small><strong>جراج رقمي كامل</strong></div><b>مثال توضيحي</b></div>
         <div class="g-os-meter"><div><span>عداد المركبة</span><strong>87,450 <small>كم</small></strong></div><i style="--p:72%"></i></div>
         <div class="g-os-services">
           <span class="is-due"><i></i><b>زيت المحرك</b><small>مستحق الآن</small></span>
@@ -212,9 +212,9 @@ $showrooms=new WP_Query(['post_type'=>'a3_showroom','post_status'=>'publish','po
 <section class="g-section">
   <div class="g-wrap g-duo-grid">
     <div class="g-feature-box g-compare-box">
-      <div class="g-box-head"><div><span>قرار أسرع</span><h2>قارن بين السيارات</h2></div><a href="<?php echo esc_url(a3g_cat_link(21)); ?>">ابدأ المقارنة</a></div>
-      <div class="g-compare-visual"><div class="g-compare-car"><?php echo a3g_icon('car'); ?><span>السيارة الأولى</span></div><b>VS</b><div class="g-compare-car"><?php echo a3g_icon('car'); ?><span>السيارة الثانية</span></div></div>
-      <p>قارن المواصفات والتجهيزات ونقاط القوة والضعف قبل الحجز.</p>
+      <div class="g-box-head"><div><span>قرار أسرع</span><h2>مقارنات السيارات</h2></div><a href="<?php echo esc_url(a3g_cat_link(21)); ?>">تصفح المقارنات</a></div>
+      <div class="g-compare-visual"><div class="g-compare-car"><?php echo a3g_icon('car'); ?><span>مقارنات حسب الفئة</span></div><b>VS</b><div class="g-compare-car"><?php echo a3g_icon('compare'); ?><span>فروق المواصفات</span></div></div>
+      <p>تصفح مقارنات منشورة بين سيارات متقاربة في السعر أو الاستخدام قبل قرار الشراء.</p>
     </div>
     <div class="g-feature-box g-fault-box">
       <div class="g-box-head"><div><span>الأعطال والتشخيص</span><h2>ابدأ من العَرَض أو من الكود</h2></div><a href="<?php echo esc_url(a3g_cat_link(8)); ?>">كل الأعطال</a></div>
