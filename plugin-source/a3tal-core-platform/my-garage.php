@@ -19,10 +19,18 @@ get_header();
 <main class="g-wrap a3garage-shell" id="a3tal-garage-app">
 <?php if (!is_user_logged_in()): ?>
   <section class="a3garage-login">
-    <div class="a3garage-login-icon">🚘</div>
+    <div class="a3garage-login-icon">A3</div>
     <h2>سجّل الدخول لفتح جراجك</h2>
-    <p>الجراج مرتبط بحسابك حتى يفضل سجل الصيانة والتنبيهات محفوظًا معك.</p>
-    <a href="<?php echo esc_url(wp_login_url(home_url('/my-garage/'))); ?>">تسجيل الدخول</a>
+    <p>الجراج مرتبط بحسابك حتى يظل سجل المركبة والعداد والصيانة محفوظًا معك.</p>
+    <div class="a3garage-onboarding">
+      <span><b>1</b> سجّل الدخول أو أنشئ حسابًا.</span>
+      <span><b>2</b> اختر موديلك وأدخل العداد الحالي.</span>
+      <span><b>3</b> سجّل الصيانة وتابع الاستحقاقات من نفس الصفحة.</span>
+    </div>
+    <div class="a3garage-login-actions">
+      <a href="<?php echo esc_url(wp_login_url(home_url('/my-garage/'))); ?>">تسجيل الدخول</a>
+      <?php if(get_option('users_can_register')): ?><a class="is-secondary" href="<?php echo esc_url(wp_registration_url()); ?>">إنشاء حساب</a><?php endif; ?>
+    </div>
   </section>
 <?php else: ?>
   <div class="a3garage-toolbar">
