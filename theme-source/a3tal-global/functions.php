@@ -179,6 +179,11 @@ function a3g_content_type_label($id=0){
 function a3g_related_vehicle_entity($post_id=0){
   $post_id=$post_id?:get_the_ID();
   if(!$post_id||get_post_type($post_id)!=='post')return null;
+  $explicit=(int)get_post_meta($post_id,'_a3_vehicle_entity_id',true);
+  if($explicit>0){
+    $entity=get_post($explicit);
+    if($entity instanceof WP_Post && in_array($entity->post_type,['a3_car','a3_motorcycle'],true) && $entity->post_status==='publish') return $entity;
+  }
   $q=new WP_Query([
     'post_type'=>['a3_car','a3_motorcycle'],
     'post_status'=>'publish',
