@@ -6,7 +6,7 @@
       "log_response": true,
       "body": {
         "op": "file_read",
-        "path": "plugins/ad-inserter/constants.php"
+        "path": "plugins/insert-headers-and-footers/includes/post-type.php"
       }
     },
     {
@@ -14,8 +14,25 @@
       "path": "/admin",
       "log_response": true,
       "body": {
-        "op": "file_list",
-        "path": "plugins/insert-headers-and-footers/includes"
+        "op": "file_read",
+        "path": "plugins/insert-headers-and-footers/includes/class-wpcode-snippet.php"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/admin",
+      "log_response": true,
+      "body": {
+        "op": "options",
+        "keys": [
+          "ad_inserter",
+          "ad_inserter_extract",
+          "wpcode_global_settings",
+          "wpcode_settings",
+          "wpcode_snippets",
+          "ihaf_insert_header",
+          "ihaf_insert_footer"
+        ]
       }
     }
   ],
