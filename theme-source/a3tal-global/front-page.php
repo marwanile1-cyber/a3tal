@@ -89,28 +89,6 @@ $showrooms=new WP_Query(['post_type'=>'a3_showroom','post_status'=>'publish','po
 </section>
 <?php endif; ?>
 
-<section class="g-section g-home-os-section">
-  <div class="g-wrap">
-    <div class="g-home-os">
-      <div class="g-home-os-copy">
-        <span>MY A3TAL GARAGE</span>
-        <h2>خلي أعطال يتابع مركبتك معاك</h2>
-        <p>أضف سيارتك أو موتوسيكلك مرة واحدة. حدّث العداد، سجل الصيانة، اعرف اللي قرب ميعاده، دور على القطع المناسبة، ولو قررت تبيعها اعرضها من نفس الملف.</p>
-        <div class="g-home-os-actions"><a class="is-primary" href="<?php echo esc_url(home_url('/my-garage/')); ?>">افتح سيارتي</a><a href="<?php echo esc_url(a3g_platform_link('a3_maintenance_plan','/maintenance-schedules/')); ?>">شوف جداول الصيانة</a></div>
-      </div>
-      <div class="g-home-os-dashboard">
-        <div class="g-os-car-head"><span><?php echo a3g_icon('car'); ?></span><div><small>سيارتي</small><strong>جراج رقمي كامل</strong></div><b>مثال توضيحي</b></div>
-        <div class="g-os-meter"><div><span>عداد المركبة</span><strong>87,450 <small>كم</small></strong></div><i style="--p:72%"></i></div>
-        <div class="g-os-services">
-          <span class="is-due"><i></i><b>زيت المحرك</b><small>مستحق الآن</small></span>
-          <span class="is-soon"><i></i><b>فلتر الهواء</b><small>قريبًا</small></span>
-          <span class="is-ok"><i></i><b>سائل الفرامل</b><small>لاحقًا</small></span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <section class="g-section g-section-soft g-home-dtc-zone">
   <div class="g-wrap">
     <div class="g-dtc-command">
@@ -131,6 +109,28 @@ $showrooms=new WP_Query(['post_type'=>'a3_showroom','post_status'=>'publish','po
           <div class="g-dtc-preview-card"><b>P0171</b><span>خليط فقير Bank 1</span><small>أعراض + أسباب + تشخيص</small></div>
           <div class="g-dtc-preview-card"><b>P0300</b><span>Misfire متعدد</span><small>تشخيص قبل تغيير القطع</small></div>
         <?php endif; ?>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="g-section g-home-os-section">
+  <div class="g-wrap">
+    <div class="g-home-os">
+      <div class="g-home-os-copy">
+        <span>MY A3TAL GARAGE</span>
+        <h2>خلي أعطال يتابع مركبتك معاك</h2>
+        <p>أضف سيارتك أو موتوسيكلك مرة واحدة. حدّث العداد، سجل الصيانة، اعرف اللي قرب ميعاده، دور على القطع المناسبة، ولو قررت تبيعها اعرضها من نفس الملف.</p>
+        <div class="g-home-os-actions"><a class="is-primary" href="<?php echo esc_url(home_url('/my-garage/')); ?>">افتح سيارتي</a><a href="<?php echo esc_url(a3g_platform_link('a3_maintenance_plan','/maintenance-schedules/')); ?>">شوف جداول الصيانة</a></div>
+      </div>
+      <div class="g-home-os-dashboard">
+        <div class="g-os-car-head"><span><?php echo a3g_icon('car'); ?></span><div><small>سيارتي</small><strong>جراج رقمي كامل</strong></div><b>مثال توضيحي</b></div>
+        <div class="g-os-meter"><div><span>عداد المركبة</span><strong>87,450 <small>كم</small></strong></div><i style="--p:72%"></i></div>
+        <div class="g-os-services">
+          <span class="is-due"><i></i><b>زيت المحرك</b><small>مستحق الآن</small></span>
+          <span class="is-soon"><i></i><b>فلتر الهواء</b><small>قريبًا</small></span>
+          <span class="is-ok"><i></i><b>سائل الفرامل</b><small>لاحقًا</small></span>
+        </div>
       </div>
     </div>
   </div>
