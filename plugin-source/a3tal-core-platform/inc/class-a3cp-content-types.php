@@ -333,6 +333,7 @@ final class A3CP_Content_Types {
         $vars[] = 'vehicle_type';
         $vars[] = 'code';
         $vars[] = 'directory_status';
+        $vars[] = 'location';
         return $vars;
     }
 
@@ -417,6 +418,15 @@ final class A3CP_Content_Types {
             }
             if ($tax_query) {
                 $query->set('tax_query', count($tax_query) > 1 ? array_merge(['relation' => 'AND'], $tax_query) : $tax_query);
+            }
+
+            $location = sanitize_text_field((string) get_query_var('location'));
+            if ($location !== '') {
+                $query->set('meta_query', [[
+                    'key' => '_a3_address',
+                    'value' => $location,
+                    'compare' => 'LIKE',
+                ]]);
             }
         }
     }
