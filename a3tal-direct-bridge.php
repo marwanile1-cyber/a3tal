@@ -1753,6 +1753,13 @@ CSS;
             $args['parent'] = (int) $data['parent'];
         }
 
+        if (!$id && !empty($args['slug'])) {
+            $existing = get_term_by('slug', $args['slug'], $taxonomy);
+            if ($existing instanceof WP_Term) {
+                $id = (int) $existing->term_id;
+            }
+        }
+
         if ($id) {
             $name = sanitize_text_field((string) ($data['name'] ?? ''));
             if ($name !== '') {
