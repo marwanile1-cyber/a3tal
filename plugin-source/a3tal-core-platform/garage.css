@@ -20,6 +20,12 @@
 .a3garage-login{max-width:700px;margin:30px auto;padding:45px 28px;text-align:center;background:#fff;border:1px solid var(--a3g-line);border-radius:20px;box-shadow:var(--a3g-shadow)}
 .a3garage-login-icon{font-size:56px}.a3garage-login h2{font-family:"Alexandria";margin:8px 0}.a3garage-login p{color:var(--a3g-muted)}
 .a3garage-login a,.a3garage-primary{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:10px;background:linear-gradient(135deg,var(--a3g-orange),#ff6c36);color:#fff!important;padding:10px 15px;font-weight:900;text-decoration:none}
+.a3garage-login-icon{width:58px;height:58px;margin:0 auto;display:grid;place-items:center;border-radius:18px;background:#0c2032;color:#fff;font-family:"Alexandria";font-size:20px!important;font-weight:900}
+.a3garage-onboarding{max-width:560px;margin:18px auto;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:right}
+.a3garage-onboarding span{display:flex;align-items:flex-start;gap:7px;padding:11px;border:1px solid #edf1f4;border-radius:11px;background:#fafbfd;color:#4d5d6d;font-size:9px;line-height:1.7}
+.a3garage-onboarding b{flex:0 0 auto;width:21px;height:21px;border-radius:50%;display:grid;place-items:center;background:#ffe9e1;color:#d7461d;font-size:8px}
+.a3garage-login-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+.a3garage-login-actions a.is-secondary{background:#eef3f7;color:#263d53!important}
 .a3garage-toolbar{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:15px}
 .a3garage-toolbar span,.a3garage-section-head span{font-size:9px;color:var(--a3g-orange);font-weight:900;letter-spacing:.08em}
 .a3garage-toolbar h2{font-family:"Alexandria";margin:2px 0 0;font-size:25px}
@@ -71,3 +77,5 @@
 .a3garage-form-message{margin-top:8px;font-size:9px;color:#168147}.a3garage-form-message.is-error{color:#c62828}.a3garage-safety-note{margin-top:12px;padding:10px;border-radius:9px;background:#fff8f5;border:1px solid #ffd7ca;color:#765349;font-size:9px}
 @media(max-width:960px){.a3garage-layout{grid-template-columns:1fr}.a3garage-sidebar{position:static}.a3garage-vehicles{display:flex;overflow-x:auto}.a3garage-vehicle-card{min-width:220px}.a3garage-maintenance{grid-template-columns:1fr}.a3garage-quick-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:700px){.a3garage-hero-inner{align-items:flex-start;flex-direction:column}.a3garage-hero-badge{min-width:0;width:100%}.a3garage-stats{grid-template-columns:1fr 1fr}.a3garage-vehicle-hero{flex-direction:column}.a3garage-vehicle-actions{justify-content:flex-start}.a3garage-next{grid-template-columns:82px 1fr}.a3garage-next-ring{width:74px;height:74px}.a3garage-maint-facts{grid-template-columns:1fr}.a3garage-section-head{align-items:flex-start;flex-direction:column}.a3garage-form-grid{grid-template-columns:1fr}.a3garage-span-2{grid-column:auto}.a3garage-quick-grid{grid-template-columns:1fr 1fr}}
+
+@media(max-width:700px){.a3garage-onboarding{grid-template-columns:1fr}}
