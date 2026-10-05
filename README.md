@@ -79,3 +79,8 @@ Bridge 3.0 is designed to provide WordPress Administrator-level control. It inte
 ## Current deployment note
 
 Updating this repository does not update the currently installed WordPress plugin automatically. The live site was verified on 2026-09-28 and reported Bridge **2.1.0**. Version 3.0 must therefore be installed on the site once. After 3.0 is live, the `bridge_self_update` operation can update the bridge from this repository for future releases.
+
+
+## Editorial image policy
+
+All article and featured images must follow [A3tal Editorial Image Policy](A3TAL-IMAGE-POLICY.md). The default is photorealistic, scene-based automotive imagery. Vector, icon-based, infographic-style or generic rendered images are rejected unless a technical diagram is explicitly required by the content.
