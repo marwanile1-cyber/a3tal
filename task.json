@@ -2,13 +2,37 @@
   "requests": [
     {
       "method": "GET",
-      "path": "/admin?op=terms&taxonomy=a3_brand&hide_empty=0",
+      "path": "/post/3",
       "log_response": true,
       "body": {}
     },
     {
       "method": "GET",
-      "path": "/search-posts?search=BMW%20maintenance&status=any&limit=50",
+      "path": "/post/80917",
+      "log_response": true,
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=P0342&status=any&limit=20",
+      "log_response": true,
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=إطارات%20الموتوسيكل&status=any&limit=20",
+      "log_response": true,
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=صيانة%20جيلي%20ستار%20راي&status=any&limit=20",
+      "log_response": true,
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=جدول%20صيانة%20GAC%20Emzoom&status=any&limit=20",
       "log_response": true,
       "body": {}
     }
