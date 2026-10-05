@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      A3TAL_API_KEY: \${{ secrets.A3TAL_BRIDGE_KEY }}
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
       BASE: https://a3tal.com/wp-json/a3tal-direct/v1
       SITE: https://a3tal.com
     steps:
@@ -515,7 +515,7 @@ jobs:
             local seo_title="$7"
             local seo_desc="$8"
             local svg="$9"
-            local alt="10"
+            local alt="${10}"
 
             jq -n \
               --arg title "$title" \
