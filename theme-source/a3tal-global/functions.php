@@ -30,6 +30,7 @@ function a3g_excerpt($id=0,$words=22){
   if($manual!=='') return wp_trim_words(wp_strip_all_tags($manual),$words);
 
   $x=(string)get_post_field('post_content',$id);
+  $x=preg_replace('#<p\b[^>]*>[^<]*(?:<strong\b[^>]*>)?\s*مراجعة فنية\s*:[\s\S]*?</p>#iu',' ',$x,1);
   $x=preg_replace('#<script\b[^>]*>.*?</script>#isu',' ',$x);
   $x=preg_replace('#<style\b[^>]*>.*?</style>#isu',' ',$x);
   $x=preg_replace('#<!--.*?-->#s',' ',$x);
