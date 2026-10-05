@@ -6,7 +6,7 @@
       "log_response": true,
       "body": {
         "op": "file_read",
-        "path": "plugins/ad-inserter/ad-inserter.php"
+        "path": "plugins/ad-inserter/constants.php"
       }
     },
     {
@@ -14,8 +14,8 @@
       "path": "/admin",
       "log_response": true,
       "body": {
-        "op": "file_read",
-        "path": "plugins/insert-headers-and-footers/ihaf.php"
+        "op": "file_list",
+        "path": "plugins/insert-headers-and-footers/includes"
       }
     }
   ],
