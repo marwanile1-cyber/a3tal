@@ -44,7 +44,7 @@ get_header(); ?>
 </section>
 
 <main class="g-wrap g-platform-archive">
-  <div class="g-platform-archive-head"><div><span>مرجع تشخيصي</span><h2>أكواد الأعطال المنشورة</h2></div><b><?php global $wp_query; echo esc_html(number_format_i18n((int)$wp_query->found_posts)); ?> كود</b></div>
+  <div class="g-platform-archive-head"><div><span>مرجع تشخيصي</span><h2>أكواد الأعطال المنشورة</h2></div><b><?php global $wp_query; echo esc_html(number_format_i18n((int)$wp_query->found_posts+$legacy_match_count)); ?> نتيجة متاحة</b></div>
   <?php if(have_posts()): ?>
   <div class="g-dtc-grid">
     <?php while(have_posts()):the_post();
@@ -65,7 +65,7 @@ get_header(); ?>
   <div class="g-platform-pagination"><?php the_posts_pagination(['mid_size'=>2,'prev_text'=>'السابق','next_text'=>'التالي']); ?></div>
   <?php else: ?>
     <?php if($legacy_match_count>0): ?>
-      <div class="g-platform-empty g-dtc-legacy-hit"><?php echo a3g_icon('search'); ?><h2>وجدنا شرحًا منشورًا للكود <?php echo esc_html($searched_code); ?></h2><p>الكود لم يُضف بعد كصفحة مرجعية منظمة، لكن الشرح الفني الموجود على أعطال متاح مباشرة بالأسفل.</p></div>
+      
     <?php else: ?>
       <div class="g-platform-empty"><?php echo a3g_icon('gear'); ?><h2>لم نجد شرحًا منشورًا للكود <?php echo esc_html($searched_code?:'المطلوب'); ?></h2><p>راجع كتابة الكود، أو تصفح شروحات أكواد الأعطال المتاحة في المكتبة.</p></div>
     <?php endif; ?>
