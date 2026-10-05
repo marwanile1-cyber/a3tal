@@ -1001,3 +1001,20 @@ html,body{max-width:100%;overflow-x:hidden}
 .g-related-model-box>a{flex:0 0 auto;padding:8px 11px;border-radius:8px;background:var(--g-dark);color:#fff;font-size:9px;font-weight:900}
 .g-os-car-head>b{font-size:8px!important;white-space:nowrap}
 @media(max-width:600px){.g-related-model-box{align-items:flex-start;flex-direction:column}.g-related-model-box>a{width:100%;justify-content:center}.g-article-head h1{font-size:29px}}
+
+/* Google Auto Ads / CMP safe-area: preserve readable content and TOC without hiding or moving ads */
+@media(min-width:901px){
+  body.single-post .g-article-side{
+    max-height:calc(100vh - 205px);
+    overflow:auto;
+    overscroll-behavior:contain;
+    scrollbar-gutter:stable;
+  }
+  body.single-post.a3tal-has-anchor-ad .g-article-side{max-height:calc(100vh - 285px)}
+  body.single-post.a3tal-has-anchor-ad .g-article-layout{padding-bottom:135px}
+  body.single-post.a3tal-has-consent .g-article-side{max-height:calc(100vh - 300px)}
+  body.single-post.a3tal-has-anchor-ad.a3tal-has-consent .g-article-side{max-height:calc(100vh - 345px)}
+}
+@media(max-width:900px){
+  body.single-post.a3tal-has-anchor-ad .g-article-layout{padding-bottom:120px}
+}
