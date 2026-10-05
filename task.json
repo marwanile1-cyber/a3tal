@@ -1,14 +1,16 @@
 {
   "requests": [
     {
-      "method": "POST",
-      "path": "/admin",
+      "method": "GET",
+      "path": "/admin?op=terms&taxonomy=a3_brand&hide_empty=0",
       "log_response": true,
-      "body": {
-        "op": "post_meta",
-        "post_id": 83167,
-        "key": "post_views_count"
-      }
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=BMW%20maintenance&status=any&limit=50",
+      "log_response": true,
+      "body": {}
     }
   ],
   "verify": []
