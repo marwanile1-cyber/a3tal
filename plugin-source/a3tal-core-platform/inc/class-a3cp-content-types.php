@@ -66,6 +66,8 @@ final class A3CP_Content_Types {
         add_action('a3cp_seed_motorcycle_expansion_v2', [__CLASS__, 'seed_motorcycle_expansion_v2']);
         add_action('init', [__CLASS__, 'seed_motorcycle_guides_v1'], 49);
         add_action('a3cp_seed_motorcycle_guides_v1', [__CLASS__, 'seed_motorcycle_guides_v1']);
+        add_action('init', [__CLASS__, 'seed_directory_locations_v1'], 50);
+        add_action('a3cp_seed_directory_locations_v1', [__CLASS__, 'seed_directory_locations_v1']);
     }
 
     public static function register_all(): void {
@@ -240,6 +242,8 @@ final class A3CP_Content_Types {
             self::meta($type, '_a3_hours', 'string', 'sanitize_textarea_field');
             self::meta($type, '_a3_official_source_url', 'string', 'esc_url_raw');
             self::meta($type, '_a3_source_checked_at', 'string', 'sanitize_text_field');
+            self::meta($type, '_a3_city', 'string', 'sanitize_text_field');
+            self::meta($type, '_a3_governorate', 'string', 'sanitize_text_field');
         }
 
         self::meta('a3_showroom', '_a3_email', 'string', 'sanitize_email');
@@ -422,13 +426,56 @@ final class A3CP_Content_Types {
 
             $location = sanitize_text_field((string) get_query_var('location'));
             if ($location !== '') {
-                $query->set('meta_query', [[
-                    'key' => '_a3_address',
-                    'value' => $location,
-                    'compare' => 'LIKE',
-                ]]);
+                $query->set('meta_query', [
+                    'relation' => 'OR',
+                    [
+                        'key' => '_a3_city',
+                        'value' => $location,
+                        'compare' => 'LIKE',
+                    ],
+                    [
+                        'key' => '_a3_governorate',
+                        'value' => $location,
+                        'compare' => 'LIKE',
+                    ],
+                ]);
             }
         }
+    }
+
+    public static function seed_directory_locations_v1(): void {
+        if ((string) get_option('a3cp_directory_locations_v1') === 'done') return;
+
+        $items = [
+            ['type'=>'a3_service_center','slug'=>'fiat-dynamics-katameya-1-service-center','city'=>'القطامية','gov'=>'القاهرة'],
+            ['type'=>'a3_service_center','slug'=>'fiat-dynamics-katameya-2-service-center','city'=>'القطامية','gov'=>'القاهرة'],
+            ['type'=>'a3_service_center','slug'=>'fiat-dynamics-alexandria-amreya-service-center','city'=>'العامرية','gov'=>'الإسكندرية'],
+            ['type'=>'a3_service_center','slug'=>'fiat-dynamics-damietta-service-center','city'=>'دمياط','gov'=>'دمياط'],
+            ['type'=>'a3_service_center','slug'=>'fiat-dynamics-hurghada-service-center','city'=>'الغردقة','gov'=>'البحر الأحمر'],
+
+            ['type'=>'a3_showroom','slug'=>'chery-kernel-fifth-settlement-showroom','city'=>'التجمع الخامس','gov'=>'القاهرة'],
+            ['type'=>'a3_showroom','slug'=>'mg-mansour-mansoura-showroom','city'=>'المنصورة','gov'=>'الدقهلية'],
+            ['type'=>'a3_showroom','slug'=>'chery-gb-abbas-el-akkad-showroom','city'=>'مدينة نصر','gov'=>'القاهرة'],
+            ['type'=>'a3_showroom','slug'=>'mg-mansour-smouha-showroom','city'=>'سموحة','gov'=>'الإسكندرية'],
+            ['type'=>'a3_showroom','slug'=>'mg-mansour-new-cairo-showroom','city'=>'القاهرة الجديدة','gov'=>'القاهرة'],
+            ['type'=>'a3_showroom','slug'=>'mg-mansour-madinaty-showroom','city'=>'مدينتي','gov'=>'القاهرة'],
+            ['type'=>'a3_showroom','slug'=>'toyota-egypt-abbassia-showroom','city'=>'العباسية','gov'=>'القاهرة'],
+            ['type'=>'a3_showroom','slug'=>'toyota-egypt-sheikh-zayed-showroom','city'=>'الشيخ زايد','gov'=>'الجيزة'],
+            ['type'=>'a3_showroom','slug'=>'toyota-egypt-madinaty-showroom','city'=>'مدينتي','gov'=>'القاهرة'],
+            ['type'=>'a3_showroom','slug'=>'toyota-egypt-cairo-festival-city-showroom','city'=>'القاهرة الجديدة','gov'=>'القاهرة'],
+        ];
+
+        $ready = true;
+        foreach ($items as $item) {
+            $post = get_page_by_path($item['slug'], OBJECT, $item['type']);
+            if (!$post instanceof WP_Post) {
+                $ready = false;
+                continue;
+            }
+            update_post_meta($post->ID, '_a3_city', $item['city']);
+            update_post_meta($post->ID, '_a3_governorate', $item['gov']);
+        }
+        if ($ready) update_option('a3cp_directory_locations_v1', 'done', false);
     }
 
     public static function seed_reference_entities(): void {
