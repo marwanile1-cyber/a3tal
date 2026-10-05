@@ -2,6 +2,7 @@
 $searched_code=strtoupper(preg_replace('/[^A-Z0-9]/i','',(string)get_query_var('code')));
 $legacy_match_q=null;
 $legacy_match_count=0;
+$legacy_exact_id=0;
 if($searched_code!==''){
   $legacy_match_q=new WP_Query([
     'post_type'=>'post',
@@ -12,6 +13,16 @@ if($searched_code!==''){
     'ignore_sticky_posts'=>true,
   ]);
   $legacy_match_count=(int)$legacy_match_q->found_posts;
+  if($legacy_match_q->posts){
+    foreach($legacy_match_q->posts as $legacy_post){
+      $legacy_slug=(string)$legacy_post->post_name;
+      $legacy_title=(string)$legacy_post->post_title;
+      if(stripos($legacy_title,$searched_code)!==false || stripos($legacy_slug,strtolower($searched_code))!==false){
+        $legacy_exact_id=(int)$legacy_post->ID;
+        break;
+      }
+    }
+  }
 }
 get_header(); ?>
 <section class="g-platform-archive-hero g-dtc-archive-hero">
@@ -62,14 +73,23 @@ get_header(); ?>
 
   <?php if($legacy_match_count>0): ?>
     <section class="g-legacy-bridge g-dtc-search-results">
-      <div class="g-section-head"><div><span>نتائج البحث الموحّد</span><h2>شروحات مطابقة للكود <?php echo esc_html($searched_code); ?></h2><p>نتائج من مقالات أعطال الحالية حتى تصل للشرح المتاح سواء كان داخل المرجع الجديد أو المكتبة القديمة.</p></div><div class="g-legacy-count"><?php echo esc_html(number_format_i18n($legacy_match_count)); ?> نتيجة</div></div>
-      <div class="g-news-grid g-legacy-grid">
-        <?php while($legacy_match_q->have_posts()):$legacy_match_q->the_post();a3g_card(get_the_ID(),'g-legacy-card');endwhile;wp_reset_postdata(); ?>
-      </div>
+      <?php if($legacy_exact_id): ?>
+        <div class="g-section-head"><div><span>النتيجة الأقرب</span><h2>شرح الكود <?php echo esc_html($searched_code); ?></h2><p>ابدأ بالشرح المطابق للكود، ثم راجع النتائج المرتبطة فقط إذا احتجت تفاصيل إضافية.</p></div></div>
+        <div class="g-news-grid g-dtc-exact-grid"><?php a3g_card($legacy_exact_id,'g-legacy-card g-dtc-exact-card'); ?></div>
+      <?php endif; ?>
+
+      <?php if($legacy_match_count>($legacy_exact_id?1:0)): ?>
+        <div class="g-section-head g-dtc-related-head"><div><span>نتائج مرتبطة</span><h2>شروحات أخرى مرتبطة بـ <?php echo esc_html($searched_code); ?></h2></div><div class="g-legacy-count"><?php echo esc_html(number_format_i18n($legacy_match_count-($legacy_exact_id?1:0))); ?> نتيجة</div></div>
+        <div class="g-news-grid g-legacy-grid">
+          <?php while($legacy_match_q->have_posts()):$legacy_match_q->the_post();if(get_the_ID()===$legacy_exact_id)continue;a3g_card(get_the_ID(),'g-legacy-card');endwhile;wp_reset_postdata(); ?>
+        </div>
+      <?php else: wp_reset_postdata(); endif; ?>
     </section>
   <?php endif; ?>
   <?php
   $legacy_exclude=a3g_entity_related_post_ids('a3_dtc');
+  if($legacy_exact_id)$legacy_exclude[]=$legacy_exact_id;
+  $legacy_exclude=array_values(array_unique(array_map('intval',$legacy_exclude)));
   a3g_legacy_section(
     [2],
     'كل شروحات أكواد الأعطال',
