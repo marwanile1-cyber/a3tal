@@ -423,3 +423,28 @@ function a3g_structured_car_yoast_robots($robots){
   return $robots;
 }
 add_filter('wpseo_robots','a3g_structured_car_yoast_robots',99);
+
+
+/* Keep article UI clear of Google Auto Ads anchors and consent overlays without altering the ads themselves. */
+function a3g_overlay_safe_area(){
+  if(!is_singular('post')) return;
+  ?>
+  <script id="a3tal-overlay-safe-area">
+  (function(){
+    var body=document.body;
+    if(!body)return;
+    function sync(){
+      var anchor=document.querySelector('[data-anchor-status="displayed"], ins.adsbygoogle[data-anchor-status="displayed"]');
+      var consent=document.querySelector('.fc-consent-root,.fc-dialog-container,[class*="fc-consent"],iframe[src*="fundingchoices"],iframe[src*="consent.google"]');
+      body.classList.toggle('a3tal-has-anchor-ad',!!anchor);
+      body.classList.toggle('a3tal-has-consent',!!consent);
+    }
+    sync();
+    var observer=new MutationObserver(sync);
+    observer.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['class','style','data-anchor-status']});
+    window.addEventListener('load',function(){sync();setTimeout(sync,1200);setTimeout(sync,3500);});
+  })();
+  </script>
+  <?php
+}
+add_action('wp_footer','a3g_overlay_safe_area',120);
