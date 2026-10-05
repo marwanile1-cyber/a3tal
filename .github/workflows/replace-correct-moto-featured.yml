@@ -1,0 +1,284 @@
+name: Replace Correct Motorcycle Featured Images
+
+on:
+  push:
+    paths:
+      - '.github/workflows/replace-correct-moto-featured.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  replace:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      BASE: https://a3tal.com/wp-json/a3tal-direct/v1
+      SITE: https://a3tal.com
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate secret
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+
+      - name: Install image dependencies
+        run: |
+          set -euo pipefail
+          python -m pip install --quiet pillow requests numpy
+
+      - name: Build accurate exclusive composites
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > /tmp/build_moto_images.py <<'PY'
+          import os, io, math
+          import requests
+          import numpy as np
+          from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageEnhance
+
+          OUT="/tmp/moto_correct"
+          os.makedirs(OUT, exist_ok=True)
+
+          ITEMS = [
+              {
+                  "key":"dayun4a",
+                  "url":"https://legion-images.hatla2ee.com/original_image/4c4a8c66-5df2-4d8b-bffb-0ddca1b8d9fc/large.jpg",
+                  "accent":(230,104,35),
+                  "accent2":(255,183,77),
+              },
+              {
+                  "key":"hogen3",
+                  "url":"https://api-rayashop.freetls.fastly.net/media/catalog/product/cache/4e49ac3a70c0b98a165f3fa6633ffee1/m/9/m9ml96ywjh7fs7blnwzx_hqu8otar2ep4gljs.jpg",
+                  "accent":(196,35,47),
+                  "accent2":(255,101,109),
+              },
+              {
+                  "key":"halawaexpress",
+                  "url":"https://legion-images.hatla2ee.com/original_image/df232770-fbc1-4f26-aa67-4176afab2bf2/medium.png",
+                  "accent":(223,102,43),
+                  "accent2":(250,190,88),
+              },
+              {
+                  "key":"haojika150",
+                  "url":"https://www.haojuemotor.com/wp-content/uploads/2024/06/KA150-blue.png",
+                  "accent":(30,116,220),
+                  "accent2":(245,128,32),
+              },
+          ]
+
+          headers={"User-Agent":"Mozilla/5.0 A3talEditorial/1.0"}
+
+          def fetch(url):
+              r=requests.get(url,headers=headers,timeout=45)
+              r.raise_for_status()
+              im=Image.open(io.BytesIO(r.content)).convert("RGBA")
+              return im
+
+          def remove_edge_white(im):
+              arr=np.array(im)
+              rgb=arr[:,:,:3].astype(np.int16)
+              alpha=arr[:,:,3].copy()
+              hi=rgb.max(axis=2); lo=rgb.min(axis=2)
+              candidate=(rgb.mean(axis=2)>218) & ((hi-lo)<45) & (alpha>0)
+              h,w=candidate.shape
+              seen=np.zeros((h,w),dtype=bool)
+              from collections import deque
+              q=deque()
+              for x in range(w):
+                  if candidate[0,x]: q.append((0,x))
+                  if candidate[h-1,x]: q.append((h-1,x))
+              for y in range(h):
+                  if candidate[y,0]: q.append((y,0))
+                  if candidate[y,w-1]: q.append((y,w-1))
+              while q:
+                  y,x=q.popleft()
+                  if y<0 or y>=h or x<0 or x>=w or seen[y,x] or not candidate[y,x]:
+                      continue
+                  seen[y,x]=True
+                  q.append((y-1,x)); q.append((y+1,x)); q.append((y,x-1)); q.append((y,x+1))
+              alpha[seen]=0
+              arr[:,:,3]=alpha
+              out=Image.fromarray(arr,"RGBA")
+              bbox=out.getbbox()
+              return out.crop(bbox) if bbox else im
+
+          def background(accent, accent2):
+              W,H=1600,900
+              arr=np.zeros((H,W,3),dtype=np.uint8)
+              top=np.array([12,20,31],dtype=float)
+              bot=np.array([48,51,56],dtype=float)
+              for y in range(H):
+                  t=y/(H-1)
+                  c=(top*(1-t)+bot*t).astype(np.uint8)
+                  arr[y,:,0]=c[0]; arr[y,:,1]=c[1]; arr[y,:,2]=c[2]
+              bg=Image.fromarray(arr,"RGB").convert("RGBA")
+              d=ImageDraw.Draw(bg,"RGBA")
+              # workshop wall / shelving
+              for i,x in enumerate(range(60,1540,180)):
+                  d.rounded_rectangle((x,115,x+125,470),18,fill=(255,255,255,16),outline=(255,255,255,22),width=2)
+                  for yy in (180,260,340,420):
+                      d.line((x+15,yy,x+110,yy),fill=(255,255,255,18),width=3)
+              # service bay light strips
+              for x in (170,520,870,1220):
+                  d.rounded_rectangle((x,45,x+220,68),10,fill=(*accent2,65))
+              # warm / cool bokeh
+              for cx,cy,r,a in [(1300,170,95,75),(1440,320,60,45),(250,250,70,40),(1020,210,45,35)]:
+                  d.ellipse((cx-r,cy-r,cx+r,cy+r),fill=(*accent,a))
+              # floor
+              d.rectangle((0,600,1600,900),fill=(20,23,27,170))
+              for x in range(-200,1900,220):
+                  d.line((800,600,x,900),fill=(255,255,255,12),width=2)
+              for y in (650,720,800):
+                  d.line((0,y,1600,y),fill=(255,255,255,10),width=2)
+              bg=bg.filter(ImageFilter.GaussianBlur(radius=2.2))
+              # spotlight
+              light=Image.new("RGBA",(W,H),(0,0,0,0))
+              ld=ImageDraw.Draw(light,"RGBA")
+              ld.ellipse((170,40,1430,850),fill=(255,255,255,22))
+              light=light.filter(ImageFilter.GaussianBlur(90))
+              bg=Image.alpha_composite(bg,light)
+              return bg
+
+          def fit_subject(im, maxw=1260, maxh=620):
+              scale=min(maxw/im.width,maxh/im.height)
+              nw=max(1,int(im.width*scale)); nh=max(1,int(im.height*scale))
+              return im.resize((nw,nh),Image.Resampling.LANCZOS)
+
+          def make(item):
+              src=fetch(item["url"])
+              if src.getextrema()[3][0] != 0:
+                  src=remove_edge_white(src)
+              else:
+                  bbox=src.getbbox()
+                  if bbox: src=src.crop(bbox)
+
+              # mild clarity only; do not alter model geometry
+              rgb=Image.new("RGB",src.size,(255,255,255))
+              rgb.paste(src,mask=src.getchannel("A"))
+              rgb=ImageEnhance.Contrast(rgb).enhance(1.04)
+              rgb=ImageEnhance.Sharpness(rgb).enhance(1.15)
+              src2=rgb.convert("RGBA")
+              src2.putalpha(src.getchannel("A"))
+              subject=fit_subject(src2)
+
+              bg=background(item["accent"],item["accent2"])
+              W,H=bg.size
+              x=(W-subject.width)//2
+              y=705-subject.height
+
+              # grounded shadow
+              sh=Image.new("RGBA",(W,H),(0,0,0,0))
+              sd=ImageDraw.Draw(sh,"RGBA")
+              sd.ellipse((x+subject.width*0.08,690,x+subject.width*0.92,810),fill=(0,0,0,115))
+              sh=sh.filter(ImageFilter.GaussianBlur(28))
+              bg=Image.alpha_composite(bg,sh)
+
+              # faint floor reflection
+              refl=subject.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+              ra=refl.getchannel("A")
+              grad=np.linspace(70,0,refl.height,dtype=np.uint8)[:,None]
+              a=np.array(ra,dtype=np.uint16)
+              a=(a*grad/255).astype(np.uint8)
+              refl.putalpha(Image.fromarray(a))
+              refl=refl.filter(ImageFilter.GaussianBlur(2))
+              bg.alpha_composite(refl,(x,715))
+              bg.alpha_composite(subject,(x,y))
+
+              # subtle accent line and A3TAL mark only
+              d=ImageDraw.Draw(bg,"RGBA")
+              d.rounded_rectangle((58,780,68,842),5,fill=(*item["accent"],235))
+              try:
+                  font=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",38)
+              except:
+                  font=ImageFont.load_default()
+              d.text((86,789),"A3TAL",font=font,fill=(245,247,250,238))
+              d.rectangle((181,824,195,831),fill=(235,45,62,245))
+
+              out=bg.convert("RGB")
+              path=os.path.join(OUT,item["key"]+"-featured-correct.webp")
+              out.save(path,"WEBP",quality=88,method=6)
+              print(item["key"],path,os.path.getsize(path),src.size,subject.size)
+
+          for item in ITEMS:
+              make(item)
+          PY
+          python /tmp/build_moto_images.py
+          file /tmp/moto_correct/*.webp
+          ls -lh /tmp/moto_correct
+
+      - name: Upload and replace featured images
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          api_post() {
+            local path="$1" body="$2" out="$3"
+            local status
+            status=$(curl --silent --show-error --retry 5 --retry-delay 3 --retry-all-errors               -o "$out" -w "%{http_code}" -X POST               -H "X-A3tal-Key: $A3TAL_API_KEY"               -H "Authorization: Bearer $A3TAL_API_KEY"               -H "Content-Type: application/json"               --data-binary @"$body" "$BASE$path")
+            echo "POST $path -> HTTP $status"
+            if [ "$status" -lt 200 ] || [ "$status" -ge 300 ]; then
+              cat "$out"; exit 21
+            fi
+          }
+
+          replace_one() {
+            local key="$1" slug="$2" alt="$3"
+            local img="/tmp/moto_correct/$key-featured-correct.webp"
+            local post_json="/tmp/$key-post.json"
+            curl -fsSL --retry 4 "$SITE/wp-json/wp/v2/posts?slug=$slug&_fields=id,link,featured_media" > "$post_json"
+            local post_id
+            post_id=$(jq -r '.[0].id // empty' "$post_json")
+            test -n "$post_id" || { echo "Post not found: $slug"; cat "$post_json"; exit 22; }
+
+            base64 -w0 "$img" > "/tmp/$key.b64"
+            jq -n               --argjson post_id "$post_id"               --rawfile image_base64 "/tmp/$key.b64"               --arg filename "$key-featured-correct.webp"               --arg title "$alt"               --arg alt "$alt"               '{post_id:$post_id,image_base64:$image_base64,filename:$filename,title:$title,alt:$alt,set_featured:true,convert_webp:false}'               > "/tmp/$key-upload.json"
+            api_post "/upload-image-data" "/tmp/$key-upload.json" "/tmp/$key-upload-response.json"
+            jq -c '{media_id,url,featured_set}' "/tmp/$key-upload-response.json"
+            jq -r '.url' "/tmp/$key-upload-response.json" > "/tmp/$key-media-url"
+            jq -r '.[0].link' "$post_json" > "/tmp/$key-post-url"
+          }
+
+          replace_one "dayun4a" "dayun-4a-150-egypt-review" "دايون 4A 150 في مصر - تصميم أعطال.كوم"
+          replace_one "hogen3" "hogen-3-150-egypt-review" "هوجن 3 150 MH-150-3A في مصر - تصميم أعطال.كوم"
+          replace_one "halawaexpress" "halawa-express-150-egypt-review" "حلاوة إكسبريس 150 في مصر - تصميم أعطال.كوم"
+          replace_one "haojika150" "haoji-ka150-egypt-review" "هاوجي Haojue KA150 في مصر - تصميم أعطال.كوم"
+
+      - name: Flush cache
+        shell: bash
+        run: |
+          set -euo pipefail
+          jq -n '{op:"cache_flush"}' > /tmp/cache.json
+          curl -fsSL --retry 4 -X POST             -H "X-A3tal-Key: $A3TAL_API_KEY"             -H "Authorization: Bearer $A3TAL_API_KEY"             -H "Content-Type: application/json"             --data-binary @/tmp/cache.json "$BASE/admin" | jq .
+
+      - name: Verify live pages and OG images
+        shell: bash
+        run: |
+          set -euo pipefail
+          for key in dayun4a hogen3 halawaexpress haojika150; do
+            POST_URL=$(cat "/tmp/$key-post-url")
+            MEDIA_URL=$(cat "/tmp/$key-media-url")
+            echo "VERIFY $POST_URL"
+            echo "EXPECTED $MEDIA_URL"
+            HTML=$(curl -fsSL --retry 5 --retry-delay 3 "$POST_URL")
+            if ! grep -Fq "$MEDIA_URL" <<<"$HTML"; then
+              echo "New media URL missing from live HTML: $POST_URL"
+              exit 31
+            fi
+            if ! grep -qi 'max-image-preview:large' <<<"$HTML"; then
+              echo "Missing max-image-preview:large: $POST_URL"
+              exit 32
+            fi
+            if ! grep -qi 'canonical' <<<"$HTML"; then
+              echo "Missing canonical: $POST_URL"
+              exit 33
+            fi
+          done
+          echo "DONE"
+          paste -d' ' /tmp/dayun4a-post-url /tmp/dayun4a-media-url
+          paste -d' ' /tmp/hogen3-post-url /tmp/hogen3-media-url
+          paste -d' ' /tmp/halawaexpress-post-url /tmp/halawaexpress-media-url
+          paste -d' ' /tmp/haojika150-post-url /tmp/haojika150-media-url
