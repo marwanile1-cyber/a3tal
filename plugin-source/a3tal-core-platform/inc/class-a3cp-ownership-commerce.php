@@ -694,8 +694,13 @@ final class A3CP_Ownership_Commerce {
 
     public static function seed_pulsar_180_maintenance_v1(): void {
         if ((string) get_option('a3cp_pulsar_180_maintenance_v1') === 'done') return;
+        if (!add_option('a3cp_pulsar_180_maintenance_v1_lock', time(), '', false)) return;
 
         $vehicle = get_page_by_path('bajaj-pulsar-180-egypt', OBJECT, 'a3_motorcycle');
+        if (!$vehicle instanceof WP_Post) {
+            delete_option('a3cp_pulsar_180_maintenance_v1_lock');
+            return;
+        }
         if (!$vehicle instanceof WP_Post) return;
 
         $source = 'https://www.bajajauto.com/pdf/pulsar-150-150R-180-abs.pdf';
@@ -822,6 +827,7 @@ final class A3CP_Ownership_Commerce {
         }
 
         if ($all_ready) update_option('a3cp_pulsar_180_maintenance_v1','done',false);
+        delete_option('a3cp_pulsar_180_maintenance_v1_lock');
     }
 
     public static function seed_verified_vendors(): void {
