@@ -69,22 +69,42 @@ add_action('rest_api_init',function(){
         return rest_ensure_response(['ok'=>true,'count'=>a3g_post_views($id),'counted'=>false]);
       }
 
-      $ip=(string)($_SERVER['REMOTE_ADDR']??'');
-      $fingerprint=substr(hash('sha256',$id.'|'.$ip.'|'.$ua),0,24);
-      $lock='a3g_view_'.$fingerprint;
+      // Prefer an anonymous browser ID. IP+UA caused real users behind mobile NAT/CDNs
+      // to share the same lock and made the public counter under-report views.
+      $visitor=preg_replace('/[^a-zA-Z0-9._-]/','',(string)$request->get_param('visitor'));
+      if(strlen($visitor)>=16 && strlen($visitor)<=96){
+        $fingerprint=substr(hash('sha256',$id.'|visitor|'.$visitor),0,32);
+      }else{
+        $ip=(string)($_SERVER['HTTP_CF_CONNECTING_IP']??'');
+        if($ip===''){
+          $forwarded=(string)($_SERVER['HTTP_X_FORWARDED_FOR']??'');
+          $ip=$forwarded!==''?trim(explode(',',$forwarded)[0]):(string)($_SERVER['REMOTE_ADDR']??'');
+        }
+        $fingerprint=substr(hash('sha256',$id.'|fallback|'.$ip.'|'.$ua),0,32);
+      }
+
+      $lock='a3g_view_v2_'.$fingerprint;
       if(get_transient($lock)){
         return rest_ensure_response(['ok'=>true,'count'=>a3g_post_views($id),'counted'=>false]);
       }
-      set_transient($lock,1,10*MINUTE_IN_SECONDS);
+      // Ignore rapid refreshes but allow a genuine return visit to count later.
+      set_transient($lock,1,5*MINUTE_IN_SECONDS);
 
       $updated=$wpdb->query($wpdb->prepare(
         "UPDATE {$wpdb->postmeta} SET meta_value=CAST(meta_value AS UNSIGNED)+1 WHERE post_id=%d AND meta_key=%s",
         $id,'post_views_count'
       ));
-      if(!$updated){
-        add_post_meta($id,'post_views_count',1,true);
+      if($updated===0){
+        if(!add_post_meta($id,'post_views_count',1,true)){
+          // A concurrent first view may have inserted the row between UPDATE and INSERT.
+          $wpdb->query($wpdb->prepare(
+            "UPDATE {$wpdb->postmeta} SET meta_value=CAST(meta_value AS UNSIGNED)+1 WHERE post_id=%d AND meta_key=%s",
+            $id,'post_views_count'
+          ));
+        }
       }
       clean_post_cache($id);
+      nocache_headers();
       return rest_ensure_response(['ok'=>true,'count'=>a3g_post_views($id),'counted'=>true]);
     },
   ]);
@@ -99,7 +119,37 @@ add_action('wp_footer',function(){
   (function(){
     var endpoint=<?php echo wp_json_encode($url); ?>;
     if(!endpoint)return;
-    fetch(endpoint,{method:'POST',credentials:'same-origin',keepalive:true,headers:{'Accept':'application/json'}})
+
+    var storageKey='a3tal_viewer_id_v2';
+    var visitor='';
+    function makeId(){
+      if(window.crypto&&typeof window.crypto.randomUUID==='function'){
+        return window.crypto.randomUUID();
+      }
+      return 'a3v-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2);
+    }
+    try{
+      visitor=localStorage.getItem(storageKey)||'';
+      if(!visitor){
+        visitor=makeId();
+        localStorage.setItem(storageKey,visitor);
+      }
+    }catch(e){
+      var m=document.cookie.match(new RegExp('(?:^|; )'+storageKey+'=([^;]*)'));
+      visitor=m?decodeURIComponent(m[1]):'';
+      if(!visitor){
+        visitor=makeId();
+        document.cookie=storageKey+'='+encodeURIComponent(visitor)+'; path=/; max-age=31536000; SameSite=Lax';
+      }
+    }
+
+    fetch(endpoint,{
+      method:'POST',
+      credentials:'same-origin',
+      keepalive:true,
+      headers:{'Accept':'application/json','Content-Type':'application/json'},
+      body:JSON.stringify({visitor:visitor})
+    })
       .then(function(r){return r.ok?r.json():null;})
       .then(function(d){
         if(!d||typeof d.count==='undefined')return;
