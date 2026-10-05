@@ -1,98 +1,11 @@
 {
   "requests": [
     {
-      "method": "POST",
-      "path": "/admin",
+      "method": "GET",
+      "path": "/status",
       "log_response": true,
-      "body": {
-        "op": "bridge_self_update",
-        "confirm": true,
-        "dangerous": true
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": true,
-      "body": {
-        "op": "term_upsert",
-        "taxonomy": "a3_brand",
-        "name": "GAC",
-        "slug": "gac"
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": true,
-      "body": {
-        "op": "platform_entity_upsert",
-        "type": "a3_car",
-        "title": "GAC Empow 2027",
-        "slug": "gac-empow-2027-egypt",
-        "status": "publish",
-        "excerpt": "سيدان رياضية بمحرك 1.5 لتر تيربو بقوة 170 حصانًا وعزم 270 نيوتن.متر وناقل 7DCT، بأسعار رسمية من 1,075,000 إلى 1,295,000 جنيه وقت آخر مراجعة.",
-        "content": "<p>هذا ملف بيانات منظم لطراز GAC Empow 2027 داخل قاعدة سيارات أعطال. يعرض السعر والمواصفات الأساسية التي جرى التحقق منها، بينما توجد مقارنة الفئات وتحليل قرار الشراء في المقال المرتبط.</p><p><a class=\"g-primary-btn\" href=\"https://a3tal.com/gac-empow-2027-price-egypt/\">قراءة السعر والمراجعة الكاملة</a></p><h2>قبل الحجز</h2><p>تحقق من الفئة والسعر النهائي والتجهيزات المتاحة لدى الوكيل يوم الحجز، لأن الأسعار والعروض قد تتغير بعد تاريخ آخر مراجعة.</p>",
-        "taxonomies": {
-          "a3_brand": [
-            "gac"
-          ],
-          "a3_market": [
-            "egypt"
-          ],
-          "a3_car_body": [
-            "sedan"
-          ]
-        },
-        "meta": {
-          "_a3_year": 2027,
-          "_a3_price_min": 1075000,
-          "_a3_price_max": 1295000,
-          "_a3_currency": "EGP",
-          "_a3_engine_cc": 1500,
-          "_a3_power_hp": 170,
-          "_a3_torque_nm": 270,
-          "_a3_transmission": "7DCT",
-          "_a3_fuel": "بنزين",
-          "_a3_drivetrain": "FWD",
-          "_a3_seats": 5,
-          "_a3_source_url": "https://www.alborsaanews.com/2026/06/30/1977103",
-          "_a3_source_checked_at": "2026-10-05",
-          "_a3_related_post_ids": "83276",
-          "_yoast_wpseo_meta-robots-noindex": "1"
-        },
-        "featured_media": 83277
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/update-post",
-      "log_response": true,
-      "body": {
-        "id": 83276,
-        "categories": [
-          22,
-          374
-        ]
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": true,
-      "body": {
-        "op": "cache_flush"
-      }
+      "body": {}
     }
   ],
-  "verify": [
-    {
-      "path": "/post/83276",
-      "log_response": true
-    },
-    {
-      "path": "/admin?op=terms&taxonomy=a3_brand&limit=300",
-      "log_response": true
-    }
-  ]
+  "verify": []
 }
