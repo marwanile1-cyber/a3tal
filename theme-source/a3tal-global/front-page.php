@@ -6,23 +6,17 @@ $hero_id=0;$hero_img='';
 if($hero_q->have_posts()){ $hero_q->the_post(); $hero_id=get_the_ID(); $hero_img=get_the_post_thumbnail_url($hero_id,'full'); }
 wp_reset_postdata();
 
-$prices=a3g_query(['cat'=>374,'posts_per_page'=>4,'post__not_in'=>$hero_id?[$hero_id]:[]]);
+$prices=a3g_query(['cat'=>374,'posts_per_page'=>4]);
 $reviews=a3g_query(['category__in'=>[22,21],'posts_per_page'=>3]);
 $faults=a3g_query(['category__in'=>[8,13,2,18],'posts_per_page'=>4]);
 $news=a3g_query(['posts_per_page'=>4,'post__not_in'=>$hero_id?[$hero_id]:[]]);
 
-$home_car_slugs=['byd-sealion-6-ev-2027','haval-v7-egypt','opel-frontera-egypt','geely-monjaro-em-i-egypt','xpeng-g7-super-reev-egypt','chery-tiggo-9-egypt'];
-$home_car_ids=[];
-foreach($home_car_slugs as $slug){
-  $p=get_page_by_path($slug,OBJECT,'a3_car');
-  if($p instanceof WP_Post)$home_car_ids[]=(int)$p->ID;
-}
 $cars=new WP_Query([
   'post_type'=>'a3_car',
   'post_status'=>'publish',
   'posts_per_page'=>6,
-  'post__in'=>$home_car_ids,
-  'orderby'=>'post__in',
+  'orderby'=>'date',
+  'order'=>'DESC',
   'ignore_sticky_posts'=>true,
 ]);
 $motos=new WP_Query(['post_type'=>'a3_motorcycle','post_status'=>'publish','posts_per_page'=>3,'ignore_sticky_posts'=>true]);
