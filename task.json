@@ -1,24 +1,28 @@
 {
   "requests": [
     {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": false,
-      "body": {
-        "op": "file_write",
-        "path": "themes/a3tal-global/archive-a3_dtc.php",
-        "content": "<?php\n$searched_code=strtoupper(preg_replace('/[^A-Z0-9]/i','',(string)get_query_var('code')));\n$legacy_match_q=null;\n$legacy_match_count=0;\n$legacy_exact_id=0;\nif($searched_code!==''){\n  $legacy_match_q=new WP_Query([\n    'post_type'=>'post',\n    'post_status'=>'publish',\n    'cat'=>2,\n    's'=>$searched_code,\n    'posts_per_page'=>12,\n    'ignore_sticky_posts'=>true,\n  ]);\n  $legacy_match_count=(int)$legacy_match_q->found_posts;\n  if($legacy_match_q->posts){\n    foreach($legacy_match_q->posts as $legacy_post){\n      $legacy_slug=(string)$legacy_post->post_name;\n      $legacy_title=(string)$legacy_post->post_title;\n      if(stripos($legacy_title,$searched_code)!==false || stripos($legacy_slug,strtolower($searched_code))!==false){\n        $legacy_exact_id=(int)$legacy_post->ID;\n        break;\n      }\n    }\n  }\n}\nget_header(); ?>\n<section class=\"g-platform-archive-hero g-dtc-archive-hero\">\n  <div class=\"g-wrap\">\n    <span>A3TAL DTC LIBRARY</span>\n    <h1>مرجع أكواد أعطال السيارات OBD-II</h1>\n    <p>ابحث بالكود مباشرة للوصول إلى المعنى والأعراض والأسباب وخطوات التشخيص قبل تغيير أي قطعة.</p>\n    <form class=\"g-dtc-search\" method=\"get\">\n      <input type=\"text\" name=\"code\" value=\"<?php echo esc_attr($searched_code); ?>\" placeholder=\"اكتب الكود مثل P0420\" maxlength=\"8\" autocomplete=\"off\">\n      <button type=\"submit\"><?php echo a3g_icon('search'); ?><span>بحث عن الكود</span></button>\n    </form>\n    <div class=\"g-dtc-family-links\">\n      <span><b>P</b> المحرك وناقل الحركة</span>\n      <span><b>B</b> الهيكل والمقصورة</span>\n      <span><b>C</b> الشاسيه والفرامل</span>\n      <span><b>U</b> الشبكات والاتصالات</span>\n    </div>\n  </div>\n</section>\n\n<main class=\"g-wrap g-platform-archive\">\n  <div class=\"g-platform-archive-head\"><div><span>مرجع تشخيصي</span><h2>أكواد الأعطال المنشورة</h2></div><b><?php global $wp_query; echo esc_html(number_format_i18n((int)$wp_query->found_posts)); ?> كود</b></div>\n  <?php if(have_posts()): ?>\n  <div class=\"g-dtc-grid\">\n    <?php while(have_posts()):the_post();\n      $code=a3cp_field('_a3_dtc_code');$sys=a3cp_field('_a3_dtc_system');$sev=a3cp_field('_a3_severity');\n      $sev_labels=['low'=>'منخفضة','medium'=>'متوسطة','high'=>'مرتفعة','critical'=>'حرجة'];\n    ?>\n    <article class=\"g-dtc-card\">\n      <a href=\"<?php the_permalink(); ?>\">\n        <div class=\"g-dtc-code\"><?php echo esc_html($code?:get_the_title()); ?></div>\n        <?php if($sys): ?><span><?php echo esc_html($sys); ?></span><?php endif; ?>\n        <h3><?php the_title(); ?></h3>\n        <p><?php echo esc_html(a3g_excerpt(get_the_ID(),18)); ?></p>\n        <footer><small>الخطورة: <?php echo esc_html($sev_labels[$sev]??'غير محددة'); ?></small><b>التفاصيل ←</b></footer>\n      </a>\n    </article>\n    <?php endwhile; ?>\n  </div>\n  <div class=\"g-platform-pagination\"><?php the_posts_pagination(['mid_size'=>2,'prev_text'=>'السابق','next_text'=>'التالي']); ?></div>\n  <?php else: ?>\n    <?php if($legacy_match_count>0): ?>\n      <div class=\"g-platform-empty g-dtc-legacy-hit\"><?php echo a3g_icon('search'); ?><h2>وجدنا شرحًا منشورًا للكود <?php echo esc_html($searched_code); ?></h2><p>الكود لم يُضف بعد كصفحة مرجعية منظمة، لكن الشرح الفني الموجود على أعطال متاح مباشرة بالأسفل.</p></div>\n    <?php else: ?>\n      <div class=\"g-platform-empty\"><?php echo a3g_icon('gear'); ?><h2>لم نجد شرحًا منشورًا للكود <?php echo esc_html($searched_code?:'المطلوب'); ?></h2><p>راجع كتابة الكود، أو تصفح شروحات أكواد الأعطال المتاحة في المكتبة.</p></div>\n    <?php endif; ?>\n  <?php endif; ?>\n\n  <?php if($legacy_match_count>0): ?>\n    <section class=\"g-legacy-bridge g-dtc-search-results\">\n      <?php if($legacy_exact_id): ?>\n        <div class=\"g-section-head\"><div><span>النتيجة الأقرب</span><h2>شرح الكود <?php echo esc_html($searched_code); ?></h2><p>ابدأ بالشرح المطابق للكود، ثم راجع النتائج المرتبطة فقط إذا احتجت تفاصيل إضافية.</p></div></div>\n        <div class=\"g-news-grid g-dtc-exact-grid\"><?php a3g_card($legacy_exact_id,'g-legacy-card g-dtc-exact-card'); ?></div>\n      <?php endif; ?>\n\n      <?php if($legacy_match_count>($legacy_exact_id?1:0)): ?>\n        <div class=\"g-section-head g-dtc-related-head\"><div><span>نتائج مرتبطة</span><h2>شروحات أخرى مرتبطة بـ <?php echo esc_html($searched_code); ?></h2></div><div class=\"g-legacy-count\"><?php echo esc_html(number_format_i18n($legacy_match_count-($legacy_exact_id?1:0))); ?> نتيجة</div></div>\n        <div class=\"g-news-grid g-legacy-grid\">\n          <?php while($legacy_match_q->have_posts()):$legacy_match_q->the_post();if(get_the_ID()===$legacy_exact_id)continue;a3g_card(get_the_ID(),'g-legacy-card');endwhile;wp_reset_postdata(); ?>\n        </div>\n      <?php else: wp_reset_postdata(); endif; ?>\n    </section>\n  <?php endif; ?>\n  <?php\n  $legacy_exclude=a3g_entity_related_post_ids('a3_dtc');\n  if($legacy_exact_id)$legacy_exclude[]=$legacy_exact_id;\n  $legacy_exclude=array_values(array_unique(array_map('intval',$legacy_exclude)));\n  a3g_legacy_section(\n    [2],\n    'كل شروحات أكواد الأعطال',\n    'شروحات تفصيلية لأكواد OBD-II تشمل المعنى والأعراض والأسباب وخطوات التشخيص قبل تغيير القطع.',\n    18,\n    $legacy_exclude,\n    2\n  );\n  ?>\n</main>\n<?php get_footer(); ?>",
-        "confirm": true,
-        "dangerous": true
-      }
+      "method": "GET",
+      "path": "/post/43",
+      "log_response": true,
+      "body": {}
     },
     {
-      "method": "POST",
-      "path": "/admin",
+      "method": "GET",
+      "path": "/post/3",
       "log_response": true,
-      "body": {
-        "op": "cache_flush"
-      }
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/post/41",
+      "log_response": true,
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/post/48",
+      "log_response": true,
+      "body": {}
     }
   ],
   "verify": []
