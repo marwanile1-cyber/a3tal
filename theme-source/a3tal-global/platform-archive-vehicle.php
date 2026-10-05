@@ -5,9 +5,18 @@ $is_moto=$type==='a3_motorcycle';
 $title=$is_moto?'الموتوسيكلات والسكوتر':'السيارات';
 $subtitle=$is_moto?'أسعار ومواصفات ومراجعات وصيانة الموتوسيكلات والسكوتر في مكان واحد.':'اكتشف السيارات حسب الماركة والسوق والسنة ونوع الهيكل، مع الأسعار والمواصفات والمحتوى المرتبط.';
 $type_tax=$is_moto?'a3_motorcycle_type':'a3_car_body';
-$brands=get_terms(['taxonomy'=>'a3_brand','hide_empty'=>false]);
-$markets=get_terms(['taxonomy'=>'a3_market','hide_empty'=>false]);
-$types=get_terms(['taxonomy'=>$type_tax,'hide_empty'=>false]);
+$vehicle_ids=get_posts([
+  'post_type'=>$type,
+  'post_status'=>'publish',
+  'posts_per_page'=>-1,
+  'fields'=>'ids',
+  'no_found_rows'=>true,
+]);
+$brands=$vehicle_ids?get_terms(['taxonomy'=>'a3_brand','hide_empty'=>true,'object_ids'=>$vehicle_ids]):[];
+$markets=$vehicle_ids?get_terms(['taxonomy'=>'a3_market','hide_empty'=>true,'object_ids'=>$vehicle_ids]):[];
+$types=$vehicle_ids?get_terms(['taxonomy'=>$type_tax,'hide_empty'=>true,'object_ids'=>$vehicle_ids]):[];
+$year_raw=absint(get_query_var('year'));
+$year_value=($year_raw>=1950&&$year_raw<=2100)?(string)$year_raw:'';
 ?>
 <?php get_header(); ?>
 <section class="g-platform-archive-hero">
@@ -19,7 +28,7 @@ $types=get_terms(['taxonomy'=>$type_tax,'hide_empty'=>false]);
       <label><small>الماركة</small><select name="brand"><option value="">كل الماركات</option><?php foreach($brands as $t): ?><option value="<?php echo esc_attr($t->slug); ?>" <?php selected(get_query_var('brand'),$t->slug); ?>><?php echo esc_html($t->name); ?></option><?php endforeach; ?></select></label>
       <label><small>السوق</small><select name="market"><option value="">كل الأسواق</option><?php foreach($markets as $t): ?><option value="<?php echo esc_attr($t->slug); ?>" <?php selected(get_query_var('market'),$t->slug); ?>><?php echo esc_html($t->name); ?></option><?php endforeach; ?></select></label>
       <label><small><?php echo $is_moto?'النوع':'نوع الهيكل'; ?></small><select name="vehicle_type"><option value="">كل الأنواع</option><?php foreach($types as $t): ?><option value="<?php echo esc_attr($t->slug); ?>" <?php selected(get_query_var('vehicle_type'),$t->slug); ?>><?php echo esc_html($t->name); ?></option><?php endforeach; ?></select></label>
-      <label><small>سنة الموديل</small><input type="number" min="1950" max="2100" name="year" value="<?php echo esc_attr((string)get_query_var('year')); ?>" placeholder="2026"></label>
+      <label><small>سنة الموديل</small><input type="number" min="1950" max="2100" name="year" value="<?php echo esc_attr($year_value); ?>" placeholder="مثال: 2026"></label>
       <button type="submit"><?php echo a3g_icon('search'); ?><span>فلترة</span></button>
     </form>
   </div>
