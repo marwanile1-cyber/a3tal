@@ -1,6 +1,6 @@
 <?php get_header(); ?>
 <?php if(is_singular('post')): while(have_posts()): the_post();
-$cat=a3g_primary_cat(); $diag=a3g_is_diagnostic(); ?>
+$cat=a3g_primary_cat(); $diag=a3g_is_diagnostic(); $vehicle_entity=a3g_related_vehicle_entity(get_the_ID()); ?>
 <section class="g-article-hero">
   <div class="g-wrap g-article-head">
     <div class="g-breadcrumb"><a href="<?php echo esc_url(home_url('/')); ?>">الرئيسية</a><?php if($cat): ?> <span>›</span> <a href="<?php echo esc_url(get_category_link($cat)); ?>"><?php echo esc_html($cat->name); ?></a><?php endif; ?></div>
@@ -14,6 +14,15 @@ $cat=a3g_primary_cat(); $diag=a3g_is_diagnostic(); ?>
   <main class="g-article-card">
     <?php if(has_post_thumbnail()): ?><figure class="g-featured"><?php the_post_thumbnail('full',['loading'=>'eager','fetchpriority'=>'high']); ?></figure><?php endif; ?>
     <?php if($diag): ?><div class="g-diagnostic-note"><strong>قاعدة أعطال:</strong><span>ابدأ بالأعراض والفحص والقياسات قبل تغيير أي قطعة.</span></div><?php endif; ?>
+    <?php if($vehicle_entity):
+      $ve_id=(int)$vehicle_entity->ID;
+      $ve_price=function_exists('a3cp_vehicle_price')?a3cp_vehicle_price($ve_id):'';
+    ?>
+      <aside class="g-related-model-box">
+        <div><small>ملف الموديل على أعطال</small><strong><?php echo esc_html(get_the_title($ve_id)); ?></strong><?php if($ve_price): ?><span><?php echo esc_html($ve_price); ?></span><?php endif; ?></div>
+        <a href="<?php echo esc_url(get_permalink($ve_id)); ?>">المواصفات والبيانات المنظمة ←</a>
+      </aside>
+    <?php endif; ?>
     <div class="g-entry"><?php the_content(); ?></div>
   </main>
   <aside class="g-article-side">
