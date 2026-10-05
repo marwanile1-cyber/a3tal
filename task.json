@@ -5,11 +5,7 @@
       "path": "/admin",
       "log_response": true,
       "body": {
-        "op": "options",
-        "keys": [
-          "users_can_register",
-          "default_role"
-        ]
+        "op": "plugins"
       }
     }
   ],
