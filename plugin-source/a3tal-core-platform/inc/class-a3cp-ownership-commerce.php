@@ -46,6 +46,8 @@ final class A3CP_Ownership_Commerce {
         add_action('pre_get_posts', [__CLASS__, 'filter_commerce_archives'], 12);
         add_action('init', [__CLASS__, 'seed_verified_vendors'], 42);
         add_action('a3cp_seed_verified_vendors', [__CLASS__, 'seed_verified_vendors']);
+        add_action('init', [__CLASS__, 'seed_pulsar_180_maintenance_v1'], 43);
+        add_action('a3cp_seed_pulsar_180_maintenance_v1', [__CLASS__, 'seed_pulsar_180_maintenance_v1']);
     }
 
     public static function register_all(): void {
@@ -688,6 +690,138 @@ final class A3CP_Ownership_Commerce {
         if (!get_post_meta($post->ID, '_a3_listing_expires_at', true)) {
             update_post_meta($post->ID, '_a3_listing_expires_at', gmdate('Y-m-d', time() + 45 * DAY_IN_SECONDS));
         }
+    }
+
+    public static function seed_pulsar_180_maintenance_v1(): void {
+        if ((string) get_option('a3cp_pulsar_180_maintenance_v1') === 'done') return;
+
+        $vehicle = get_page_by_path('bajaj-pulsar-180-egypt', OBJECT, 'a3_motorcycle');
+        if (!$vehicle instanceof WP_Post) return;
+
+        $source = 'https://www.bajajauto.com/pdf/pulsar-150-150R-180-abs.pdf';
+        $items = [
+            [
+                'slug'=>'pulsar-180-first-service',
+                'title'=>'Pulsar 180 — الخدمة الأولى',
+                'kind'=>'inspection',
+                'first_km'=>500,
+                'interval_km'=>0,
+                'interval_months'=>0,
+                'action'=>'بين 500 و750 كم أو خلال 30–45 يومًا، أيهما أسبق',
+                'fluid'=>'',
+                'qty'=>'',
+            ],
+            [
+                'slug'=>'pulsar-180-second-service',
+                'title'=>'Pulsar 180 — الخدمة الثانية',
+                'kind'=>'inspection',
+                'first_km'=>4500,
+                'interval_km'=>0,
+                'interval_months'=>0,
+                'action'=>'بين 4500 و5000 كم؛ دليل Bajaj يحددها عند 240 يومًا',
+                'fluid'=>'',
+                'qty'=>'',
+            ],
+            [
+                'slug'=>'pulsar-180-third-service',
+                'title'=>'Pulsar 180 — الخدمة الثالثة',
+                'kind'=>'inspection',
+                'first_km'=>9500,
+                'interval_km'=>0,
+                'interval_months'=>0,
+                'action'=>'بين 9500 و10000 كم؛ دليل Bajaj يحددها عند 360 يومًا',
+                'fluid'=>'',
+                'qty'=>'',
+            ],
+            [
+                'slug'=>'pulsar-180-paid-periodic-service',
+                'title'=>'Pulsar 180 — الصيانة الدورية التالية',
+                'kind'=>'inspection',
+                'first_km'=>15000,
+                'interval_km'=>5000,
+                'interval_months'=>4,
+                'action'=>'كل 5000 كم أو 120 يومًا من آخر صيانة، أيهما أسبق',
+                'fluid'=>'',
+                'qty'=>'',
+            ],
+            [
+                'slug'=>'pulsar-180-engine-oil-first-service',
+                'title'=>'Pulsar 180 — زيت المحرك في الخدمة الأولى',
+                'kind'=>'engine-oil',
+                'first_km'=>500,
+                'interval_km'=>0,
+                'interval_months'=>0,
+                'action'=>'استبدال زيت المحرك ضمن الخدمة الأولى',
+                'fluid'=>'SAE 20W50 API SL أو JASO MA',
+                'qty'=>'1000 مل عند الصيانة',
+            ],
+            [
+                'slug'=>'pulsar-180-engine-oil-periodic',
+                'title'=>'Pulsar 180 — تغيير زيت المحرك الدوري',
+                'kind'=>'engine-oil',
+                'first_km'=>10000,
+                'interval_km'=>10000,
+                'interval_months'=>0,
+                'action'=>'استبدال كل 10,000 كم بعد الخدمة الأولى؛ فحص المستوى يوميًا والتزويد كل 5,000 كم',
+                'fluid'=>'SAE 20W50 API SL أو JASO MA',
+                'qty'=>'1000 مل عند الصيانة',
+            ],
+            [
+                'slug'=>'pulsar-180-oil-filter-periodic',
+                'title'=>'Pulsar 180 — فلتر زيت المحرك',
+                'kind'=>'oil-filter',
+                'first_km'=>10000,
+                'interval_km'=>10000,
+                'interval_months'=>0,
+                'action'=>'استبدال دوري؛ جدول Bajaj يوضح الاستبدال أيضًا في الخدمة الأولى',
+                'fluid'=>'',
+                'qty'=>'',
+            ],
+            [
+                'slug'=>'pulsar-180-air-filter-periodic',
+                'title'=>'Pulsar 180 — فلتر الهواء',
+                'kind'=>'air-filter',
+                'first_km'=>15000,
+                'interval_km'=>15000,
+                'interval_months'=>0,
+                'action'=>'استبدال دوري مع تنظيف أكثر تكرارًا عند التشغيل في بيئة ترابية',
+                'fluid'=>'',
+                'qty'=>'',
+            ],
+        ];
+
+        $all_ready = true;
+        foreach ($items as $item) {
+            $existing = get_page_by_path($item['slug'], OBJECT, 'a3_maintenance_plan');
+            if ($existing instanceof WP_Post) continue;
+
+            $content = '<p>بند صيانة موثّق من دليل Bajaj الرسمي المتاح لـPulsar 150/180 ABS. راجع دليل المالك الخاص بدراجتك ورقم الشاسيه عند وجود اختلاف في سنة أو مواصفة السوق.</p>';
+            $id = wp_insert_post([
+                'post_type'=>'a3_maintenance_plan',
+                'post_status'=>'publish',
+                'post_title'=>$item['title'],
+                'post_name'=>$item['slug'],
+                'post_excerpt'=>$item['action'],
+                'post_content'=>$content,
+            ], true);
+            if (is_wp_error($id)) {
+                $all_ready = false;
+                continue;
+            }
+
+            update_post_meta($id,'_a3_vehicle_entity_id',(int)$vehicle->ID);
+            update_post_meta($id,'_a3_first_due_km',(int)$item['first_km']);
+            update_post_meta($id,'_a3_interval_km',(int)$item['interval_km']);
+            update_post_meta($id,'_a3_interval_months',(int)$item['interval_months']);
+            update_post_meta($id,'_a3_service_action',$item['action']);
+            update_post_meta($id,'_a3_fluid_spec',$item['fluid']);
+            update_post_meta($id,'_a3_fluid_quantity',$item['qty']);
+            update_post_meta($id,'_a3_source_url',$source);
+            update_post_meta($id,'_a3_source_checked_at','2026-10-05');
+            wp_set_object_terms($id,$item['kind'],'a3_maintenance_kind',false);
+        }
+
+        if ($all_ready) update_option('a3cp_pulsar_180_maintenance_v1','done',false);
     }
 
     public static function seed_verified_vendors(): void {
