@@ -2,7 +2,7 @@
 /**
  * Plugin Name: A3tal Direct Bridge
  * Description: Secure administrator-grade REST bridge for managing A3tal.com content, SEO, media, users, plugins, themes, settings and wp-content from trusted AI clients.
- * Version: 3.1.2
+ * Version: 3.1.3
  * Author: A3tal.com
  * Update URI: https://github.com/marwanile1-cyber/a3tal
  */
@@ -24,6 +24,36 @@ final class A3tal_Direct_Bridge {
         add_action('parse_request', [__CLASS__, 'maybe_redirect'], -99999);
         add_action('template_redirect', [__CLASS__, 'maybe_redirect'], -99999);
         add_action('wp_enqueue_scripts', [__CLASS__, 'enqueue_mobile_ux_patch'], 99);
+        add_action('pre_get_posts', [__CLASS__, 'normalize_home_platform_queries'], 20);
+    }
+
+    public static function normalize_home_platform_queries($query) {
+        if (is_admin() || !($query instanceof WP_Query)) {
+            return;
+        }
+
+        $post_type = $query->get('post_type');
+        if (is_array($post_type)) {
+            $post_type = reset($post_type);
+        }
+
+        // The homepage used to pin six car IDs while labelling them as recently added.
+        // Keep live output truthful by letting the query use the newest vehicle records.
+        if ((string) $post_type === 'a3_car'
+            && (int) $query->get('posts_per_page') === 6
+            && !empty($query->get('post__in'))) {
+            $query->set('post__in', []);
+            $query->set('orderby', 'date');
+            $query->set('order', 'DESC');
+        }
+
+        // The price grid used to hide the newest price article because it was also the hero.
+        // The "latest prices" block should still contain the latest price item.
+        if ((int) $query->get('cat') === 374
+            && (int) $query->get('posts_per_page') === 4
+            && !empty($query->get('post__not_in'))) {
+            $query->set('post__not_in', []);
+        }
     }
 
     public static function enqueue_mobile_ux_patch() {
@@ -165,7 +195,7 @@ CSS;
         return rest_ensure_response([
             'ok' => true,
             'plugin' => 'A3tal Direct Bridge',
-            'version' => '3.1.2',
+            'version' => '3.1.3',
             'site' => home_url('/'),
             'time_gmt' => current_time('mysql', true),
             'routes' => [
@@ -1394,6 +1424,127 @@ CSS;
         return $items;
     }
 
+    private static function admin_platform_entity_upsert($data) {
+        $allowed_types = [
+            'a3_car',
+            'a3_motorcycle',
+            'a3_dtc',
+            'a3_service_center',
+            'a3_showroom',
+            'a3_part',
+            'a3_parts_vendor',
+            'a3_listing',
+            'a3_maintenance_plan',
+        ];
+
+        $type = sanitize_key((string) ($data['type'] ?? ''));
+        if (!in_array($type, $allowed_types, true) || !post_type_exists($type)) {
+            return new WP_Error('a3tal_bad_platform_type', 'A supported A3tal platform post type is required.', ['status' => 400]);
+        }
+
+        $id = (int) ($data['id'] ?? 0);
+        $slug = sanitize_title((string) ($data['slug'] ?? ''));
+        $post = $id ? get_post($id) : null;
+
+        if (!$post && $slug !== '') {
+            $post = get_page_by_path($slug, OBJECT, $type);
+            if ($post instanceof WP_Post) {
+                $id = (int) $post->ID;
+            }
+        }
+
+        if ($post && $post->post_type !== $type) {
+            return new WP_Error('a3tal_platform_type_mismatch', 'Existing post type does not match requested platform type.', ['status' => 409]);
+        }
+
+        $title = sanitize_text_field((string) ($data['title'] ?? ($post ? $post->post_title : '')));
+        if ($title === '') {
+            return new WP_Error('a3tal_platform_title_required', 'title is required.', ['status' => 400]);
+        }
+
+        $taxonomies = $data['taxonomies'] ?? [];
+        if (!is_array($taxonomies)) {
+            return new WP_Error('a3tal_bad_platform_taxonomies', 'taxonomies must be an object.', ['status' => 400]);
+        }
+        foreach ($taxonomies as $taxonomy => $terms) {
+            $taxonomy = sanitize_key((string) $taxonomy);
+            if (!taxonomy_exists($taxonomy) || !is_object_in_taxonomy($type, $taxonomy)) {
+                return new WP_Error('a3tal_bad_platform_taxonomy', 'Unsupported taxonomy for this platform type: ' . $taxonomy, ['status' => 400]);
+            }
+            if (!is_array($terms)) {
+                $terms = [$terms];
+            }
+            foreach ($terms as $term) {
+                if (is_string($term) && $term !== '' && !term_exists($term, $taxonomy)) {
+                    return new WP_Error('a3tal_platform_term_missing', 'Taxonomy term does not exist: ' . $taxonomy . '/' . $term, ['status' => 400]);
+                }
+            }
+        }
+
+        $postarr = [
+            'post_type' => $type,
+            'post_title' => $title,
+            'post_status' => in_array(($data['status'] ?? 'publish'), ['draft', 'publish', 'private', 'pending', 'future'], true)
+                ? $data['status']
+                : 'publish',
+        ];
+        if ($id) $postarr['ID'] = $id;
+        if ($slug !== '') $postarr['post_name'] = $slug;
+        if (array_key_exists('content', $data)) $postarr['post_content'] = wp_kses_post((string) $data['content']);
+        if (array_key_exists('excerpt', $data)) $postarr['post_excerpt'] = wp_kses_post((string) $data['excerpt']);
+
+        $result = $id ? wp_update_post($postarr, true) : wp_insert_post($postarr, true);
+        if (is_wp_error($result)) {
+            return $result;
+        }
+        $id = (int) $result;
+
+        foreach ($taxonomies as $taxonomy => $terms) {
+            $normalized = [];
+            foreach ((array) $terms as $term) {
+                $normalized[] = is_numeric($term) ? (int) $term : sanitize_title((string) $term);
+            }
+            $set = wp_set_object_terms($id, $normalized, sanitize_key((string) $taxonomy), false);
+            if (is_wp_error($set)) {
+                return $set;
+            }
+        }
+
+        $meta = $data['meta'] ?? [];
+        if (!is_array($meta)) {
+            return new WP_Error('a3tal_bad_platform_meta', 'meta must be an object.', ['status' => 400]);
+        }
+        foreach ($meta as $key => $value) {
+            $key = (string) $key;
+            if (strpos($key, '_a3_') !== 0 && $key !== '_yoast_wpseo_meta-robots-noindex') {
+                return new WP_Error('a3tal_platform_meta_blocked', 'Only A3tal platform meta and the noindex flag are allowed.', ['status' => 403]);
+            }
+            $clean = $key === '_yoast_wpseo_meta-robots-noindex'
+                ? sanitize_text_field((string) $value)
+                : sanitize_meta($key, $value, 'post', $type);
+            update_post_meta($id, $key, $clean);
+        }
+
+        if (array_key_exists('featured_media', $data)) {
+            $media_id = (int) $data['featured_media'];
+            if ($media_id && wp_attachment_is_image($media_id)) {
+                set_post_thumbnail($id, $media_id);
+            } elseif (!$media_id) {
+                delete_post_thumbnail($id);
+            }
+        }
+
+        clean_post_cache($id);
+        return [
+            'id' => $id,
+            'type' => $type,
+            'title' => get_the_title($id),
+            'slug' => get_post_field('post_name', $id),
+            'link' => get_permalink($id),
+            'featured_media' => get_post_thumbnail_id($id) ?: 0,
+        ];
+    }
+
     private static function admin_post_meta($data) {
         $post_id = (int) ($data['post_id'] ?? 0);
         if (!$post_id || !get_post($post_id)) {
@@ -2113,6 +2264,9 @@ CSS;
                     break;
                 case 'option_delete':
                     $result = self::admin_delete_option($data);
+                    break;
+                case 'platform_entity_upsert':
+                    $result = self::admin_platform_entity_upsert($data);
                     break;
                 case 'post_meta_set':
                     $post_id = (int) ($data['post_id'] ?? 0);
