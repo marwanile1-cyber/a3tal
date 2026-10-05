@@ -46,7 +46,7 @@ jobs:
           ITEMS = [
               {
                   "key":"dayun4a",
-                  "url":"https://legion-images.hatla2ee.com/original_image/4c4a8c66-5df2-4d8b-bffb-0ddca1b8d9fc/large.jpg",
+                  "url":"https://contactcars.fra1.cdn.digitaloceanspaces.com/contactcars-production/Images/Large/ClassifiedMotorcycles/org_08a9269c-41ff-415d-bca7-e96e80ba0462.jpeg",
                   "accent":(230,104,35),
                   "accent2":(255,183,77),
               },
@@ -58,7 +58,7 @@ jobs:
               },
               {
                   "key":"halawaexpress",
-                  "url":"https://legion-images.hatla2ee.com/original_image/df232770-fbc1-4f26-aa67-4176afab2bf2/medium.png",
+                  "url":"https://contactcars.fra1.cdn.digitaloceanspaces.com/contactcars-production/Images/Large/ClassifiedMotorcycles/org_a611d1af-70ca-4d74-bcf0-e9e3e052a26e.jpeg",
                   "accent":(223,102,43),
                   "accent2":(250,190,88),
               },
