@@ -5,7 +5,8 @@
       "path": "/admin",
       "log_response": true,
       "body": {
-        "op": "plugins"
+        "op": "file_read",
+        "path": "plugins/ad-inserter/ad-inserter.php"
       }
     },
     {
@@ -13,18 +14,8 @@
       "path": "/admin",
       "log_response": true,
       "body": {
-        "op": "options",
-        "keys": [
-          "ai_db_options",
-          "adinserter",
-          "adinserter_settings",
-          "cmplz_options",
-          "complianz_options",
-          "cookie_notice_options",
-          "cookieyes_settings",
-          "cookiebot",
-          "wp_auto_terms_options"
-        ]
+        "op": "file_read",
+        "path": "plugins/insert-headers-and-footers/ihaf.php"
       }
     }
   ],
