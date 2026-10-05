@@ -2,7 +2,31 @@
   "requests": [
     {
       "method": "GET",
-      "path": "/status",
+      "path": "/admin?op=post_meta&id=83276",
+      "log_response": true,
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/admin?op=post_meta&id=83260",
+      "log_response": true,
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/admin?op=post_meta&id=83256",
+      "log_response": true,
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/admin?op=post_meta&id=83252",
+      "log_response": true,
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/admin?op=post_meta&id=83248",
       "log_response": true,
       "body": {}
     }
