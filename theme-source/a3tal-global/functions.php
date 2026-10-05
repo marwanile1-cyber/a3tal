@@ -1,6 +1,6 @@
 <?php
 if (!defined('ABSPATH')) exit;
-define('A3G_VERSION','1.7.3');
+define('A3G_VERSION','1.7.4');
 
 function a3g_setup(){
   add_theme_support('title-tag');
@@ -164,6 +164,34 @@ function a3g_icon($name){
   return '<span class="g-icon" aria-hidden="true">'.($icons[$name]??$icons['car']).'</span>';
 }
 
+function a3g_content_type_label($id=0){
+  $id=$id?:get_the_ID();
+  $type=get_post_type($id);
+  $labels=[
+    'post'=>'مقال','page'=>'صفحة','a3_car'=>'موديل','a3_motorcycle'=>'موتوسيكل',
+    'a3_dtc'=>'كود عطل','a3_service_center'=>'مركز خدمة','a3_showroom'=>'معرض',
+    'a3_part'=>'قطعة غيار','a3_parts_vendor'=>'بائع قطع','a3_listing'=>'سيارة للبيع',
+    'a3_maintenance_plan'=>'جدول صيانة'
+  ];
+  return $labels[$type]??'محتوى';
+}
+function a3g_related_vehicle_entity($post_id=0){
+  $post_id=$post_id?:get_the_ID();
+  if(!$post_id||get_post_type($post_id)!=='post')return null;
+  $q=new WP_Query([
+    'post_type'=>['a3_car','a3_motorcycle'],
+    'post_status'=>'publish',
+    'posts_per_page'=>1,
+    'meta_query'=>[[
+      'key'=>'_a3_related_post_ids',
+      'value'=>(string)$post_id,
+      'compare'=>'LIKE'
+    ]],
+    'no_found_rows'=>true,
+  ]);
+  return $q->have_posts()?$q->posts[0]:null;
+}
+
 function a3g_card($id=0,$class=''){
   $id=$id?:get_the_ID();$cat=a3g_primary_cat($id);?>
   <article class="g-card <?php echo esc_attr($class); ?>">
@@ -171,6 +199,7 @@ function a3g_card($id=0,$class=''){
       <?php if(has_post_thumbnail($id)){echo get_the_post_thumbnail($id,'large',['loading'=>'lazy']);}else{echo '<span class="g-fallback">A3TAL</span>';} ?>
     </a>
     <div class="g-card-body">
+      <?php if(is_search()): ?><span class="g-result-type"><?php echo esc_html(a3g_content_type_label($id)); ?></span><?php endif; ?>
       <?php if($cat): ?><a class="g-card-tag" href="<?php echo esc_url(get_category_link($cat)); ?>"><?php echo esc_html($cat->name); ?></a><?php endif; ?>
       <h3><a href="<?php echo esc_url(get_permalink($id)); ?>"><?php echo esc_html(get_the_title($id)); ?></a></h3>
       <p><?php echo esc_html(a3g_excerpt($id,15)); ?></p>
