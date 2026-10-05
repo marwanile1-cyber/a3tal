@@ -1,5 +1,9 @@
 <?php
-$type=get_query_var('post_type');$is_showroom=$type==='a3_showroom';$title=$is_showroom?'معارض السيارات':'مراكز الخدمة';$brands=get_terms(['taxonomy'=>'a3_brand','hide_empty'=>false]);$markets=get_terms(['taxonomy'=>'a3_market','hide_empty'=>false]);$statuses=get_terms(['taxonomy'=>'a3_directory_status','hide_empty'=>false]);
+$type=get_query_var('post_type');$is_showroom=$type==='a3_showroom';$title=$is_showroom?'معارض السيارات':'مراكز الخدمة';
+$directory_ids=get_posts(['post_type'=>$type,'post_status'=>'publish','posts_per_page'=>-1,'fields'=>'ids','no_found_rows'=>true]);
+$brands=$directory_ids?get_terms(['taxonomy'=>'a3_brand','hide_empty'=>true,'object_ids'=>$directory_ids]):[];
+$markets=$directory_ids?get_terms(['taxonomy'=>'a3_market','hide_empty'=>true,'object_ids'=>$directory_ids]):[];
+$statuses=$directory_ids?get_terms(['taxonomy'=>'a3_directory_status','hide_empty'=>true,'object_ids'=>$directory_ids]):[];
 get_header(); ?>
 <section class="g-platform-archive-hero g-directory-hero"><div class="g-wrap">
 <span><?php echo $is_showroom?'A3TAL SHOWROOMS':'A3TAL SERVICE DIRECTORY'; ?></span>
@@ -9,6 +13,7 @@ get_header(); ?>
 <label><small>الماركة</small><select name="brand"><option value="">كل الماركات</option><?php foreach($brands as $t): ?><option value="<?php echo esc_attr($t->slug); ?>" <?php selected(get_query_var('brand'),$t->slug); ?>><?php echo esc_html($t->name); ?></option><?php endforeach; ?></select></label>
 <label><small>السوق</small><select name="market"><option value="">كل الأسواق</option><?php foreach($markets as $t): ?><option value="<?php echo esc_attr($t->slug); ?>" <?php selected(get_query_var('market'),$t->slug); ?>><?php echo esc_html($t->name); ?></option><?php endforeach; ?></select></label>
 <label><small>الحالة</small><select name="directory_status"><option value="">كل الحالات</option><?php foreach($statuses as $t): ?><option value="<?php echo esc_attr($t->slug); ?>" <?php selected(get_query_var('directory_status'),$t->slug); ?>><?php echo esc_html($t->name); ?></option><?php endforeach; ?></select></label>
+<label><small>المحافظة أو المدينة</small><input type="search" name="location" value="<?php echo esc_attr((string)get_query_var('location')); ?>" placeholder="مثال: القاهرة أو الإسكندرية"></label>
 <button type="submit"><?php echo a3g_icon('search'); ?><span>بحث</span></button>
 </form></div></section>
 
