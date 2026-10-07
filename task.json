@@ -2,61 +2,196 @@
   "requests": [
     {
       "method": "POST",
-      "path": "/upload-image-data",
+      "path": "/admin",
       "log_response": true,
       "body": {
-        "post_id": 83284,
-        "image_base64_parts": [
-          "tmp-images/forthing_s7_featured.01.b64",
-          "tmp-images/forthing_s7_featured.02.b64",
-          "tmp-images/forthing_s7_featured.03.b64"
-        ],
-        "filename": "forthing-s7-egypt-featured.webp",
-        "title": "فورثينج S7 في مصر",
-        "alt": "فورثينج S7 في مصر - صورة حصرية من أعطال.كوم",
-        "set_featured": true,
-        "convert_webp": true,
-        "max_width": 1600,
-        "max_height": 900,
-        "quality": 86
+        "op": "term_upsert",
+        "taxonomy": "a3_brand",
+        "name": "Deepal",
+        "slug": "deepal"
       }
     },
     {
       "method": "POST",
-      "path": "/update-post",
+      "path": "/admin",
       "log_response": true,
       "body": {
-        "id": 83284,
-        "status": "publish"
+        "op": "term_upsert",
+        "taxonomy": "a3_brand",
+        "name": "Forthing",
+        "slug": "forthing"
       }
     },
     {
       "method": "POST",
-      "path": "/upload-image-data",
+      "path": "/admin",
       "log_response": true,
       "body": {
-        "post_id": 83286,
-        "image_base64_parts": [
-          "tmp-images/comparison_featured.01.b64",
-          "tmp-images/comparison_featured.02.b64"
-        ],
-        "filename": "deepal-s07-vs-xpeng-g6-featured.webp",
-        "title": "مقارنة ديبال S07 وXPeng G6",
-        "alt": "ديبال S07 وXPeng G6 في مقارنة كهربائية - صورة حصرية من أعطال.كوم",
-        "set_featured": true,
-        "convert_webp": true,
-        "max_width": 1600,
-        "max_height": 900,
-        "quality": 86
+        "op": "term_upsert",
+        "taxonomy": "a3_brand",
+        "name": "XPENG",
+        "slug": "xpeng"
       }
     },
     {
       "method": "POST",
-      "path": "/update-post",
+      "path": "/admin",
       "log_response": true,
       "body": {
-        "id": 83286,
-        "status": "publish"
+        "op": "term_upsert",
+        "taxonomy": "a3_market",
+        "name": "مصر",
+        "slug": "egypt"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/admin",
+      "log_response": true,
+      "body": {
+        "op": "term_upsert",
+        "taxonomy": "a3_car_body",
+        "name": "SUV",
+        "slug": "suv"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/admin",
+      "log_response": true,
+      "body": {
+        "op": "term_upsert",
+        "taxonomy": "a3_car_body",
+        "name": "Fastback",
+        "slug": "fastback"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/admin",
+      "log_response": true,
+      "body": {
+        "op": "platform_entity_upsert",
+        "type": "a3_car",
+        "title": "Deepal S07",
+        "slug": "deepal-s07-egypt",
+        "status": "publish",
+        "excerpt": "SUV كوبيه تتوفر في مصر بنسختي REEV وBEV بأسعار من 1,925,000 إلى 2,015,000 جنيه وقت آخر مراجعة.",
+        "content": "<p>ملف بيانات منظم لطراز Deepal S07 في مصر، مع ربطه بدليل السعر والمقارنة على أعطال.كوم.</p><p><a class=\"g-primary-btn\" href=\"https://a3tal.com/deepal-s07-price-egypt/\">قراءة السعر والفروق بين REEV وBEV</a></p>",
+        "taxonomies": {
+          "a3_brand": [
+            "deepal"
+          ],
+          "a3_market": [
+            "egypt"
+          ],
+          "a3_car_body": [
+            "suv"
+          ]
+        },
+        "meta": {
+          "_a3_year": 2026,
+          "_a3_price_min": 1925000,
+          "_a3_price_max": 2015000,
+          "_a3_currency": "EGP",
+          "_a3_power_hp": 218,
+          "_a3_torque_nm": 320,
+          "_a3_transmission": "Single-speed",
+          "_a3_fuel": "Electric / REEV",
+          "_a3_drivetrain": "RWD",
+          "_a3_seats": 5,
+          "_a3_battery_kwh": "79.97 BEV / 31.74 REEV",
+          "_a3_source_url": "https://www.deepal-eg.com/ar/models/deepal-s07/",
+          "_a3_source_checked_at": "2026-10-07",
+          "_a3_related_post_ids": "83281,83286",
+          "_yoast_wpseo_meta-robots-noindex": "1"
+        },
+        "featured_media": 83283
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/admin",
+      "log_response": true,
+      "body": {
+        "op": "platform_entity_upsert",
+        "type": "a3_car",
+        "title": "Forthing S7",
+        "slug": "forthing-s7-egypt",
+        "status": "publish",
+        "excerpt": "ليفتباك كهربائية تتوفر EV وREEV في مصر بأسعار من 1,290,000 إلى 1,370,000 جنيه لفئات 2027 وقت آخر مراجعة.",
+        "content": "<p>ملف بيانات منظم لفورثينج S7 في مصر، مع رابط للمراجعة الكاملة والفرق بين EV وREEV.</p><p><a class=\"g-primary-btn\" href=\"https://a3tal.com/forthing-s7-review-egypt/\">قراءة المراجعة الكاملة</a></p>",
+        "taxonomies": {
+          "a3_brand": [
+            "forthing"
+          ],
+          "a3_market": [
+            "egypt"
+          ],
+          "a3_car_body": [
+            "fastback"
+          ]
+        },
+        "meta": {
+          "_a3_year": 2027,
+          "_a3_price_min": 1290000,
+          "_a3_price_max": 1370000,
+          "_a3_currency": "EGP",
+          "_a3_power_hp": 206,
+          "_a3_torque_nm": 310,
+          "_a3_transmission": "Single-speed",
+          "_a3_fuel": "Electric / REEV",
+          "_a3_drivetrain": "RWD",
+          "_a3_seats": 5,
+          "_a3_battery_kwh": "56.8 EV / 28.4 REEV",
+          "_a3_source_url": "https://forthing-egypt.com/s7/",
+          "_a3_source_checked_at": "2026-10-07",
+          "_a3_related_post_ids": "83284",
+          "_yoast_wpseo_meta-robots-noindex": "1"
+        },
+        "featured_media": 83288
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/admin",
+      "log_response": true,
+      "body": {
+        "op": "platform_entity_upsert",
+        "type": "a3_car",
+        "title": "XPENG G6",
+        "slug": "xpeng-g6-egypt",
+        "status": "publish",
+        "excerpt": "SUV كهربائية كوبيه بدفع خلفي، بسعر يقارب 2,190,000 جنيه لفئة RWD Flagship وقت آخر مراجعة.",
+        "content": "<p>ملف بيانات منظم لطراز XPENG G6 في مصر، مرتبط بالمقارنة المباشرة مع Deepal S07 على أعطال.كوم.</p><p><a class=\"g-primary-btn\" href=\"https://a3tal.com/deepal-s07-vs-xpeng-g6-egypt/\">قراءة المقارنة</a></p>",
+        "taxonomies": {
+          "a3_brand": [
+            "xpeng"
+          ],
+          "a3_market": [
+            "egypt"
+          ],
+          "a3_car_body": [
+            "suv"
+          ]
+        },
+        "meta": {
+          "_a3_year": 2026,
+          "_a3_price_min": 2190000,
+          "_a3_price_max": 2190000,
+          "_a3_currency": "EGP",
+          "_a3_power_hp": 292,
+          "_a3_torque_nm": 440,
+          "_a3_transmission": "Single-speed",
+          "_a3_fuel": "Electric",
+          "_a3_drivetrain": "RWD",
+          "_a3_seats": 5,
+          "_a3_battery_kwh": 87,
+          "_a3_source_url": "https://www.contactcars.com/ar/new-cars/xpeng-g6",
+          "_a3_source_checked_at": "2026-10-07",
+          "_a3_related_post_ids": "83286",
+          "_yoast_wpseo_meta-robots-noindex": "1"
+        }
       }
     },
     {
@@ -70,13 +205,8 @@
   ],
   "verify": [
     {
-      "path": "/post/83284",
-      "log_response": true
-    },
-    {
-      "path": "/post/83286",
-      "log_response": true
+      "path": "/admin?op=terms&taxonomy=a3_brand&limit=300",
+      "log_response": false
     }
-  ],
-  "retry_note": "corrected-image-payloads-2026-10-07"
+  ]
 }
