@@ -1,77 +1,10 @@
 {
   "requests": [
     {
-      "method": "POST",
-      "path": "/upload-image-data",
-      "log_response": true,
-      "body": {
-        "post_id": 83305,
-        "image_svg_file": "assets/p0340-camshaft-sensor-editorial.svg",
-        "render_width": 1600,
-        "render_height": 900,
-        "render_quality": 76,
-        "filename": "p0340-camshaft-sensor-original-featured.webp",
-        "title": "كود P0340 وفحص إشارة حساس الكامة بمعدات التشخيص",
-        "alt": "رسم تقني حصري لمحرك سيارة وحساس موضع عمود الكامات CMP مع إشارة فحص P0340",
-        "convert_webp": true,
-        "set_featured": true
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/update-post",
-      "log_response": true,
-      "body": {
-        "id": 83305,
-        "status": "publish",
-        "categories": [
-          2
-        ],
-        "meta": {
-          "_yoast_wpseo_focuskw": "كود P0340",
-          "_yoast_wpseo_title": "كود P0340: تشخيص حساس الكامة والأعراض والحلول | أعطال.كوم",
-          "_yoast_wpseo_metadesc": "كود P0340 يعني خلل دائرة حساس الكامة. دليل فني مرجعي لأعراضه وأسبابه وفحص الكهرباء والأوسيلوسكوب والتوقيت قبل تغيير أي قطعة.",
-          "_yoast_wpseo_canonical": "https://a3tal.com/p0340-camshaft-sensor-circuit-diagnosis/"
-        }
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": true,
-      "body": {
-        "op": "platform_entity_upsert",
-        "type": "a3_dtc",
-        "title": "P0340 — عطل دائرة حساس موضع عمود الكامات CMP",
-        "slug": "p0340",
-        "status": "publish",
-        "excerpt": "كود P0340 يعني خللًا في دائرة إشارة حساس موضع عمود الكامات CMP. ابدأ بالبطارية والأكواد وFreeze Frame والتغذية والأرضي وموجة CMP قبل تغيير الحساس.",
-        "content": "<p>كود P0340 يعني Camshaft Position Sensor A Circuit Malfunction. لا يثبت تلف الحساس مباشرة، وقد يرتبط بالفيشة أو الضفيرة أو التغذية أو نبضات إشارة الكامة.</p><p><a href=\"https://a3tal.com/p0340-camshaft-sensor-circuit-diagnosis/\">اطلع على الدليل الفني الكامل لتشخيص P0340 قبل تغيير أي قطعة</a>.</p>",
-        "taxonomies": {
-          "a3_dtc_family": [
-            "p-powertrain"
-          ]
-        },
-        "meta": {
-          "_a3_dtc_code": "P0340",
-          "_a3_dtc_system": "المحرك / حساس موضع عمود الكامات CMP",
-          "_a3_severity": "high",
-          "_a3_drive_advice": "إذا كان المحرك يفصل أثناء السير أو يعجز عن التشغيل فلا تستمر في القيادة. في الحالات المستقرة يلزم تشخيص قريب قبل الاعتماد على السيارة.",
-          "_a3_code_scope": "generic",
-          "_a3_source_url": "https://gsitlc.ext.gm.com/gmspo/mode6/pdf/2008/08%20GRP10%20All%20Engines.pdf",
-          "_a3_source_checked_at": "2026-10-08",
-          "_a3_related_post_ids": "83305",
-          "_yoast_wpseo_meta-robots-noindex": "1"
-        }
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
+      "method": "GET",
+      "path": "/status",
       "log_response": false,
-      "body": {
-        "op": "cache_flush"
-      }
+      "body": {}
     }
   ],
   "verify": []
