@@ -5,118 +5,13 @@
       "path": "/admin",
       "log_response": true,
       "body": {
-        "op": "term_upsert",
-        "taxonomy": "a3_brand",
-        "name": "Deepal",
-        "slug": "deepal"
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": true,
-      "body": {
-        "op": "term_upsert",
-        "taxonomy": "a3_brand",
-        "name": "Forthing",
-        "slug": "forthing"
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": true,
-      "body": {
-        "op": "term_upsert",
-        "taxonomy": "a3_brand",
-        "name": "XPeng",
-        "slug": "xpeng"
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": true,
-      "body": {
-        "op": "platform_entity_upsert",
-        "type": "a3_car",
-        "title": "Deepal S07 2026",
-        "slug": "deepal-s07-2026-egypt",
-        "status": "publish",
-        "excerpt": "كروس أوفر كهربائية بنسختي REEV وBEV؛ راجع الفروق والأسعار في الدليل المرتبط.",
-        "content": "<p>كروس أوفر كهربائية بنسختي REEV وBEV؛ راجع الفروق والأسعار في الدليل المرتبط. هذا السجل جزء من قاعدة البيانات المنظمة في أعطال.كوم وليس مراجعة مستقلة.</p><p><a href=\"https://a3tal.com/deepal-s07-price-egypt/\">اطلع على تفاصيل الأسعار والمواصفات والمقارنة</a></p>",
-        "taxonomies": {
-          "a3_brand": [
-            "deepal"
-          ],
-          "a3_market": [
-            "egypt"
-          ],
-          "a3_car_body": [
-            "suv"
-          ]
-        },
-        "meta": {
-          "_a3_year": 2026,
-          "_a3_price_min": 1925000,
-          "_a3_price_max": 2015000,
-          "_a3_currency": "EGP",
-          "_a3_source_url": "https://www.deepal-eg.com/",
-          "_a3_source_checked_at": "2026-10-08",
-          "_a3_related_post_ids": "83281",
-          "_yoast_wpseo_meta-robots-noindex": "1"
-        },
-        "featured_media": 83283
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": true,
-      "body": {
-        "op": "platform_entity_upsert",
-        "type": "a3_car",
-        "title": "Forthing S7 2027",
-        "slug": "forthing-s7-2027-egypt",
-        "status": "publish",
-        "excerpt": "سيارة ليفتباك كهربائية تتوافر في مصر بنسختي EV وREEV، مع مراجعة تحريرية للمواصفات.",
-        "content": "<p>سيارة ليفتباك كهربائية تتوافر في مصر بنسختي EV وREEV، مع مراجعة تحريرية للمواصفات. هذا السجل جزء من قاعدة البيانات المنظمة في أعطال.كوم وليس مراجعة مستقلة.</p><p><a href=\"https://a3tal.com/forthing-s7-review-egypt/\">اطلع على تفاصيل الأسعار والمواصفات والمقارنة</a></p>",
-        "taxonomies": {
-          "a3_brand": [
-            "forthing"
-          ],
-          "a3_market": [
-            "egypt"
-          ],
-          "a3_car_body": [
-            "sedan"
-          ]
-        },
-        "meta": {
-          "_a3_year": 2027,
-          "_a3_price_min": 1290000,
-          "_a3_price_max": 1370000,
-          "_a3_currency": "EGP",
-          "_a3_source_url": "https://forthing-egypt.com/ar/s7-reev-ar/",
-          "_a3_source_checked_at": "2026-10-08",
-          "_a3_related_post_ids": "83284",
-          "_yoast_wpseo_meta-robots-noindex": "1"
-        },
-        "featured_media": 83288
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": true,
-      "body": {
         "op": "platform_entity_upsert",
         "type": "a3_car",
         "title": "XPeng G6 2026",
         "slug": "xpeng-g6-2026-egypt",
         "status": "publish",
-        "excerpt": "كروس أوفر كهربائية في مصر؛ راجع مقارنتها مع ديبال S07 قبل قرار الشراء.",
-        "content": "<p>كروس أوفر كهربائية في مصر؛ راجع مقارنتها مع ديبال S07 قبل قرار الشراء. هذا السجل جزء من قاعدة البيانات المنظمة في أعطال.كوم وليس مراجعة مستقلة.</p><p><a href=\"https://a3tal.com/deepal-s07-vs-xpeng-g6-egypt/\">اطلع على تفاصيل الأسعار والمواصفات والمقارنة</a></p>",
+        "excerpt": "كروس أوفر كهربائية في مصر؛ تعرف على سعرها وتجهيزاتها ضمن مقارنة ديبال S07.",
+        "content": "<p>سيارة كهربائية كروس أوفر. هذا سجل ضمن قاعدة سيارات أعطال.كوم وليس مراجعة مستقلة.</p><p><a href=\"https://a3tal.com/deepal-s07-vs-xpeng-g6-egypt/\">مقارنة ديبال S07 وXPeng G6 في مصر</a></p>",
         "taxonomies": {
           "a3_brand": [
             "xpeng"
@@ -139,14 +34,6 @@
           "_yoast_wpseo_meta-robots-noindex": "1"
         },
         "featured_media": 83298
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": false,
-      "body": {
-        "op": "cache_flush"
       }
     }
   ],
