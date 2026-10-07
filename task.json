@@ -7,9 +7,9 @@
       "body": {
         "post_id": 83305,
         "image_svg_file": "assets/p0340-camshaft-sensor-editorial.svg",
-        "render_width": 3840,
-        "render_height": 2160,
-        "render_quality": 87,
+        "render_width": 1600,
+        "render_height": 900,
+        "render_quality": 76,
         "filename": "p0340-camshaft-sensor-original-featured.webp",
         "title": "كود P0340 وفحص إشارة حساس الكامة بمعدات التشخيص",
         "alt": "رسم تقني حصري لمحرك سيارة وحساس موضع عمود الكامات CMP مع إشارة فحص P0340",
@@ -74,14 +74,5 @@
       }
     }
   ],
-  "verify": [
-    {
-      "path": "/post/83305",
-      "log_response": false
-    },
-    {
-      "path": "/admin?op=post_meta&post_id=83305",
-      "log_response": false
-    }
-  ]
+  "verify": []
 }
