@@ -77,5 +77,6 @@
       "path": "/post/83286",
       "log_response": true
     }
-  ]
+  ],
+  "retry_note": "corrected-image-payloads-2026-10-07"
 }
