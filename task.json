@@ -2,19 +2,7 @@
   "requests": [
     {
       "method": "GET",
-      "path": "/status",
-      "log_response": true,
-      "body": {}
-    },
-    {
-      "method": "GET",
       "path": "/admin?op=themes",
-      "log_response": true,
-      "body": {}
-    },
-    {
-      "method": "GET",
-      "path": "/admin?op=plugins",
       "log_response": true,
       "body": {}
     }
