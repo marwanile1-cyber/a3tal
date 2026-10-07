@@ -1,40 +1,10 @@
 {
   "requests": [
     {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": true,
-      "body": {
-        "op": "platform_entity_upsert",
-        "type": "a3_car",
-        "title": "XPeng G6 2026",
-        "slug": "xpeng-g6-2026-egypt",
-        "status": "publish",
-        "excerpt": "كروس أوفر كهربائية في مصر؛ تعرف على سعرها وتجهيزاتها ضمن مقارنة ديبال S07.",
-        "content": "<p>سيارة كهربائية كروس أوفر. هذا سجل ضمن قاعدة سيارات أعطال.كوم وليس مراجعة مستقلة.</p><p><a href=\"https://a3tal.com/deepal-s07-vs-xpeng-g6-egypt/\">مقارنة ديبال S07 وXPeng G6 في مصر</a></p>",
-        "taxonomies": {
-          "a3_brand": [
-            "xpeng"
-          ],
-          "a3_market": [
-            "egypt"
-          ],
-          "a3_car_body": [
-            "suv"
-          ]
-        },
-        "meta": {
-          "_a3_year": 2026,
-          "_a3_price_min": 2190000,
-          "_a3_price_max": 2190000,
-          "_a3_currency": "EGP",
-          "_a3_source_url": "https://www.contactcars.com/ar/new-cars/xpeng-g6",
-          "_a3_source_checked_at": "2026-10-08",
-          "_a3_related_post_ids": "83286",
-          "_yoast_wpseo_meta-robots-noindex": "1"
-        },
-        "featured_media": 83298
-      }
+      "method": "GET",
+      "path": "/status",
+      "log_response": false,
+      "body": {}
     }
   ],
   "verify": []
