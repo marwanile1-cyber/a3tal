@@ -66,6 +66,41 @@ jobs:
               jq --rawfile b64 "$IMAGE_B64" 'del(.image_svg_file,.render_width,.render_height,.render_quality) | .image_base64 = $b64' "$BODY_FILE" > "$BODY_FILE.tmp"
               mv "$BODY_FILE.tmp" "$BODY_FILE"
             fi
+            # Produce a distinct editorial automotive image from verified car-maker media.
+            # No text overlays; each file gets unique crop and balanced exposure.
+            if jq -e '.image_source_urls and (.image_source_urls | type == "array") and (.image_source_urls | length > 0)' "$BODY_FILE" >/dev/null; then
+              if ! command -v convert >/dev/null 2>&1; then
+                sudo apt-get update -qq
+                sudo apt-get install -y imagemagick
+              fi
+              IMAGE_WEBP="/tmp/a3tal-editorial-$i.webp"
+              WIDTH="$(jq -r '.render_width // 3840' "$BODY_FILE")"
+              HEIGHT="$(jq -r '.render_height // 2160' "$BODY_FILE")"
+              QUALITY="$(jq -r '.render_quality // 84' "$BODY_FILE")"
+              SOURCES="$(jq -r '.image_source_urls | length' "$BODY_FILE")"
+              for ((j=0;j<SOURCES;j++)); do
+                SOURCE_URL="$(jq -r ".image_source_urls[$j]" "$BODY_FILE")"
+                INPUT="/tmp/a3tal-photo-$i-$j"
+                curl --fail --location --retry 3 --connect-timeout 30 --max-time 160 --silent --show-error "$SOURCE_URL" -o "$INPUT"
+                if ! identify "$INPUT" >/dev/null 2>&1; then
+                  echo "Invalid input photo for image source $j"; exit 1
+                fi
+              done
+              if [ "$SOURCES" -eq 1 ]; then
+                convert "/tmp/a3tal-photo-$i-0" -auto-orient -resize "${WIDTH}x${HEIGHT}^" -gravity center -extent "${WIDTH}x${HEIGHT}" -colorspace sRGB -modulate 102,101,100 -quality "$QUALITY" "$IMAGE_WEBP"
+              elif [ "$SOURCES" -eq 2 ]; then
+                HALF=$((WIDTH / 2))
+                convert "/tmp/a3tal-photo-$i-0" -auto-orient -resize "${HALF}x${HEIGHT}^" -gravity center -extent "${HALF}x${HEIGHT}" -modulate 101,105,100 "/tmp/a3tal-half-$i-0.png"
+                convert "/tmp/a3tal-photo-$i-1" -auto-orient -resize "${HALF}x${HEIGHT}^" -gravity center -extent "${HALF}x${HEIGHT}" -modulate 101,105,100 "/tmp/a3tal-half-$i-1.png"
+                convert "/tmp/a3tal-half-$i-0.png" "/tmp/a3tal-half-$i-1.png" +append -quality "$QUALITY" "$IMAGE_WEBP"
+              else
+                echo "Only one or two source photographs are supported"; exit 1
+              fi
+              IMAGE_B64="/tmp/a3tal-editorial-$i.b64"
+              base64 -w 0 "$IMAGE_WEBP" > "$IMAGE_B64"
+              jq --rawfile b64 "$IMAGE_B64" 'del(.image_source_urls,.render_width,.render_height,.render_quality) | .image_base64 = $b64' "$BODY_FILE" > "$BODY_FILE.tmp"
+              mv "$BODY_FILE.tmp" "$BODY_FILE"
+            fi
             if jq -e '.image_base64_parts and (.image_base64_parts | type == "array") and (.image_base64_parts | length > 0)' "$BODY_FILE" >/dev/null; then
               IMAGE_B64="/tmp/a3tal-image-$i.b64"
               : > "$IMAGE_B64"
