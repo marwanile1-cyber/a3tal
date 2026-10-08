@@ -50,6 +50,33 @@ jobs:
             PATH_PART="$(jq -r ".requests[$i].path" "$TASK_FILE")"
             BODY_FILE="/tmp/a3tal-body-$i.json"
             jq -c ".requests[$i].body // {}" "$TASK_FILE" > "$BODY_FILE"
+            # Safely append editorial additions without overwriting existing WordPress blocks.
+            # Fetch the live original at execution time, then block replay via a unique marker.
+            if jq -e '.append_content and (.append_content | type == "string") and (.append_content | length > 0)' "$BODY_FILE" >/dev/null; then
+              if [ "$PATH_PART" != "/update-post" ]; then echo "append_content supported on /update-post only"; exit 1; fi
+              APPEND_POST_ID="$(jq -r '.id // .post_id // 0' "$BODY_FILE")"
+              if ! [[ "$APPEND_POST_ID" =~ ^[0-9]+$ ]] || [ "$APPEND_POST_ID" -eq 0 ]; then echo "Valid post id required for append_content"; exit 1; fi
+              CURRENT_RESPONSE="/tmp/a3tal-current-post-$i.json"
+              CURRENT_STATUS="$(curl --retry 3 --retry-delay 3 --retry-all-errors --connect-timeout 20 --max-time 120 --silent --show-error -o "$CURRENT_RESPONSE" -w "%{http_code}" -H "X-A3tal-Key: $A3TAL_API_KEY" -H "Authorization: Bearer $A3TAL_API_KEY" "$BASE/post/$APPEND_POST_ID")"
+              test "$CURRENT_STATUS" -eq 200 || { echo "Could not read original WordPress content for $APPEND_POST_ID"; exit 1; }
+              python3 - "$BODY_FILE" "$CURRENT_RESPONSE" <<'PYAPPEND'
+          import json,sys
+          body_path,current_path=sys.argv[1:]
+          with open(body_path,encoding='utf-8') as f: body=json.load(f)
+          with open(current_path,encoding='utf-8') as f: original=json.load(f)
+          assert int(original['id']) == int(body.get('id',body.get('post_id',0)))
+          assert original['status'] == 'publish', 'Only append to published articles'
+          addition=body.pop('append_content')
+          marker=body.pop('append_marker',None)
+          if not marker or len(marker)<10 or not marker.startswith('A3TAL-'): raise SystemExit('Unique append_marker required')
+          if marker in original['content']:
+              print(f'Editorial addition {marker} already present; skip duplicate append')
+              addition=''
+          if addition:
+              body['content']=original['content']+'\n<!-- '+marker+' -->\n'+addition
+          with open(body_path,'w',encoding='utf-8') as f: json.dump(body,f,ensure_ascii=False)
+          PYAPPEND
+            fi
             # Controlled source-file deployment: take file bytes from this repository, not from secrets or inline JSON.
             if jq -e '.content_file and (.content_file | type == "string") and (.content_file | length > 0)' "$BODY_FILE" >/dev/null; then
               CONTENT_FILE="$(jq -r '.content_file' "$BODY_FILE")"
