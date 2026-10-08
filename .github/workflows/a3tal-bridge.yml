@@ -215,6 +215,8 @@ jobs:
               jq . "$RESPONSE" 2>/dev/null || cat "$RESPONSE"
             fi
             echo "::endgroup::"
+            # Respect WordPress/host request throttling on editorial bulk jobs.
+            if [ "$i" -lt "$((COUNT-1))" ]; then sleep 6; fi
           done
 
       - name: Verify requests
