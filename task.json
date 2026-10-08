@@ -2,8 +2,26 @@
   "requests": [
     {
       "method": "GET",
-      "path": "/admin?op=themes",
-      "log_response": true,
+      "path": "/admin?op=file_read&path=themes%2Fa3tal-global%2Ffunctions.php",
+      "log_response": "sha_only",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/admin?op=file_read&path=themes%2Fa3tal-global%2Ffront-page.php",
+      "log_response": "sha_only",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/admin?op=file_read&path=themes%2Fa3tal-global%2Fassets%2Fjs%2Ftheme.js",
+      "log_response": "sha_only",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/admin?op=file_read&path=themes%2Fa3tal-global%2Fstyle.css",
+      "log_response": "sha_only",
       "body": {}
     }
   ],
