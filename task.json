@@ -1,10 +1,20 @@
 {
   "requests": [
     {
-      "method": "GET",
-      "path": "/search-posts?search=SOUEAST%20S06%20DM&limit=25",
+      "method": "POST",
+      "path": "/upload-image-data",
       "log_response": true,
-      "body": {}
+      "body": {
+        "post_id": 82564,
+        "filename": "soueast-s06-dm-egypt-editorial-2026.webp",
+        "alt": "سوإيست S06 DM الهجينة القابلة للشحن من الأمام والجانب",
+        "image_source_urls": [
+          "https://soueastksa.com/img-page/car/s06/kvdm.jpg"
+        ],
+        "render_width": 1600,
+        "render_height": 900,
+        "render_quality": 84
+      }
     }
   ]
 }
