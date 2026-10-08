@@ -1,11 +1,4 @@
 {
-  "requests": [
-    {
-      "method": "GET",
-      "path": "/admin?op=plugins",
-      "log_response": true,
-      "body": {}
-    }
-  ],
+  "requests": [],
   "verify": []
 }
