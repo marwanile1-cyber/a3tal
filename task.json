@@ -5,84 +5,7 @@
       "path": "/admin",
       "log_response": false,
       "body": {
-        "op": "file_write",
-        "path": "themes/a3tal-global/style.css",
-        "patches": [
-          {
-            "from": "Version: 1.7.4",
-            "to": "Version: 1.7.5"
-          },
-          {
-            "append": "\n/* 1.7.5 mobile performance: responsive hero image with a stable box and high priority. */\n.g-hero-platform{isolation:isolate}\n.g-hero-platform .g-hero-bg{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;object-position:center;z-index:0}\n.g-hero-platform::before{content:\"\";position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,14,24,.96) 0%,rgba(5,14,24,.77) 46%,rgba(5,14,24,.25) 100%);z-index:1;pointer-events:none}\n.g-hero-platform::after{z-index:1}\n.g-hero-platform .g-hero-content{position:relative;z-index:2}\n@media(max-width:650px){\n .g-hero-platform::before{background:linear-gradient(180deg,rgba(5,14,24,.88),rgba(5,14,24,.78))}\n}\n"
-          }
-        ],
-        "confirm": true,
-        "dangerous": true
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": false,
-      "body": {
-        "op": "file_write",
-        "path": "themes/a3tal-global/functions.php",
-        "patches": [
-          {
-            "from": "define('A3G_VERSION','1.7.4');",
-            "to": "define('A3G_VERSION','1.7.5');"
-          },
-          {
-            "from": "function a3g_query($args=[]){return new WP_Query(wp_parse_args($args,['post_type'=>'post','post_status'=>'publish','ignore_sticky_posts'=>true]));}",
-            "to": "function a3g_query($args=[]){return new WP_Query(wp_parse_args($args,['post_type'=>'post','post_status'=>'publish','ignore_sticky_posts'=>true,'no_found_rows'=>true]));}"
-          },
-          {
-            "from": "add_action('wp_enqueue_scripts','a3g_assets');\n",
-            "to": "add_action('wp_enqueue_scripts','a3g_assets');\n// Establish the font connection early without changing the typography or AdSense integration.\nadd_filter('wp_resource_hints',function($urls,$relation_type){\n  if($relation_type==='preconnect'){\n    $urls[]='https://fonts.googleapis.com';\n    $urls[]=['href'=>'https://fonts.gstatic.com','crossorigin'=>'anonymous'];\n  }\n  return $urls;\n},10,2);\n"
-          }
-        ],
-        "confirm": true,
-        "dangerous": true
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": false,
-      "body": {
-        "op": "file_write",
-        "path": "themes/a3tal-global/front-page.php",
-        "patches": [
-          {
-            "from": "$hero_id=0;$hero_img='';",
-            "to": "$hero_id=0;$hero_img_id=0;"
-          },
-          {
-            "from": "$hero_img=get_the_post_thumbnail_url($hero_id,'full');",
-            "to": "$hero_img_id=get_post_thumbnail_id($hero_id);"
-          },
-          {
-            "from": "<div class=\"g-hero g-hero-platform\" <?php if($hero_img): ?>style=\"background-image:linear-gradient(90deg,rgba(5,14,24,.96) 0%,rgba(5,14,24,.77) 46%,rgba(5,14,24,.25) 100%),url('<?php echo esc_url($hero_img); ?>')\"<?php endif; ?>>\n      ",
-            "to": "<div class=\"g-hero g-hero-platform\">\n      <?php if($hero_img_id): ?>\n        <?php echo wp_get_attachment_image($hero_img_id,'large',false,[\n          'class'=>'g-hero-bg',\n          'alt'=>'',\n          'loading'=>'eager',\n          'fetchpriority'=>'high',\n          'decoding'=>'async',\n          'sizes'=>'(max-width: 767px) 100vw, (max-width: 1280px) 92vw, 1240px',\n        ]); ?>\n      <?php endif; ?>\n      "
-          }
-        ],
-        "confirm": true,
-        "dangerous": true
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": false,
-      "body": {
-        "op": "file_write",
-        "path": "themes/a3tal-global/assets/js/theme.js",
-        "patches": [
-          {
-            "from": "document.addEventListener('DOMContentLoaded',()=> {\n  const b=document.querySelector('.g-menu-toggle');\n  const m=document.querySelector('.g-mobile-menu');\n  if(b&&m){\n    b.addEventListener('click',()=>{\n      const open=m.classList.toggle('is-open');\n      b.setAttribute('aria-expanded',open?'true':'false');\n    });\n  }\n\n  document.querySelectorAll('.g-entry table').forEach(t=>{\n    if(!t.parentElement.classList.contains('g-table-wrap')){\n      const w=document.createElement('div');\n      w.className='g-table-wrap';\n      t.parentNode.insertBefore(w,t);\n      w.appendChild(t);\n    }\n  });\n\n  const viewport=document.querySelector('[data-a3tal-news-ticker]');\n  if(viewport){\n    const track=viewport.querySelector('.g-newsbar-track');\n    const firstGroup=viewport.querySelector('.g-newsbar-group');\n    if(track&&firstGroup){\n      let x=0;\n      let last=0;\n      let paused=false;\n      const speed=42;\n\n      const step=(ts)=>{\n        if(!last) last=ts;\n        const dt=Math.min(40,ts-last);\n        last=ts;\n        if(!paused){\n          x -= speed*(dt/1000);\n          const resetAt=firstGroup.offsetWidth + 42;\n          if(resetAt>0 && -x>=resetAt) x += resetAt;\n          track.style.transform='translate3d('+x+'px,0,0)';\n        }\n        requestAnimationFrame(step);\n      };\n\n      viewport.addEventListener('mouseenter',()=>paused=true);\n      viewport.addEventListener('mouseleave',()=>paused=false);\n      viewport.addEventListener('focusin',()=>paused=true);\n      viewport.addEventListener('focusout',()=>paused=false);\n      requestAnimationFrame(step);\n    }\n  }\n});",
-            "to": "document.addEventListener('DOMContentLoaded',()=> {\n  const b=document.querySelector('.g-menu-toggle');\n  const m=document.querySelector('.g-mobile-menu');\n  if(b&&m){\n    b.addEventListener('click',()=>{\n      const open=m.classList.toggle('is-open');\n      b.setAttribute('aria-expanded',open?'true':'false');\n    });\n  }\n\n  document.querySelectorAll('.g-entry table').forEach(t=>{\n    if(!t.parentElement.classList.contains('g-table-wrap')){\n      const w=document.createElement('div');\n      w.className='g-table-wrap';\n      t.parentNode.insertBefore(w,t);\n      w.appendChild(t);\n    }\n  });\n\n  const viewport=document.querySelector('[data-a3tal-news-ticker]');\n  if(viewport){\n    const track=viewport.querySelector('.g-newsbar-track');\n    const firstGroup=viewport.querySelector('.g-newsbar-group');\n    if(track&&firstGroup){\n      let x=0;\n      let last=0;\n      let paused=false;\n      let visible=true;\n      let frame=0;\n      let resetAt=0;\n      const speed=42;\n      const reducedMotion=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;\n      const measure=()=>{\n        const gap=parseFloat(window.getComputedStyle(track).gap)||42;\n        resetAt=firstGroup.offsetWidth+gap;\n        if(resetAt>0 && -x>=resetAt) x=0;\n      };\n      const stop=()=>{\n        if(frame) cancelAnimationFrame(frame);\n        frame=0;\n        last=0;\n      };\n      const start=()=>{\n        if(!frame && !paused && visible && !document.hidden && !reducedMotion){\n          frame=requestAnimationFrame(step);\n        }\n      };\n      const step=(ts)=>{\n        frame=0;\n        if(last && resetAt>0){\n          x -= speed*(Math.min(40,ts-last)/1000);\n          if(-x>=resetAt) x+=resetAt;\n          track.style.transform='translate3d('+x+'px,0,0)';\n        }\n        last=ts;\n        start();\n      };\n      const setPaused=(value)=>{paused=value;if(value)stop();else start();};\n      measure();\n      if('ResizeObserver' in window){new ResizeObserver(measure).observe(firstGroup);}\n      else window.addEventListener('resize',measure,{passive:true});\n      if('IntersectionObserver' in window){\n        new IntersectionObserver(entries=>{\n          visible=Boolean(entries[0] && entries[0].isIntersecting);\n          if(visible)start();else stop();\n        }).observe(viewport);\n      }\n      viewport.addEventListener('mouseenter',()=>setPaused(true));\n      viewport.addEventListener('mouseleave',()=>setPaused(false));\n      viewport.addEventListener('focusin',()=>setPaused(true));\n      viewport.addEventListener('focusout',()=>setPaused(false));\n      document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();else start();});\n      start();\n    }\n  }\n});"
-          }
-        ],
+        "op": "cache_flush",
         "confirm": true,
         "dangerous": true
       }
@@ -90,20 +13,14 @@
   ],
   "verify": [
     {
-      "path": "/admin?op=file_read&path=themes%2Fa3tal-global%2Fstyle.css",
-      "log_response": "sha_only"
-    },
-    {
-      "path": "/admin?op=file_read&path=themes%2Fa3tal-global%2Ffunctions.php",
-      "log_response": "sha_only"
-    },
-    {
-      "path": "/admin?op=file_read&path=themes%2Fa3tal-global%2Ffront-page.php",
-      "log_response": "sha_only"
-    },
-    {
-      "path": "/admin?op=file_read&path=themes%2Fa3tal-global%2Fassets%2Fjs%2Ftheme.js",
-      "log_response": "sha_only"
+      "path": "/status",
+      "log_response": false
     }
+  ],
+  "public_verify": [
+    "class=\"g-hero-bg\"",
+    "fetchpriority=\"high\"",
+    "g-platform-launcher",
+    "كل ما يخص عالم السيارات والموتوسيكلات"
   ]
 }
