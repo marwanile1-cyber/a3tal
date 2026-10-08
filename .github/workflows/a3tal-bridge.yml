@@ -228,6 +228,39 @@ jobs:
             echo "::endgroup::"
           done
 
+      - name: Test intermittent origin connectivity
+        shell: bash
+        run: |
+          set -uo pipefail
+          if ! jq -e '.network_diagnostics.enabled == true' task.json >/dev/null; then
+            echo "No network diagnostic requested."
+            exit 0
+          fi
+          echo "UTC: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          echo "DNS A: $(dig +short a3tal.com A | tr '\n' ' ')"
+          echo "DNS AAAA: $(dig +short a3tal.com AAAA | tr '\n' ' ')"
+          echo "NAMESERVERS: $(dig +short a3tal.com NS | tr '\n' ' ')"
+          ROUNDS="$(jq -r '.network_diagnostics.rounds // 3' task.json)"
+          for ((round=1;round<=ROUNDS;round++)); do
+            while IFS= read -r TARGET; do
+              [ -n "$TARGET" ] || continue
+              HEADER_FILE="$(mktemp)"
+              BODY_FILE="$(mktemp)"
+              CODE="$(curl --silent --show-error --location --connect-timeout 12 --max-time 25 --retry 0 \
+                --header 'Cache-Control: no-cache' \
+                --dump-header "$HEADER_FILE" --output "$BODY_FILE" \
+                --write-out 'HTTP:%{http_code} CONNECT:%{time_connect}s TLS:%{time_appconnect}s TTFB:%{time_starttransfer}s TOTAL:%{time_total}s REMOTE:%{remote_ip}' \
+                "https://a3tal.com$TARGET" 2>&1)"
+              RAY="$(grep -im1 '^cf-ray:' "$HEADER_FILE" | tr -d '\r' | cut -d: -f2- | xargs || true)"
+              CF_CACHE="$(grep -im1 '^cf-cache-status:' "$HEADER_FILE" | tr -d '\r' | cut -d: -f2- | xargs || true)"
+              LS_CACHE="$(grep -im1 '^x-litespeed-cache:' "$HEADER_FILE" | tr -d '\r' | cut -d: -f2- | xargs || true)"
+              SERVER="$(grep -im1 '^server:' "$HEADER_FILE" | tr -d '\r' | cut -d: -f2- | xargs || true)"
+              echo "ROUND:$round URL:$TARGET RESULT:$CODE CF_RAY:$RAY CF_CACHE:$CF_CACHE LS_CACHE:$LS_CACHE SERVER:$SERVER"
+              rm -f "$HEADER_FILE" "$BODY_FILE"
+            done < <(jq -r '.network_diagnostics.paths[]' task.json)
+            sleep 2
+          done
+
       - name: Verify public HTML
         shell: bash
         run: |
