@@ -227,3 +227,23 @@ jobs:
             fi
             echo "::endgroup::"
           done
+
+      - name: Verify public HTML
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! jq -e '.public_verify and (.public_verify | type == "array") and (.public_verify | length > 0)' task.json >/dev/null; then
+            echo "No public HTML verification assertions."
+            exit 0
+          fi
+          URL="https://a3tal.com/?a3tal_perf_check=$(date +%s)"
+          STATUS="$(curl --retry 3 --retry-delay 3 --retry-all-errors --location --connect-timeout 20 --max-time 90 --silent --show-error -H 'Cache-Control: no-cache' -o /tmp/a3tal-public.html -w '%{http_code}' "$URL")"
+          echo "Public homepage HTTP $STATUS; bytes $(wc -c </tmp/a3tal-public.html)"
+          test "$STATUS" -eq 200
+          while IFS= read -r EXPECTED; do
+            if ! grep -Fq "$EXPECTED" /tmp/a3tal-public.html; then
+              echo "Missing expected public HTML marker: $EXPECTED"
+              exit 1
+            fi
+            echo "Verified public HTML marker: $EXPECTED"
+          done < <(jq -r '.public_verify[]' task.json)
