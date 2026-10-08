@@ -1,36 +1,46 @@
 <?php
 get_header();
 
-$hero_q=a3g_query(['cat'=>374,'posts_per_page'=>1]);
-$hero_id=0;$hero_img='';
-if($hero_q->have_posts()){ $hero_q->the_post(); $hero_id=get_the_ID(); $hero_img=get_the_post_thumbnail_url($hero_id,'full'); }
+$hero_q=a3g_query(['cat'=>374,'posts_per_page'=>1,'no_found_rows'=>true]);
+$hero_id=0;$hero_img_id=0;
+if($hero_q->have_posts()){ $hero_q->the_post(); $hero_id=get_the_ID(); $hero_img_id=get_post_thumbnail_id($hero_id); }
 wp_reset_postdata();
 
-$prices=a3g_query(['cat'=>374,'posts_per_page'=>4]);
-$reviews=a3g_query(['category__in'=>[22,21],'posts_per_page'=>3]);
-$faults=a3g_query(['category__in'=>[8,13,2,18],'posts_per_page'=>4]);
-$news=a3g_query(['posts_per_page'=>4,'post__not_in'=>$hero_id?[$hero_id]:[]]);
+$prices=a3g_query(['cat'=>374,'posts_per_page'=>4,'no_found_rows'=>true]);
+$reviews=a3g_query(['category__in'=>[22,21],'posts_per_page'=>3,'no_found_rows'=>true]);
+$faults=a3g_query(['category__in'=>[8,13,2,18],'posts_per_page'=>4,'no_found_rows'=>true]);
+$news=a3g_query(['posts_per_page'=>4,'no_found_rows'=>true,'post__not_in'=>$hero_id?[$hero_id]:[]]);
 
 $cars=new WP_Query([
   'post_type'=>'a3_car',
   'post_status'=>'publish',
-  'posts_per_page'=>6,
+  'posts_per_page'=>6,'no_found_rows'=>true,
   'orderby'=>'date',
   'order'=>'DESC',
   'ignore_sticky_posts'=>true,
 ]);
-$motos=new WP_Query(['post_type'=>'a3_motorcycle','post_status'=>'publish','posts_per_page'=>3,'ignore_sticky_posts'=>true]);
-$dtcs=new WP_Query(['post_type'=>'a3_dtc','post_status'=>'publish','posts_per_page'=>4,'ignore_sticky_posts'=>true]);
-$parts=new WP_Query(['post_type'=>'a3_part','post_status'=>'publish','posts_per_page'=>4,'ignore_sticky_posts'=>true]);
-$listings=new WP_Query(['post_type'=>'a3_listing','post_status'=>'publish','posts_per_page'=>3,'ignore_sticky_posts'=>true]);
-$centers=new WP_Query(['post_type'=>'a3_service_center','post_status'=>'publish','posts_per_page'=>3,'ignore_sticky_posts'=>true]);
-$showrooms=new WP_Query(['post_type'=>'a3_showroom','post_status'=>'publish','posts_per_page'=>3,'ignore_sticky_posts'=>true]);
+$motos=new WP_Query(['post_type'=>'a3_motorcycle','post_status'=>'publish','posts_per_page'=>3,'no_found_rows'=>true,'ignore_sticky_posts'=>true]);
+$dtcs=new WP_Query(['post_type'=>'a3_dtc','post_status'=>'publish','posts_per_page'=>4,'no_found_rows'=>true,'ignore_sticky_posts'=>true]);
+$parts=new WP_Query(['post_type'=>'a3_part','post_status'=>'publish','posts_per_page'=>4,'no_found_rows'=>true,'ignore_sticky_posts'=>true]);
+$listings=new WP_Query(['post_type'=>'a3_listing','post_status'=>'publish','posts_per_page'=>3,'no_found_rows'=>true,'ignore_sticky_posts'=>true]);
+$centers=new WP_Query(['post_type'=>'a3_service_center','post_status'=>'publish','posts_per_page'=>3,'no_found_rows'=>true,'ignore_sticky_posts'=>true]);
+$showrooms=new WP_Query(['post_type'=>'a3_showroom','post_status'=>'publish','posts_per_page'=>3,'no_found_rows'=>true,'ignore_sticky_posts'=>true]);
 ?>
 <main class="g-home g-home-platform">
 
 <section class="g-hero-section g-platform-home-hero">
   <div class="g-wrap">
-    <div class="g-hero g-hero-platform" <?php if($hero_img): ?>style="background-image:linear-gradient(90deg,rgba(5,14,24,.96) 0%,rgba(5,14,24,.77) 46%,rgba(5,14,24,.25) 100%),url('<?php echo esc_url($hero_img); ?>')"<?php endif; ?>>
+    <div class="g-hero g-hero-platform">
+      <?php if($hero_img_id): ?>
+        <?php echo wp_get_attachment_image($hero_img_id,'large',false,[
+          'class'=>'g-hero-bg',
+          'alt'=>'',
+          'loading'=>'eager',
+          'fetchpriority'=>'high',
+          'decoding'=>'async',
+          'sizes'=>'(max-width: 767px) 100vw, (max-width: 1280px) 92vw, 1240px',
+        ]); ?>
+      <?php endif; ?>
       <div class="g-hero-content">
         <span class="g-hero-eyebrow">A3TAL AUTOMOTIVE PLATFORM</span>
         <h1>كل ما يخص عالم السيارات والموتوسيكلات</h1>
