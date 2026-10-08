@@ -32,6 +32,10 @@ jobs:
           A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
         run: |
           set -euo pipefail
+          # Reject syntax errors before any live write.
+          php -l theme-source/a3tal-global/functions.php
+          php -l theme-source/a3tal-global/front-page.php
+          node --check theme-source/a3tal-global/assets/js/theme.js
           TASK_FILE="task.json"
           BASE="https://a3tal.com/wp-json/a3tal-direct/v1"
 
@@ -57,7 +61,42 @@ jobs:
               jq --rawfile content "$CONTENT_FILE" 'del(.content_file) | .content = $content' "$BODY_FILE" > "$BODY_FILE.tmp"
               mv "$BODY_FILE.tmp" "$BODY_FILE"
             fi
-            if jq -e '.image_svg_file and (.image_svg_file | type == "string") and (.image_svg_file | length > 0)' "$BODY_FILE" >/dev/null; then
+            # For active themes, patch live code in place and verify the old SHA before writing.
+            if jq -e '.patches and (.patches | type == "array") and (.patches | length > 0)' "$BODY_FILE" >/dev/null; then
+              LIVE_PATH="$(jq -r '.path' "$BODY_FILE")"
+              case "$LIVE_PATH" in
+                themes/a3tal-global/functions.php|themes/a3tal-global/front-page.php|themes/a3tal-global/assets/js/theme.js|themes/a3tal-global/style.css) ;;
+                *) echo "Disallowed live patch path"; exit 1 ;;
+              esac
+              LIVE_RESPONSE="/tmp/a3tal-live-$i.json"
+              STATUS="$(curl --retry 3 --retry-delay 2 --connect-timeout 20 --max-time 100 --silent --show-error -o "$LIVE_RESPONSE" -w "%{http_code}" -G -H "X-A3tal-Key: $A3TAL_API_KEY" -H "Authorization: Bearer $A3TAL_API_KEY" --data-urlencode "op=file_read" --data-urlencode "path=$LIVE_PATH" "$BASE/admin")"
+              if [ "$STATUS" -lt 200 ] || [ "$STATUS" -ge 300 ]; then echo "Could not read live theme file (HTTP $STATUS)"; exit 1; fi
+              python3 - "$BODY_FILE" "$LIVE_RESPONSE" <<'PY'
+            import json,sys
+            body_path,live_path=sys.argv[1:]
+            with open(body_path,encoding='utf-8') as file: body=json.load(file)
+            with open(live_path,encoding='utf-8') as file: response=json.load(file)
+            if not response.get('ok') or not response.get('result',{}).get('sha256'):
+                raise SystemExit('Missing validated live file response')
+            content=response['result']['content']
+            for index,patch in enumerate(body['patches'],1):
+                if 'append' in patch:
+                    addition=patch['append']
+                    if not addition or addition in content: raise SystemExit(f'Patch {index}: empty or duplicate append')
+                    content+=addition
+                else:
+                    old,new=patch['from'],patch['to']
+                    count=content.count(old)
+                    if count!=1: raise SystemExit(f'Patch {index}: expected one match, got {count}')
+                    content=content.replace(old,new,1)
+            body['content']=content
+            body['expected_sha256']=response['result']['sha256']
+            del body['patches']
+            with open(body_path,'w',encoding='utf-8') as file: json.dump(body,file,ensure_ascii=False)
+            print(f"Validated {len(content)} output characters and a conflict-checked live SHA")
+            PY
+            fi
+                        if jq -e '.image_svg_file and (.image_svg_file | type == "string") and (.image_svg_file | length > 0)' "$BODY_FILE" >/dev/null; then
               SVG_FILE="$(jq -r '.image_svg_file' "$BODY_FILE")"
               if [ ! -f "$SVG_FILE" ]; then
                 echo "Missing SVG source: $SVG_FILE"
