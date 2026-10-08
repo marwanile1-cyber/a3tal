@@ -1,6 +1,6 @@
 <?php
 if (!defined('ABSPATH')) exit;
-define('A3G_VERSION','1.7.4');
+define('A3G_VERSION','1.7.5');
 
 function a3g_setup(){
   add_theme_support('title-tag');
@@ -18,11 +18,19 @@ function a3g_assets(){
   wp_enqueue_script('a3g-theme',get_template_directory_uri().'/assets/js/theme.js',[],A3G_VERSION,true);
 }
 add_action('wp_enqueue_scripts','a3g_assets');
+// Establish the font connection early without changing the typography or AdSense integration.
+add_filter('wp_resource_hints',function($urls,$relation_type){
+  if($relation_type==='preconnect'){
+    $urls[]='https://fonts.googleapis.com';
+    $urls[]=['href'=>'https://fonts.gstatic.com','crossorigin'=>'anonymous'];
+  }
+  return $urls;
+},10,2);
 add_action('wp_head',function(){echo '<meta name="theme-color" content="#091522">'.PHP_EOL;},1);
 
 function a3g_cat_link($id){$u=get_category_link((int)$id);return is_wp_error($u)?home_url('/'):$u;}
 function a3g_search($q=''){return add_query_arg('s',$q,home_url('/'));}
-function a3g_query($args=[]){return new WP_Query(wp_parse_args($args,['post_type'=>'post','post_status'=>'publish','ignore_sticky_posts'=>true]));}
+function a3g_query($args=[]){return new WP_Query(wp_parse_args($args,['post_type'=>'post','post_status'=>'publish','ignore_sticky_posts'=>true,'no_found_rows'=>true]));}
 function a3g_primary_cat($id=0){$id=$id?:get_the_ID();$c=get_the_category($id);return $c?($c[0]??null):null;}
 function a3g_excerpt($id=0,$words=22){
   $id=$id?:get_the_ID();
