@@ -2,55 +2,7 @@
   "requests": [
     {
       "method": "GET",
-      "path": "/post/81102",
-      "log_response": true,
-      "body": {}
-    },
-    {
-      "method": "GET",
-      "path": "/post/79964",
-      "log_response": true,
-      "body": {}
-    },
-    {
-      "method": "GET",
-      "path": "/post/79943",
-      "log_response": true,
-      "body": {}
-    },
-    {
-      "method": "GET",
-      "path": "/post/80401",
-      "log_response": true,
-      "body": {}
-    },
-    {
-      "method": "GET",
-      "path": "/post/80669",
-      "log_response": true,
-      "body": {}
-    },
-    {
-      "method": "GET",
-      "path": "/post/114",
-      "log_response": true,
-      "body": {}
-    },
-    {
-      "method": "GET",
-      "path": "/post/80209",
-      "log_response": true,
-      "body": {}
-    },
-    {
-      "method": "GET",
-      "path": "/post/82275",
-      "log_response": true,
-      "body": {}
-    },
-    {
-      "method": "GET",
-      "path": "/post/82276",
+      "path": "/admin?op=plugins",
       "log_response": true,
       "body": {}
     }
