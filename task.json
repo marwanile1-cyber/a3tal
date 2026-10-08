@@ -1,26 +1,59 @@
 {
   "requests": [
     {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": false,
-      "body": {
-        "op": "cache_flush",
-        "confirm": true,
-        "dangerous": true
-      }
-    }
-  ],
-  "verify": [
+      "method": "GET",
+      "path": "/post/81102",
+      "log_response": true,
+      "body": {}
+    },
     {
-      "path": "/status",
-      "log_response": false
+      "method": "GET",
+      "path": "/post/79964",
+      "log_response": true,
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/post/79943",
+      "log_response": true,
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/post/80401",
+      "log_response": true,
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/post/80669",
+      "log_response": true,
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/post/114",
+      "log_response": true,
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/post/80209",
+      "log_response": true,
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/post/82275",
+      "log_response": true,
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "path": "/post/82276",
+      "log_response": true,
+      "body": {}
     }
   ],
-  "public_verify": [
-    "class=\"g-hero-bg\"",
-    "fetchpriority=\"high\"",
-    "g-platform-launcher",
-    "كل ما يخص عالم السيارات والموتوسيكلات"
-  ]
+  "verify": []
 }
