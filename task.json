@@ -1,161 +1,33 @@
 {
   "requests": [
     {
-      "method": "POST",
-      "path": "/update-post",
+      "method": "GET",
+      "path": "/admin?op=site_info",
       "log_response": true,
-      "body": {
-        "id": 81102,
-        "meta": {
-          "_yoast_wpseo_focuskw": "توكيل غبور",
-          "_yoast_wpseo_title": "توكيل غبور: الخط الساخن 16661 و15050 وحجز الصيانة",
-          "_yoast_wpseo_metadesc": "رقم توكيل غبور والخط الساخن: 16661 لهيونداي وشيري ومازدا، و15050 لهافال وشانجان وديبال، و17020 لجينيسيس. اختر العلامة واحجز الصيانة.",
-          "_yoast_wpseo_opengraph-title": "توكيل غبور: الخط الساخن 16661 و15050 وحجز الصيانة",
-          "_yoast_wpseo_opengraph-description": "رقم توكيل غبور والخط الساخن: 16661 لهيونداي وشيري ومازدا، و15050 لهافال وشانجان وديبال، و17020 لجينيسيس. اختر العلامة واحجز الصيانة.",
-          "_yoast_wpseo_twitter-title": "توكيل غبور: الخط الساخن 16661 و15050 وحجز الصيانة",
-          "_yoast_wpseo_twitter-description": "رقم توكيل غبور والخط الساخن: 16661 لهيونداي وشيري ومازدا، و15050 لهافال وشانجان وديبال، و17020 لجينيسيس. اختر العلامة واحجز الصيانة."
-        }
-      }
+      "body": {}
     },
     {
-      "method": "POST",
-      "path": "/update-post",
+      "method": "GET",
+      "path": "/admin?op=cron&limit=120",
       "log_response": true,
-      "body": {
-        "id": 79964,
-        "meta": {
-          "_yoast_wpseo_focuskw": "توكيل منصور MG الخط الساخن",
-          "_yoast_wpseo_title": "توكيل منصور MG وشيفروليه 16424: الخط الساخن والفروع",
-          "_yoast_wpseo_metadesc": "رقم توكيل منصور MG وشيفروليه وأوبل 16424، وطريقة حجز الصيانة واختيار المركز المعتمد حسب ماركة السيارة. أرقام التواصل والفروع الرسمية.",
-          "_yoast_wpseo_opengraph-title": "توكيل منصور MG وشيفروليه 16424: الخط الساخن والفروع",
-          "_yoast_wpseo_opengraph-description": "رقم توكيل منصور MG وشيفروليه وأوبل 16424، وطريقة حجز الصيانة واختيار المركز المعتمد حسب ماركة السيارة. أرقام التواصل والفروع الرسمية.",
-          "_yoast_wpseo_twitter-title": "توكيل منصور MG وشيفروليه 16424: الخط الساخن والفروع",
-          "_yoast_wpseo_twitter-description": "رقم توكيل منصور MG وشيفروليه وأوبل 16424، وطريقة حجز الصيانة واختيار المركز المعتمد حسب ماركة السيارة. أرقام التواصل والفروع الرسمية."
-        }
-      }
+      "body": {}
     },
     {
-      "method": "POST",
-      "path": "/update-post",
+      "method": "GET",
+      "path": "/admin?op=file_list&path=",
       "log_response": true,
-      "body": {
-        "id": 79943,
-        "meta": {
-          "_yoast_wpseo_focuskw": "فروع غبور أوتو",
-          "_yoast_wpseo_title": "فروع غبور أوتو: العبور وأبو رواش والقطامية والعناوين",
-          "_yoast_wpseo_metadesc": "عناوين فروع غبور أوتو في العبور وأبو رواش والقطامية والعامرية وقليوب، والفرق بين فرع المبيعات ومركز الصيانة. تحقق من الخدمة قبل الذهاب.",
-          "_yoast_wpseo_opengraph-title": "فروع غبور أوتو: العبور وأبو رواش والقطامية والعناوين",
-          "_yoast_wpseo_opengraph-description": "عناوين فروع غبور أوتو في العبور وأبو رواش والقطامية والعامرية وقليوب، والفرق بين فرع المبيعات ومركز الصيانة. تحقق من الخدمة قبل الذهاب.",
-          "_yoast_wpseo_twitter-title": "فروع غبور أوتو: العبور وأبو رواش والقطامية والعناوين",
-          "_yoast_wpseo_twitter-description": "عناوين فروع غبور أوتو في العبور وأبو رواش والقطامية والعامرية وقليوب، والفرق بين فرع المبيعات ومركز الصيانة. تحقق من الخدمة قبل الذهاب."
-        }
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/update-post",
-      "log_response": true,
-      "body": {
-        "id": 80401,
-        "meta": {
-          "_yoast_wpseo_focuskw": "رقم توكيل جيتور الخط الساخن",
-          "_yoast_wpseo_title": "رقم توكيل جيتور 16263 في مصر: القصراوي والحجز والفروع",
-          "_yoast_wpseo_metadesc": "رقم توكيل جيتور الرسمي 16263 لدى القصراوي في مصر. تعرف على طرق حجز الصيانة ومراكز جيتور المعتمدة والعناوين والتواصل قبل زيارة الفرع.",
-          "_yoast_wpseo_opengraph-title": "رقم توكيل جيتور 16263 في مصر: القصراوي والحجز والفروع",
-          "_yoast_wpseo_opengraph-description": "رقم توكيل جيتور الرسمي 16263 لدى القصراوي في مصر. تعرف على طرق حجز الصيانة ومراكز جيتور المعتمدة والعناوين والتواصل قبل زيارة الفرع.",
-          "_yoast_wpseo_twitter-title": "رقم توكيل جيتور 16263 في مصر: القصراوي والحجز والفروع",
-          "_yoast_wpseo_twitter-description": "رقم توكيل جيتور الرسمي 16263 لدى القصراوي في مصر. تعرف على طرق حجز الصيانة ومراكز جيتور المعتمدة والعناوين والتواصل قبل زيارة الفرع."
-        }
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/update-post",
-      "log_response": true,
-      "body": {
-        "id": 80669,
-        "meta": {
-          "_yoast_wpseo_focuskw": "توكيل سكودا في مصر",
-          "_yoast_wpseo_title": "توكيل سكودا كيان مصر 19112: حجز الصيانة والفروع",
-          "_yoast_wpseo_metadesc": "توكيل سكودا في مصر لدى كيان، والخط الساخن 19112. خطوات حجز الصيانة وأماكن المراكز المعتمدة في القاهرة الجديدة والشيخ زايد وأبو رواش.",
-          "_yoast_wpseo_opengraph-title": "توكيل سكودا كيان مصر 19112: حجز الصيانة والفروع",
-          "_yoast_wpseo_opengraph-description": "توكيل سكودا في مصر لدى كيان، والخط الساخن 19112. خطوات حجز الصيانة وأماكن المراكز المعتمدة في القاهرة الجديدة والشيخ زايد وأبو رواش.",
-          "_yoast_wpseo_twitter-title": "توكيل سكودا كيان مصر 19112: حجز الصيانة والفروع",
-          "_yoast_wpseo_twitter-description": "توكيل سكودا في مصر لدى كيان، والخط الساخن 19112. خطوات حجز الصيانة وأماكن المراكز المعتمدة في القاهرة الجديدة والشيخ زايد وأبو رواش."
-        }
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/update-post",
-      "log_response": true,
-      "body": {
-        "id": 114,
-        "meta": {
-          "_yoast_wpseo_focuskw": "كود P0011 هيونداي",
-          "_yoast_wpseo_title": "كود P0011 في هيونداي: بلف VVT وتوقيت الكامة وطريقة الفحص",
-          "_yoast_wpseo_metadesc": "كود Hyundai P0011 في هيونداي: لماذا يتقدم توقيت الكامة؟ افحص لزوجة الزيت وضغطه وبلف CVVT والكاتينة قبل تغيير القطع. دليل تشخيص عملي.",
-          "_yoast_wpseo_opengraph-title": "كود P0011 في هيونداي: بلف VVT وتوقيت الكامة وطريقة الفحص",
-          "_yoast_wpseo_opengraph-description": "كود Hyundai P0011 في هيونداي: لماذا يتقدم توقيت الكامة؟ افحص لزوجة الزيت وضغطه وبلف CVVT والكاتينة قبل تغيير القطع. دليل تشخيص عملي.",
-          "_yoast_wpseo_twitter-title": "كود P0011 في هيونداي: بلف VVT وتوقيت الكامة وطريقة الفحص",
-          "_yoast_wpseo_twitter-description": "كود Hyundai P0011 في هيونداي: لماذا يتقدم توقيت الكامة؟ افحص لزوجة الزيت وضغطه وبلف CVVT والكاتينة قبل تغيير القطع. دليل تشخيص عملي."
-        }
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/update-post",
-      "log_response": true,
-      "body": {
-        "id": 80209,
-        "meta": {
-          "_yoast_wpseo_focuskw": "P0342 شيفروليه ودايو",
-          "_yoast_wpseo_title": "كود P0342 شيفروليه ودايو: فحص حساس الكامة Circuit Low",
-          "_yoast_wpseo_metadesc": "كود P0342 في شيفروليه ودايو يعني انخفاض إشارة دائرة حساس الكامة. خطوات فحص التغذية والأرضي والسلك والإشارة قبل استبدال الحساس.",
-          "_yoast_wpseo_opengraph-title": "كود P0342 شيفروليه ودايو: فحص حساس الكامة Circuit Low",
-          "_yoast_wpseo_opengraph-description": "كود P0342 في شيفروليه ودايو يعني انخفاض إشارة دائرة حساس الكامة. خطوات فحص التغذية والأرضي والسلك والإشارة قبل استبدال الحساس.",
-          "_yoast_wpseo_twitter-title": "كود P0342 شيفروليه ودايو: فحص حساس الكامة Circuit Low",
-          "_yoast_wpseo_twitter-description": "كود P0342 في شيفروليه ودايو يعني انخفاض إشارة دائرة حساس الكامة. خطوات فحص التغذية والأرضي والسلك والإشارة قبل استبدال الحساس."
-        }
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": true,
-      "body": {
-        "op": "cache_flush"
-      }
+      "body": {}
     }
   ],
-  "verify": [
-    {
-      "path": "/post/81102",
-      "log_response": false
-    },
-    {
-      "path": "/post/79964",
-      "log_response": false
-    },
-    {
-      "path": "/post/79943",
-      "log_response": false
-    },
-    {
-      "path": "/post/80401",
-      "log_response": false
-    },
-    {
-      "path": "/post/80669",
-      "log_response": false
-    },
-    {
-      "path": "/post/114",
-      "log_response": false
-    },
-    {
-      "path": "/post/80209",
-      "log_response": false
-    }
-  ]
+  "verify": [],
+  "network_diagnostics": {
+    "enabled": true,
+    "rounds": 3,
+    "paths": [
+      "/",
+      "/wp-json/a3tal-direct/v1/status",
+      "/wp-content/themes/a3tal-global/style.css",
+      "/wp-json/wp/v2/posts?per_page=1"
+    ]
+  }
 }
