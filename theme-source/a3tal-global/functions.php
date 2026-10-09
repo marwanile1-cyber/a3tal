@@ -514,7 +514,7 @@ add_filter('wpseo_robots_array', static function($robots) {
   $id=(int)get_queried_object_id();
   if (!in_array($id,[83383,83384,83385,83386,83387],true)) return $robots;
   if (get_post_meta($id,'_a3_entity_stub',true)) return $robots;
-  if (mb_strlen((string)get_post_field('post_content',$id),'UTF-8')<6500) return $robots;
+  if (strlen((string)get_post_field('post_content',$id))<6500) return $robots;
   if (!is_array($robots)) $robots=[];
   $robots['index']='index';
   $robots['follow']='follow';
