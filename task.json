@@ -1,1 +1,1 @@
-{"requests":[{"method":"GET","path":"/post/81247","log_response":true,"body":{}}]}
+{"requests":[{"method":"POST","path":"/upload-image-data","log_response":true,"body":{"post_id":81247,"set_featured":true,"filename":"soueast-s08-dm-egypt-official-2026.webp","alt":"سوإيست S08 DM الهجينة سبعة مقاعد من صور SOUEAST Egypt الرسمية","title":"سوإيست S08 DM في مصر - صورة خارجية رسمية للموديل","image_source_urls":["https://soueast.cloudhosta.com/uploads/1767718850874_S08_DM_Scenario_04_1_11zon_f59ec8ab15.webp"],"render_width":1600,"render_height":900,"render_quality":87}}]}
