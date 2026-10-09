@@ -3,6 +3,26 @@
  * Motorcycle guide archive: dedicated editorial hub for A3tal.
  */
 if (!defined('ABSPATH')) exit;
+add_filter('wpseo_title', static function($title) {
+  return is_category('motorcycle-guide')
+    ? 'دليل الموتوسيكلات والسكوتر في مصر | الأعطال والصيانة والشراء - أعطال.كوم'
+    : $title;
+}, 99);
+add_filter('wpseo_metadesc', static function($description) {
+  return is_category('motorcycle-guide')
+    ? 'دليل موتوسيكلات مصر: تشخيص المارش والبطارية وسخونة المحرك وسير السكوتر CVT، الصيانة وقطع الغيار وفحص المستعمل ومراجعات الموديلات.'
+    : $description;
+}, 99);
+add_filter('wpseo_opengraph_image', static function($image) {
+  return is_category('motorcycle-guide')
+    ? 'https://a3tal.com/wp-content/uploads/2026/10/a3tal-motorcycle-category-workshop-cover.webp'
+    : $image;
+}, 99);
+add_filter('wpseo_twitter_image', static function($image) {
+  return is_category('motorcycle-guide')
+    ? 'https://a3tal.com/wp-content/uploads/2026/10/a3tal-motorcycle-category-workshop-cover.webp'
+    : $image;
+}, 99);
 get_header();
 $mg_category = get_queried_object();
 $mg_total = ($mg_category instanceof WP_Term) ? (int)$mg_category->count : 0;
@@ -61,7 +81,7 @@ $mg_blocks = [
 ];
 ?>
 <style>
-.mg-hero{background:radial-gradient(ellipse at 85% 12%,#24536a 0%,transparent 52%),linear-gradient(135deg,#091824,#152d3b);color:#fff;padding:54px 0 48px}
+.mg-hero{background:linear-gradient(100deg,rgba(9,24,36,.97),rgba(11,33,49,.88) 52%,rgba(11,33,49,.55)),url('https://a3tal.com/wp-content/uploads/2026/10/a3tal-motorcycle-category-workshop-cover.webp') center/cover;color:#fff;padding:54px 0 48px}
 .mg-hero .g-wrap{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(230px,.7fr);align-items:center;gap:35px}
 .mg-kicker{color:#b8d2dd;font-size:13px;font-weight:800;letter-spacing:1px}
 .mg-hero h1{font-size:clamp(30px,4vw,52px);line-height:1.3;margin:8px 0 15px;color:#fff}
@@ -115,6 +135,7 @@ $mg_blocks = [
         <a href="<?php echo esc_url(home_url('/motorcycles/')); ?>">استعرض موديلات الموتوسيكلات</a>
         <a href="#motorcycle-diagnostics">ابدأ بتشخيص العطل</a>
       </div>
+      <small style="display:block;margin-top:12px;font-size:11px;color:#d4e1e5">صورة خلفية القسم: <a href="https://commons.wikimedia.org/wiki/File:Motorcycle_Repair.jpg" rel="noopener noreferrer" target="_blank" style="color:inherit;text-decoration:underline">Johnnybam / Wikimedia Commons</a>، رخصة <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener noreferrer" target="_blank" style="color:inherit;text-decoration:underline">CC BY-SA 4.0</a>، معالجة تحريرية بالقص والتحجيم والصورة المعدّلة بنفس الرخصة.</small>
     </div>
     <div class="mg-stat"><strong><?php echo esc_html(number_format_i18n($mg_total)); ?></strong><small>دليلًا ومراجعة في هذا القسم</small></div>
   </div>
