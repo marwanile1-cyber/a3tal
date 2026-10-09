@@ -506,3 +506,28 @@ function a3g_overlay_safe_area(){
   <?php
 }
 add_action('wp_footer','a3g_overlay_safe_area',120);
+
+
+/* A3TAL verified car records: scoped search indexing */
+add_filter('wpseo_robots_array', static function($robots) {
+  if (!is_singular('a3_car')) return $robots;
+  $id=(int)get_queried_object_id();
+  if (!in_array($id,[83383,83384,83385,83386,83387],true)) return $robots;
+  if (get_post_meta($id,'_a3_entity_stub',true)) return $robots;
+  if (mb_strlen((string)get_post_field('post_content',$id),'UTF-8')<6500) return $robots;
+  if (!is_array($robots)) $robots=[];
+  $robots['index']='index';
+  $robots['follow']='follow';
+  $robots['max-snippet']='max-snippet:-1';
+  $robots['max-image-preview']='max-image-preview:large';
+  $robots['max-video-preview']='max-video-preview:-1';
+  unset($robots['noindex'],$robots['nofollow']);
+  return $robots;
+},999);
+add_filter('wpseo_canonical',static function($canonical){
+  if (!is_singular('a3_car')) return $canonical;
+  $id=(int)get_queried_object_id();
+  if (!in_array($id,[83383,83384,83385,83386,83387],true)) return $canonical;
+  if (get_post_meta($id,'_a3_entity_stub',true)) return $canonical;
+  return get_permalink($id)?:$canonical;
+},999);
