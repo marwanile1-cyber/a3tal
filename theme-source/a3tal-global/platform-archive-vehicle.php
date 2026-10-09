@@ -24,6 +24,13 @@ $year_value=($year_raw>=1950&&$year_raw<=2100)?(string)$year_raw:'';
     <span><?php echo $is_moto?'A3TAL MOTORCYCLES':'A3TAL CARS'; ?></span>
     <h1><?php echo esc_html($title); ?></h1>
     <p><?php echo esc_html($subtitle); ?></p>
+    <?php if($is_moto): ?>
+    <nav aria-label="أدلة الموتوسيكلات" style="display:flex;gap:10px;flex-wrap:wrap;margin:15px 0 23px">
+      <a href="<?php echo esc_url(home_url('/category/motorcycle-guide/')); ?>" style="display:inline-block;padding:10px 15px;background:#fff;color:#143648;border-radius:10px;font-weight:800">دليل الموتوسيكلات الكامل</a>
+      <a href="<?php echo esc_url(home_url('/category/motorcycle-guide/#motorcycle-diagnostics')); ?>" style="display:inline-block;padding:10px 15px;border:1px solid #95b9c8;color:#fff;border-radius:10px;font-weight:800">تشخيص أعطال الموتوسيكل</a>
+      <a href="<?php echo esc_url(home_url('/category/motorcycle-guide/#motorcycle-care')); ?>" style="display:inline-block;padding:10px 15px;border:1px solid #95b9c8;color:#fff;border-radius:10px;font-weight:800">الصيانة وقطع الغيار</a>
+    </nav>
+    <?php endif; ?>
     <form class="g-platform-filter" method="get">
       <label><small>الماركة</small><select name="brand"><option value="">كل الماركات</option><?php foreach($brands as $t): ?><option value="<?php echo esc_attr($t->slug); ?>" <?php selected(get_query_var('brand'),$t->slug); ?>><?php echo esc_html($t->name); ?></option><?php endforeach; ?></select></label>
       <label><small>السوق</small><select name="market"><option value="">كل الأسواق</option><?php foreach($markets as $t): ?><option value="<?php echo esc_attr($t->slug); ?>" <?php selected(get_query_var('market'),$t->slug); ?>><?php echo esc_html($t->name); ?></option><?php endforeach; ?></select></label>
@@ -135,7 +142,7 @@ $year_value=($year_raw>=1950&&$year_raw<=2100)?(string)$year_raw:'';
           <div>
             <span>A3TAL MOTO GUIDE</span>
             <h2>شراء وصيانة وقطع غيار وأعطال الموتوسيكلات</h2>
-            <p>المحتوى هنا مبني على قرار المستخدم الحقيقي: يشتري إيه، يراجع إيه، يصين إزاي، ويعرف الفرق بين التقنية والمواصفات بدل كلام القهاوي المقدس.</p>
+            <p>مقالات منظمة تساعدك على فحص الأعطال واختيار الموتوسيكل وصيانته، مع ربط أدلة الشراء بقاعدة الموديلات والبيانات الموثقة.</p>
           </div>
           <a href="<?php echo esc_url(get_category_link($moto_cat)); ?>">كل دليل الموتوسيكلات</a>
         </div>
