@@ -531,3 +531,23 @@ add_filter('wpseo_canonical',static function($canonical){
   if (get_post_meta($id,'_a3_entity_stub',true)) return $canonical;
   return get_permalink($id)?:$canonical;
 },999);
+
+/* A3TAL verified car robots final override */
+function a3g_verified_chery_indexable_request(): bool {
+  if (!is_singular('a3_car')) return false;
+  $id=(int)get_queried_object_id();
+  if (!in_array($id,[83383,83384,83385,83386,83387],true)) return false;
+  if (get_post_meta($id,'_a3_entity_stub',true)) return false;
+  return strlen((string)get_post_field('post_content',$id))>=6500;
+}
+add_filter('wpseo_robots',static function($directive){
+  if (!a3g_verified_chery_indexable_request()) return $directive;
+  return 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1';
+},9999);
+add_filter('wp_robots',static function($rules){
+  if (!a3g_verified_chery_indexable_request()) return $rules;
+  unset($rules['noindex'],$rules['nofollow']);
+  $rules['index']=true;
+  $rules['follow']=true;
+  return $rules;
+},9999);
