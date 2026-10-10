@@ -2,28 +2,40 @@
   "requests": [
     {
       "method": "POST",
-      "path": "/update-post",
+      "path": "/upload-image-data",
       "log_response": true,
       "body": {
-        "id": 83426,
-        "status": "publish",
-        "categories": [
-          33
+        "post_id": 83431,
+        "image_source_urls": [
+          "https://www.datocms-assets.com/197696/1776997673-geely-ex2-rear-space.jpg?auto=format%2Ccompress%2Cenhance&q=80&w=1800"
         ],
-        "meta": {
-          "_yoast_wpseo_focuskw": "مراكز صيانة جيلي في مصر",
-          "_yoast_wpseo_title": "مراكز صيانة جيلي مصر: الفروع والخط الساخن وحجز EX2",
-          "_yoast_wpseo_metadesc": "دليل مراكز صيانة جيلي في مصر، الخط الساخن 16402، عناوين القاهرة والإسكندرية والدلتا، وكيف تتأكد من استقبال EX2 الكهربائية والضمان.",
-          "_yoast_wpseo_canonical": "https://a3tal.com/geely-egypt-service-centers-hotline-ex2/"
-        }
+        "render_width": 1600,
+        "render_height": 900,
+        "render_quality": 80,
+        "filename": "geely-ex2-rear-seats.webp",
+        "title": "مساحة المقاعد الخلفية لجيلي جالاكسي EX2",
+        "alt": "المقاعد الخلفية ومساحة الأرجل في سيارة جيلي EX2 الكهربائية",
+        "set_featured": false,
+        "convert_webp": true
       }
     },
     {
       "method": "POST",
-      "path": "/admin",
-      "log_response": false,
+      "path": "/upload-image-data",
+      "log_response": true,
       "body": {
-        "op": "cache_flush"
+        "post_id": 83431,
+        "image_source_urls": [
+          "https://www.datocms-assets.com/197696/1776999960-geely-ex2-trunk.jpg?auto=format%2Ccompress%2Cenhance&q=80&w=1800"
+        ],
+        "render_width": 1600,
+        "render_height": 900,
+        "render_quality": 80,
+        "filename": "geely-ex2-trunk-storage.webp",
+        "title": "شنطة جيلي EX2 الخلفية",
+        "alt": "مساحة شنطة جيلي EX2 الخلفية كما تظهر في مواد الشركة",
+        "set_featured": false,
+        "convert_webp": true
       }
     }
   ],
