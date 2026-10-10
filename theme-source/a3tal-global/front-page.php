@@ -1,30 +1,46 @@
 <?php
 get_header();
 
-$hero_q=a3g_query(['cat'=>374,'posts_per_page'=>1,'no_found_rows'=>true]);
+$hero_q=a3g_query(['cat'=>374,'posts_per_page'=>1]);
 $hero_id=0;$hero_img_id=0;
 if($hero_q->have_posts()){ $hero_q->the_post(); $hero_id=get_the_ID(); $hero_img_id=get_post_thumbnail_id($hero_id); }
 wp_reset_postdata();
 
-$prices=a3g_query(['cat'=>374,'posts_per_page'=>4,'no_found_rows'=>true]);
-$reviews=a3g_query(['category__in'=>[22,21],'posts_per_page'=>3,'no_found_rows'=>true]);
-$faults=a3g_query(['category__in'=>[8,13,2,18],'posts_per_page'=>4,'no_found_rows'=>true]);
-$news=a3g_query(['posts_per_page'=>4,'no_found_rows'=>true,'post__not_in'=>$hero_id?[$hero_id]:[]]);
+$prices=a3g_query(['cat'=>374,'posts_per_page'=>4,'post__not_in'=>$hero_id?[$hero_id]:[]]);
+$reviews=a3g_query(['category__in'=>[22,21],'posts_per_page'=>3]);
+$faults=a3g_query(['category__in'=>[8,13,2,18],'posts_per_page'=>4]);
+$news=a3g_query(['posts_per_page'=>4,'post__not_in'=>$hero_id?[$hero_id]:[]]);
 
+$home_car_slugs=['byd-sealion-6-ev-2027','haval-v7-egypt','opel-frontera-egypt','geely-monjaro-em-i-egypt','xpeng-g7-super-reev-egypt','chery-tiggo-9-egypt'];
+$home_car_ids=[];
+foreach($home_car_slugs as $slug){
+  $p=get_page_by_path($slug,OBJECT,'a3_car');
+  if($p instanceof WP_Post)$home_car_ids[]=(int)$p->ID;
+}
 $cars=new WP_Query([
   'post_type'=>'a3_car',
   'post_status'=>'publish',
-  'posts_per_page'=>6,'no_found_rows'=>true,
+  'posts_per_page'=>6,
+  'post__in'=>$home_car_ids,
+  'orderby'=>'post__in',
+  'ignore_sticky_posts'=>true,
+]);
+$moto_articles=new WP_Query([
+  'post_type'=>'post',
+  'post_status'=>'publish',
+  'cat'=>3028,
+  'posts_per_page'=>3,
   'orderby'=>'date',
   'order'=>'DESC',
   'ignore_sticky_posts'=>true,
+  'no_found_rows'=>true,
 ]);
-$motos=new WP_Query(['post_type'=>'a3_motorcycle','post_status'=>'publish','posts_per_page'=>3,'no_found_rows'=>true,'ignore_sticky_posts'=>true]);
-$dtcs=new WP_Query(['post_type'=>'a3_dtc','post_status'=>'publish','posts_per_page'=>4,'no_found_rows'=>true,'ignore_sticky_posts'=>true]);
-$parts=new WP_Query(['post_type'=>'a3_part','post_status'=>'publish','posts_per_page'=>4,'no_found_rows'=>true,'ignore_sticky_posts'=>true]);
-$listings=new WP_Query(['post_type'=>'a3_listing','post_status'=>'publish','posts_per_page'=>3,'no_found_rows'=>true,'ignore_sticky_posts'=>true]);
-$centers=new WP_Query(['post_type'=>'a3_service_center','post_status'=>'publish','posts_per_page'=>3,'no_found_rows'=>true,'ignore_sticky_posts'=>true]);
-$showrooms=new WP_Query(['post_type'=>'a3_showroom','post_status'=>'publish','posts_per_page'=>3,'no_found_rows'=>true,'ignore_sticky_posts'=>true]);
+$motos=new WP_Query(['post_type'=>'a3_motorcycle','post_status'=>'publish','posts_per_page'=>3,'ignore_sticky_posts'=>true]);
+$dtcs=new WP_Query(['post_type'=>'a3_dtc','post_status'=>'publish','posts_per_page'=>4,'ignore_sticky_posts'=>true]);
+$parts=new WP_Query(['post_type'=>'a3_part','post_status'=>'publish','posts_per_page'=>4,'ignore_sticky_posts'=>true]);
+$listings=new WP_Query(['post_type'=>'a3_listing','post_status'=>'publish','posts_per_page'=>3,'ignore_sticky_posts'=>true]);
+$centers=new WP_Query(['post_type'=>'a3_service_center','post_status'=>'publish','posts_per_page'=>3,'ignore_sticky_posts'=>true]);
+$showrooms=new WP_Query(['post_type'=>'a3_showroom','post_status'=>'publish','posts_per_page'=>3,'ignore_sticky_posts'=>true]);
 ?>
 <main class="g-home g-home-platform">
 
@@ -153,7 +169,15 @@ $showrooms=new WP_Query(['post_type'=>'a3_showroom','post_status'=>'publish','po
       <div><span>A3TAL MOTO</span><h2>عالم الموتوسيكلات والسكوتر</h2><p>أسعار ومواصفات وأعطال وصيانة وقطع غيار للموتوسيكل، لأن السوق المصري مش عربيات بس.</p></div>
       <a href="<?php echo esc_url(a3g_platform_link('a3_motorcycle','/motorcycles/')); ?>">دخول عالم الموتوسيكلات</a>
     </div>
+    <?php if($moto_articles->have_posts()): ?>
+      <div class="g-section-head g-home-moto-articles-head">
+        <div><span>أحدث المقالات</span><h3>جديد دليل الموتوسيكلات والسكوتر</h3></div>
+        <a href="<?php echo esc_url(a3g_cat_link(3028)); ?>">عرض كل مقالات الموتوسيكلات</a>
+      </div>
+      <div class="g-news-grid"><?php while($moto_articles->have_posts()):$moto_articles->the_post();a3g_card(get_the_ID(),'g-news-card');endwhile;wp_reset_postdata(); ?></div>
+    <?php endif; ?>
     <?php if($motos->have_posts()): ?>
+      <div class="g-section-head g-home-moto-models-head"><div><span>قاعدة الموديلات</span><h3>أحدث موديلات الموتوسيكلات</h3></div></div>
       <div class="g-platform-grid"><?php while($motos->have_posts()):$motos->the_post();a3g_platform_card();endwhile;wp_reset_postdata(); ?></div>
     <?php else: ?>
       <div class="g-moto-teaser-grid">
