@@ -5,40 +5,13 @@
       "path": "/admin",
       "log_response": true,
       "body": {
-        "op": "file_write",
-        "path": "themes/a3tal-global/functions.php",
-        "confirm": true,
-        "dangerous": true,
-        "patches": [
-          {
-            "from": "if (!in_array($id,[83383,83384,83385,83386,83387],true)) return $robots;",
-            "to": "if (!in_array($id,[83383,83385,83386,83387],true)) return $robots;"
-          },
-          {
-            "from": "if (!in_array($id,[83383,83384,83385,83386,83387],true)) return $canonical;",
-            "to": "if (!in_array($id,[83383,83385,83386,83387],true)) return $canonical;"
-          },
-          {
-            "from": "if (!in_array($id,[83383,83384,83385,83386,83387],true)) return false;",
-            "to": "if (!in_array($id,[83383,83385,83386,83387],true)) return false;"
-          },
-          {
-            "append": "\n\n/* A3TAL: remove 301 redirect sources and non-indexable DTC records from Yoast sitemaps.\n   Article guides remain indexable, while structured stub entities still serve the site UI. */\nadd_filter('wpseo_exclude_from_sitemap_by_post_ids', static function($excluded) {\n  if (!is_array($excluded)) $excluded=[];\n  // These legacy articles currently resolve via 301 to their specialist guides.\n  $excluded=array_merge($excluded,[82275,82276,83384]);\n  // Structured DTC snippets have noindex, follow, and link to their full diagnostic guide.\n  $dtc_ids=get_posts([\n    'post_type'=>'a3_dtc',\n    'post_status'=>'publish',\n    'posts_per_page'=>-1,\n    'fields'=>'ids',\n    'no_found_rows'=>true,\n    'suppress_filters'=>true,\n  ]);\n  if (is_array($dtc_ids)) $excluded=array_merge($excluded,$dtc_ids);\n  return array_values(array_unique(array_map('intval',$excluded)));\n},20);\n\n/* Arrizo 6 GT has a complete indexable pricing article.\n   Its structured vehicle profile remains usable in the cars catalogue but not indexed. */\nadd_filter('wpseo_robots_array', static function($robots) {\n  if (!is_singular('a3_car') || (int)get_queried_object_id()!==83384) return $robots;\n  if (!is_array($robots)) $robots=[];\n  $robots['index']='noindex';\n  $robots['follow']='follow';\n  unset($robots['max-image-preview'],$robots['max-video-preview'],$robots['max-snippet']);\n  return $robots;\n},10020);\nadd_filter('wpseo_robots', static function($directives) {\n  if (is_singular('a3_car') && (int)get_queried_object_id()===83384) return 'noindex, follow';\n  return $directives;\n},10020);\nadd_filter('wp_robots',static function($robots){\n  if (!is_singular('a3_car') || (int)get_queried_object_id()!==83384) return $robots;\n  unset($robots['index']);\n  $robots['noindex']=true;\n  $robots['follow']=true;\n  return $robots;\n},10020);\n"
-          }
-        ]
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": true,
-      "body": {
         "op": "platform_entity_upsert",
         "type": "a3_car",
         "id": 83384,
         "title": "شيري أريزو 6 GT",
         "status": "publish",
         "meta": {
+          "_a3_related_post_ids": "82578",
           "_yoast_wpseo_meta-robots-noindex": "1"
         }
       }
