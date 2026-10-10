@@ -1,10 +1,13 @@
 {
   "requests": [
     {
-      "method": "GET",
-      "path": "/status",
-      "log_response": false,
-      "body": {}
+      "method": "POST",
+      "path": "/admin",
+      "log_response": true,
+      "body": {
+        "op": "file_read",
+        "path": "themes/a3tal-global/front-page.php"
+      }
     }
   ],
   "verify": []
