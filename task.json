@@ -2,42 +2,37 @@
   "requests": [
     {
       "method": "POST",
-      "path": "/upload-image-data",
+      "path": "/update-post",
       "log_response": true,
       "body": {
-        "post_id": 83463,
-        "image_source_urls": [
-          "https://cdn.sanity.io/images/e6blqwla/production/a47e352265fb0762549baeef732c94aa7c3e6283-1600x1066.jpg"
+        "id": 83463,
+        "status": "publish",
+        "categories": [
+          3028
         ],
-        "render_width": 1600,
-        "render_height": 900,
-        "render_quality": 80,
-        "filename": "vigorey-26-max-200-showroom-front.webp",
-        "title": "فيجوري 26 ماكس 200 صورة خارجية حقيقية",
-        "alt": "صورة حقيقية لموتوسيكل فيجوري 26 ماكس 200 موديل 2026 من معرض الرحال",
-        "convert_webp": true,
-        "set_featured": true
+        "meta": {
+          "_yoast_wpseo_focuskw": "فيجوري 26 ماكس 200",
+          "_yoast_wpseo_title": "فيجوري 26 ماكس 200: السعر والمواصفات والعيوب والصور | أعطال.كوم",
+          "_yoast_wpseo_metadesc": "سعر فيجوري 26 ماكس 200 في مصر ومواصفات المحرك والفتيس والفرامل واستهلاك البنزين والعيوب والصيانة، مع صور حقيقية وفحص الزيرو والمستعمل.",
+          "_yoast_wpseo_canonical": "https://a3tal.com/vigorey-26-max-200-egypt-price-specs-review/",
+          "_yoast_wpseo_opengraph-title": "فيجوري 26 ماكس 200 في مصر: الأسعار والصور والمراجعة الموسوعية",
+          "_yoast_wpseo_opengraph-description": "المواصفات وأسعار السوق والصور الحقيقية والمحرك والفتيس وفحص الزيرو والمستعمل."
+        }
       }
     },
     {
       "method": "POST",
-      "path": "/upload-image-data",
-      "log_response": true,
+      "path": "/admin",
+      "log_response": false,
       "body": {
-        "post_id": 83463,
-        "image_source_urls": [
-          "https://cdn.sanity.io/images/e6blqwla/production/7d215237b8371168fe56ecedcbdc22b9853d3586-1600x1066.jpg"
-        ],
-        "render_width": 1600,
-        "render_height": 900,
-        "render_quality": 80,
-        "filename": "vigorey-26-max-200-showroom-side.webp",
-        "title": "فيجوري 26 ماكس 200 تفاصيل الشكل الخارجي",
-        "alt": "موتوسيكل فيجوري 26 ماكس 200 سي سي من زاوية أخرى في معرض الرحال",
-        "convert_webp": true,
-        "set_featured": false
+        "op": "cache_flush"
       }
     }
   ],
-  "verify": []
+  "verify": [
+    {
+      "path": "/post/83463",
+      "log_response": false
+    }
+  ]
 }
