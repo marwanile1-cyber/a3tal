@@ -1,39 +1,11 @@
 {
   "requests": [
     {
-      "method": "POST",
-      "path": "/update-post",
-      "log_response": true,
-      "body": {
-        "id": 83457,
-        "title": "مروحة التكييف الداخلية لا تعمل: تشخيص البلاور والمقاومة والفيشة والسرعات",
-        "status": "publish",
-        "categories": [
-          13
-        ],
-        "meta": {
-          "_yoast_wpseo_focuskw": "مروحة التكييف الداخلية لا تعمل",
-          "_yoast_wpseo_title": "مروحة التكييف الداخلية لا تعمل؟ فحص البلاور والمقاومة | أعطال.كوم",
-          "_yoast_wpseo_metadesc": "مروحة التكييف لا تعمل أو تعمل على أعلى سرعة فقط؟ دليل مصور لفحص بلاور السيارة والمقاومة والفيشة والفيوز والموتور وهبوط الجهد.",
-          "_yoast_wpseo_canonical": "https://a3tal.com/car-ac-blower-motor-not-working-resistor-diagnosis/",
-          "_yoast_wpseo_opengraph-title": "مروحة التكييف الداخلية لا تعمل: تشخيص البلاور والمقاومة والفيشة والسرعات",
-          "_yoast_wpseo_opengraph-description": "صور فوتوغرافية حقيقية وجداول تشخيص عملية لأعطال بلاور تكييف السيارة ومقاومة سرعات المروحة ووحدة التحكم."
-        }
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
+      "method": "GET",
+      "path": "/status",
       "log_response": false,
-      "body": {
-        "op": "cache_flush"
-      }
+      "body": {}
     }
   ],
-  "verify": [
-    {
-      "path": "/post/83457",
-      "log_response": false
-    }
-  ]
+  "verify": []
 }
