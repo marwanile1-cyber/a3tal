@@ -2,92 +2,61 @@
   "requests": [
     {
       "method": "POST",
-      "path": "/update-post",
+      "path": "/upload-image-data",
       "log_response": true,
       "body": {
-        "id": 83428,
-        "status": "publish",
-        "categories": [
-          374,
-          22
+        "post_id": 83431,
+        "image_source_urls": [
+          "https://www.datocms-assets.com/197696/1776758913-ex2-kv.jpg?auto=format%2Ccompress%2Cenhance&q=80&w=1800"
         ],
-        "meta": {
-          "_yoast_wpseo_focuskw": "سعر كيا سيلتوس في مصر",
-          "_yoast_wpseo_title": "كيا سيلتوس في مصر: الأسعار والفئات والمواصفات والفتيس | أعطال.كوم",
-          "_yoast_wpseo_metadesc": "سعر كيا سيلتوس في مصر وفروق EX وHL-Turbo وTL-Turbo، المحرك 1.5 و1.4 تيربو، IVT وDCT والأمان والداخلية والضمان ومراكز الصيانة.",
-          "_yoast_wpseo_canonical": "https://a3tal.com/kia-seltos-price-specs-egypt-buying-guide/",
-          "_yoast_wpseo_opengraph-title": "كيا سيلتوس في مصر: السعر والمواصفات والفئات ودليل الشراء",
-          "_yoast_wpseo_opengraph-description": "كيا سيلتوس: الأسعار الرسمية الحالية والصور الداخلية والخارجية ومقارنة 3 فئات وفتيس IVT و7DCT ومراكز الخدمة في مصر."
-        }
+        "render_width": 1600,
+        "render_height": 900,
+        "render_quality": 80,
+        "filename": "geely-ex2-egypt-exterior-hero.webp",
+        "title": "جيلي جالاكسي EX2 من الخارج",
+        "alt": "جيلي جالاكسي EX2 الكهربائية من الخارج في صورة رسمية للشركة",
+        "set_featured": true,
+        "convert_webp": true
       }
     },
     {
       "method": "POST",
-      "path": "/admin",
+      "path": "/upload-image-data",
       "log_response": true,
       "body": {
-        "op": "term_upsert",
-        "taxonomy": "a3_brand",
-        "name": "Kia",
-        "slug": "kia"
+        "post_id": 83431,
+        "image_source_urls": [
+          "https://www.datocms-assets.com/197696/1776993270-geely-ex2-golden-ratio.jpg?auto=format%2Ccompress%2Cenhance&q=80&w=1800"
+        ],
+        "render_width": 1600,
+        "render_height": 900,
+        "render_quality": 80,
+        "filename": "geely-ex2-exterior-profile.webp",
+        "title": "التصميم الجانبي لجيلي EX2",
+        "alt": "صورة جانبية رسمية للسيارة الكهربائية جيلي جالاكسي EX2",
+        "set_featured": false,
+        "convert_webp": true
       }
     },
     {
       "method": "POST",
-      "path": "/admin",
+      "path": "/upload-image-data",
       "log_response": true,
       "body": {
-        "op": "platform_entity_upsert",
-        "type": "a3_car",
-        "title": "Kia Seltos 2026",
-        "slug": "kia-seltos-egypt-2026",
-        "status": "publish",
-        "excerpt": "كيا سيلتوس كروس أوفر بخمس مقاعد؛ EX بسعر 1,369,900 جنيه، HL Turbo بسعر 1,524,900، وTL Turbo بسعر 1,674,900 وفق قائمة Kia Egypt وقت المراجعة.",
-        "content": "<p>كيا سيلتوس تتوافر في مصر بمحرك 1.5 لتر 115 حصانًا وفتيس IVT للفئة EX، أو محرك 1.4 تيربو 140 حصانًا وفتيس DCT سبع سرعات للفئتين الأعلى. الأسعار والتجهيزات وفق موقع كيا الرسمي بتاريخ 10 أكتوبر 2026.</p><p><a href=\"https://a3tal.com/kia-seltos-price-specs-egypt-buying-guide/\">اقرأ التقرير الموسوعي لسعر كيا سيلتوس والمواصفات والصور والفئات والصيانة</a></p>",
-        "taxonomies": {
-          "a3_brand": [
-            "kia"
-          ],
-          "a3_market": [
-            "egypt"
-          ],
-          "a3_car_body": [
-            "suv"
-          ]
-        },
-        "meta": {
-          "_a3_year": 2026,
-          "_a3_price_min": 1369900,
-          "_a3_price_max": 1674900,
-          "_a3_currency": "EGP",
-          "_a3_engine_cc": 1497,
-          "_a3_power_hp": 115,
-          "_a3_torque_nm": 145,
-          "_a3_transmission": "IVT / 7DCT بحسب الفئة",
-          "_a3_fuel": "بنزين",
-          "_a3_drivetrain": "FWD",
-          "_a3_seats": 5,
-          "_a3_related_post_ids": "83428",
-          "_a3_source_url": "https://www.kia.com.eg/ar/models/The_Seltos",
-          "_a3_source_checked_at": "2026-10-10",
-          "_yoast_wpseo_meta-robots-noindex": "1"
-        },
-        "featured_media": 83433
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": true,
-      "body": {
-        "op": "cache_flush"
+        "post_id": 83431,
+        "image_source_urls": [
+          "https://www.datocms-assets.com/197696/1776997532-geely-ex2-comfort-seats.jpg?auto=format%2Ccompress%2Cenhance&q=80&w=1800"
+        ],
+        "render_width": 1600,
+        "render_height": 900,
+        "render_quality": 80,
+        "filename": "geely-ex2-interior-cabin.webp",
+        "title": "مقصورة جيلي جالاكسي EX2",
+        "alt": "الديكور الداخلي والمقاعد الأمامية في جيلي EX2 من صور الشركة",
+        "set_featured": false,
+        "convert_webp": true
       }
     }
   ],
-  "verify": [
-    {
-      "path": "/post/83428",
-      "log_response": false
-    }
-  ]
+  "verify": []
 }
