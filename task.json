@@ -1,38 +1,11 @@
 {
   "requests": [
     {
-      "method": "POST",
-      "path": "/update-post",
-      "log_response": true,
-      "body": {
-        "id": 83463,
-        "status": "publish",
-        "categories": [
-          3028
-        ],
-        "meta": {
-          "_yoast_wpseo_focuskw": "فيجوري 26 ماكس 200",
-          "_yoast_wpseo_title": "فيجوري 26 ماكس 200: السعر والمواصفات والعيوب والصور | أعطال.كوم",
-          "_yoast_wpseo_metadesc": "سعر فيجوري 26 ماكس 200 في مصر ومواصفات المحرك والفتيس والفرامل واستهلاك البنزين والعيوب والصيانة، مع صور حقيقية وفحص الزيرو والمستعمل.",
-          "_yoast_wpseo_canonical": "https://a3tal.com/vigorey-26-max-200-egypt-price-specs-review/",
-          "_yoast_wpseo_opengraph-title": "فيجوري 26 ماكس 200 في مصر: الأسعار والصور والمراجعة الموسوعية",
-          "_yoast_wpseo_opengraph-description": "المواصفات وأسعار السوق والصور الحقيقية والمحرك والفتيس وفحص الزيرو والمستعمل."
-        }
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
+      "method": "GET",
+      "path": "/status",
       "log_response": false,
-      "body": {
-        "op": "cache_flush"
-      }
+      "body": {}
     }
   ],
-  "verify": [
-    {
-      "path": "/post/83463",
-      "log_response": false
-    }
-  ]
+  "verify": []
 }
