@@ -2,59 +2,28 @@
   "requests": [
     {
       "method": "POST",
-      "path": "/upload-image-data",
+      "path": "/update-post",
       "log_response": true,
       "body": {
-        "post_id": 83431,
-        "image_source_urls": [
-          "https://www.datocms-assets.com/197696/1776758913-ex2-kv.jpg?auto=format%2Ccompress%2Cenhance&q=80&w=1800"
+        "id": 83426,
+        "status": "publish",
+        "categories": [
+          33
         ],
-        "render_width": 1600,
-        "render_height": 900,
-        "render_quality": 80,
-        "filename": "geely-ex2-egypt-exterior-hero.webp",
-        "title": "جيلي جالاكسي EX2 من الخارج",
-        "alt": "جيلي جالاكسي EX2 الكهربائية من الخارج في صورة رسمية للشركة",
-        "set_featured": true,
-        "convert_webp": true
+        "meta": {
+          "_yoast_wpseo_focuskw": "مراكز صيانة جيلي في مصر",
+          "_yoast_wpseo_title": "مراكز صيانة جيلي مصر: الفروع والخط الساخن وحجز EX2",
+          "_yoast_wpseo_metadesc": "دليل مراكز صيانة جيلي في مصر، الخط الساخن 16402، عناوين القاهرة والإسكندرية والدلتا، وكيف تتأكد من استقبال EX2 الكهربائية والضمان.",
+          "_yoast_wpseo_canonical": "https://a3tal.com/geely-egypt-service-centers-hotline-ex2/"
+        }
       }
     },
     {
       "method": "POST",
-      "path": "/upload-image-data",
-      "log_response": true,
+      "path": "/admin",
+      "log_response": false,
       "body": {
-        "post_id": 83431,
-        "image_source_urls": [
-          "https://www.datocms-assets.com/197696/1776993270-geely-ex2-golden-ratio.jpg?auto=format%2Ccompress%2Cenhance&q=80&w=1800"
-        ],
-        "render_width": 1600,
-        "render_height": 900,
-        "render_quality": 80,
-        "filename": "geely-ex2-exterior-profile.webp",
-        "title": "التصميم الجانبي لجيلي EX2",
-        "alt": "صورة جانبية رسمية للسيارة الكهربائية جيلي جالاكسي EX2",
-        "set_featured": false,
-        "convert_webp": true
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/upload-image-data",
-      "log_response": true,
-      "body": {
-        "post_id": 83431,
-        "image_source_urls": [
-          "https://www.datocms-assets.com/197696/1776997532-geely-ex2-comfort-seats.jpg?auto=format%2Ccompress%2Cenhance&q=80&w=1800"
-        ],
-        "render_width": 1600,
-        "render_height": 900,
-        "render_quality": 80,
-        "filename": "geely-ex2-interior-cabin.webp",
-        "title": "مقصورة جيلي جالاكسي EX2",
-        "alt": "الديكور الداخلي والمقاعد الأمامية في جيلي EX2 من صور الشركة",
-        "set_featured": false,
-        "convert_webp": true
+        "op": "cache_flush"
       }
     }
   ],
