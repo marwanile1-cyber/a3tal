@@ -1,27 +1,40 @@
 {
   "requests": [
     {
-      "method": "POST",
-      "path": "/update-post",
-      "log_response": false,
-      "body": {
-        "id": 81866,
-        "title": "سعر هيونداي فينيو في مصر بعد زيادة أكتوبر: الفئات والمواصفات",
-        "meta": {
-          "_yoast_wpseo_title": "سعر هيونداي فينيو في مصر بعد الزيادة | Blaze وRedline",
-          "_yoast_wpseo_metadesc": "سعر هيونداي فينيو في مصر بعد زيادة أكتوبر 2026: Blaze بـ869 ألف جنيه وRedline بـ945 ألفًا. جدول الأسعار والفروق بين الفئات والمحرك والفتيس.",
-          "_yoast_wpseo_opengraph-title": "سعر هيونداي فينيو في مصر بعد الزيادة | Blaze وRedline",
-          "_yoast_wpseo_opengraph-description": "سعر هيونداي فينيو في مصر بعد زيادة أكتوبر 2026: Blaze بـ869 ألف جنيه وRedline بـ945 ألفًا. جدول الأسعار والفروق بين الفئات والمحرك والفتيس.",
-          "_yoast_wpseo_twitter-title": "سعر هيونداي فينيو في مصر بعد الزيادة | Blaze وRedline",
-          "_yoast_wpseo_twitter-description": "سعر هيونداي فينيو في مصر بعد زيادة أكتوبر 2026: Blaze بـ869 ألف جنيه وRedline بـ945 ألفًا. جدول الأسعار والفروق بين الفئات والمحرك والفتيس."
-        }
-      }
+      "method": "GET",
+      "path": "/status",
+      "log_response": true
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D9%87%D9%8A%D9%88%D9%86%D8%AF%D8%A7%D9%8A%20%D9%81%D9%8A%D9%86%D9%8A%D9%88&limit=35",
+      "log_response": true
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D9%86%D9%8A%D8%B3%D8%A7%D9%86%20%D9%85%D8%A7%D8%AC%D9%86%D8%A7%D9%8A%D8%AA&limit=35",
+      "log_response": true
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D8%A3%D8%B3%D8%B9%D8%A7%D8%B1%20%D8%A7%D9%84%D8%B3%D9%8A%D8%A7%D8%B1%D8%A7%D8%AA%20%D8%A7%D9%84%D8%AC%D8%AF%D9%8A%D8%AF%D8%A9&limit=35",
+      "log_response": true
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D8%B4%D9%8A%D8%B1%D9%8A%20%D8%A3%D8%B1%D9%8A%D8%B2%D9%88%205&limit=35",
+      "log_response": true
+    },
+    {
+      "method": "GET",
+      "path": "/search-posts?search=%D8%B4%D9%8A%D8%B1%D9%8A%20%D8%AA%D9%8A%D8%AC%D9%88%207%20%D8%A8%D8%B1%D9%88&limit=35",
+      "log_response": true
+    },
+    {
+      "method": "GET",
+      "path": "/post/81866",
+      "log_response": true
     }
   ],
-  "verify": [
-    {
-      "path": "/post/81866",
-      "log_response": false
-    }
-  ]
+  "verify": []
 }
