@@ -1,0 +1,38 @@
+name: A3tal Live Car Metadata Audit
+on:
+  push:
+    branches: [main]
+    paths: [".github/workflows/audit-car-record-meta-20261010.yml"]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  car-price-meta:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Inspect 22 cars via authenticated direct bridge
+        env:
+          A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import os,urllib.request,urllib.parse,json,concurrent.futures,time
+          ids=[83442,83434,83425,83387,83386,83385,83384,83383,83304,83303,83302,83280,83198,83197,83196,83195,83194,83193,83192,83191,83190,83187]
+          base='https://a3tal.com/wp-json/a3tal-direct/v1/admin'
+          def fetch(i):
+              u=base+'?'+urllib.parse.urlencode({'op':'post_meta','post_id':i})
+              request=urllib.request.Request(u,headers={'X-A3tal-Key':os.environ['A3TAL_API_KEY'],'Authorization':'Bearer '+os.environ['A3TAL_API_KEY']})
+              for turn in range(3):
+                  try:
+                      with urllib.request.urlopen(request,timeout=80) as f:response=json.load(f)
+                      meta=response.get('result') or {}
+                      keys=['_a3_year','_a3_price_min','_a3_price_max','_a3_currency','_a3_source_url','_a3_source_checked_at']
+                      brief={k:(meta[k][0] if isinstance(meta.get(k),list) and meta[k] else meta.get(k)) for k in keys}
+                      return {'id':i,'meta':brief}
+                  except Exception as e:
+                      last=str(e);time.sleep(3)
+              return {'id':i,'error':last}
+          with concurrent.futures.ThreadPoolExecutor(max_workers=3) as pool:
+              for row in pool.map(fetch,ids):
+                  print('CAR_META',json.dumps(row,ensure_ascii=False,separators=(',',':')),flush=True)
+          PY
