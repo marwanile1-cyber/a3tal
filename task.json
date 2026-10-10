@@ -1,28 +1,10 @@
 {
   "requests": [
     {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": true,
-      "body": {
-        "op": "platform_entity_upsert",
-        "type": "a3_car",
-        "id": 83384,
-        "title": "شيري أريزو 6 GT",
-        "status": "publish",
-        "meta": {
-          "_a3_related_post_ids": "82578",
-          "_yoast_wpseo_meta-robots-noindex": "1"
-        }
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": true,
-      "body": {
-        "op": "cache_flush"
-      }
+      "method": "GET",
+      "path": "/status",
+      "log_response": false,
+      "body": {}
     }
   ],
   "verify": []
