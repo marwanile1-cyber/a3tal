@@ -512,7 +512,7 @@ add_action('wp_footer','a3g_overlay_safe_area',120);
 add_filter('wpseo_robots_array', static function($robots) {
   if (!is_singular('a3_car')) return $robots;
   $id=(int)get_queried_object_id();
-  if (!in_array($id,[83383,83384,83385,83386,83387],true)) return $robots;
+  if (!in_array($id,[83383,83385,83386,83387],true)) return $robots;
   if (get_post_meta($id,'_a3_entity_stub',true)) return $robots;
   if (strlen((string)get_post_field('post_content',$id))<6500) return $robots;
   if (!is_array($robots)) $robots=[];
@@ -527,7 +527,7 @@ add_filter('wpseo_robots_array', static function($robots) {
 add_filter('wpseo_canonical',static function($canonical){
   if (!is_singular('a3_car')) return $canonical;
   $id=(int)get_queried_object_id();
-  if (!in_array($id,[83383,83384,83385,83386,83387],true)) return $canonical;
+  if (!in_array($id,[83383,83385,83386,83387],true)) return $canonical;
   if (get_post_meta($id,'_a3_entity_stub',true)) return $canonical;
   return get_permalink($id)?:$canonical;
 },999);
@@ -536,7 +536,7 @@ add_filter('wpseo_canonical',static function($canonical){
 function a3g_verified_chery_indexable_request(): bool {
   if (!is_singular('a3_car')) return false;
   $id=(int)get_queried_object_id();
-  if (!in_array($id,[83383,83384,83385,83386,83387],true)) return false;
+  if (!in_array($id,[83383,83385,83386,83387],true)) return false;
   if (get_post_meta($id,'_a3_entity_stub',true)) return false;
   return strlen((string)get_post_field('post_content',$id))>=6500;
 }
@@ -551,3 +551,45 @@ add_filter('wp_robots',static function($rules){
   $rules['follow']=true;
   return $rules;
 },9999);
+
+
+/* A3TAL: remove 301 redirect sources and non-indexable DTC records from Yoast sitemaps.
+   Article guides remain indexable, while structured stub entities still serve the site UI. */
+add_filter('wpseo_exclude_from_sitemap_by_post_ids', static function($excluded) {
+  if (!is_array($excluded)) $excluded=[];
+  // These legacy articles currently resolve via 301 to their specialist guides.
+  $excluded=array_merge($excluded,[82275,82276,83384]);
+  // Structured DTC snippets have noindex, follow, and link to their full diagnostic guide.
+  $dtc_ids=get_posts([
+    'post_type'=>'a3_dtc',
+    'post_status'=>'publish',
+    'posts_per_page'=>-1,
+    'fields'=>'ids',
+    'no_found_rows'=>true,
+    'suppress_filters'=>true,
+  ]);
+  if (is_array($dtc_ids)) $excluded=array_merge($excluded,$dtc_ids);
+  return array_values(array_unique(array_map('intval',$excluded)));
+},20);
+
+/* Arrizo 6 GT has a complete indexable pricing article.
+   Its structured vehicle profile remains usable in the cars catalogue but not indexed. */
+add_filter('wpseo_robots_array', static function($robots) {
+  if (!is_singular('a3_car') || (int)get_queried_object_id()!==83384) return $robots;
+  if (!is_array($robots)) $robots=[];
+  $robots['index']='noindex';
+  $robots['follow']='follow';
+  unset($robots['max-image-preview'],$robots['max-video-preview'],$robots['max-snippet']);
+  return $robots;
+},10020);
+add_filter('wpseo_robots', static function($directives) {
+  if (is_singular('a3_car') && (int)get_queried_object_id()===83384) return 'noindex, follow';
+  return $directives;
+},10020);
+add_filter('wp_robots',static function($robots){
+  if (!is_singular('a3_car') || (int)get_queried_object_id()!==83384) return $robots;
+  unset($robots['index']);
+  $robots['noindex']=true;
+  $robots['follow']=true;
+  return $robots;
+},10020);
