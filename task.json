@@ -1,65 +1,10 @@
 {
   "requests": [
     {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": true,
-      "body": {
-        "op": "term_upsert",
-        "taxonomy": "a3_brand",
-        "name": "JAC",
-        "slug": "jac"
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": true,
-      "body": {
-        "op": "platform_entity_upsert",
-        "type": "a3_car",
-        "title": "JAC JS2 2027",
-        "slug": "jac-js2-2027-egypt",
-        "status": "publish",
-        "excerpt": "جاك JS2 موديل 2027 المجمعة محليًا بفئة Smart، سعرها المعلن 775,000 جنيه في أكتوبر 2026، ومحرك 1.5 لتر وناقل CVT.",
-        "content": "<p>سجل بيانات موجز لسيارة جاك JS2 موديل 2027 في مصر. السعر المعلن لفئة Smart هو 775,000 جنيه بتاريخ قائمة أكتوبر 2026، وقد تختلف الأسعار والعروض وقت الحجز.</p><p><a href=\"https://a3tal.com/jac-js2-price-egypt/\">اقرأ دليل سعر جاك JS2 والمواصفات والتجهيزات والعيوب قبل الشراء</a></p>",
-        "taxonomies": {
-          "a3_brand": [
-            "jac"
-          ],
-          "a3_market": [
-            "egypt"
-          ],
-          "a3_car_body": [
-            "suv"
-          ]
-        },
-        "meta": {
-          "_a3_year": 2027,
-          "_a3_price_min": 775000,
-          "_a3_price_max": 775000,
-          "_a3_currency": "EGP",
-          "_a3_engine_cc": 1499,
-          "_a3_power_hp": 111,
-          "_a3_torque_nm": 146,
-          "_a3_transmission": "CVT",
-          "_a3_fuel": "بنزين",
-          "_a3_seats": 5,
-          "_a3_related_post_ids": "83420",
-          "_a3_source_url": "https://a3tal.com/jac-js2-price-egypt/",
-          "_a3_source_checked_at": "2026-10-09",
-          "_yoast_wpseo_meta-robots-noindex": "1"
-        },
-        "featured_media": 83423
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "log_response": true,
-      "body": {
-        "op": "cache_flush"
-      }
+      "method": "GET",
+      "path": "/status",
+      "log_response": false,
+      "body": {}
     }
   ],
   "verify": []
