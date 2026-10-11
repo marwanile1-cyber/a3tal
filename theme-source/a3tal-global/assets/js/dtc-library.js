@@ -13,6 +13,23 @@
       if (code) code.value = normalizeCode(code.value);
     });
   });
+
+  document.querySelectorAll('[data-dtc-copy]').forEach(function (button) {
+    button.addEventListener('click', function () {
+      var url = button.getAttribute('data-dtc-copy');
+      var status = button.closest('.d-share')?.querySelector('.d-share-feedback');
+      if (!url) return;
+      if (!navigator.clipboard || !window.isSecureContext) {
+        if (status) status.textContent = 'حدد رابط الصفحة من شريط العنوان لنسخه.';
+        return;
+      }
+      navigator.clipboard.writeText(url).then(function () {
+        if (status) status.textContent = 'تم نسخ الرابط.';
+      }).catch(function () {
+        if (status) status.textContent = 'تعذر النسخ. يمكنك نسخ الرابط من شريط العنوان.';
+      });
+    });
+  });
   var section = document.getElementById('dtc-discussion');
   var config = window.a3Dtc || {};
   if (!section || !config.ajaxUrl) return;
