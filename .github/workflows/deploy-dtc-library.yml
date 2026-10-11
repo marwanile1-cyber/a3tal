@@ -1,0 +1,57 @@
+name: Deploy independent DTC library
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'theme-source/a3tal-global/dtc-*.php'
+      - 'theme-source/a3tal-global/dtc-library.css'
+      - 'theme-source/a3tal-global/header-dtc.php'
+      - 'theme-source/a3tal-global/footer-dtc.php'
+      - 'theme-source/a3tal-global/assets/js/dtc-library.js'
+      - 'scripts/deploy-dtc-library.py'
+      - '.github/workflows/deploy-dtc-library.yml'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Deploy the library or deactivate its isolated templates
+        type: choice
+        options: [deploy, deactivate]
+        default: deploy
+
+permissions:
+  contents: read
+
+concurrency:
+  group: a3tal-production-theme
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      DTC_MODE: ${{ inputs.mode || 'deploy' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate source before production access
+        run: |
+          find theme-source/a3tal-global -name '*.php' -print0 | xargs -0 -n1 php -l
+          node --check theme-source/a3tal-global/assets/js/dtc-library.js
+          python3 -m py_compile scripts/deploy-dtc-library.py
+      - name: Read live originals and lint composed activation
+        run: python3 scripts/deploy-dtc-library.py prepare --state-dir "$RUNNER_TEMP/a3tal-dtc" --mode "$DTC_MODE"
+      - name: Encrypt original live source before any mutation
+        run: |
+          openssl enc -aes-256-cbc -salt -pbkdf2 -iter 200000 -pass env:A3TAL_API_KEY \
+            -in "$RUNNER_TEMP/a3tal-dtc/snapshot.json" -out "$RUNNER_TEMP/a3tal-dtc/live-backup.enc"
+      - name: Preserve encrypted rollback snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-dtc-backup-${{ github.run_id }}
+          path: ${{ runner.temp }}/a3tal-dtc/live-backup.enc
+          if-no-files-found: error
+          retention-days: 7
+      - name: Upload, verify hashes, activate last, and check public pages
+        run: python3 scripts/deploy-dtc-library.py deploy --state-dir "$RUNNER_TEMP/a3tal-dtc"

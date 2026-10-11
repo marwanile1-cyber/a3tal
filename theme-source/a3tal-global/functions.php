@@ -593,3 +593,9 @@ add_filter('wp_robots',static function($robots){
   $robots['follow']=true;
   return $robots;
 },10020);
+
+/* A3TAL-DTC-LIBRARY:START */
+if (is_file(get_template_directory() . '/dtc-library-support.php')) {
+    require_once get_template_directory() . '/dtc-library-support.php';
+}
+/* A3TAL-DTC-LIBRARY:END */

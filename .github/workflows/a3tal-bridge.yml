@@ -9,6 +9,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: a3tal-production-theme
+  cancel-in-progress: false
+
 jobs:
   run-task:
     runs-on: ubuntu-latest
