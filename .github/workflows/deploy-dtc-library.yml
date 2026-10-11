@@ -47,7 +47,7 @@ jobs:
       - name: Preserve encrypted rollback snapshot
         uses: actions/upload-artifact@v4
         with:
-          name: a3tal-dtc-backup-${{ github.run_id }}
+          name: a3tal-dtc-backup-${{ github.run_id }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/a3tal-dtc/live-backup.enc
           if-no-files-found: error
           retention-days: 7

@@ -43,13 +43,17 @@ class Bridge:
     def request(self, data, write=False, missing=False):
         url = BASE + '/wp-json/a3tal-direct/v1/admin'
         headers = {'X-A3tal-Key': self.key, 'Authorization': 'Bearer ' + self.key,
-                   'Accept': 'application/json', 'User-Agent': 'A3tal-DTC-Deploy/1.0'}
+                   'Accept': 'application/json', 'User-Agent': 'A3tal-DTC-Deploy/1.0',
+                   'Cache-Control': 'no-cache, no-store'}
         body = None
         if write:
             body = json.dumps(data, ensure_ascii=False).encode('utf-8')
             headers['Content-Type'] = 'application/json'
         else:
-            url += '?' + urllib.parse.urlencode(data)
+            # Negative file lookups can be cached by the hosting layer. Every
+            # authenticated source read must see the current filesystem bytes.
+            params = dict(data, _a3tal_dtc_read=str(time.time_ns()))
+            url += '?' + urllib.parse.urlencode(params)
         # Reads may retry transient transport failures; mutations never replay.
         for attempt in range(1 if write else 2):
             try:
@@ -91,7 +95,12 @@ class Bridge:
             self.request(data, write=True)
         except RuntimeError as error:
             mutation_error = error
-        actual = self.read(name)
+        try:
+            actual = self.read(name)
+        except RuntimeError:
+            if mutation_error:
+                raise mutation_error
+            raise
         if actual['sha256'] != digest(content):
             raise mutation_error or RuntimeError('Readback checksum mismatch: ' + name)
         print('Verified live file:', name)
