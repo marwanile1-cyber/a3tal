@@ -8,6 +8,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import time
 import urllib.error
@@ -41,7 +42,8 @@ class Bridge:
 
     def request(self, data, write=False, missing=False):
         url = BASE + '/wp-json/a3tal-direct/v1/admin'
-        headers = {'X-A3tal-Key': self.key, 'Authorization': 'Bearer ' + self.key}
+        headers = {'X-A3tal-Key': self.key, 'Authorization': 'Bearer ' + self.key,
+                   'Accept': 'application/json', 'User-Agent': 'A3tal-DTC-Deploy/1.0'}
         body = None
         if write:
             body = json.dumps(data, ensure_ascii=False).encode('utf-8')
@@ -57,11 +59,16 @@ class Bridge:
                     raise RuntimeError('Bridge returned an invalid success envelope')
                 return result['result']
             except urllib.error.HTTPError as error:
-                if missing and error.code == 404:
+                try:
                     payload = json.loads(error.read().decode('utf-8'))
+                except (json.JSONDecodeError, UnicodeDecodeError):
+                    payload = {}
+                if missing and error.code == 404:
                     if payload.get('code') == 'a3tal_file_missing':
                         return None
-                raise RuntimeError(f"Bridge {data['op']} rejected (HTTP {error.code})") from None
+                code = payload.get('code', '')
+                suffix = ': ' + code if isinstance(code, str) and re.fullmatch('[a-z][a-z0-9_]{0,70}', code) else ''
+                raise RuntimeError(f"Bridge {data['op']} rejected (HTTP {error.code}){suffix}") from None
             except (TimeoutError, urllib.error.URLError, json.JSONDecodeError):
                 if write or attempt == 1:
                     raise RuntimeError(f"Bridge {data['op']} transport error") from None
@@ -95,6 +102,10 @@ class Bridge:
 
 def lint(path):
     subprocess.run(['php', '-l', str(path)], check=True, stdout=subprocess.DEVNULL)
+
+
+def source_commit():
+    return subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
 
 
 def compose(original, mode):
@@ -132,7 +143,7 @@ def prepare(bridge, folder, mode):
     candidate = folder / 'functions-candidate.php'
     candidate.write_bytes(target.encode('utf-8'))
     lint(candidate)
-    snapshot = {'commit': os.environ.get('GITHUB_SHA', ''), 'mode': mode,
+    snapshot = {'commit': source_commit(), 'mode': mode,
                 'originals': originals, 'sources': sources, 'functions': target}
     (folder / 'snapshot.json').write_text(json.dumps(snapshot, ensure_ascii=False), encoding='utf-8')
     print('Prepared and linted exact live activation bytes; originals ready for encrypted backup')
@@ -175,7 +186,7 @@ def verify(mode):
 
 def deploy(bridge, folder):
     state = json.loads((folder / 'snapshot.json').read_text(encoding='utf-8'))
-    if state['commit'] != os.environ.get('GITHUB_SHA', ''):
+    if state['commit'] != source_commit():
         raise RuntimeError('Prepared source commit changed')
     mode, originals = state['mode'], state['originals']
     unchanged(bridge, 'functions.php', originals['functions.php'])

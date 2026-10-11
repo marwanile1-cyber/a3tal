@@ -1,23 +1,18 @@
 name: Deploy independent DTC library
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'theme-source/a3tal-global/dtc-*.php'
-      - 'theme-source/a3tal-global/dtc-library.css'
-      - 'theme-source/a3tal-global/header-dtc.php'
-      - 'theme-source/a3tal-global/footer-dtc.php'
-      - 'theme-source/a3tal-global/assets/js/dtc-library.js'
-      - 'scripts/deploy-dtc-library.py'
-      - '.github/workflows/deploy-dtc-library.yml'
-  workflow_dispatch:
+  workflow_call:
     inputs:
+      source_ref:
+        description: Exact reviewed source commit
+        required: true
+        type: string
       mode:
-        description: Deploy the library or deactivate its isolated templates
-        type: choice
-        options: [deploy, deactivate]
+        type: string
         default: deploy
+    secrets:
+      A3TAL_API_KEY:
+        required: true
 
 permissions:
   contents: read
@@ -35,6 +30,9 @@ jobs:
       DTC_MODE: ${{ inputs.mode || 'deploy' }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          repository: marwanile1-cyber/a3tal
+          ref: ${{ inputs.source_ref }}
       - name: Validate source before production access
         run: |
           find theme-source/a3tal-global -name '*.php' -print0 | xargs -0 -n1 php -l
