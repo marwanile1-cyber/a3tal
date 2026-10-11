@@ -48,6 +48,14 @@ while (have_posts()): the_post();
     return (int) $entry['id'] !== $dtc_id && (int) $entry['id'] !== $dtc_content_id && $entry['code'] !== $dtc_code && substr($entry['code'], 0, 1) === substr($dtc_code, 0, 1);
   }));
   $dtc_related_entries = array_slice($dtc_related_entries, 0, 3);
+  $dtc_share_url = get_permalink($dtc_content_id);
+  $dtc_share_title = $dtc_code ? 'دليل تشخيص كود ' . $dtc_code . ' بالعربي | أعطال.كوم' : get_the_title($dtc_id);
+  $dtc_video_links = preg_split('/[\\r\\n,]+/', (string) get_post_meta($dtc_content_id, '_a3_dtc_video_urls', true), -1, PREG_SPLIT_NO_EMPTY);
+  $dtc_video_links = array_values(array_filter(array_map('trim', (array)$dtc_video_links), static function ($url) {
+    $parts = wp_parse_url($url);
+    return is_array($parts) && ($parts['scheme'] ?? '') === 'https' &&
+      in_array(strtolower($parts['host'] ?? ''), ['youtube.com','www.youtube.com','m.youtube.com','youtu.be'], true);
+  }));
   $dtc_promos = a3g_dtc_promo_ids([$dtc_id, $dtc_content_id], 3);
 ?>
 <main id="dtc-main" class="d-wrap d-main d-single-main">
@@ -56,6 +64,16 @@ while (have_posts()): the_post();
     <div class="d-detail-copy"><p class="d-eyebrow">افهم الكود. رتّب الفحص.</p><h1><?php echo esc_html($dtc_title); ?></h1><?php if ($dtc_excerpt): ?><p class="d-detail-excerpt"><?php echo esc_html($dtc_excerpt); ?></p><?php endif; ?><div class="d-detail-meta"><?php if ($dtc_system): ?><span><?php echo esc_html($dtc_system); ?></span><?php endif; ?><?php if (isset($dtc_scope_labels[$dtc_scope])): ?><span><?php echo esc_html($dtc_scope_labels[$dtc_scope]); ?></span><?php endif; ?><?php if ($dtc_manufacturer): ?><span><?php echo esc_html($dtc_manufacturer); ?></span><?php endif; ?><a href="#dtc-discussion">الأسئلة والتجارب <span aria-hidden="true">↓</span></a></div></div>
     <?php if ($dtc_code): ?><b class="d-detail-code" dir="ltr"><?php echo esc_html($dtc_code); ?></b><?php endif; ?>
   </header>
+  <section class="d-share" aria-label="مشاركة دليل الكود">
+    <div class="d-share-intro"><strong>الشرح نفعك؟ شاركه مع صاحب عربية عنده نفس الكود</strong><small>مشاركة مباشرة من غير تسجيل دخول</small></div>
+    <div class="d-share-actions">
+      <a class="d-share-btn d-share-wa" target="_blank" rel="noopener noreferrer nofollow" href="<?php echo esc_url('https://api.whatsapp.com/send?text='.rawurlencode($dtc_share_title.' '.$dtc_share_url)); ?>">واتساب</a>
+      <a class="d-share-btn d-share-fb" target="_blank" rel="noopener noreferrer nofollow" href="<?php echo esc_url('https://www.facebook.com/sharer/sharer.php?u='.rawurlencode($dtc_share_url)); ?>">فيسبوك</a>
+      <a class="d-share-btn d-share-x" target="_blank" rel="noopener noreferrer nofollow" href="<?php echo esc_url('https://twitter.com/intent/tweet?text='.rawurlencode($dtc_share_title).'&url='.rawurlencode($dtc_share_url)); ?>">X / تويتر</a>
+      <button class="d-share-btn d-share-copy" type="button" data-dtc-copy="<?php echo esc_attr($dtc_share_url); ?>">نسخ الرابط</button>
+    </div>
+    <span class="d-share-feedback" aria-live="polite"></span>
+  </section>
   <div class="d-detail-layout">
     <div class="d-detail-content">
       <?php if ($dtc_advice): ?><aside class="d-drive-note"><span class="d-note-icon" aria-hidden="true"><?php echo a3g_icon('warning'); ?></span><div><h2>هل يمكن الاستمرار في القيادة؟</h2><p><?php echo esc_html($dtc_advice); ?></p></div></aside><?php endif; ?>
@@ -64,6 +82,11 @@ while (have_posts()): the_post();
         <div class="d-entry"><?php echo $dtc_body; ?></div>
         <?php if ($dtc_source || $dtc_checked): ?><footer class="d-source-note"><?php if ($dtc_checked): ?><span>آخر مراجعة للمصدر: <?php echo esc_html($dtc_checked); ?></span><?php endif; ?><?php if ($dtc_source): ?><a href="<?php echo esc_url($dtc_source); ?>" target="_blank" rel="nofollow noopener">المصدر الفني <span aria-hidden="true">↗</span></a><?php endif; ?></footer><?php endif; ?>
       </article>
+      <?php if ($dtc_video_links): ?><section class="d-videos d-panel" aria-labelledby="dtc-videos-title">
+        <span class="d-kicker">فيديوهات تشخيص مرتبطة</span><h2 id="dtc-videos-title">شاهد خطوات الفحص على يوتيوب</h2>
+        <p>روابط خارجية مختارة للفهم والتوضيح. تحقق من تطابق السيارة والمحرك قبل تطبيق أي إجراء.</p>
+        <ul><?php foreach (array_slice($dtc_video_links, 0, 5) as $dtc_video_url): ?><li><a href="<?php echo esc_url($dtc_video_url); ?>" rel="nofollow noopener noreferrer" target="_blank">شاهد الفيديو على YouTube <span aria-hidden="true">↗</span></a></li><?php endforeach; ?></ul>
+      </section><?php endif; ?>
       <?php a3g_dtc_render_discussion($dtc_content_id); ?>
     </div>
     <aside class="d-sidebar" aria-label="تنقل وأكواد أخرى">
