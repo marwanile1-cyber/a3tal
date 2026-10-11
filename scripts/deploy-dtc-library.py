@@ -14,6 +14,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+import uuid
 
 BASE = 'https://a3tal.com'
 THEME = Path('theme-source/a3tal-global')
@@ -39,6 +40,7 @@ class Bridge:
         self.key = os.environ.get('A3TAL_API_KEY', '')
         if not self.key:
             raise RuntimeError('Missing configured repository bridge secret')
+        self.last_request = 0
 
     def request(self, data, write=False, missing=False):
         url = BASE + '/wp-json/a3tal-direct/v1/admin'
@@ -52,10 +54,14 @@ class Bridge:
         else:
             # Negative file lookups can be cached by the hosting layer. Every
             # authenticated source read must see the current filesystem bytes.
-            params = dict(data, _a3tal_dtc_read=str(time.time_ns()))
+            params = dict(data, _a3tal_dtc_read=uuid.uuid4().hex)
             url += '?' + urllib.parse.urlencode(params)
         # Reads may retry transient transport failures; mutations never replay.
-        for attempt in range(1 if write else 2):
+        attempts = 1 if write else 3
+        for attempt in range(attempts):
+            # Stay below the host's request budget, including checksum reads.
+            time.sleep(max(0, 3 - (time.monotonic() - self.last_request)))
+            self.last_request = time.monotonic()
             try:
                 with urllib.request.urlopen(urllib.request.Request(url, body, headers), timeout=30 if write else 20) as response:
                     result = json.load(response)
@@ -63,6 +69,10 @@ class Bridge:
                     raise RuntimeError('Bridge returned an invalid success envelope')
                 return result['result']
             except urllib.error.HTTPError as error:
+                if error.code == 429 and not write and attempt < attempts - 1:
+                    print('Host read budget reached; waiting before a safe read retry', flush=True)
+                    time.sleep(45)
+                    continue
                 try:
                     payload = json.loads(error.read().decode('utf-8'))
                 except (json.JSONDecodeError, UnicodeDecodeError):
@@ -74,7 +84,7 @@ class Bridge:
                 suffix = ': ' + code if isinstance(code, str) and re.fullmatch('[a-z][a-z0-9_]{0,70}', code) else ''
                 raise RuntimeError(f"Bridge {data['op']} rejected (HTTP {error.code}){suffix}") from None
             except (TimeoutError, urllib.error.URLError, json.JSONDecodeError):
-                if write or attempt == 1:
+                if write or attempt == attempts - 1:
                     raise RuntimeError(f"Bridge {data['op']} transport error") from None
                 time.sleep(2)
 
@@ -103,10 +113,19 @@ class Bridge:
             raise
         if actual['sha256'] != digest(content):
             raise mutation_error or RuntimeError('Readback checksum mismatch: ' + name)
-        print('Verified live file:', name)
+        print('Verified live file:', name, flush=True)
 
     def flush(self):
-        self.request({'op': 'cache_flush'}, write=True)
+        # Cache flush is idempotent; retry only a definite rate-limit response.
+        for attempt in range(2):
+            try:
+                self.request({'op': 'cache_flush'}, write=True)
+                return
+            except RuntimeError as error:
+                if attempt or str(error) != 'Bridge cache_flush rejected (HTTP 429)':
+                    raise
+                print('Host cache-flush budget reached; waiting before retry', flush=True)
+                time.sleep(45)
 
 
 def lint(path):
@@ -219,8 +238,9 @@ def deploy(bridge, folder):
         verify(mode)
         bridge.request({'op': 'site_info'})
         (folder / 'result.json').write_text(json.dumps({'ok': True, 'mode': mode, 'commit': state['commit']}))
-    except Exception:
-        print('Deployment failed; restoring conflict-checked original files')
+    except Exception as deployment_error:
+        print('Deployment error:', deployment_error, flush=True)
+        print('Deployment failed; restoring conflict-checked original files', flush=True)
         if activated:
             live = bridge.read('functions.php')
             if live['sha256'] == digest(state['functions']):
