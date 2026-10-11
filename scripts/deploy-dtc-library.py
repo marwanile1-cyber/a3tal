@@ -47,15 +47,11 @@ class Bridge:
         headers = {'X-A3tal-Key': self.key, 'Authorization': 'Bearer ' + self.key,
                    'Accept': 'application/json', 'User-Agent': 'A3tal-DTC-Deploy/1.0',
                    'Cache-Control': 'no-cache, no-store'}
-        body = None
-        if write:
-            body = json.dumps(data, ensure_ascii=False).encode('utf-8')
-            headers['Content-Type'] = 'application/json'
-        else:
-            # Negative file lookups can be cached by the hosting layer. Every
-            # authenticated source read must see the current filesystem bytes.
-            params = dict(data, _a3tal_dtc_read=uuid.uuid4().hex)
-            url += '?' + urllib.parse.urlencode(params)
+        # The host rejects authenticated admin GET requests at its edge (403).
+        # Use POST for both reads and writes; the Bridge recognizes safe read
+        # operations and all requests are uncached.
+        body = json.dumps(data, ensure_ascii=False).encode('utf-8')
+        headers['Content-Type'] = 'application/json'
         # Reads may retry transient transport failures; mutations never replay.
         attempts = 1 if write else 3
         for attempt in range(attempts):
