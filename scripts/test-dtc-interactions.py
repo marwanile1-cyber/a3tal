@@ -90,8 +90,16 @@ def main():
     visitor = uuid.uuid4().hex + "dtcsmoke"
     ajax = BASE + "/wp-admin/admin-ajax.php"
     # The WordPress handler intentionally reads submitted form fields from POST.
-    token = json.loads(http(ajax, {"action": "a3g_dtc_token",
-                                  "post_id": str(post_id), "visitor": visitor}))
+    raw_token = http(ajax, {"action": "a3g_dtc_token",
+                            "post_id": str(post_id), "visitor": visitor})
+    try:
+        token = json.loads(raw_token)
+    except json.JSONDecodeError:
+        # Do not log response bodies other than tiny, non-sensitive diagnostics;
+        # typical blocked-ajax responses are "0" or WAF HTML.
+        print("Anonymous token endpoint returned non-JSON; length:", len(raw_token),
+              "prefix:", repr(raw_token[:100]), flush=True)
+        raise RuntimeError("Anonymous token endpoint returned non-JSON") from None
     if token.get("success") is not True:
         raise RuntimeError("Anonymous challenge endpoint failed")
     values = token.get("data", {})
