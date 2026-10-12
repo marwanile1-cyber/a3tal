@@ -1,0 +1,32 @@
+name: Publish A3TAL original Arabic DTC batch 05
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-original-dtc-batch-05.yml'
+      - 'scripts/publish-dtc-original-batch-05.py'
+      - 'data/dtc-original-batch-05.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: a3tal-dtc-content-publishing
+  cancel-in-progress: false
+
+jobs:
+  publish-reviewed-batch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate 10 original code guides and scripts
+        run: |
+          python3 -m py_compile scripts/publish-dtc-original-batch-05.py
+          python3 scripts/publish-dtc-original-batch-05.py --dry-run
+      - name: Publish with live duplicate checks and guarded 522 recovery
+        run: python3 scripts/publish-dtc-original-batch-05.py
