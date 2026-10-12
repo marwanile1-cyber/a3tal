@@ -5,16 +5,17 @@
       "path": "/upload-image-data",
       "body": {
         "post_id": 83472,
-        "filename": "el-dawly-zagazig-featured-ad.webp",
-        "title": "المركز الدولي لصيانة السيارات بالزقازيق – إعلان زيوت وفلاتر وقطع غيار",
-        "alt": "بنر إعلاني للمركز الدولي لصيانة السيارات بالزقازيق، زيوت محركات Mannol وEagle وبترومين وهيونداي وقطع غيار وفلاتر فتيس أوتوماتيك",
-        "caption": "تصميم إعلاني لخدمات ومنتجات المركز الدولي لصيانة السيارات بالزقازيق",
+        "filename": "el-dawly-advertisement-featured-banner.webp",
+        "title": "إعلان المركز الدولي لصيانة السيارات بالزقازيق - زيوت وقطع غيار وفلاتر الفتيس",
+        "alt": "إعلان المركز الدولي لصيانة السيارات بالزقازيق وزيوت مانول وإيجل وبترومين وهيونداي وفلاتر الفتيس الأوتوماتيك",
         "set_featured": true,
         "convert_webp": false,
-        "image_svg_file": "assets/article-art/el-dawly-zagazig-featured-ad.svg",
-        "render_width": 1600,
-        "render_height": 900,
-        "render_quality": 90
+        "image_source_urls": [
+          "https://raw.githubusercontent.com/marwanile1-cyber/a3tal/main/assets/article-art/el-dawly-zagazig-ad-banner-original.png"
+        ],
+        "render_width": 1536,
+        "render_height": 1024,
+        "render_quality": 85
       }
     }
   ],
