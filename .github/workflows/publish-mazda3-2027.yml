@@ -1,0 +1,35 @@
+name: Publish Mazda 3 2027 Egypt with photos
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-mazda3-2027.yml'
+      - 'publish-payloads/mazda-3-2027-egypt.json'
+      - 'scripts/publish-mazda3-2027.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: a3tal-mazda3-news-publishing
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate editorial payload and Python syntax
+        run: |
+          python3 -m py_compile scripts/publish-mazda3-2027.py
+          python3 -m json.tool publish-payloads/mazda-3-2027-egypt.json >/dev/null
+          test -n "$A3TAL_API_KEY"
+      - name: Prepare images and publish via A3tal Direct Bridge
+        run: |
+          python3 -m pip install --quiet Pillow
+          python3 -u scripts/publish-mazda3-2027.py
