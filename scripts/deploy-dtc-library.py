@@ -187,32 +187,65 @@ def unchanged(bridge, name, original):
     return current
 
 
+class PublicCheckBlocked(RuntimeError):
+    """The edge denied a public check from GitHub, not a proven site failure."""
+
+
 def public_get(path):
-    # Verification queries deliberately bypass cached pre-deployment responses.
+    # Cache-bust, using normal browser headers rather than Python's default
+    # bot-like User-Agent. Never send the Bridge credential to public routes.
     sep = '&' if '?' in path else '?'
     url = BASE + path + sep + 'a3tal_dtc_verify=' + str(time.time_ns())
-    with urllib.request.urlopen(urllib.request.Request(url, headers={'Cache-Control': 'no-cache'}), timeout=20) as response:
-        return response.read().decode('utf-8')
+    headers = {
+        'User-Agent': ('Mozilla/5.0 (X11; Linux x86_64; rv:128.0) '
+                       'Gecko/20100101 Firefox/128.0'),
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'ar,en-US;q=0.7,en;q=0.5',
+        'Cache-Control': 'no-cache',
+    }
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=25) as response:
+                return response.read().decode('utf-8')
+        except urllib.error.HTTPError as error:
+            if error.code in (403, 429, 502, 503, 504, 520, 522, 524):
+                if attempt < 2:
+                    print(f'Public check received HTTP {error.code}; retrying safely', flush=True)
+                    time.sleep(12 * (attempt + 1))
+                    continue
+                if error.code == 403:
+                    raise PublicCheckBlocked('GitHub runner was denied HTTP 403 by the public edge') from None
+            raise
+        except (TimeoutError, urllib.error.URLError):
+            if attempt == 2:
+                raise
+            time.sleep(12 * (attempt + 1))
 
 
 def verify(mode):
-    archive = public_get('/dtc/')
-    if mode == 'deploy':
-        assert 'd-hero' in archive and 'dtc-codes' in archive, 'Archive template is not active'
-        detail = public_get('/dtc/p0172/')
-        assert 'data-post-id=' in detail and 'd-detail-hero' in detail, 'Detail/discussion template missing'
-        guide = public_get('/p0172-system-too-rich-bank1-diagnosis/')
-        assert 'd-detail-hero' in guide and 'data-post-id=' in guide, 'Existing guide integration missing'
-        search = public_get('/dtc/?code=%20p0172%20')
-        assert 'P0172' in search and search.count('class="d-code-card"') == 1, 'Code search failed'
-        no_match = public_get('/dtc/?code=P9999')
-        assert 'لا يوجد شرح منشور مطابق' in no_match, 'Empty search handling failed'
-        assert 'noindex' in search, 'Search variants must not become indexable'
-    else:
-        assert 'class="d-hero"' not in archive, 'Feature did not deactivate'
-    home = public_get('/')
-    assert 'a3g-dtc-library' not in home and '<html' in home, 'Homepage scope changed'
-    print('Verified archive, existing links, search, discussions and unaffected homepage')
+    try:
+        archive = public_get('/dtc/')
+        if mode == 'deploy':
+            assert 'd-hero' in archive and 'dtc-codes' in archive, 'Archive template is not active'
+            detail = public_get('/dtc/p0172/')
+            assert 'data-post-id=' in detail and 'd-detail-hero' in detail, 'Detail/discussion template missing'
+            guide = public_get('/p0172-system-too-rich-bank1-diagnosis/')
+            assert 'd-detail-hero' in guide and 'data-post-id=' in guide, 'Existing guide integration missing'
+            search = public_get('/dtc/?code=%20p0172%20')
+            assert 'P0172' in search and search.count('class="d-code-card"') == 1, 'Code search failed'
+            no_match = public_get('/dtc/?code=P9999')
+            assert 'لا يوجد شرح منشور مطابق' in no_match, 'Empty search handling failed'
+            assert 'noindex' in search, 'Search variants must not become indexable'
+        else:
+            assert 'class="d-hero"' not in archive, 'Feature did not deactivate'
+        home = public_get('/')
+        assert 'a3g-dtc-library' not in home and '<html' in home, 'Homepage scope changed'
+    except PublicCheckBlocked as error:
+        print('PUBLIC VERIFICATION DEFERRED: ' + str(error), flush=True)
+        print('Verified activation must now be checked from an independent browser or unblocked IP.', flush=True)
+        return 'external-check-required'
+    print('Verified archive, existing links, search, discussions and unaffected homepage', flush=True)
+    return 'public-verified'
 
 
 def deploy(bridge, folder):
@@ -238,9 +271,18 @@ def deploy(bridge, folder):
             activated = True
             bridge.write('functions.php', state['functions'], fresh['sha256'])
         bridge.flush()
-        verify(mode)
+        public_status = verify(mode)
+        # Even if the GitHub runner is edge-blocked, the active PHP bytes must
+        # match the reviewed, locally linted version before completing.
+        active = bridge.read('functions.php')
+        if active['sha256'] != digest(state['functions']):
+            raise RuntimeError('Post-activation functions.php checksum mismatch')
         bridge.request({'op': 'site_info'})
-        (folder / 'result.json').write_text(json.dumps({'ok': True, 'mode': mode, 'commit': state['commit']}))
+        if public_status == 'external-check-required':
+            print('ACTIVATION VERIFIED VIA BRIDGE; PUBLIC CHECK REQUIRES INDEPENDENT BROWSER', flush=True)
+        (folder / 'result.json').write_text(json.dumps(
+            {'ok': True, 'mode': mode, 'commit': state['commit'],
+             'public_verification': public_status}))
     except Exception as deployment_error:
         print('Deployment error:', deployment_error, flush=True)
         if not activated:
