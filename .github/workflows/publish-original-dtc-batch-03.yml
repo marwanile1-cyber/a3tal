@@ -1,0 +1,32 @@
+name: Publish A3TAL original Arabic DTC batch 03
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-original-dtc-batch-03.yml'
+      - 'scripts/publish-dtc-original-batch-03.py'
+      - 'data/dtc-original-batch-03.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: a3tal-dtc-content-publishing
+  cancel-in-progress: false
+
+jobs:
+  publish-reviewed-batch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate original diagnostic guides and publishing script
+        run: |
+          python3 -m py_compile scripts/publish-dtc-original-batch-03.py
+          python3 scripts/publish-dtc-original-batch-03.py --dry-run
+      - name: Publish ten code pages safely using WordPress custom post type
+        run: python3 scripts/publish-dtc-original-batch-03.py
