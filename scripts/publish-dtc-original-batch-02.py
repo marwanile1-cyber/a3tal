@@ -23,7 +23,7 @@ CODE_RE = re.compile(r"^[PBCU][0-9][0-9A-F]{3}$")
 ALLOWED_SOURCES = ("https://us.haynes.com/", "https://au.haynes.com/", "https://www.edmunds.com/", "https://mytopdon.com/")
 FAMILIES = {"P": "المحرك وناقل الحركة", "B": "الهيكل والمقصورة",
             "C": "الشاسيه والفرامل", "U": "الشبكات والاتصالات"}
-FIXED_EXISTING = set("C1010 P0000 P0010 P0011 P0013 P0014 P0016 P0087 P0101 P0110 P0114 P0115 P0128 P1299 P0135 P0171 P0172 P0226 P0299 P0300 P0301 P0302 P0303 P0304 P0335 P0340 P0342 P03A3 P0430 P0420 P0442 P0455 P0507 P0562 P0597 P0700 P0741 P1083 P1115 P1632 P2288 U0100 P0102 P0113 P0122 P0133 P0401 P0441 P0456 P0500 U0121".split())
+FIXED_EXISTING = set("C1010 P0000 P0010 P0011 P0013 P0014 P0016 P0087 P0101 P0110 P0114 P0115 P0128 P1299 P0135 P0171 P0172 P0226 P0299 P0300 P0301 P0302 P0303 P0304 P0335 P0340 P0342 P03A3 P0430 P0420 P0442 P0455 P0507 P0562 P0597 P0700 P0741 P1083 P1115 P1632 P2288 U0100 P0112 P0102 P0113 P0122 P0133 P0401 P0441 P0456 P0500 U0121".split())
 KEY = os.getenv("A3TAL_API_KEY", "")
 last_call = 0.0
 
@@ -71,7 +71,7 @@ def render(article):
 
 def validate(items):
     codes = [row["code"] for row in items]
-    if len(items) != 11 or len(set(codes)) != 11:
+    if len(items) != 10 or len(set(codes)) != 10:
         raise RuntimeError("Unexpected batch count or duplicated codes")
     for row in items:
         code = row["code"]
@@ -140,6 +140,21 @@ def get_public(code):
 
 def publish_one(row):
     code = row["code"]
+    # A legacy long-form guide may already cover this code without using a
+    # /dtc/<code>/ permalink. The live catalog is our authoritative index.
+    query_url = BASE + "/dtc/?code=" + urllib.parse.quote(code)
+    headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/129.0 Safari/537.36",
+               "Accept": "text/html,application/xhtml+xml;q=0.9,*/*;q=0.8"}
+    try:
+        with urllib.request.urlopen(urllib.request.Request(query_url, headers=headers), timeout=30) as res:
+            listing = res.read().decode("utf-8")
+    except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as err:
+        raise RuntimeError("Catalog duplicate preflight failed for " + code) from err
+    if re.search(r"[1-9][0-9]*\\s+شرحًا متاحًا", listing):
+        print("Already covered by live DTC catalog:", code, "(will not duplicate)", flush=True)
+        return "existing"
+    if not re.search(r"0\\s+شرحًا متاحًا", listing):
+        raise RuntimeError("Catalog result count could not be verified for " + code)
     existing = get_public(code)
     if existing:
         if "d-detail-hero" in existing[1] and code in existing[1]:
