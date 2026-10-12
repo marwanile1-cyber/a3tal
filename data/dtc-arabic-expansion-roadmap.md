@@ -16,6 +16,13 @@ Files: data/dtc-original-batch-02.json and scripts/publish-dtc-original-batch-02
 P0112 was deliberately omitted: the existing indexed multi-code article already covers P0110 through P0115, so adding a separate P0112 page would risk competing with that guide.
 Status: automated live publishing initiated on 2026-10-12; individual URLs must be verified after GitHub Actions finishes.
 
+## Batch 03 | confirmed published
+P0200, P0201, P0325, P0336, P0351, P0606, P0715, P0720, P0730, P0750.
+Files: data/dtc-original-batch-03.json and scripts/publish-dtc-original-batch-03.py.
+Published live 2026-10-12 and independently verified all 10 URLs with index/follow. GitHub run: https://github.com/marwanile1-cyber/a3tal/actions/runs/38249377691.
+Catalog after batch: 72 accessible code explanations. Search for P0200 and P0750 returned one result apiece.
+Host failure note: initial write of P0200 returned HTTP 522, but live WP article existed; never blindly repeat an ambiguous mutation. Production content identity verified through authenticated WP REST and checked public routes.
+
 ## Proposed editorial queue (check the live catalog before each batch)
 
 ### Air measurement and fuel
