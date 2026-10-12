@@ -1,0 +1,43 @@
+name: Patch DTC Sharing Link Safely
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/patch-dtc-share.yml'
+      - 'scripts/patch-dtc-share.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: a3tal-production-theme
+  cancel-in-progress: false
+
+jobs:
+  patch-dtc-share:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint reviewed production template and patch script
+        run: |
+          php -l theme-source/a3tal-global/dtc-library-single.php
+          python3 -m py_compile scripts/patch-dtc-share.py
+      - name: Read original live file and validate one-line patch
+        run: python3 scripts/patch-dtc-share.py prepare --state-dir "$RUNNER_TEMP/dtc-share"
+      - name: Encrypt original production file
+        run: |
+          openssl enc -aes-256-cbc -salt -pbkdf2 -iter 200000 -pass env:A3TAL_API_KEY \
+            -in "$RUNNER_TEMP/dtc-share/original.json" -out "$RUNNER_TEMP/dtc-share/backup.enc"
+      - name: Preserve encrypted rollback backup
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-dtc-share-backup-${{ github.run_id }}
+          path: ${{ runner.temp }}/dtc-share/backup.enc
+          retention-days: 7
+      - name: Write and SHA-verify only the approved sharing change
+        run: python3 scripts/patch-dtc-share.py deploy --state-dir "$RUNNER_TEMP/dtc-share"
