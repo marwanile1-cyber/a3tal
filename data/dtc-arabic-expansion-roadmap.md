@@ -10,6 +10,12 @@ As checked 2026-10-12: 44 code entries in /dtc/. Existing codes are owned by the
 P0102, P0113, P0122, P0133, P0401, P0441, P0456, P0500, U0121.
 Files: data/dtc-original-batch-01.json and scripts/publish-dtc-original-batch.py.
 
+## Batch 02 | ten reviewed original pages
+P0103, P0106, P0107, P0108, P0117, P0118, P0121, P0123, P0130, P0174.
+Files: data/dtc-original-batch-02.json and scripts/publish-dtc-original-batch-02.py.
+P0112 was deliberately omitted: the existing indexed multi-code article already covers P0110 through P0115, so adding a separate P0112 page would risk competing with that guide.
+Status: automated live publishing initiated on 2026-10-12; individual URLs must be verified after GitHub Actions finishes.
+
 ## Proposed editorial queue (check the live catalog before each batch)
 
 ### Air measurement and fuel
