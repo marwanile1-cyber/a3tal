@@ -23,6 +23,13 @@ Published live 2026-10-12 and independently verified all 10 URLs with index/foll
 Catalog after batch: 72 accessible code explanations. Search for P0200 and P0750 returned one result apiece.
 Host failure note: initial write of P0200 returned HTTP 522, but live WP article existed; never blindly repeat an ambiguous mutation. Production content identity verified through authenticated WP REST and checked public routes.
 
+## Batch 04 | publication triggered 2026-10-12
+P0202, P0203, P0341, P0352, P0365, P0705, P0716, P0722, P0740, P0755.
+Files: data/dtc-original-batch-04.json and scripts/publish-dtc-original-batch-04.py.
+Primary definitions checked against the Delaware DMV DTC technical code list. These guides cover injectors, camshaft position, ignition and safe automatic transmission diagnosis. Existing pages and prior indexed tutorials are preserved.
+GitHub workflow: https://github.com/marwanile1-cyber/a3tal/actions/runs/38253042671.
+Status: automatic publishing in progress; independently verify URLs and final library count before marking complete.
+
 ## Proposed editorial queue (check the live catalog before each batch)
 
 ### Air measurement and fuel
