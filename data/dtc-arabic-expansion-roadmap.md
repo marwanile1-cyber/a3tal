@@ -30,6 +30,14 @@ Primary definitions checked against the Delaware DMV DTC technical code list. Th
 GitHub workflow: https://github.com/marwanile1-cyber/a3tal/actions/runs/38253042671.
 Status: complete. GitHub Actions succeeded with 10 new published WordPress posts (IDs 83507–83516), and all ten public detail URLs were verified index/follow. The catalog displayed 82 available code explanations after this batch. Exact lookup for P0755 returned one result. Completed 2026-10-12.
 
+## Batch 05 | 10 original Arabic guides
+P0204, P0305, P0353, P0403, P0443, P0480, P0756, P0760, U0101, P0521.
+Files: data/dtc-original-batch-05.json and scripts/publish-dtc-original-batch-05.py.
+Live preflight identified existing P0741 guide at /p0741-torque-converter-clutch-diagnosis/; this code was deliberately excluded to avoid SEO cannibalization, with P0760 selected instead.
+Explanations are written originally in Arabic, with symptoms, electrical/mechanical distinction, five diagnostic steps, repair decision, safety and FAQs. P0521 includes a high-priority engine oil pressure stop warning.
+Launch: https://github.com/marwanile1-cyber/a3tal/actions/runs/38273911204
+Status: release in progress, needs post-publish verification and catalog refresh.
+
 ## Proposed editorial queue (check the live catalog before each batch)
 
 ### Air measurement and fuel
