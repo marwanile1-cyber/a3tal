@@ -150,10 +150,10 @@ def publish_one(row):
             listing = res.read().decode("utf-8")
     except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as err:
         raise RuntimeError("Catalog duplicate preflight failed for " + code) from err
-    if re.search(r"[1-9][0-9]*\\s+شرحًا متاحًا", listing):
+    if re.search(r"[1-9][0-9]*\s+شرحًا متاحًا", listing):
         print("Already covered by live DTC catalog:", code, "(will not duplicate)", flush=True)
         return "existing"
-    if not re.search(r"0\\s+شرحًا متاحًا", listing):
+    if not re.search(r"0\s+شرحًا متاحًا", listing):
         raise RuntimeError("Catalog result count could not be verified for " + code)
     existing = get_public(code)
     if existing:
