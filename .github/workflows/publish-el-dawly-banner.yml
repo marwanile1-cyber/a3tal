@@ -1,0 +1,65 @@
+name: Publish El Dawly Approved Advertising Banner
+
+on:
+  push:
+    paths:
+      - '.github/workflows/publish-el-dawly-banner.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish-banner:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Upload approved original banner and verify WordPress featured media
+        shell: bash
+        env:
+          A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          SOURCE="assets/article-art/el-dawly-zagazig-ad-banner-original.png"
+          test -s "$SOURCE"
+          if ! command -v convert >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y imagemagick
+          fi
+          convert "$SOURCE" -auto-orient -quality 87 -define webp:method=6 /tmp/el-dawly-approved-banner.webp
+          identify /tmp/el-dawly-approved-banner.webp
+          python3 - <<'PYTHON'
+          import base64,json
+          from pathlib import Path
+          filename=Path('/tmp/el-dawly-approved-banner.webp')
+          payload={
+            'post_id':83472,
+            'filename':'el-dawly-zagazig-official-advertising-banner.webp',
+            'title':'بنر المركز الدولي لصيانة السيارات بالزقازيق',
+            'alt':'إعلان المركز الدولي لصيانة السيارات بالزقازيق، زيوت Mannol وEagle وبترومين وهيونداي وزيوت وفلاتر الفتيس الأوتوماتيك',
+            'set_featured':True,
+            'convert_webp':False,
+            'image_base64':base64.b64encode(filename.read_bytes()).decode('ascii')
+          }
+          Path('/tmp/el-dawly-payload.json').write_text(json.dumps(payload,ensure_ascii=False),encoding='utf-8')
+          PYTHON
+          BASE="https://a3tal.com/wp-json/a3tal-direct/v1"
+          STATUS="$(curl --fail-with-body --retry 3 --retry-delay 5 --connect-timeout 20 --max-time 180 --silent --show-error -o /tmp/media-result.json -w '%{http_code}' -X POST "$BASE/upload-image-data" -H "X-A3tal-Key: $A3TAL_API_KEY" -H 'Content-Type: application/json' --data-binary @/tmp/el-dawly-payload.json)"
+          echo "Upload HTTP $STATUS"
+          test "$STATUS" = "201"
+          jq '{media_id,url,mime,width,height,featured_for_post}' /tmp/media-result.json
+          MEDIA_ID="$(jq -r '.media_id' /tmp/media-result.json)"
+          test "$MEDIA_ID" -gt 0
+          for attempt in 1 2 3 4; do
+            curl --retry 2 --retry-delay 3 --silent --show-error -H "X-A3tal-Key: $A3TAL_API_KEY" "$BASE/post/83472" -o /tmp/el-dawly-post.json
+            FEATURED="$(jq -r '.featured_media' /tmp/el-dawly-post.json)"
+            if test "$FEATURED" = "$MEDIA_ID"; then
+              echo "Verified published post 83472 and approved banner media $MEDIA_ID"
+              jq '{id,status,link,featured_media}' /tmp/el-dawly-post.json
+              exit 0
+            fi
+            sleep 4
+          done
+          echo "Featured image verification mismatch" >&2
+          exit 1
