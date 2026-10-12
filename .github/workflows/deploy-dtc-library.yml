@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/deploy-dtc-library.yml'
+      - 'scripts/deploy-dtc-library.py'
   workflow_dispatch:
   workflow_call:
     inputs:
