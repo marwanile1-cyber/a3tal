@@ -1,0 +1,31 @@
+name: Fix Mazda3 Homepage Feeds
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/fix-mazda3-homepage.yml"
+      - "scripts/fix-mazda3-homepage.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: a3tal-production-theme
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate guarded repair script
+        run: |
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/fix-mazda3-homepage.py
+      - name: Repair and verify car listing, latest prices, latest news
+        run: python3 -u scripts/fix-mazda3-homepage.py
