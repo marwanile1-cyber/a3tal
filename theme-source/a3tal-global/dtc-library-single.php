@@ -48,7 +48,7 @@ while (have_posts()): the_post();
     return (int) $entry['id'] !== $dtc_id && (int) $entry['id'] !== $dtc_content_id && $entry['code'] !== $dtc_code && substr($entry['code'], 0, 1) === substr($dtc_code, 0, 1);
   }));
   $dtc_related_entries = array_slice($dtc_related_entries, 0, 3);
-  $dtc_share_url = get_permalink($dtc_content_id);
+  $dtc_share_url = get_permalink($dtc_id);
   $dtc_share_title = $dtc_code ? 'دليل تشخيص كود ' . $dtc_code . ' بالعربي | أعطال.كوم' : get_the_title($dtc_id);
   $dtc_video_links = preg_split('/[\\r\\n,]+/', (string) get_post_meta($dtc_content_id, '_a3_dtc_video_urls', true), -1, PREG_SPLIT_NO_EMPTY);
   $dtc_video_links = array_values(array_filter(array_map('trim', (array)$dtc_video_links), static function ($url) {
