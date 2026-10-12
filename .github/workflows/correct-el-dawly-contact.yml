@@ -12,7 +12,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: a3tal-production-theme
+  group: a3tal-el-dawly-post-83472
   cancel-in-progress: false
 
 jobs:
