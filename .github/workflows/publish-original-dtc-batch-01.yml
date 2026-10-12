@@ -1,0 +1,32 @@
+name: Publish A3TAL original Arabic DTC batch 01
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-original-dtc-batch-01.yml'
+      - 'scripts/publish-dtc-original-batch.py'
+      - 'data/dtc-original-batch-01.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: a3tal-dtc-content-publishing
+  cancel-in-progress: false
+
+jobs:
+  publish-reviewed-batch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check reviewed unique code set and full diagnostic content
+        run: |
+          python3 -m py_compile scripts/publish-dtc-original-batch.py
+          python3 scripts/publish-dtc-original-batch.py --dry-run
+      - name: Publish to dedicated DTC custom post type without replacing existing guides
+        run: python3 scripts/publish-dtc-original-batch.py
