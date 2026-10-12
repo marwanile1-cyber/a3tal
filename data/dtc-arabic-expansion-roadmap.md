@@ -28,7 +28,7 @@ P0202, P0203, P0341, P0352, P0365, P0705, P0716, P0722, P0740, P0755.
 Files: data/dtc-original-batch-04.json and scripts/publish-dtc-original-batch-04.py.
 Primary definitions checked against the Delaware DMV DTC technical code list. These guides cover injectors, camshaft position, ignition and safe automatic transmission diagnosis. Existing pages and prior indexed tutorials are preserved.
 GitHub workflow: https://github.com/marwanile1-cyber/a3tal/actions/runs/38253042671.
-Status: automatic publishing in progress; independently verify URLs and final library count before marking complete.
+Status: complete. GitHub Actions succeeded with 10 new published WordPress posts (IDs 83507–83516), and all ten public detail URLs were verified index/follow. The catalog displayed 82 available code explanations after this batch. Exact lookup for P0755 returned one result. Completed 2026-10-12.
 
 ## Proposed editorial queue (check the live catalog before each batch)
 
