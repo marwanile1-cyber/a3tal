@@ -89,8 +89,9 @@ def main():
 
     visitor = uuid.uuid4().hex + "dtcsmoke"
     ajax = BASE + "/wp-admin/admin-ajax.php"
-    token = json.loads(retry_read(ajax + "?action=a3g_dtc_token&post_id=" +
-                              str(post_id) + "&visitor=" + visitor))
+    # The WordPress handler intentionally reads submitted form fields from POST.
+    token = json.loads(http(ajax, {"action": "a3g_dtc_token",
+                                  "post_id": str(post_id), "visitor": visitor}))
     if token.get("success") is not True:
         raise RuntimeError("Anonymous challenge endpoint failed")
     values = token.get("data", {})
