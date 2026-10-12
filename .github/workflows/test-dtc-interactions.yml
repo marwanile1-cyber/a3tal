@@ -1,11 +1,6 @@
 name: Check A3TAL DTC guest discussions and share links
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/test-dtc-interactions.yml'
-      - 'scripts/test-dtc-interactions.py'
   workflow_dispatch:
 
 permissions:
