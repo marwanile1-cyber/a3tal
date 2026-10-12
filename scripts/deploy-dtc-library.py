@@ -65,11 +65,15 @@ class Bridge:
                     raise RuntimeError('Bridge returned an invalid success envelope')
                 return result['result']
             except urllib.error.HTTPError as error:
-                if error.code == 429 and not write and attempt < attempts - 1:
-                    print('Host read budget reached; respecting host cooldown before a safe read retry', flush=True)
+                # Only read requests may be replayed. WordPress write responses
+                # can be lost after a successful mutation, so writes are never
+                # repeated blindly; the caller resolves them via checksum readback.
+                if not write and attempt < attempts - 1 and error.code in (429, 502, 503, 504, 520, 522, 524):
                     retry_after = error.headers.get('Retry-After', '')
                     server_wait = int(retry_after) if retry_after.isdigit() else 0
-                    time.sleep(max(server_wait, 120 * (attempt + 1)))
+                    cooldown = 120 * (attempt + 1) if error.code == 429 else 45 * (attempt + 1)
+                    print(f"Bridge read temporarily unavailable (HTTP {error.code}); retrying safely after cooldown", flush=True)
+                    time.sleep(max(server_wait, cooldown))
                     continue
                 try:
                     payload = json.loads(error.read().decode('utf-8'))
@@ -84,7 +88,8 @@ class Bridge:
             except (TimeoutError, urllib.error.URLError, json.JSONDecodeError):
                 if write or attempt == attempts - 1:
                     raise RuntimeError(f"Bridge {data['op']} transport error") from None
-                time.sleep(2)
+                print('Bridge read transport interruption; retrying the safe read after cooldown', flush=True)
+                time.sleep(45 * (attempt + 1))
 
     def read(self, name, missing=False):
         result = self.request({'op': 'file_read', 'path': REMOTE + name}, missing=missing)
@@ -238,28 +243,26 @@ def deploy(bridge, folder):
         (folder / 'result.json').write_text(json.dumps({'ok': True, 'mode': mode, 'commit': state['commit']}))
     except Exception as deployment_error:
         print('Deployment error:', deployment_error, flush=True)
-        print('Deployment failed; restoring conflict-checked original files', flush=True)
-        if activated:
+        if not activated:
+            # Files are scoped to the new library and functions.php was not
+            # changed. An unsuccessful pre-activation deployment must not
+            # trigger more risky writes to an already unreliable origin.
+            # Next run re-reads these staged files, verifies SHA256 and resumes.
+            print('No theme activation attempted; keeping verified staged files inactive for a safe retry', flush=True)
+            raise
+        print('Activation may have started; verifying and restoring the exact original functions.php', flush=True)
+        try:
             live = bridge.read('functions.php')
             if live['sha256'] == digest(state['functions']):
                 bridge.write('functions.php', originals['functions.php']['content'], live['sha256'])
             elif live['sha256'] != originals['functions.php']['sha256']:
-                raise RuntimeError('Rollback stopped: functions.php has another editor’s changes') from None
-        rollback_conflicts = []
-        for name in reversed(uploaded):
-            original = originals[name]
-            if original:
-                live = bridge.read(name)
-                if live['sha256'] == digest(state['sources'][name]):
-                    bridge.write(name, original['content'], live['sha256'])
-                elif live['sha256'] != original['sha256']:
-                    rollback_conflicts.append(name)
-                if not rollback_conflicts and bridge.read(name)['sha256'] != original['sha256']:
-                    rollback_conflicts.append(name)
-        bridge.flush()
-        if rollback_conflicts:
-            raise RuntimeError('Rollback incomplete; concurrent changes in: ' + ', '.join(rollback_conflicts)) from None
-        print('Original activation and existing source restored; newly uploaded files remain inactive')
+                raise RuntimeError('Rollback stopped: functions.php was changed by another editor')
+            # If activation was the only live mutation, staged assets may stay:
+            # they are inert once the activation block has been removed.
+            bridge.flush()
+            print('Original functions.php restored; staged DTC assets are inactive', flush=True)
+        except Exception as rollback_error:
+            raise RuntimeError('Production activation state needs manual verification; rollback error: ' + str(rollback_error)) from deployment_error
         raise
 
 
