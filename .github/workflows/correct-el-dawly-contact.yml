@@ -1,0 +1,30 @@
+name: Correct El Dawly Zagazig Article Contact Details
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/correct-el-dawly-contact.yml'
+      - 'scripts/correct-el-dawly-contact.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: a3tal-production-theme
+  cancel-in-progress: false
+
+jobs:
+  correct-contact:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout reviewed source
+        uses: actions/checkout@v4
+      - name: Validate correction before touching WordPress
+        run: python3 -m py_compile scripts/correct-el-dawly-contact.py
+      - name: Update article 83472 and verify the published result
+        env:
+          A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+        run: python3 scripts/correct-el-dawly-contact.py
