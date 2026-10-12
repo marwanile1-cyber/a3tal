@@ -36,7 +36,7 @@ Files: data/dtc-original-batch-05.json and scripts/publish-dtc-original-batch-05
 Live preflight identified existing P0741 guide at /p0741-torque-converter-clutch-diagnosis/; this code was deliberately excluded to avoid SEO cannibalization, with P0760 selected instead.
 Explanations are written originally in Arabic, with symptoms, electrical/mechanical distinction, five diagnostic steps, repair decision, safety and FAQs. P0521 includes a high-priority engine oil pressure stop warning.
 Launch: https://github.com/marwanile1-cyber/a3tal/actions/runs/38273911204
-Status: release in progress, needs post-publish verification and catalog refresh.
+Status: completed successfully. GitHub Actions published ten new live entries (WordPress post IDs 83517–83526); all ten public details verified as index/follow. The catalog now displays 92 available explanations. Search for P0521 and U0101 returned exactly one result each, while the original P0741 guide remained indexed and searchable. Completed 2026-10-12.
 
 ## Proposed editorial queue (check the live catalog before each batch)
 
