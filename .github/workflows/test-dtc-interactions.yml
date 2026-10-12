@@ -1,0 +1,29 @@
+name: Check A3TAL DTC guest discussions and share links
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/test-dtc-interactions.yml'
+      - 'scripts/test-dtc-interactions.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: a3tal-dtc-guest-qa
+  cancel-in-progress: false
+
+jobs:
+  check-dtc-interactions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check test script syntax
+        run: python3 -m py_compile scripts/test-dtc-interactions.py
+      - name: Check anonymous comments enter WordPress moderation
+        env:
+          A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+        run: python3 scripts/test-dtc-interactions.py
