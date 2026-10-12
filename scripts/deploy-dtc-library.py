@@ -53,10 +53,10 @@ class Bridge:
         body = json.dumps(data, ensure_ascii=False).encode('utf-8')
         headers['Content-Type'] = 'application/json'
         # Reads may retry transient transport failures; mutations never replay.
-        attempts = 1 if write else 3
+        attempts = 1 if write else 5
         for attempt in range(attempts):
             # Stay below the host's request budget, including checksum reads.
-            time.sleep(max(0, 3 - (time.monotonic() - self.last_request)))
+            time.sleep(max(0, 20 - (time.monotonic() - self.last_request)))
             self.last_request = time.monotonic()
             try:
                 with urllib.request.urlopen(urllib.request.Request(url, body, headers), timeout=30 if write else 20) as response:
@@ -66,8 +66,10 @@ class Bridge:
                 return result['result']
             except urllib.error.HTTPError as error:
                 if error.code == 429 and not write and attempt < attempts - 1:
-                    print('Host read budget reached; waiting before a safe read retry', flush=True)
-                    time.sleep(45)
+                    print('Host read budget reached; respecting host cooldown before a safe read retry', flush=True)
+                    retry_after = error.headers.get('Retry-After', '')
+                    server_wait = int(retry_after) if retry_after.isdigit() else 0
+                    time.sleep(max(server_wait, 120 * (attempt + 1)))
                     continue
                 try:
                     payload = json.loads(error.read().decode('utf-8'))
