@@ -258,6 +258,8 @@ def main():
         existing += outcome == "existing"
         time.sleep(12)
     print("FINISHED: created", created, "already published", existing, flush=True)
+    if existing:
+        raise RuntimeError("Batch 10 contains an already published code; halt media pipeline and review intent instead of decorating an unrelated existing article.")
 
 
 if __name__ == "__main__":
