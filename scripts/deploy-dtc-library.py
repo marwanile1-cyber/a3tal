@@ -228,6 +228,8 @@ def verify(mode):
         archive = public_get('/dtc/')
         if mode == 'deploy':
             assert 'd-hero' in archive and 'dtc-codes' in archive, 'Archive template is not active'
+            assert 'id="global-garage"' in archive and 'gg-region-grid' in archive, 'Global garage panel missing'
+            assert 'dtc-world-garage.css' in archive and 'dtc-world-garage.js' in archive, 'Garage assets missing'
             detail = public_get('/dtc/p0172/')
             assert 'data-post-id=' in detail and 'd-detail-hero' in detail, 'Detail/discussion template missing'
             guide = public_get('/p0172-system-too-rich-bank1-diagnosis/')
