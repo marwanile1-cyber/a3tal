@@ -84,3 +84,19 @@ Run https://github.com/marwanile1-cyber/a3tal/actions/runs/38429319437 completed
 Each guide contains code-specific symptoms, realistic differential diagnosis, five diagnostic checkpoints, safety and three short FAQs. Sources are attribution for technical meanings, not copied prose.
 Five individually generated original technical illustrations uploaded as attachments 83554–83558 and confirmed as featured media through A3tal Direct Bridge. Image run: https://github.com/marwanile1-cyber/a3tal/actions/runs/38430947788.
 The global garage relationship feature provides code links from actual live vehicle records and a generic OBD-II reference hub from brand/model selections. "_a3_verified_dtc_codes" must be paired with an HTTPS "_a3_verified_dtc_source" on a vehicle record to assert a verified specific car/code relationship; otherwise never label general DTCs as known common failures of that model. The matching back-link only appears when verified. Do not add duplicate indexable model-code pages or unsupported year/engine compatibility.
+
+
+## Batch 08 | publication verified (2026-10-13)
+Published after read-only recovery from Cloudflare 522:
+- P0105: https://a3tal.com/dtc/p0105/ (83559)
+- P0140: https://a3tal.com/dtc/p0140/ (83560)
+- P0190: https://a3tal.com/dtc/p0190/ (83561)
+- P0205: https://a3tal.com/dtc/p0205/ (83562)
+- P0481: https://a3tal.com/dtc/p0481/ (83563)
+Publisher successful recovery run https://github.com/marwanile1-cyber/a3tal/actions/runs/38436725158. The status of the five featured artworks must only be marked complete after confirmed upload + post readback + OG image inspection. Image workflow source: scripts/attach-dtc-batch-08-art.py.
+
+## Batch 09 | five drafted, held until Batch 08 image success
+P0012 (VVT timing over-retarded), P0206 (injector 6 electrical), P0452 (FTP sensor low), P0506 (idle below target), P0706 (transmission range performance).
+Article sources: data/dtc-original-batch-09.json; script: scripts/publish-dtc-original-batch-09.py. Images: scripts/attach-dtc-batch-09-art.py. Dedicated prepublish validation success: https://github.com/marwanile1-cyber/a3tal/actions/runs/38437391269.
+Publishing chain gated by success: batch 08 artwork => batch 09 original articles => batch 09 artwork.
+Do not call any pending/failed workflow a successful production deployment. Do not associate generic DTCs to specific model-years without an independently verified manufacturer diagnostic reference.
