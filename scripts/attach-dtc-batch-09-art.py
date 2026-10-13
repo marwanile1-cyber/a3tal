@@ -26,6 +26,7 @@ ALT={
 "P0706":"رسم تقني أصلي لحساس وضع ناقل الحركة TRS وإشارة وضع الغيار عند كود P0706"
 }
 
+FONT="/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
 def font(size,bold=False):
     name=FONT.replace("DejaVuSans.ttf","DejaVuSans-Bold.ttf") if bold else FONT
     return ImageFont.truetype(name,size)
