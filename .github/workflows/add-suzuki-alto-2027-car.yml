@@ -1,0 +1,29 @@
+name: Add Suzuki Alto 2027 to Latest Cars
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/add-suzuki-alto-2027-car.yml'
+      - 'scripts/add-suzuki-alto-2027-car.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: a3tal-suzuki-alto-car-record
+  cancel-in-progress: false
+
+jobs:
+  add-vehicle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate car installer
+        run: python3 -m py_compile scripts/add-suzuki-alto-2027-car.py
+      - name: Create and verify connected vehicle record through A3TAL Bridge
+        run: python3 -u scripts/add-suzuki-alto-2027-car.py
