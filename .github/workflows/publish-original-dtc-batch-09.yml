@@ -23,5 +23,7 @@ jobs:
         run: |
           python3 -m py_compile scripts/publish-dtc-original-batch-09.py
           python3 scripts/publish-dtc-original-batch-09.py --dry-run
+      - name: Verify batch08 covers and OG images before releasing five more articles
+        run: python3 scripts/audit-dtc-og-images.py --batch 08
       - name: Publish five codes only when manually initiated after host health and batch08 audit
         run: python3 -u scripts/publish-dtc-original-batch-09.py
