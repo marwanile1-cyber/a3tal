@@ -15,6 +15,7 @@ spec.loader.exec_module(release)
 SOURCE = Path('theme-source/a3tal-global')
 # Write assets first; archive entrypoint last to avoid exposing a half-installed feature.
 FILES = [
+  'assets/js/dtc-brand-logos.generated.js',
   'dtc-world-garage.css',
   'assets/js/dtc-world-garage.js',
   'dtc-world-garage.php',
@@ -50,12 +51,15 @@ def prepare(api, folder):
         snapshot['sources'][name] = content
     folder.mkdir(parents=True, exist_ok=True)
     (folder / 'snapshot.json').write_text(json.dumps(snapshot, ensure_ascii=False), encoding='utf-8')
-    print('Prepared five scoped garage files; encrypted backup must be uploaded before writes', flush=True)
+    print('Prepared six scoped garage files; encrypted backup must be uploaded before writes', flush=True)
 
 def run(api, folder):
     snapshot = json.loads((folder / 'snapshot.json').read_text(encoding='utf-8'))
     if snapshot['commit'] != release.source_commit():
         raise RuntimeError('Prepared source ref changed')
+    logo_pack = snapshot['sources']['assets/js/dtc-brand-logos.generated.js']
+    if len(logo_pack) < 30000 or 'a3talGarageBrandLogos' not in logo_pack:
+        raise RuntimeError('Verified local logos bundle is missing or unexpectedly small')
     for name in FILES:
         original = snapshot['originals'][name]
         current = api.read(name, missing=original is None)
@@ -83,12 +87,12 @@ def run(api, folder):
         html = release.public_get('/dtc/')
         if 'id="global-garage"' not in html or 'id="dtc-codes"' not in html:
             raise RuntimeError('Live archive did not render both garage and DTC codes')
-        if 'dtc-world-garage.js' not in html:
-            raise RuntimeError('World garage javascript not included')
+        if 'dtc-world-garage.js' not in html or 'dtc-brand-logos.generated.js' not in html:
+            raise RuntimeError('Logo bundle or world garage javascript not included')
         print('PUBLIC QA PASSED: premium garage and existing code archive render', flush=True)
     except release.PublicCheckBlocked as exc:
         print('PUBLIC QA REQUIRES EXTERNAL CHECK: ' + str(exc), flush=True)
-    print('Finished. All five intended live file checksums were verified through bridge.', flush=True)
+    print('Finished. All six intended live file checksums were verified through bridge.', flush=True)
 
 def main():
     parser=argparse.ArgumentParser()

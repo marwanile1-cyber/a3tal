@@ -1,12 +1,11 @@
 name: Deploy A3TAL global garage (scoped)
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
     paths:
-      - '.github/workflows/deploy-dtc-world-garage.yml'
-      - 'scripts/deploy-dtc-world-garage.py'
-  workflow_dispatch:
+      - 'theme-source/a3tal-global/assets/js/dtc-brand-logos.generated.js'
 
 permissions:
   contents: read
@@ -29,6 +28,7 @@ jobs:
           php -l theme-source/a3tal-global/dtc-library-archive.php
           php -l theme-source/a3tal-global/dtc-library-support.php
           node --check theme-source/a3tal-global/assets/js/dtc-world-garage.js
+          node --check theme-source/a3tal-global/assets/js/dtc-brand-logos.generated.js
           python3 -m py_compile scripts/deploy-dtc-library.py scripts/deploy-dtc-world-garage.py
       - name: Snapshot original live files without changing site
         run: python3 scripts/deploy-dtc-world-garage.py prepare --state-dir "$RUNNER_TEMP/world-garage"

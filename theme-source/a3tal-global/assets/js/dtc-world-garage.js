@@ -88,9 +88,17 @@ function drawBrands(){
   shown.forEach(function(brand){
     var b=node('button','gg-brand'+(selected&&selected.en===brand.en?' is-selected':''));b.type='button';b.setAttribute('aria-pressed',selected&&selected.en===brand.en?'true':'false');
     var symbol=node('span','gg-logo');
-    var chars=brand.en.replace(/[^a-zA-Z0-9]/g,'').slice(0,2).toUpperCase();
-    symbol.textContent=chars;
-    if(brand.icon){var img=document.createElement('img');img.alt='';img.loading='lazy';img.decoding='async';img.width=38;img.height=38;img.src='https://cdn.simpleicons.org/'+encodeURIComponent(brand.icon)+'/d8af69';img.addEventListener('load',function(){symbol.textContent='';symbol.appendChild(img);},{once:true});}
+    var verifiedLogo=(window.a3talGarageBrandLogos||{})[brand.en];
+    if(verifiedLogo){
+      var img=document.createElement('img');
+      img.src=verifiedLogo;img.alt='شعار '+brand.ar;
+      img.width=88;img.height=62;img.loading='lazy';img.decoding='async';
+      img.onerror=function(){img.remove();symbol.classList.add('gg-logo-wordmark');symbol.textContent=brand.en;};
+      symbol.appendChild(img);
+    }else{
+      // Transparent and honest fallback: never present initials as a fake brand mark.
+      symbol.classList.add('gg-logo-wordmark');symbol.textContent=brand.en;
+    }
     var ar=node('strong','',brand.ar),en=node('small','',brand.en);b.append(symbol,ar,en);
     b.addEventListener('click',function(){selected=brand;selectedModel='';save();drawBrands();drawModels();document.getElementById('gg-models').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'nearest'});});
     brandsWrap.appendChild(b);

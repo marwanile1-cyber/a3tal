@@ -110,7 +110,13 @@ add_action('wp_enqueue_scripts', static function() {
         $gg_css = get_template_directory() . '/dtc-world-garage.css';
         $gg_js = get_template_directory() . '/assets/js/dtc-world-garage.js';
         if (is_file($gg_css)) wp_enqueue_style('a3g-global-garage', get_template_directory_uri() . '/dtc-world-garage.css', ['a3g-dtc-library'], (string)filemtime($gg_css));
-        if (is_file($gg_js)) wp_enqueue_script('a3g-global-garage', get_template_directory_uri() . '/assets/js/dtc-world-garage.js', [], (string)filemtime($gg_js), true);
+        $gg_logo_pack = get_template_directory() . '/assets/js/dtc-brand-logos.generated.js';
+        $gg_logo_dependencies = [];
+        if (is_file($gg_logo_pack)) {
+            wp_enqueue_script('a3g-global-brand-logos', get_template_directory_uri() . '/assets/js/dtc-brand-logos.generated.js', [], (string)filemtime($gg_logo_pack), true);
+            $gg_logo_dependencies = ['a3g-global-brand-logos'];
+        }
+        if (is_file($gg_js)) wp_enqueue_script('a3g-global-garage', get_template_directory_uri() . '/assets/js/dtc-world-garage.js', $gg_logo_dependencies, (string)filemtime($gg_js), true);
     }
 });
 
