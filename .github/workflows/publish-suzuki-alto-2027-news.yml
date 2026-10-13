@@ -1,0 +1,40 @@
+name: Publish Suzuki Alto 2027 Egypt news with licensed photos
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-suzuki-alto-2027-news.yml'
+      - 'scripts/publish-suzuki-alto-2027-news.py'
+      - 'data/news-suzuki-alto-2027-egypt.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: a3tal-suzuki-alto-2027-news
+  cancel-in-progress: false
+
+jobs:
+  publish-story:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate source and schema without publishing
+        run: |
+          python3 -m py_compile scripts/publish-suzuki-alto-2027-news.py
+          python3 -m json.tool data/news-suzuki-alto-2027-egypt.json > /dev/null
+          python3 - <<'PY'
+          import json
+          s=json.load(open('data/news-suzuki-alto-2027-egypt.json'))
+          assert len(s['image_files']) == 2 and all(x['license'] == 'CC BY-SA 4.0' for x in s['image_files'])
+          assert '535' in s['title'] and len(s['content']) > 6000
+          assert '{{A3TAL_ALTO_IMAGE_SIDE}}' in s['content']
+          print("Editorial content, photo credit and slug validated")
+          PY
+      - name: Publish verified report with photo credits, WebP and featured image
+        run: python3 -u scripts/publish-suzuki-alto-2027-news.py
