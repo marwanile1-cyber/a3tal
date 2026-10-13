@@ -1,0 +1,28 @@
+name: Publish five original DTC visual covers
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-dtc-original-batch-07-art.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+
+jobs:
+  images:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare rendering
+        run: python3 -m pip install -q pillow
+      - name: Attach unique original artwork to the five verified DTC guides
+        run: python3 -u scripts/attach-dtc-batch-07-art.py
