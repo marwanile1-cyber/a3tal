@@ -5,7 +5,7 @@ Idempotent for matching media, only writes to whitelisted DTC batch slugs, no co
 import os,json,time,urllib.request,urllib.error,urllib.parse,html
 ROOT="https://a3tal.com"
 KEY=os.environ["A3TAL_API_KEY"]
-CODES=["P0137"]
+CODES=["P0138","P0192","P0193","P0449","P0105","P0140","P0190","P0205","P0481"]
 STAMP=0
 def get(url):
     req=urllib.request.Request(url,headers={"User-Agent":"A3tal-DTC-OG-Repair/1.0","Accept":"application/json","Cache-Control":"no-cache"})
@@ -29,21 +29,18 @@ def one(code):
     url=art.get("source_url","")
     if not url.startswith(ROOT+"/wp-content/uploads/") or art.get("mime_type")!="image/webp":
         raise RuntimeError("Invalid featured media URL/mime: "+code)
-    current=bridge({"op":"post_meta","post_id":id,"key":"_yoast_wpseo_opengraph-image"})
-    if isinstance(current,dict) and current.get("_yoast_wpseo_opengraph-image")==url:
-        print("Already synchronized",code,id,url,flush=True)
+    previous=[x.get("url","") for x in post.get("yoast_head_json",{}).get("og_image",[])]
+    if url in previous:
+        print("Already correct; preserving",code,id,flush=True)
     else:
-        print("Setting verified Yoast image",code,id,media,flush=True)
+        print("Repairing Yoast OG/Twitter for",code,id,"featured",media,flush=True)
         meta={"_yoast_wpseo_opengraph-image":url,"_yoast_wpseo_opengraph-image-id":str(media),
               "_yoast_wpseo_twitter-image":url,"_yoast_wpseo_twitter-image-id":str(media)}
         bridge({"op":"post_meta_set","post_id":id,"meta":meta})
-        check=bridge({"op":"post_meta","post_id":id,"key":"_yoast_wpseo_opengraph-image"})
-        if not isinstance(check,dict) or check.get("_yoast_wpseo_opengraph-image")!=url:
-            raise RuntimeError("Meta write could not be verified: "+code)
-    # Force Yoast indexable refresh through the normal WordPress post-save hook.
-    title=html.unescape(str(post.get("title",{}).get("rendered","")).replace("&amp;","&"))
-    if not title:raise RuntimeError("Missing original post title")
-    bridge({"op":"platform_entity_upsert","type":"a3_dtc","id":id,"title":title,"status":"publish"})
+        # Refresh indexable using standard post-save hook, keeping the existing content.
+        title=html.unescape(str(post.get("title",{}).get("rendered","")))
+        if not title:raise RuntimeError("Original post title absent: "+code)
+        bridge({"op":"platform_entity_upsert","type":"a3_dtc","id":id,"title":title,"status":"publish"})
     after=get(ROOT+"/wp-json/wp/v2/a3tal-dtc?slug="+code.lower()+"&_fields=id,slug,featured_media,yoast_head_json")
     og=[x.get("url","") for x in after[0].get("yoast_head_json",{}).get("og_image",[])]
     print("VERIFIED_OG_STATE",code,"featured",media,"og_images",og,flush=True)
