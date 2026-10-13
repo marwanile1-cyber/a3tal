@@ -1,5 +1,9 @@
-name: Publish five original DTC guides - Batch 09 (manual)
+name: Publish five original DTC guides - Batch 09
 on:
+  workflow_run:
+    workflows:
+      - Create verified original DTC illustrations - Batch 08
+    types: [completed]
   workflow_dispatch:
 permissions:
   contents: read
@@ -8,6 +12,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   publish:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 75
     env:
