@@ -8,7 +8,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
 KEY=os.environ.get("A3TAL_API_KEY","")
 ROOT="https://a3tal.com/wp-json/a3tal-direct/v1"
-POSTS={}  # populated from verified production publish log before execution
+CODES=["P0105","P0140","P0190","P0205","P0481"]
 # The first upload succeeded before a stale/ambiguous post detail read; reuse it.
 RECOVER_UPLOAD={}
 INFO={
@@ -157,8 +157,25 @@ def api(endpoint,payload=None):
             return json.load(response)
     except urllib.error.HTTPError as err:
         raise RuntimeError("Bridge "+endpoint+" returned HTTP "+str(err.code)) from None
+def resolve_posts():
+    # Read-only public WordPress lookup, no guessing IDs and no uploading to unpublished pages.
+    resolved={}
+    for code in CODES:
+        path="https://a3tal.com/wp-json/wp/v2/a3tal-dtc?slug="+code.lower()+"&_fields=id,slug,status,link"
+        req=urllib.request.Request(path,headers={"User-Agent":"A3tal-Art-Preflight/1.0","Accept":"application/json","Cache-Control":"no-cache"})
+        try:
+            with urllib.request.urlopen(req,timeout=35) as stream:
+                entries=json.load(stream)
+        except (urllib.error.HTTPError,urllib.error.URLError,TimeoutError) as err:
+            raise RuntimeError("Cannot verify published record safely for "+code+": "+type(err).__name__) from None
+        matching=[x for x in entries if x.get("slug")==code.lower() and x.get("status")=="publish"]
+        if len(matching)!=1:raise RuntimeError("Code not exactly once published: "+code)
+        resolved[code]=int(matching[0]["id"])
+        print("VERIFIED POST",code,resolved[code],flush=True)
+    return resolved
 def main():
-    for code,post_id in POSTS.items():
+    posts=resolve_posts()
+    for code,post_id in posts.items():
         post=api("/post/"+str(post_id))
         if post["status"]!="publish" or post["slug"]!=code.lower():
             raise RuntimeError("Wrong published DTC page for "+code)
@@ -195,6 +212,4 @@ def main():
             raise RuntimeError("Featured image persisted in mutation response but post endpoint not consistent for "+code)
         print("VERIFIED COVER",code,checked["link"],"image",media_id,"bytes",len(img),flush=True)
     print("All batch 08 featured illustrations processed safely",flush=True)
-if __name__=="__main__":
-    if len(POSTS)!=5: raise RuntimeError('Live article IDs must be confirmed from batch 08 publication log before artwork upload')
-    main()
+if __name__=="__main__":main()
