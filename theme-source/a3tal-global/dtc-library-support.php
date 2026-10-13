@@ -105,6 +105,13 @@ add_filter('body_class', static function($classes) {
 add_action('wp_enqueue_scripts', static function() {
     if (!a3g_dtc_is_library()) return;
     wp_enqueue_style('a3g-dtc-library', get_template_directory_uri().'/dtc-library.css', ['a3g-style'], A3G_DTC_VERSION);
+    // The global garage only runs on the archive. Version by file modification to avoid stale cached UI.
+    if (is_post_type_archive('a3_dtc')) {
+        $gg_css = get_template_directory() . '/dtc-world-garage.css';
+        $gg_js = get_template_directory() . '/assets/js/dtc-world-garage.js';
+        if (is_file($gg_css)) wp_enqueue_style('a3g-global-garage', get_template_directory_uri() . '/dtc-world-garage.css', ['a3g-dtc-library'], (string)filemtime($gg_css));
+        if (is_file($gg_js)) wp_enqueue_script('a3g-global-garage', get_template_directory_uri() . '/assets/js/dtc-world-garage.js', [], (string)filemtime($gg_js), true);
+    }
 });
 
 // Search/filter and discussion-page variants keep the original canonical URL.
