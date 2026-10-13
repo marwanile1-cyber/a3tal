@@ -1,0 +1,22 @@
+name: Publish five original DTC guides - Batch 09 (manual)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate unique original guides
+        run: |
+          python3 -m py_compile scripts/publish-dtc-original-batch-09.py
+          python3 scripts/publish-dtc-original-batch-09.py --dry-run
+      - name: Publish five codes only when manually initiated after host health and batch08 audit
+        run: python3 -u scripts/publish-dtc-original-batch-09.py
