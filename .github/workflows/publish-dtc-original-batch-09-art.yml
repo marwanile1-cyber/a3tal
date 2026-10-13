@@ -33,5 +33,7 @@ jobs:
           PY
       - name: Verify five published canonicals then upload images through direct bridge
         run: python3 -u scripts/attach-dtc-batch-09-art.py
+      - name: Synchronize social OG and Twitter images from the verified featured attachments
+        run: python3 -u scripts/repair-dtc-og-canary.py --batch 09
       - name: Verify each featured image and og:image on public articles
         run: python3 scripts/audit-dtc-og-images.py --batch 09
