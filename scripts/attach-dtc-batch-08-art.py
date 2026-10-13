@@ -26,6 +26,7 @@ ALT={
 "P0481":"صورة تقنية توضيحية لدائرة ريلاي ومروحة تبريد المحرك الثانية للكود P0481"
 }
 
+FONT="/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
 def font(size,bold=False):
     name=FONT.replace("DejaVuSans.ttf","DejaVuSans-Bold.ttf") if bold else FONT
     return ImageFont.truetype(name,size)
