@@ -53,7 +53,17 @@ def one(code):
         # Refresh indexable using standard post-save hook, keeping the existing content.
         title=html.unescape(str(post.get("title",{}).get("rendered","")))
         if not title:raise RuntimeError("Original post title absent: "+code)
-        bridge({"op":"platform_entity_upsert","type":"a3_dtc","id":id,"title":title,"status":"publish"})
+        try:
+            bridge({"op":"platform_entity_upsert","type":"a3_dtc","id":id,"title":title,"status":"publish"})
+        except (urllib.error.HTTPError,TimeoutError,urllib.error.URLError) as err:
+            # A lost HTTP response may follow a successful save. Verify live OG,
+            # never blindly send another WordPress post-save mutation.
+            print("Ambiguous WordPress post-save:",code,type(err).__name__,"checking public OG",flush=True)
+            current=get(ROOT+"/wp-json/wp/v2/a3tal-dtc?slug="+code.lower()+"&_fields=id,slug,yoast_head_json")
+            actual=[x.get("url","") for x in current[0].get("yoast_head_json",{}).get("og_image",[])] if current else []
+            if url not in actual:
+                raise RuntimeError("Post-save unconfirmed for "+code+"; safe to re-evaluate next run") from None
+            print("Recovered Yoast update after lost HTTP response:",code,flush=True)
     after=get(ROOT+"/wp-json/wp/v2/a3tal-dtc?slug="+code.lower()+"&_fields=id,slug,featured_media,yoast_head_json")
     og=[x.get("url","") for x in after[0].get("yoast_head_json",{}).get("og_image",[])]
     print("VERIFIED_OG_STATE",code,"featured",media,"og_images",og,flush=True)
