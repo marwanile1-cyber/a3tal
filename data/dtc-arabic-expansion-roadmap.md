@@ -43,7 +43,7 @@ P0131, P0132, P0134, P0141, P0191, P0306, P0402, P0446, P0731, U0140.
 Files: data/dtc-original-batch-06.json and scripts/publish-dtc-original-batch-06.py.
 Each entry has an original Arabic meaning, system explanation, symptoms, causes, five code-specific diagnostic steps, related code distinctions, repair criteria, safety warning, and three FAQs. Source definitions cross-checked against generic DTC dictionaries and manufacturer service data. All ten live catalog exact lookups returned 0 before publication, avoiding competing legacy URLs.
 Run: https://github.com/marwanile1-cyber/a3tal/actions/runs/38416199560.
-Status: running; do not mark complete without a successful workflow and public permalink verification.
+Status: complete. GitHub Actions run succeeded; all ten detail URLs independently opened and verified as index/follow (four retried successfully after transient host 522/timeouts). The public archive displayed 102 available code explanations on 2026-10-13. U0140 exact-code search returned one result. New WordPress post IDs start at 83539 and include 83548. Older code guides preserved.
 
 ## Proposed editorial queue (check the live catalog before each batch)
 
