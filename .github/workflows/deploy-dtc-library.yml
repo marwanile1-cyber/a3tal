@@ -43,6 +43,7 @@ jobs:
         run: |
           find theme-source/a3tal-global -name '*.php' -print0 | xargs -0 -n1 php -l
           node --check theme-source/a3tal-global/assets/js/dtc-library.js
+          node --check theme-source/a3tal-global/assets/js/dtc-world-garage.js
           python3 -m py_compile scripts/deploy-dtc-library.py
       - name: Read live originals and lint composed activation
         run: python3 scripts/deploy-dtc-library.py prepare --state-dir "$RUNNER_TEMP/a3tal-dtc" --mode "$DTC_MODE"
