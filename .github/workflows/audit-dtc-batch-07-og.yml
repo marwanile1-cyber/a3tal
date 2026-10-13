@@ -1,0 +1,17 @@
+name: Audit previously published DTC featured images and Yoast OG
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/audit-dtc-batch-07-og.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read-only image, template and OG checks
+        run: python3 -u scripts/audit-dtc-og-images.py --batch 07
