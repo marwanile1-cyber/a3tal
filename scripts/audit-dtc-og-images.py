@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+"""Fail-closed, read-only WordPress check: featured art, Yoast og:image, visible article image.
+This tool never mutates WordPress.
+"""
+import argparse,json,re,time,urllib.request,urllib.error,urllib.parse
+BASE="https://a3tal.com"
+BATCHES={"08":["P0105","P0140","P0190","P0205","P0481"],
+         "09":["P0012","P0206","P0452","P0506","P0706"]}
+def read(url):
+    headers={"User-Agent":"Mozilla/5.0 (compatible; A3tal-Image-Integrity/1.0)","Accept":"application/json,text/html;q=0.9,*/*;q=0.5","Cache-Control":"no-cache"}
+    for n in range(3):
+        try:
+            with urllib.request.urlopen(urllib.request.Request(url,headers=headers),timeout=30) as res:return res.read().decode("utf-8")
+        except urllib.error.HTTPError as err:
+            if err.code not in (429,500,502,503,504,520,522,524) or n==2:raise
+        except (TimeoutError,urllib.error.URLError):
+            if n==2:raise
+        time.sleep(25*(n+1))
+def inspect(code):
+    uri=BASE+"/wp-json/wp/v2/a3tal-dtc?slug="+code.lower()+"&_fields=id,slug,featured_media,yoast_head_json"
+    body=json.loads(read(uri))
+    selected=[p for p in body if p.get("slug")==code.lower()]
+    if len(selected)!=1:raise RuntimeError("Missing or duplicate published code: "+code)
+    post=selected[0]
+    media_id=int(post.get("featured_media") or 0)
+    if not media_id:raise RuntimeError("Missing featured_media for "+code)
+    media=json.loads(read(BASE+"/wp-json/wp/v2/media/"+str(media_id)+"?_fields=id,source_url,mime_type"))
+    if not str(media.get("mime_type","")).startswith("image/"):
+        raise RuntimeError("Featured media is not an image: "+code)
+    original=media.get("source_url","")
+    if not original:raise RuntimeError("Missing featured image source URL for "+code)
+    images=post.get("yoast_head_json",{}).get("og_image",[])
+    og=[i.get("url","") for i in images if isinstance(i,dict)]
+    # Account for original vs regenerated crop variants of the same attachment.
+    artstem=original.rsplit("/",1)[-1].split(".",1)[0]
+    cleanstem=re.sub(r"-[0-9]+x[0-9]+$","",artstem)
+    if not any(cleanstem in link for link in og):
+        raise RuntimeError("og:image is not the featured art for "+code)
+    html=read(BASE+"/dtc/"+code.lower()+"/?a3tal_media_audit=1")
+    if "d-dtc-featured" not in html or ("<img" not in html and "wp-post-image" not in html):
+        raise RuntimeError("Featured illustration is not visible inside single template for "+code)
+    print("ART_AND_OG_VERIFIED",code,media_id,original,flush=True)
+def main():
+    parser=argparse.ArgumentParser()
+    parser.add_argument("--batch",required=True,choices=sorted(BATCHES))
+    args=parser.parse_args()
+    for code in BATCHES[args.batch]:
+        inspect(code)
+    print("ALL",len(BATCHES[args.batch]),"FEATURED_IMAGES_AND_OG_PASSED",args.batch,flush=True)
+if __name__=="__main__":main()
