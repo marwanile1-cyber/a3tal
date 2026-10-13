@@ -68,7 +68,7 @@ def update_editorial(postid, old, new, label):
         "seltos":["13 أكتوبر 2026","قائمة EIT"],
         "electric":["كيا EV9 2025","3,750,000","كيا EV6 2026"],
         "new_cars":["كيا K4 2027","1,859,900","1,674,900"],
-        "skoda":["أوكتافيا 2027","2,625,000","3,150,000"]
+        "skoda":["سكودا أوكتافيا A8","2,625,000","3,150,000"]
     }
     if (verified["slug"]!=current["slug"] or verified["featured_media"]!=current["featured_media"]
        or verified["status"]!=current["status"] or
@@ -78,7 +78,7 @@ def update_editorial(postid, old, new, label):
 
 def seltos_refresh(c):
     body=c["content"]
-    if MARK+"-SELTOS" in body:return body
+    if MARK+"-SELTOS" in body or ("13 أكتوبر 2026" in body and "قائمة EIT" in body):return body
     pattern=r"(آخر مراجعة للأسعار والمواصفات:\s*)10 أكتوبر 2026"
     replacement=(r"\g<1>13 أكتوبر 2026"
        " <!-- "+MARK+"-SELTOS -->"
@@ -89,7 +89,7 @@ def seltos_refresh(c):
 
 def electric_refresh(c):
     body=c["content"]
-    if MARK+"-ELECTRIC" in body:return body
+    if MARK+"-ELECTRIC" in body or ("كيا EV9 2025" in body and "3,750,000" in body):return body
     target=find_heading(body,"سيارات ديبال الكهربائية")
     if not target: raise RuntimeError("Electric guide heading not found, unsafe to insert")
     add=(
@@ -110,7 +110,7 @@ def electric_refresh(c):
 
 def cars_refresh(c):
     body=c["content"]
-    if MARK+"-GENERAL" in body:return body
+    if MARK+"-GENERAL" in body or ("كيا K4 2027" in body and "1,859,900" in body):return body
     target=find_heading(body,"أسعار سيارات 2027 من 1.5 إلى 2.5 مليون")
     if not target: raise RuntimeError("New-car guide target section not found")
     snippet=(
@@ -132,7 +132,7 @@ def cars_refresh(c):
 
 def skoda_refresh(c):
     body=c["content"]
-    if MARK+"-SKODA" in body:return body
+    if MARK+"-SKODA" in body or ("تحديث أسعار سكودا 2027" in body and "2,625,000" in body):return body
     m=re.search(r"<h2\b[^>]*>",body,re.I)
     if not m: raise RuntimeError("Skoda article has no h2")
     insert=(
