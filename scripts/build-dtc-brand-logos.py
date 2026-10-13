@@ -1,4 +1,4 @@
-"""Build verified, locally served A3TAL marque image pack from a pinned logo archive.
+"""Build verified, locally served A3TAL marque image pack from two pinned logo archives.
 Source logos remain property/trademarks of original rightsholders; identification only.
 No remote image URLs or browser-side CDN dependencies.
 """
@@ -16,9 +16,13 @@ SOURCE_COMMIT = "3f0929e70e0a9a2a502063edc4b3e5c0146cba74"
 ALIASES = {
   "Mercedes-Benz":"mercedes-benz", "DS Automobiles":"ds", "KGM":"kgm",
   "Changan Deepal":"deepal", "Maruti Suzuki":"maruti", "Xiaomi Auto":"xiaomi",
-  "Range Rover":"land-rover", "MG Rover":"rover", "BAIC":"baic",
+  "BAIC":"baic",
   "Renault Korea":"renault", "W Motors":"w-motors", "Great Wall":"great-wall",
   "SsangYong":"ssangyong", "AITO":"aito"
+}
+FALLBACK_ALIASES = {
+  "UD Trucks":"ud", "GAC":"gac-group", "Lynk & Co":"lynk-and-co",
+  "Range Rover":"range-rover", "MG Rover":"mg-rover",
 }
 def slug(text):
     v=unicodedata.normalize("NFKD",text.lower()).encode("ascii","ignore").decode()
@@ -29,6 +33,7 @@ def brands_from_source(text):
 def main():
     p=argparse.ArgumentParser()
     p.add_argument("--logo-repo",required=True,type=Path)
+    p.add_argument("--fallback-dir",type=Path)
     p.add_argument("--input",default="theme-source/a3tal-global/assets/js/dtc-world-garage.js",type=Path)
     p.add_argument("--output",default="theme-source/a3tal-global/assets/js/dtc-brand-logos.generated.js",type=Path)
     args=p.parse_args()
@@ -40,6 +45,10 @@ def main():
         for ext in (".svg",".png"):
             test=args.logo_repo/(stem+"-logo"+ext)
             if test.exists():src=test;break
+        if not src and args.fallback_dir:
+            fallback_stem=FALLBACK_ALIASES.get(name,slug(name))
+            extra=args.fallback_dir/(fallback_stem+".png")
+            if extra.exists():src=extra
         if not src:
             missing.append(name);continue
         try:
@@ -60,7 +69,7 @@ def main():
     if len(logos)<115:raise RuntimeError(f"Insufficient valid brand art: {len(logos)}. Fail closed. Errors: {errors}")
     for required in ("Kia","Hyundai","Toyota","Nissan","BMW","Mercedes-Benz","Chevrolet","Chery","BYD","Mitsubishi"):
         if required not in logos:raise RuntimeError("Missing crucial logo: "+required)
-    result=("/* A3TAL trademark identification graphics; from vehiclespecs/brand-logos pinned "+SOURCE_COMMIT+"; no affiliation. */\n"
+    result=("/* A3TAL trademark identification graphics; from vehiclespecs/brand-logos pinned "+SOURCE_COMMIT+" + car-logos-dataset pinned bb2d661f; no affiliation. */\n"
             +"window.a3talGarageBrandLogos = Object.freeze("+json.dumps(logos,ensure_ascii=False,separators=(",",":"))+");\n")
     args.output.parent.mkdir(parents=True,exist_ok=True)
     args.output.write_text(result,encoding="utf-8")
