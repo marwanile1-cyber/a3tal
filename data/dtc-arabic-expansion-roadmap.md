@@ -74,3 +74,13 @@ Specific B/C codes must be checked against make/year and manufacturer service da
 5. One canonical indexable URL per code; existing original indexed guides remain live. Code search and page variants are noindex and canonicalized to the main page.
 6. Guest discussion to WordPress moderation; optional verified external YouTube URL only.
 7. Publish in reviewed batches, with dry-run and exact slug checks and stop on API/host errors; verify public pages before announcing completion.
+
+
+## Batch 07 | five reviewed guides with exclusive featured artwork, 2026-10-13
+P0137, P0138, P0192, P0193, P0449.
+Original text: data/dtc-original-batch-07.json; publisher: scripts/publish-dtc-original-batch-07.py.
+Live article IDs: 83549–83553, canonical slugs /dtc/p0137/, /dtc/p0138/, /dtc/p0192/, /dtc/p0193/, /dtc/p0449/.
+Run https://github.com/marwanile1-cyber/a3tal/actions/runs/38429319437 completed successfully with five new posts, no duplicates.
+Each guide contains code-specific symptoms, realistic differential diagnosis, five diagnostic checkpoints, safety and three short FAQs. Sources are attribution for technical meanings, not copied prose.
+Five individually generated original technical illustrations uploaded as attachments 83554–83558 and confirmed as featured media through A3tal Direct Bridge. Image run: https://github.com/marwanile1-cyber/a3tal/actions/runs/38430947788.
+The global garage relationship feature provides code links from actual live vehicle records and a generic OBD-II reference hub from brand/model selections. "_a3_verified_dtc_codes" must be paired with an HTTPS "_a3_verified_dtc_source" on a vehicle record to assert a verified specific car/code relationship; otherwise never label general DTCs as known common failures of that model. The matching back-link only appears when verified. Do not add duplicate indexable model-code pages or unsupported year/engine compatibility.
