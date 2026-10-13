@@ -100,3 +100,12 @@ P0012 (VVT timing over-retarded), P0206 (injector 6 electrical), P0452 (FTP sens
 Article sources: data/dtc-original-batch-09.json; script: scripts/publish-dtc-original-batch-09.py. Images: scripts/attach-dtc-batch-09-art.py. Dedicated prepublish validation success: https://github.com/marwanile1-cyber/a3tal/actions/runs/38437391269.
 Publishing chain gated by success: batch 08 artwork => batch 09 original articles => batch 09 artwork.
 Do not call any pending/failed workflow a successful production deployment. Do not associate generic DTCs to specific model-years without an independently verified manufacturer diagnostic reference.
+
+
+## Production update 2026-10-13, after publication of batch 09
+- Batch 07: P0137 P0138 P0192 P0193 P0449, five published, original WebP attached, og:image matches individual featured image (verified via GitHub action #38439638921).
+- Batch 08: P0105 P0140 P0190 P0205 P0481, five published with original art and matched og:image (action #38439638921).
+- Batch 09: P0012 P0206 P0452 P0506 P0706, five original posts published successfully (action #38440241260, post IDs 83578..83582).
+- Batch 09 original art was uploaded, assigned and validated on the post metadata, and Yoast OG verified; the first media pipeline failed only at HTML image display because the live custom template previously limited image display to batch07/08. Theme change to accept all reviewed five-guide batches committed; deployment in progress. On successful scoped theme deployment a safe idempotent batch09 media/OG/display verification workflow retries and must pass before batch10.
+- Batch 10 correctly gap-audited against FIXED_EXISTING, replacing the originally considered P0011 P0335 P0340 P0507 P0562 because these were already published. New five: P0017 P0116 P0139 P0234 P0453. Original text in data/dtc-original-batch-10.json. Review + image generation validation passed in action #38442331688. Publish will only follow full success of batch09 artwork+OG HTML audit; all five new codes still subject to live catalog duplicate preflight.
+- No manufacturer/year/engine-specific fault associations to be invented from generic OBD explanations; those require references for each link.
