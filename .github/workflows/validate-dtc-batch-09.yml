@@ -1,0 +1,37 @@
+name: Validate original DTC batch 09 content and artwork
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/validate-dtc-batch-09.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Render original guides and reject duplicate codes
+        run: |
+          python3 -m py_compile scripts/publish-dtc-original-batch-09.py scripts/attach-dtc-batch-09-art.py
+          python3 scripts/publish-dtc-original-batch-09.py --dry-run
+      - name: Install image renderer
+        run: python3 -m pip install --quiet pillow
+      - name: Draw and validate all 5 exclusive original WebP images offline
+        run: |
+          python3 - <<'PY'
+          import runpy
+          from PIL import Image
+          from io import BytesIO
+          n=runpy.run_path('scripts/attach-dtc-batch-09-art.py')
+          assert len(n['CODES'])==5
+          for code in n['CODES']:
+              raw=n['image_for'](code)
+              im=Image.open(BytesIO(raw))
+              assert im.size==(1200,800), (code,im.size)
+              assert im.format=='WEBP'
+              assert 10000 < len(raw) < 450000, (code,len(raw))
+              print('ART VERIFIED',code,im.size,'bytes',len(raw))
+          PY
