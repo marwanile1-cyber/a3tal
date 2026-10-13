@@ -133,7 +133,7 @@ def cars_refresh(c):
 def skoda_refresh(c):
     body=c["content"]
     if MARK+"-SKODA" in body:return body
-    m=re.search(r"<h2\\b[^>]*>",body,re.I)
+    m=re.search(r"<h2\b[^>]*>",body,re.I)
     if not m: raise RuntimeError("Skoda article has no h2")
     insert=(
       "\n<!-- "+MARK+"-SKODA -->\n"
