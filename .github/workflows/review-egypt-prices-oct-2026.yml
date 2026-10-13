@@ -1,0 +1,24 @@
+name: Review Egypt Car Prices - October 2026
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/review-egypt-prices-oct-2026.py'
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-theme
+  cancel-in-progress: false
+jobs:
+  review-prices:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check script
+        run: python3 -m py_compile scripts/review-egypt-prices-oct-2026.py
+      - name: Audit and guarded editorial update
+        env:
+          A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+          PRICE_APPLY: "0"
+        run: python3 -u scripts/review-egypt-prices-oct-2026.py
