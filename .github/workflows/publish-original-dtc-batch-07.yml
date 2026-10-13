@@ -1,0 +1,26 @@
+name: Publish five reviewed original DTC guides - Batch 07
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate unique editorial guides
+        run: |
+          python3 -m py_compile scripts/publish-dtc-original-batch-07.py
+          python3 scripts/publish-dtc-original-batch-07.py --dry-run
+      - name: Publish through Direct Bridge (duplicate checks first)
+        run: python3 -u scripts/publish-dtc-original-batch-07.py
