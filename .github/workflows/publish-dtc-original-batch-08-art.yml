@@ -5,6 +5,10 @@ on:
       - Publish five reviewed original DTC guides - Batch 08
     types: [completed]
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-dtc-original-batch-08-art.yml'
 permissions:
   contents: read
 concurrency:
@@ -21,5 +25,15 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install Pillow for original artwork
         run: python3 -m pip install -q pillow
+      - name: Preflight all five original image renderers without network or WordPress writes
+        run: |
+          python3 - <<'PY'
+          import runpy
+          n=runpy.run_path('scripts/attach-dtc-batch-08-art.py')
+          for code in n['CODES']:
+              img=n['image_for'](code)
+              assert 10000 < len(img) < 450000, (code,len(img))
+              print('RENDER OK',code,len(img))
+          PY
       - name: Verify every DTC canonical and upload original WebP covers
         run: python3 -u scripts/attach-dtc-batch-08-art.py
