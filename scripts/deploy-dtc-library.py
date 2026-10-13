@@ -23,6 +23,7 @@ FILES = [
     'dtc-library.css', 'assets/js/dtc-library.js', 'header-dtc.php',
     'footer-dtc.php', 'dtc-library-archive.php', 'dtc-library-single.php',
     'dtc-discussions.php', 'dtc-library-support.php',
+    'dtc-world-garage.php', 'dtc-world-garage.css', 'assets/js/dtc-world-garage.js',
 ]
 BLOCK = """/* A3TAL-DTC-LIBRARY:START */
 if (is_file(get_template_directory() . '/dtc-library-support.php')) {
