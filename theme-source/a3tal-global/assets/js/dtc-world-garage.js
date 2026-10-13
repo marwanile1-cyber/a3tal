@@ -123,9 +123,9 @@ function selectVehicleRecord(brand,model){
 function drawDiagnostics(){
   var panel=document.getElementById('gg-diagnostics');if(!panel)return;
   var grid=document.getElementById('gg-diagnostics-grid');grid.replaceChildren();
-  if(!selected||!selectedModel){panel.hidden=true;return;}
+  if(!selected){panel.hidden=true;return;}
   panel.hidden=false;
-  var car=selectVehicleRecord(selected,selectedModel);
+  var car=selectedModel?selectVehicleRecord(selected,selectedModel):null;
   var verified=car&&Array.isArray(car.verified_codes)?car.verified_codes:[];
   var guides=Array.isArray(ggData.guides)?ggData.guides:[];
   var generic=guides.filter(function(x){return /^P[0-9][0-9A-F]{3}$/.test(x.code);});
@@ -133,7 +133,7 @@ function drawDiagnostics(){
   verified.forEach(function(code){var found=guides.find(function(item){return item.code===code;});if(found)rows.push({data:found,verified:true});});
   generic.slice(-12).reverse().forEach(function(data){if(!rows.some(function(x){return x.data.code===data.code;}))rows.push({data:data,verified:false});});
   var d=document.getElementById('gg-diagnostics-description');
-  d.textContent=verified.length?'توجد روابط فنية خاصة بهذا الموديل في القسم الأول. باقي الأكواد شروحات عامة وليس تشخيصًا لحالة عربيتك.':'أدلة أكواد OBD العامة لتبدأ منها بعد قراءة كود عربيتك. لم نتحقق بعد من أعطال خاصة لهذا الجيل والمحرك.';
+  d.textContent=verified.length?'توجد روابط فنية خاصة بهذا الموديل في القسم الأول. باقي الأكواد شروحات عامة وليس تشخيصًا لحالة عربيتك.':(selectedModel?'أدلة أكواد OBD العامة لتبدأ منها بعد قراءة كود عربيتك. لم نتحقق بعد من أعطال خاصة لهذا الجيل والمحرك.':'ابدأ بشروحات الأكواد العامة المتاحة لهذه الفئة من السيارات المزودة بنظام OBD-II. اختَر موديلًا عندما تتوفر بياناته، ولا تعتبر الكود عطلًا شائعًا لهذه الماركة.');
   if(car){var anchor=document.getElementById('gg-search-model');anchor.href=car.url;anchor.textContent='صفحة السيارة الموجودة على أعطال ←';}
   if(!rows.length){grid.appendChild(node('div','gg-placeholder','الأدلة قيد الإضافة. استخدم البحث بكود العطل في المكتبة.'));return;}
   rows.slice(0,15).forEach(function(row){var a=node('a','gg-diagnostic-card');a.href=row.data.url;a.append(node('b','',row.data.code),node('span','',row.data.title),node('small','',row.verified?'مطابق بمصدر فني':'شرح كود عام'));grid.appendChild(a);});
