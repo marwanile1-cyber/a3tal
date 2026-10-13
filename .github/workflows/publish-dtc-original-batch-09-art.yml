@@ -3,6 +3,7 @@ on:
   workflow_run:
     workflows:
       - Publish five original DTC guides - Batch 09
+      - Deploy A3TAL global garage (scoped)
     types: [completed]
   workflow_dispatch:
 permissions:
