@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - 'theme-source/a3tal-global/assets/js/dtc-brand-logos.generated.js'
+      - 'theme-source/a3tal-global/dtc-world-garage.css'
 
 permissions:
   contents: read
