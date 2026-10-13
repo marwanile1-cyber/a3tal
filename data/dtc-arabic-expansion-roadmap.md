@@ -38,6 +38,13 @@ Explanations are written originally in Arabic, with symptoms, electrical/mechani
 Launch: https://github.com/marwanile1-cyber/a3tal/actions/runs/38273911204
 Status: completed successfully. GitHub Actions published ten new live entries (WordPress post IDs 83517–83526); all ten public details verified as index/follow. The catalog now displays 92 available explanations. Search for P0521 and U0101 returned exactly one result each, while the original P0741 guide remained indexed and searchable. Completed 2026-10-12.
 
+## Batch 06 | 10 original diagnostics, 2026-10-13
+P0131, P0132, P0134, P0141, P0191, P0306, P0402, P0446, P0731, U0140.
+Files: data/dtc-original-batch-06.json and scripts/publish-dtc-original-batch-06.py.
+Each entry has an original Arabic meaning, system explanation, symptoms, causes, five code-specific diagnostic steps, related code distinctions, repair criteria, safety warning, and three FAQs. Source definitions cross-checked against generic DTC dictionaries and manufacturer service data. All ten live catalog exact lookups returned 0 before publication, avoiding competing legacy URLs.
+Run: https://github.com/marwanile1-cyber/a3tal/actions/runs/38416199560.
+Status: running; do not mark complete without a successful workflow and public permalink verification.
+
 ## Proposed editorial queue (check the live catalog before each batch)
 
 ### Air measurement and fuel
