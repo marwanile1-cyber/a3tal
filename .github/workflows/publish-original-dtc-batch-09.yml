@@ -3,6 +3,7 @@ on:
   workflow_run:
     workflows:
       - Create verified original DTC illustrations - Batch 08
+      - Repair OG images for original DTC batches 07 and 08
     types: [completed]
   workflow_dispatch:
 permissions:
