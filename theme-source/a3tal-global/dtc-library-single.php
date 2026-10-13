@@ -64,7 +64,7 @@ while (have_posts()): the_post();
     <div class="d-detail-copy"><p class="d-eyebrow">افهم الكود. رتّب الفحص.</p><h1><?php echo esc_html($dtc_title); ?></h1><?php if ($dtc_excerpt): ?><p class="d-detail-excerpt"><?php echo esc_html($dtc_excerpt); ?></p><?php endif; ?><div class="d-detail-meta"><?php if ($dtc_system): ?><span><?php echo esc_html($dtc_system); ?></span><?php endif; ?><?php if (isset($dtc_scope_labels[$dtc_scope])): ?><span><?php echo esc_html($dtc_scope_labels[$dtc_scope]); ?></span><?php endif; ?><?php if ($dtc_manufacturer): ?><span><?php echo esc_html($dtc_manufacturer); ?></span><?php endif; ?><a href="#dtc-discussion">الأسئلة والتجارب <span aria-hidden="true">↓</span></a></div></div>
     <?php if ($dtc_code): ?><b class="d-detail-code" dir="ltr"><?php echo esc_html($dtc_code); ?></b><?php endif; ?>
   </header>
-  <?php if (has_post_thumbnail($dtc_id) && str_starts_with((string)get_post_meta($dtc_id, '_a3_dtc_batch', true), 'A3TAL-DTC-2026-10-13-07')): ?>
+  <?php if (has_post_thumbnail($dtc_id) && (bool)preg_match('/^A3TAL-DTC-2026-10-13-(07|08)-5$/', (string)get_post_meta($dtc_id, '_a3_dtc_batch', true))): ?>
   <figure class="d-dtc-featured" aria-label="رسم توضيحي لمكونات النظام">
     <?php echo get_the_post_thumbnail($dtc_id, 'large', ['loading'=>'eager','decoding'=>'async','fetchpriority'=>'high']); ?>
     <figcaption>صورة تشخيصية توضيحية من تصميم أعطال.كوم، وليست مخطط توصيلات خاصًا بموديل معين.</figcaption>
