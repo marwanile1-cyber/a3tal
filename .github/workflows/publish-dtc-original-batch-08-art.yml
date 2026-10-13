@@ -1,0 +1,25 @@
+name: Create verified original DTC illustrations - Batch 08
+on:
+  workflow_run:
+    workflows:
+      - Publish five reviewed original DTC guides - Batch 08
+    types: [completed]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-media
+  cancel-in-progress: false
+jobs:
+  draw-and-upload:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Pillow for original artwork
+        run: python3 -m pip install -q pillow
+      - name: Verify every DTC canonical and upload original WebP covers
+        run: python3 -u scripts/attach-dtc-batch-08-art.py
