@@ -21,6 +21,8 @@ FILES = [
   'dtc-world-garage.php',
   'dtc-library-support.php',
   'dtc-library-archive.php',
+  'dtc-model-links.php',
+  'dtc-model-links.css',
 ]
 
 def sha(content):

@@ -1,0 +1,18 @@
+
+/* Vehicle ↔ diagnostic knowledge links. Two distinct relevance levels. */
+.gg-related,.gg-dtc-cars{direction:rtl;text-align:right;color:#1e293b;background:#fff;border:1px solid #dbe3ec;border-radius:18px;padding:clamp(18px,3vw,30px);margin:22px 0;box-shadow:0 6px 22px rgba(18,32,50,.05)}
+.gg-related-eyebrow{display:block;font-size:11px;font-weight:800;letter-spacing:.11em;color:#895b24}
+.gg-related h2,.gg-dtc-cars h2{font-size:clamp(20px,2vw,27px);font-weight:800;color:#16253a;margin:9px 0 10px}
+.gg-related h3{font-size:17px;font-weight:800;color:#283a50;margin:25px 0 13px}
+.gg-related p,.gg-dtc-cars p{font-size:14px;line-height:1.9;color:#43536b}
+.gg-related-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:14px 0}
+.gg-related-grid>a{display:flex;flex-direction:column;gap:6px;min-width:0;text-decoration:none!important;background:#f7f9fb;border:1px solid #dde5ec;border-radius:12px;padding:13px 15px;color:#1c3047!important}
+.gg-related-grid>a:hover,.gg-related-grid>a:focus-visible{border-color:#b98a47;background:#fff8ee}
+.gg-related-grid b{display:block;color:#85551b;font:800 20px/1.4 ui-monospace,Consolas,monospace}
+.gg-related-grid span{font-size:12px;line-height:1.6}
+.gg-related-note{background:#f9f5ed;border-inline-start:3px solid #bf924d;padding:12px 14px;border-radius:6px}
+.gg-related-all{display:inline-flex;margin-top:18px;background:#85551b!important;color:#fff!important;text-decoration:none!important;padding:10px 16px;border-radius:10px;font-weight:750;font-size:13px}
+.gg-related-source a{color:#85551b!important}
+.gg-dtc-cars ul{padding-inline-start:20px}.gg-dtc-cars li{margin:9px 0}
+@media(max-width:850px){.gg-related-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.gg-related-grid{grid-template-columns:1fr}.gg-related{padding:17px}.gg-related-grid>a{min-height:74px}}

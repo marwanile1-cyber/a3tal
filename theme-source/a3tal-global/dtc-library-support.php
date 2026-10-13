@@ -3,6 +3,9 @@
 if (!defined('ABSPATH')) exit;
 
 define('A3G_DTC_VERSION', '1.0.0');
+if (is_file(get_template_directory() . '/dtc-model-links.php')) {
+    require_once get_template_directory() . '/dtc-model-links.php';
+}
 
 function a3g_dtc_codes_in_title($post_id) {
     $post = get_post((int)$post_id);

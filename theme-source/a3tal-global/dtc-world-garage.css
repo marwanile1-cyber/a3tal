@@ -245,3 +245,11 @@ body.a3g-dtc-library:has(#global-garage) .d-footer .d-footer-brand {
     gap: 12px;
   }
 }
+
+
+.gg-diagnostics[hidden]{display:none}.gg-diagnostics{margin:28px 0 5px;background:linear-gradient(135deg,#141b24,#202029);padding:23px;border-radius:17px;border:1px solid #aa8145}
+.gg-diagnostics-header{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:16px}.gg-diagnostics-header a{font-size:12px;color:#f3c987}
+.gg-diagnostics-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+.gg-diagnostic-card{min-width:0;display:flex;flex-direction:column;gap:5px;background:#f9fafb;border-radius:12px;border:1px solid #cfdae6;padding:13px;color:#24344a;text-decoration:none!important}
+.gg-diagnostic-card b{color:#88591f;font:800 20px/1.35 monospace}.gg-diagnostic-card span{font-size:12px;line-height:1.65;color:#203147}.gg-diagnostic-card small{font-size:11px;color:#526177}.gg-diagnostic-card:hover{border-color:#c79650;background:#fff6e9}
+@media(max-width:720px){.gg-diagnostics-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:470px){.gg-diagnostics-grid{grid-template-columns:1fr}.gg-diagnostics-header{align-items:flex-start}}

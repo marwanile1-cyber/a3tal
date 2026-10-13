@@ -41,6 +41,10 @@ $garage_cars_url = get_post_type_archive_link('a3_car') ?: home_url('/');
         <div><span class="gg-kicker">السيارة المختارة</span><strong id="gg-selected-name"></strong><p>اختَر سنة الصنع والمحرك داخل دليل السيارة عند توفره؛ اختلاف الجيل والمحرك يغيّر خطوات الفحص.</p></div>
         <div class="gg-selected-actions"><a id="gg-search-model" href="<?php echo esc_url($garage_cars_url); ?>">ابحث عن أدلة هذه السيارة ←</a><a href="<?php echo esc_url($garage_dtc_url . '#dtc-codes'); ?>">دليل أكواد الأعطال ↗</a></div>
       </div>
+      <div class="gg-diagnostics" id="gg-diagnostics" hidden aria-live="polite">
+        <div class="gg-diagnostics-header"><div><span class="gg-step">DIAGNOSTICS / التشخيص</span><h3>شروحات الأكواد المتاحة</h3><p id="gg-diagnostics-description">هذه أكواد عامة منشورة؛ لا نعتبرها أعطالاً مؤكدة للموديل المختار.</p></div><a href="<?php echo esc_url($garage_dtc_url); ?>">كل الأكواد ←</a></div>
+        <div class="gg-diagnostics-grid" id="gg-diagnostics-grid"></div>
+      </div>
       <p class="gg-coverage-note">هذه واجهة تصفح أولية قابلة للتوسع. ظهور الماركة أو الموديل لا يعني وجود دليل عطل خاص به بعد. تفاصيل الأعطال تُربط بالمراجع الفنية عند مراجعتها، دون تكرار محتوى الأكواد العامة.</p>
     </div>
   </div>

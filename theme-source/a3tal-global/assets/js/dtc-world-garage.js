@@ -109,8 +109,37 @@ function drawBrands(){
   counter.textContent=matches.length+' ماركة في هذا العرض';
   empty.hidden=matches.length>0;
 }
+var ggData={cars:[],guides:[]};
+try{var rawGG=document.getElementById('a3tal-gg-data');if(rawGG)ggData=JSON.parse(rawGG.textContent);}catch(e){}
+function selectVehicleRecord(brand,model){
+  var nBrand=normalize(brand.en),nAr=normalize(brand.ar),nModel=normalize(model);
+  if(!nModel)return null;
+  return (ggData.cars||[]).find(function(car){
+    var title=normalize(car.title),carBrand=normalize(car.brand);
+    var compatibleBrand=carBrand===nBrand||carBrand===nAr||title.includes(nBrand)||title.includes(nAr);
+    return compatibleBrand&&title.includes(nModel);
+  })||null;
+}
+function drawDiagnostics(){
+  var panel=document.getElementById('gg-diagnostics');if(!panel)return;
+  var grid=document.getElementById('gg-diagnostics-grid');grid.replaceChildren();
+  if(!selected||!selectedModel){panel.hidden=true;return;}
+  panel.hidden=false;
+  var car=selectVehicleRecord(selected,selectedModel);
+  var verified=car&&Array.isArray(car.verified_codes)?car.verified_codes:[];
+  var guides=Array.isArray(ggData.guides)?ggData.guides:[];
+  var generic=guides.filter(function(x){return /^P[0-9][0-9A-F]{3}$/.test(x.code);});
+  var rows=[];
+  verified.forEach(function(code){var found=guides.find(function(item){return item.code===code;});if(found)rows.push({data:found,verified:true});});
+  generic.slice(-12).reverse().forEach(function(data){if(!rows.some(function(x){return x.data.code===data.code;}))rows.push({data:data,verified:false});});
+  var d=document.getElementById('gg-diagnostics-description');
+  d.textContent=verified.length?'توجد روابط فنية خاصة بهذا الموديل في القسم الأول. باقي الأكواد شروحات عامة وليس تشخيصًا لحالة عربيتك.':'أدلة أكواد OBD العامة لتبدأ منها بعد قراءة كود عربيتك. لم نتحقق بعد من أعطال خاصة لهذا الجيل والمحرك.';
+  if(car){var anchor=document.getElementById('gg-search-model');anchor.href=car.url;anchor.textContent='صفحة السيارة الموجودة على أعطال ←';}
+  if(!rows.length){grid.appendChild(node('div','gg-placeholder','الأدلة قيد الإضافة. استخدم البحث بكود العطل في المكتبة.'));return;}
+  rows.slice(0,15).forEach(function(row){var a=node('a','gg-diagnostic-card');a.href=row.data.url;a.append(node('b','',row.data.code),node('span','',row.data.title),node('small','',row.verified?'مطابق بمصدر فني':'شرح كود عام'));grid.appendChild(a);});
+}
 function drawModels(){
-  modelsWrap.replaceChildren();var selectedBox=document.getElementById('gg-selected');selectedBox.hidden=true;
+  modelsWrap.replaceChildren();drawDiagnostics();var selectedBox=document.getElementById('gg-selected');selectedBox.hidden=true;
   if(!selected){desc.textContent='اختَر الماركة أولاً لعرض موديلاتها المتاحة.';modelsWrap.appendChild(node('div','gg-placeholder','اختَر ماركة من البطاقات بالأعلى.'));return;}
   var data=models[selected.en]||'';
   desc.textContent=selected.ar+' · '+(data?'موديلات استرشادية متاحة للتصفح':'جارٍ استكمال بيانات الموديلات الموثقة');
@@ -125,6 +154,7 @@ function drawModels(){
   selectedBox.hidden=false;
   document.getElementById('gg-selected-name').textContent=selected.ar+(selectedModel?' · '+selectedModel:'');
   document.getElementById('gg-search-model').href='/?s='+encodeURIComponent(selected.en+(selectedModel?' '+selectedModel:''));
+  drawDiagnostics();
 }
 root.querySelectorAll('[data-origin]').forEach(function(b){b.addEventListener('click',function(){search.value='';setOrigin(b.dataset.origin);});});
 root.querySelector('[data-gg-reset]').addEventListener('click',function(){search.value='';setOrigin('all');save();});
