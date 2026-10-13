@@ -1,0 +1,22 @@
+name: Repair specific DTC Yoast featured OG image (canary)
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/repair-dtc-og-canary.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  canary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify real image then repair and read back only P0137 Yoast metadata
+        run: python3 -u scripts/repair-dtc-og-canary.py
