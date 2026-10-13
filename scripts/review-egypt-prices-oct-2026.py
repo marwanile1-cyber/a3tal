@@ -59,11 +59,21 @@ def update_editorial(postid, old, new, label):
     current=get(BRIDGE+"/post/"+str(postid))
     if current["content"]!=old: raise RuntimeError("Conflict: article changed since preflight: "+label)
     result=post("/update-post",{"id":postid,"content":new})
-    if result["id"]!=postid or result["content"]!=new:
-        raise RuntimeError("Edit acknowledgment does not match: "+label)
+    if result["id"]!=postid:
+        raise RuntimeError("Edit acknowledgment missing: "+label)
     verified=get(BRIDGE+"/post/"+str(postid))
-    if verified["content"]!=new or verified["slug"]!=current["slug"] or verified["featured_media"]!=current["featured_media"]:
-        raise RuntimeError("Post/content/slug/image verification failed for "+label)
+    # WordPress applies wp_kses_post and can strip inline style attributes.
+    # Check distinctive saved facts rather than demanding byte-identical HTML.
+    checks={
+        "seltos":["13 أكتوبر 2026","قائمة EIT"],
+        "electric":["كيا EV9 2025","3,750,000","كيا EV6 2026"],
+        "new_cars":["كيا K4 2027","1,859,900","1,674,900"],
+        "skoda":["أوكتافيا 2027","2,625,000","3,150,000"]
+    }
+    if (verified["slug"]!=current["slug"] or verified["featured_media"]!=current["featured_media"]
+       or verified["status"]!=current["status"] or
+       not all(token in verified["content"] for token in checks[label])):
+        raise RuntimeError("Post data verification failed for "+label)
     print("UPDATED VERIFIED",label,verified["link"],flush=True)
 
 def seltos_refresh(c):
@@ -123,18 +133,28 @@ def cars_refresh(c):
 def skoda_refresh(c):
     body=c["content"]
     if MARK+"-SKODA" in body:return body
-    m=re.search(r"<h2\b[^>]*>",body,re.I)
+    m=re.search(r"<h2\\b[^>]*>",body,re.I)
     if not m: raise RuntimeError("Skoda article has no h2")
     insert=(
       "\n<!-- "+MARK+"-SKODA -->\n"
-      '<p><strong>تحديث مستقل بتاريخ 13 أكتوبر 2026 لسكودا كودياك موديل 2027:</strong> '
-      'سجلت فئة Suite سعر 3,000,000 جنيه، وفئة Sportline سعر 3,150,000 جنيه، '
-      'بزيادة 50 ألف جنيه لكل منهما وفق سجل تغيرات الأسعار. '
-      'جدول كودياك 2026 الموجود أدناه يعكس قائمة سنة موديل أقدم، '
-      'ولا ينبغي استخدامه كسعر رسمي لموديل 2027.</p>'
-      '<p><small>مصدر تحرك الأسعار: '
-      '<a href="https://eg.hatla2ee.com/ar/new-car/price-change">هتلاقي، حركة أسعار السيارات الجديدة بتاريخ 13 أكتوبر 2026</a>. '
-      'الفئات الأخرى تحتاج قائمة وكيل بتاريخ مماثل قبل تعديل أرقامها.</small></p>\n'
+      '<h2>تحديث أسعار سكودا 2027 في مصر بتاريخ 13 أكتوبر 2026</h2>'
+      '<p>صدرت قائمة أسعار موديلات سكودا 2027 في مصر خلال أكتوبر 2026. '
+      'أسعار سنة الموديل 2027 أدناه منفصلة عن جدول موديل 2026 الموجود في الدليل.</p>'
+      '<div style="overflow-x:auto"><table><thead><tr><th>الطراز 2027</th><th>الفئة</th><th>السعر الرسمي بالجنيه</th></tr></thead><tbody>'
+      '<tr><td>سكودا أوكتافيا A8</td><td>Loft</td><td>1,825,000</td></tr>'
+      '<tr><td>سكودا أوكتافيا A8</td><td>Lounge</td><td>2,050,000</td></tr>'
+      '<tr><td>سكودا أوكتافيا A8</td><td>Suite</td><td>2,250,000</td></tr>'
+      '<tr><td>سكودا كودياك</td><td>Loft</td><td>2,625,000</td></tr>'
+      '<tr><td>سكودا كودياك</td><td>Suite</td><td>3,000,000</td></tr>'
+      '<tr><td>سكودا كودياك</td><td>Sportline</td><td>3,150,000</td></tr>'
+      '</tbody></table></div>'
+      '<p>وفق سجل تحركات السوق المؤرخ 13 أكتوبر، بلغت زيادات أوكتافيا 25 إلى 100 ألف جنيه '
+      'بحسب الفئة مقارنة بالقائمة السابقة لموديل 2027، وزادت كودياك بمقدار 25 إلى 50 ألف جنيه. '
+      'جدول موديل 2026 الأصلي في أسفل الصفحة لا يُستخدم باعتباره سعرًا لموديل 2027.</p>'
+      '<p><small>المراجع: '
+      '<a href="https://eg.hatla2ee.com/ar/new-car/price-change/skoda">هتلاقي: حركة أسعار سكودا</a>، '
+      '<a href="https://www.shift-eg.com/news/local-news/details/27055/">تقرير الوكيل عن سكودا أوكتافيا 2027</a>. '
+      'آخر مراجعة للأسعار: 13 أكتوبر 2026.</small></p>\n'
     )
     return body[:m.start()]+insert+body[m.start():]
 
@@ -175,9 +195,20 @@ def main():
         update_editorial(POSTS[label],old,new,label)
         time.sleep(4)
     if oldyear.get("result",{}).get("_a3_year")=="2026" or "2026" in seltos_car["name"]:
+        live_car=get(BRIDGE+"/post/83434")
+        if live_car["slug"]!="kia-seltos-egypt-2026" or live_car["featured_media"]!=83433:
+            raise RuntimeError("Unexpected Seltos original slug/photo: do not modify")
+        if "10 أكتوبر 2026" not in live_car["content"]:
+            raise RuntimeError("Unexpected Seltos content date; check manually")
+        fixed_content=live_car["content"].replace(
+            "وفق موقع كيا الرسمي بتاريخ 10 أكتوبر 2026",
+            "وفق قائمة أسعار EIT السارية من 13 أكتوبر 2026 لموديل 2027"
+        )
+        if fixed_content==live_car["content"]:
+            raise RuntimeError("Old Seltos attribution not found; avoid stale source")
         payload={
           "op":"platform_entity_upsert","type":"a3_car","id":83434,
-          "title":"Kia Seltos 2027","status":"publish",
+          "title":"Kia Seltos 2027","status":"publish","content":fixed_content,
           "excerpt":"كيا سيلتوس موديل 2027 في مصر: EX بسعر 1,369,900 جنيه، Highline Turbo بسعر 1,524,900 جنيه، Topline Turbo بسعر 1,674,900 جنيه وفق قائمة 13 أكتوبر 2026.",
           "meta":{"_a3_year":"2027","_a3_source_checked_at":"2026-10-13"}
         }
@@ -186,7 +217,12 @@ def main():
             raise RuntimeError("Seltos car bridge confirmation missing")
         fresh=get(BASE+"/wp-json/wp/v2/a3tal-cars?slug=kia-seltos-egypt-2026&_fields=id,slug,title,link",protected=False)
         year=get(BRIDGE+"/admin?"+urlencode({"op":"post_meta","post_id":83434,"key":"_a3_year"}))
-        if len(fresh)!=1 or fresh[0]["title"]["rendered"]!="Kia Seltos 2027" or year.get("result",{}).get("_a3_year")!="2027":
+        updated_car=get(BRIDGE+"/post/83434")
+        if (len(fresh)!=1 or fresh[0]["title"]["rendered"]!="Kia Seltos 2027"
+           or year.get("result",{}).get("_a3_year")!="2027"
+           or "EIT السارية من 13 أكتوبر 2026" not in updated_car["content"]
+           or updated_car["slug"]!=live_car["slug"]
+           or updated_car["featured_media"]!=live_car["featured_media"]):
             raise RuntimeError("Seltos public year/title verification failed")
         print("CAR VERIFIED 2027",fresh[0]["link"],flush=True)
     print("SUCCESS: October Kia prices and targeted Skoda 2027 note synchronized; original URLs preserved.",flush=True)
