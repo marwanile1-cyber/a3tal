@@ -1,0 +1,29 @@
+name: Publish five original DTC guides - Batch 10
+on:
+  workflow_run:
+    workflows:
+      - Create five original DTC illustrations - Batch 09
+    types: [completed]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ensure 5 genuinely new DTC guides and validate data
+        run: |
+          python3 -m py_compile scripts/publish-dtc-original-batch-10.py
+          python3 scripts/publish-dtc-original-batch-10.py --dry-run
+      - name: Confirm five batch09 artworks and Yoast social metadata before publication
+        run: python3 -u scripts/audit-dtc-og-images.py --batch 09
+      - name: Publish original codes with read-only duplicate detection
+        run: python3 -u scripts/publish-dtc-original-batch-10.py
