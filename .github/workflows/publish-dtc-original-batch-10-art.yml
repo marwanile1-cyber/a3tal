@@ -1,0 +1,43 @@
+name: Create five original DTC illustrations - Batch 10
+on:
+  workflow_run:
+    workflows:
+      - Publish five original DTC guides - Batch 10
+    types: [completed]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-media
+  cancel-in-progress: false
+jobs:
+  draw-and-upload:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install image renderer
+        run: python3 -m pip install -q pillow
+      - name: Render and validate five unique original WebP files before any upload
+        run: |
+          python3 - <<'PY'
+          import runpy
+          from PIL import Image
+          from io import BytesIO
+          n=runpy.run_path('scripts/attach-dtc-batch-10-art.py')
+          assert len(n['CODES'])==5
+          for code in n['CODES']:
+              raw=n['image_for'](code)
+              img=Image.open(BytesIO(raw))
+              assert img.size==(1200,800) and img.format=='WEBP' and 10000<len(raw)<450000,(code,len(raw))
+              print('RENDER OK',code,len(raw))
+          PY
+      - name: Upload each image only to a verified published code page
+        run: python3 -u scripts/attach-dtc-batch-10-art.py
+      - name: Sync Yoast social images to assigned artwork
+        run: python3 -u scripts/repair-dtc-og-canary.py --batch 10
+      - name: Check image display and OG for every batch10 page
+        run: python3 -u scripts/audit-dtc-og-images.py --batch 10
