@@ -1,4 +1,4 @@
-name: Repair specific DTC Yoast featured OG image (canary)
+name: Repair OG images for original DTC batches 07 and 08
 on:
   push:
     branches: [main]
@@ -13,10 +13,10 @@ concurrency:
 jobs:
   canary:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 48
     env:
       A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
     steps:
       - uses: actions/checkout@v4
-      - name: Verify real image then repair and read back only P0137 Yoast metadata
+      - name: Repair the nine remaining confirmed WebP OG images and verify each via REST
         run: python3 -u scripts/repair-dtc-og-canary.py
