@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/publish-dtc-original-batch-07-art.yml'
+      - 'scripts/attach-dtc-batch-07-art.py'
   workflow_dispatch:
 
 permissions:

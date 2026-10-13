@@ -9,6 +9,8 @@ from PIL import Image, ImageDraw, ImageFont, ImageFilter
 KEY=os.environ.get("A3TAL_API_KEY","")
 ROOT="https://a3tal.com/wp-json/a3tal-direct/v1"
 POSTS={"P0137":83549,"P0138":83550,"P0192":83551,"P0193":83552,"P0449":83553}
+# The first upload succeeded before a stale/ambiguous post detail read; reuse it.
+RECOVER_UPLOAD={"P0137":83554}
 INFO={
 "P0137":("OXYGEN SENSOR  /  BANK 1 · SENSOR 2","LOW SIGNAL","O2","low"),
 "P0138":("OXYGEN SENSOR  /  BANK 1 · SENSOR 2","HIGH SIGNAL","O2","high"),
@@ -125,18 +127,34 @@ def main():
         if post.get("featured_media"):
             print("Already has featured media, preserving:",code,post["featured_media"],flush=True)
             continue
+        print("Published post preflight",code,"featured=",post.get("featured_media"),flush=True)
         img=image_for(code)
         if not (10_000<len(img)<450_000):raise RuntimeError("Unexpected illustration size for "+code)
         payload={"post_id":post_id,"filename":"a3tal-dtc-"+code.lower()+"-exclusive.webp",
                  "title":"A3tal "+code+" diagnostic artwork","alt":ALT[code],
                  "image_base64":base64.b64encode(img).decode("ascii"),"convert_webp":False}
         # If an image upload has an uncertain response, never blindly repeat the mutation.
-        media=api("/upload-image-data",payload)
-        media_id=int(media["media_id"]);print("Art uploaded",code,"media",media_id,flush=True)
+        if code in RECOVER_UPLOAD:
+            media_id=RECOVER_UPLOAD[code]
+            print("Reusing previously uploaded art",code,media_id,flush=True)
+        else:
+            media=api("/upload-image-data",payload)
+            media_id=int(media["media_id"])
+            print("Art uploaded",code,"media",media_id,flush=True)
         confirm=api("/set-featured-image",{"post_id":post_id,"media_id":media_id})
-        if int(confirm.get("featured_media") or 0)!=media_id:raise RuntimeError("WordPress refused featured image for "+code)
-        checked=api("/post/"+str(post_id))
-        if int(checked.get("featured_media") or 0)!=media_id:raise RuntimeError("Featured image verification failed for "+code)
+        print("Set-featured server result",code,confirm.get("featured_media"),flush=True)
+        if int(confirm.get("featured_media") or 0)!=media_id:
+            raise RuntimeError("WordPress refused featured image for "+code)
+        # Host cache layers can serve an older post response after a successful mutation.
+        checked=None
+        for check in range(3):
+            checked=api("/post/"+str(post_id)+"?a3tal_media_verify="+str(int(time.time())))
+            got=int(checked.get("featured_media") or 0)
+            print("Readback",code,"attempt",check+1,"featured",got,flush=True)
+            if got==media_id:break
+            time.sleep(25)
+        if int(checked.get("featured_media") or 0)!=media_id:
+            raise RuntimeError("Featured image persisted in mutation response but post endpoint not consistent for "+code)
         print("VERIFIED COVER",code,checked["link"],"image",media_id,"bytes",len(img),flush=True)
     print("All batch 07 featured illustrations processed safely",flush=True)
 if __name__=="__main__":main()
