@@ -70,7 +70,7 @@ def render(article):
         # Direct, previously-published canonical DTC links; pending entries are not advertised.
         links = []
         for related_code in related:
-            if related_code in FIXED_EXISTING and related_code not in {"P0190","P0205","P0481"}:
+            if related_code in FIXED_EXISTING:
                 links.append('<a href="https://a3tal.com/dtc/' + text(related_code.lower()) + '/">' + text(related_code) + '</a>')
         if links:
             lines.append("<h2>أدلة مرتبطة داخل مكتبة الأعطال</h2><p>" + ", ".join(links) + "</p>")
