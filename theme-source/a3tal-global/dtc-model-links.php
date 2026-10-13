@@ -113,7 +113,10 @@ add_filter('the_content',static function($content) {
     if (!is_singular('a3_dtc') || !in_the_loop() || !is_main_query())return $content;
     $code = function_exists('a3g_dtc_current_code')?a3g_dtc_current_code(get_the_ID()):'';
     $cars = a3g_gg_verified_vehicle_for_code($code);
-    if (!$cars) return $content;
+    if (!$cars) {
+        $garage = get_post_type_archive_link('a3_dtc') ?: home_url('/dtc/');
+        return $content.'<section class="gg-dtc-cars"><h2>هل ينطبق الكود على عربيتك؟</h2><p>ده شرح فني للكود العام، لكن سبب ظهوره وخطوات الفحص قد تختلف حسب الموديل والجيل والمحرك. اختار ماركة وموديل عربيتك من المكتبة، ولا تعتبر الكود دليلًا على تلف قطعة محددة.</p><a href="'.esc_url($garage.'#global-garage').'">اختار ماركتك وموديلك من المكتبة ←</a></section>';
+    }
     $html = '<section class="gg-dtc-cars"><h2>سيارات ثبت ارتباطها بهذا الكود في مراجع فنية</h2><ul>';
     foreach($cars as $car) {
       $html .= '<li><a href="'.esc_url($car['url']).'">'.esc_html($car['title']).'</a></li>';

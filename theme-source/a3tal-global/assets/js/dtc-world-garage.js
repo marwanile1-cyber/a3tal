@@ -131,7 +131,10 @@ function drawDiagnostics(){
   var generic=guides.filter(function(x){return /^P[0-9][0-9A-F]{3}$/.test(x.code);});
   var rows=[];
   verified.forEach(function(code){var found=guides.find(function(item){return item.code===code;});if(found)rows.push({data:found,verified:true});});
-  generic.slice(-12).reverse().forEach(function(data){if(!rows.some(function(x){return x.data.code===data.code;}))rows.push({data:data,verified:false});});
+  // Start with the five newly reviewed guides, then continue with existing code pages.
+  var preferred=['P0137','P0138','P0192','P0193','P0449'];
+  preferred.forEach(function(code){var data=generic.find(function(x){return x.code===code;});if(data&&!rows.some(function(x){return x.data.code===code;}))rows.push({data:data,verified:false});});
+  generic.slice().reverse().forEach(function(data){if(rows.length>=15)return;if(!rows.some(function(x){return x.data.code===data.code;}))rows.push({data:data,verified:false});});
   var d=document.getElementById('gg-diagnostics-description');
   d.textContent=verified.length?'توجد روابط فنية خاصة بهذا الموديل في القسم الأول. باقي الأكواد شروحات عامة وليس تشخيصًا لحالة عربيتك.':(selectedModel?'أدلة أكواد OBD العامة لتبدأ منها بعد قراءة كود عربيتك. لم نتحقق بعد من أعطال خاصة لهذا الجيل والمحرك.':'ابدأ بشروحات الأكواد العامة المتاحة لهذه الفئة من السيارات المزودة بنظام OBD-II. اختَر موديلًا عندما تتوفر بياناته، ولا تعتبر الكود عطلًا شائعًا لهذه الماركة.');
   if(car){var anchor=document.getElementById('gg-search-model');anchor.href=car.url;anchor.textContent='صفحة السيارة الموجودة على أعطال ←';}
@@ -142,6 +145,17 @@ function drawModels(){
   modelsWrap.replaceChildren();drawDiagnostics();var selectedBox=document.getElementById('gg-selected');selectedBox.hidden=true;
   if(!selected){desc.textContent='اختَر الماركة أولاً لعرض موديلاتها المتاحة.';modelsWrap.appendChild(node('div','gg-placeholder','اختَر ماركة من البطاقات بالأعلى.'));return;}
   var data=models[selected.en]||'';
+  // Published vehicle cards take priority over illustrative model names.
+  // This exposes genuinely available pages even when the sample model list is incomplete.
+  var published=(ggData.cars||[]).filter(function(car){
+    return normalize(car.brand)===normalize(selected.en)||normalize(car.brand)===normalize(selected.ar);
+  });
+  var declared=data?data.split('|'):[];
+  published.forEach(function(car){
+    var exists=declared.some(function(m){return normalize(car.title).includes(normalize(m));});
+    if(!exists)declared.unshift(car.title);
+  });
+  data=declared.join('|');
   desc.textContent=selected.ar+' · '+(data?'موديلات استرشادية متاحة للتصفح':'جارٍ استكمال بيانات الموديلات الموثقة');
   if(!data){modelsWrap.appendChild(node('div','gg-placeholder','العلامة متاحة في الدليل العالمي، لكن قائمة الموديلات لم تكتمل بعد. استخدم البحث العام للعثور على الأدلة المنشورة.'));selectedBox.hidden=false;document.getElementById('gg-selected-name').textContent=selected.ar;document.getElementById('gg-search-model').href='/?s='+encodeURIComponent(selected.ar);return;}
   data.split('|').forEach(function(model){
