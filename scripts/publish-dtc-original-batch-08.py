@@ -202,32 +202,25 @@ def publish_one(row):
             "_a3_dtc_batch": "A3TAL-DTC-2026-10-13-08-5",
         }
     }
-    # Never blindly retry a mutation after a lost response.
+    # Publishing is a non-idempotent side effect. On ambiguous 522, stop after
+    # read-only verification. Never replay the write in this run.
     print("Publishing", code, flush=True)
     expected_path = "/dtc/" + code.lower() + "/"
-    # A Cloudflare 522 response to an unsafe POST is not evidence that the
-    # insertion failed. Always inspect the published permalink twice before
-    # considering a single controlled re-submission.
-    result = None
-    for attempt in range(2):
-        try:
-            result = request_admin(data, write=True)
-            break
-        except RuntimeError as err:
-            if "HTTP 522" not in str(err) and "Bridge transport interruption" not in str(err):
-                raise
-            print("Write response ambiguous for", code, "checking production after cooldown", flush=True)
-            for check_attempt in range(3):
-                time.sleep(35 * (check_attempt + 1))
-                live = get_public(code)
-                if live and "d-detail-hero" in live[1] and code in live[1]:
-                    print("PUBLISHED despite lost write response:", code, live[0], flush=True)
-                    return "created"
-                if live:
-                    raise RuntimeError("Unexpected page at slug after write interruption: " + code)
-            if attempt == 1:
-                raise RuntimeError("WordPress did not confirm publication after two attempts: " + code) from err
-            print("Confirmed no public page after multiple checks; attempting one final safe write", flush=True)
+    try:
+        result = request_admin(data, write=True)
+    except RuntimeError as err:
+        if "HTTP 522" not in str(err) and "Bridge transport interruption" not in str(err):
+            raise
+        print("Write response unknown:", code, "performing read-only reconciliation", flush=True)
+        for check_attempt in range(3):
+            time.sleep(40 * (check_attempt + 1))
+            live = get_public(code)
+            if live and "d-detail-hero" in live[1] and code in live[1]:
+                print("PUBLISHED after ambiguous bridge response:", code, live[0], flush=True)
+                return "created"
+            if live:
+                raise RuntimeError("Unexpected page at slug after ambiguous write: " + code)
+        raise RuntimeError("UNCONFIRMED write for " + code + ". Stop safely and inspect before retrying.") from err
     if result.get("slug") != code.lower() or expected_path not in result.get("link", ""):
         raise RuntimeError("WordPress returned unexpected post link for " + code)
     if not isinstance(result.get("id"), int) or result["id"] <= 0:
