@@ -9,6 +9,7 @@ on:
       - 'theme-source/a3tal-global/dtc-world-garage.css'
       - 'theme-source/a3tal-global/dtc-model-links.php'
       - 'theme-source/a3tal-global/dtc-model-links.css'
+      - 'theme-source/a3tal-global/dtc-library-single.php'
       - 'theme-source/a3tal-global/assets/js/dtc-world-garage.js'
 
 permissions:
@@ -31,6 +32,7 @@ jobs:
           php -l theme-source/a3tal-global/dtc-world-garage.php
           php -l theme-source/a3tal-global/dtc-model-links.php
           php -l theme-source/a3tal-global/dtc-library-archive.php
+          php -l theme-source/a3tal-global/dtc-library-single.php
           php -l theme-source/a3tal-global/dtc-library-support.php
           node --check theme-source/a3tal-global/assets/js/dtc-world-garage.js
           node --check theme-source/a3tal-global/assets/js/dtc-brand-logos.generated.js

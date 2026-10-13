@@ -23,6 +23,7 @@ FILES = [
   'dtc-library-archive.php',
   'dtc-model-links.php',
   'dtc-model-links.css',
+  'dtc-library-single.php',
 ]
 
 def sha(content):
@@ -53,7 +54,7 @@ def prepare(api, folder):
         snapshot['sources'][name] = content
     folder.mkdir(parents=True, exist_ok=True)
     (folder / 'snapshot.json').write_text(json.dumps(snapshot, ensure_ascii=False), encoding='utf-8')
-    print('Prepared six scoped garage files; encrypted backup must be uploaded before writes', flush=True)
+    print('Prepared eight scoped garage files; encrypted backup must be uploaded before writes', flush=True)
 
 def run(api, folder):
     snapshot = json.loads((folder / 'snapshot.json').read_text(encoding='utf-8'))
@@ -94,7 +95,7 @@ def run(api, folder):
         print('PUBLIC QA PASSED: premium garage and existing code archive render', flush=True)
     except release.PublicCheckBlocked as exc:
         print('PUBLIC QA REQUIRES EXTERNAL CHECK: ' + str(exc), flush=True)
-    print('Finished. All six intended live file checksums were verified through bridge.', flush=True)
+    print('Finished. All eight intended live file checksums were verified through bridge.', flush=True)
 
 def main():
     parser=argparse.ArgumentParser()

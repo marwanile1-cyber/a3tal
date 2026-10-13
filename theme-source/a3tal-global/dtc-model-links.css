@@ -16,3 +16,5 @@
 .gg-dtc-cars ul{padding-inline-start:20px}.gg-dtc-cars li{margin:9px 0}
 @media(max-width:850px){.gg-related-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.gg-related-grid{grid-template-columns:1fr}.gg-related{padding:17px}.gg-related-grid>a{min-height:74px}}
+
+.d-dtc-featured{margin:23px 0;border:1px solid #dde5ee;border-radius:16px;overflow:hidden;background:#101820;box-shadow:0 10px 32px rgba(13,31,49,.09)}.d-dtc-featured img{display:block;width:100%;height:auto;max-height:650px;object-fit:cover}.d-dtc-featured figcaption{font-size:12px;line-height:1.7;background:#f7f9fb;color:#42526a;padding:10px 16px;margin:0}
