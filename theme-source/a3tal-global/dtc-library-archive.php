@@ -50,6 +50,8 @@ get_header('dtc');
       </div>
     </div>
   </section>
+  <?php /* Global marque discovery is additive: the existing indexed DTC list remains intact. */ ?>
+  <?php if (is_file(get_template_directory() . '/dtc-world-garage.php')) require get_template_directory() . '/dtc-world-garage.php'; ?>
   <nav class="d-families" aria-label="مجموعات أكواد الأعطال"><div class="d-wrap d-families-grid">
     <?php foreach ($dtc_families as $dtc_letter => $dtc_names): ?>
       <a class="d-family<?php echo $dtc_family === $dtc_letter ? ' is-active' : ''; ?>" href="<?php echo esc_url(add_query_arg('family', $dtc_letter, $dtc_library_url) . '#dtc-codes'); ?>" <?php if ($dtc_family === $dtc_letter) echo 'aria-current="true"'; ?>><span class="d-family-letter" dir="ltr"><?php echo esc_html($dtc_letter); ?></span><span><strong><?php echo esc_html($dtc_names[0]); ?></strong><small lang="en" dir="ltr"><?php echo esc_html($dtc_names[1]); ?></small></span></a>
