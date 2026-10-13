@@ -1,0 +1,17 @@
+name: Read-only DTC Batch 08 integrity audit
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/audit-dtc-batch-08.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check five canonical DTC permalinks through WordPress REST without mutations
+        run: python3 -u scripts/audit-dtc-batch-08.py
