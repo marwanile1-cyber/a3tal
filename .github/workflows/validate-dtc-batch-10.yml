@@ -1,0 +1,39 @@
+name: Validate original DTC batch 10 and exclusive illustrations
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/validate-dtc-batch-10.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check five unique gap-audited Arabic guides and PHP-free publisher syntax
+        run: |
+          python3 -m py_compile scripts/publish-dtc-original-batch-10.py scripts/attach-dtc-batch-10-art.py
+          python3 scripts/publish-dtc-original-batch-10.py --dry-run
+      - name: Install artwork renderer
+        run: python3 -m pip install -q pillow
+      - name: Verify five exclusive WebP artworks match 1200x800 and intended codes
+        run: |
+          python3 - <<'PY'
+          import runpy
+          from PIL import Image
+          from io import BytesIO
+          from pathlib import Path
+          import json
+          n=runpy.run_path('scripts/attach-dtc-batch-10-art.py')
+          expected=['P0017','P0116','P0139','P0234','P0453']
+          rows=json.loads(Path('data/dtc-original-batch-10.json').read_text())['items']
+          assert n['CODES']==expected==[x['code'] for x in rows]
+          for code in expected:
+              raw=n['image_for'](code)
+              art=Image.open(BytesIO(raw))
+              assert art.size==(1200,800) and art.format=='WEBP' and 10000<len(raw)<450000,(code,len(raw))
+              print('VERIFIED',code,len(raw))
+          PY
