@@ -1,0 +1,17 @@
+name: Inspect DTC Yoast OG mismatches (read only)
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/inspect-dtc-og.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compare live featured media and Yoast OG response for three original guides
+        run: python3 -u scripts/inspect-dtc-og.py
