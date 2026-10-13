@@ -27,4 +27,4 @@ jobs:
           python3 -m py_compile scripts/publish-dtc-original-batch-08.py
           python3 scripts/publish-dtc-original-batch-08.py --dry-run
       - name: Publish through reviewed Direct Bridge with live duplicate preflight
-        run: python3 -u scripts/publish-dtc-original-batch-08.py
+        run: python3 -u scripts/publish-dtc-original-batch-08.py --from-index 1

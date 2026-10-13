@@ -131,14 +131,21 @@ def get_public(code):
         "Accept": "text/html,application/xhtml+xml;q=0.9,*/*;q=0.8",
         "Accept-Language": "ar,en;q=0.7",
     }
-    try:
-        with urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=25) as res:
-            content = res.read().decode("utf-8")
-            return (res.geturl(), content)
-    except urllib.error.HTTPError as err:
-        if err.code == 404:
-            return None
-        raise RuntimeError("Public preflight HTTP " + str(err.code) + " for " + code) from None
+    for attempt in range(4):
+        try:
+            with urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=30) as res:
+                content = res.read().decode("utf-8")
+                return (res.geturl(), content)
+        except urllib.error.HTTPError as err:
+            if err.code == 404:
+                return None
+            if err.code not in (429, 502, 503, 504, 520, 522, 524) or attempt == 3:
+                raise RuntimeError("Public preflight HTTP " + str(err.code) + " for " + code) from None
+        except (urllib.error.URLError, TimeoutError):
+            if attempt == 3:
+                raise RuntimeError("Public preflight transport error for " + code) from None
+        time.sleep(35 * (attempt + 1))
+    raise RuntimeError("Public preflight never responded for " + code)
 
 
 def publish_one(row):
@@ -148,11 +155,24 @@ def publish_one(row):
     query_url = BASE + "/dtc/?code=" + urllib.parse.quote(code)
     headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/129.0 Safari/537.36",
                "Accept": "text/html,application/xhtml+xml;q=0.9,*/*;q=0.8"}
-    try:
-        with urllib.request.urlopen(urllib.request.Request(query_url, headers=headers), timeout=30) as res:
-            listing = res.read().decode("utf-8")
-    except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as err:
-        raise RuntimeError("Catalog duplicate preflight failed for " + code) from err
+    listing = None
+    # Catalog lookup is a safe read. Transient Cloudflare errors can be retried;
+    # never repeat publishing mutations after a lost response.
+    for attempt in range(4):
+        try:
+            with urllib.request.urlopen(urllib.request.Request(query_url, headers=headers), timeout=35) as res:
+                listing = res.read().decode("utf-8")
+            break
+        except urllib.error.HTTPError as err:
+            if err.code not in (429, 502, 503, 504, 520, 522, 524) or attempt == 3:
+                raise RuntimeError("Catalog duplicate preflight failed HTTP " + str(err.code) + " for " + code) from None
+            print("Transient catalog read HTTP", err.code, code, "attempt", attempt+1, flush=True)
+        except (urllib.error.URLError, TimeoutError) as err:
+            if attempt == 3:
+                raise RuntimeError("Catalog duplicate preflight transport failed for " + code) from None
+        time.sleep(35 * (attempt + 1))
+    if listing is None:
+        raise RuntimeError("Catalog duplicate preflight unavailable for " + code)
     if re.search(r"[1-9][0-9]*\s+شرحًا متاحًا", listing):
         print("Already covered by live DTC catalog:", code, "(will not duplicate)", flush=True)
         return "existing"
