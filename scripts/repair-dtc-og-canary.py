@@ -2,10 +2,13 @@
 """Repair Yoast OG/Twitter image for confirmed original DTC post, using existing Direct Bridge.
 Idempotent for matching media, only writes to whitelisted DTC batch slugs, no content changes.
 """
-import os,json,time,urllib.request,urllib.error,urllib.parse,html
+import os,json,time,urllib.request,urllib.error,urllib.parse,html,argparse
 ROOT="https://a3tal.com"
 KEY=os.environ["A3TAL_API_KEY"]
-CODES=["P0138","P0192","P0193","P0449","P0105","P0140","P0190","P0205","P0481"]
+BATCHES={
+  "07-08":["P0138","P0192","P0193","P0449","P0105","P0140","P0190","P0205","P0481"],
+  "09":["P0012","P0206","P0452","P0506","P0706"]
+}
 STAMP=0
 def get(url):
     req=urllib.request.Request(url,headers={"User-Agent":"A3tal-DTC-OG-Repair/1.0","Accept":"application/json","Cache-Control":"no-cache"})
@@ -47,4 +50,7 @@ def one(code):
     if url not in og:raise RuntimeError("Yoast OG did not reflect featured art after cache refresh: "+code)
     print("SUCCESS",code,url,flush=True)
 if __name__=="__main__":
-  for c in CODES:one(c)
+  parser=argparse.ArgumentParser()
+  parser.add_argument("--batch",choices=sorted(BATCHES),default="07-08")
+  args=parser.parse_args()
+  for c in BATCHES[args.batch]:one(c)
