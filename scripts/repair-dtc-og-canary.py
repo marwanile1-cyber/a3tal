@@ -12,7 +12,17 @@ BATCHES={
 STAMP=0
 def get(url):
     req=urllib.request.Request(url,headers={"User-Agent":"A3tal-DTC-OG-Repair/1.0","Accept":"application/json","Cache-Control":"no-cache"})
-    with urllib.request.urlopen(req,timeout=35) as res:return json.load(res)
+    for attempt in range(4):
+        try:
+            with urllib.request.urlopen(req,timeout=40) as res:return json.load(res)
+        except urllib.error.HTTPError as err:
+            if err.code not in (429,500,502,503,504,520,522,524) or attempt==3:
+                raise RuntimeError("Read-only OG preflight HTTP "+str(err.code)) from None
+            print("Transient origin read",err.code,"attempt",attempt+1,flush=True)
+        except (urllib.error.URLError,TimeoutError):
+            if attempt==3:
+                raise RuntimeError("Read-only OG preflight transport error") from None
+        time.sleep(35*(attempt+1))
 def bridge(payload):
     global STAMP
     time.sleep(max(0,23-(time.monotonic()-STAMP)));STAMP=time.monotonic()
