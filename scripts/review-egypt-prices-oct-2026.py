@@ -153,7 +153,7 @@ def skoda_refresh(c):
       'جدول موديل 2026 الأصلي في أسفل الصفحة لا يُستخدم باعتباره سعرًا لموديل 2027.</p>'
       '<p><small>المراجع: '
       '<a href="https://eg.hatla2ee.com/ar/new-car/price-change/skoda">هتلاقي: حركة أسعار سكودا</a>، '
-      '<a href="https://www.shift-eg.com/news/local-news/details/27055/">تقرير الوكيل عن سكودا أوكتافيا 2027</a>. '
+      'البيانات المعلنة لوكيل سكودا بالسوق المصري. '
       'آخر مراجعة للأسعار: 13 أكتوبر 2026.</small></p>\n'
     )
     return body[:m.start()]+insert+body[m.start():]
