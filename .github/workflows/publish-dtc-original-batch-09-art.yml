@@ -1,0 +1,35 @@
+name: Create five original DTC illustrations - Batch 09
+on:
+  workflow_run:
+    workflows:
+      - Publish five original DTC guides - Batch 09
+    types: [completed]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-media
+  cancel-in-progress: false
+jobs:
+  draw-and-upload:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install local graphics renderer
+        run: python3 -m pip install -q pillow
+      - name: Smoke-test all original illustrations before mutation
+        run: |
+          python3 - <<'PY'
+          import runpy
+          n=runpy.run_path('scripts/attach-dtc-batch-09-art.py')
+          for code in n['CODES']:
+              img=n['image_for'](code)
+              assert 10000 < len(img) < 450000, (code,len(img))
+              print('RENDER OK',code,len(img))
+          PY
+      - name: Verify five published canonicals then upload images through direct bridge
+        run: python3 -u scripts/attach-dtc-batch-09-art.py
