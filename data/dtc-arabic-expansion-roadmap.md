@@ -156,3 +156,12 @@ Published only after live duplicate preflight and full previous-batch image/OG a
 - Batch14 original 1P 2U 1C 1B: P0243 / U0102 / U0129 / C0045 / B0081. Five original articles staged in data/dtc-original-batch-14.json, five distinct original drawings staged and independently passed run 38559521771.
 - Batch14 publishing automatically triggered after successful batch13 art with fresh public audit. Run 38559901880; do not label as published until real success with five new canonical slugs.
 - Batch14 art workflow automatically follows successful publication; always require full media/post verification and social OG matching.
+
+
+## Continuous mixed DTC expansion | batch15 + batch16 | 2026-10-14
+Batch 14 completed including post and image/social OG QA: https://github.com/marwanile1-cyber/a3tal/actions/runs/38560193164
+Batch15 published five new unique posts (P0421 U0415 C0110 C0161 B0051) with ids 83685-83689, zero repeats: https://github.com/marwanile1-cyber/a3tal/actions/runs/38566562368
+Batch15 covers/WebP/Yoast OG are handled separately: https://github.com/marwanile1-cyber/a3tal/actions/runs/38566852717; mark complete only after final all-five HTML/OG audit.
+Batch15 safety: C0110 brake pump and C0161 brake switch are qualified by GM manufacturer application. B0051 is especially sensitive: GM DTC service manuals document Deployment Commanded while other diagnostic catalogs may label a center-front-row seatbelt sensor; never publish as a universally identical part, recommend SRS specialist and follow OEM post-collision procedures; do not teach squib probing or crash-data bypass.
+Batch16 authored original 1P+2U+1C+1B: P2459 (DPF regeneration frequency), U0131 (EPS module communication), U0151 (restraints module communication), C0550 (brake ECU performance on supported GM systems), B0020 (left-side airbag deployment circuit on supported systems). Five distinct original WebP 1200x800 images and five articles validated: https://github.com/marwanile1-cyber/a3tal/actions/runs/38568262034.
+Automatic gate: only after full successful batch15 artwork/OG verified publish batch16; only after successful batch16 post publication attach its five original WebP images, sync Yoast OG and verify visible images. Scripts workflows in repo, do not promise live status until GitHub and public audit confirm.
