@@ -1,0 +1,28 @@
+name: Publish five mixed original DTC guides - Batch 17
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-original-dtc-batch-17.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate five unique original P U U C B guides and approved references
+        run: |
+          python3 -m py_compile scripts/publish-dtc-original-batch-17.py
+          python3 scripts/publish-dtc-original-batch-17.py --dry-run
+      - name: Verify the previous five live pages have their own correct article and social images
+        run: python3 -u scripts/audit-dtc-og-images.py --batch 16
+      - name: Publish via authorized bridge after direct read-only duplicate and slug checks
+        run: python3 -u scripts/publish-dtc-original-batch-17.py
