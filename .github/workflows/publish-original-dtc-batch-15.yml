@@ -1,0 +1,28 @@
+name: Publish mixed DTC batch15 Arabic diagnostic guides
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-original-dtc-batch-15.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate original guides and 1P 1U 2C 1B editorial balance
+        run: |
+          python3 -m py_compile scripts/publish-dtc-original-batch-15.py
+          python3 scripts/publish-dtc-original-batch-15.py --dry-run
+      - name: Demand full batch14 featured image, article display and OG integrity
+        run: python3 -u scripts/audit-dtc-og-images.py --batch 14
+      - name: Publish five genuinely missing DTC guides via duplicate-guarded Direct Bridge
+        run: python3 -u scripts/publish-dtc-original-batch-15.py
