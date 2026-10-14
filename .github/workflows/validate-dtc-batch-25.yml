@@ -50,3 +50,7 @@ jobs:
           assert len(set(sha))==10
           print('BATCH25_PREPUBLICATION_VALIDATION_SUCCESS')
           PY
+      - name: Verify queue scheduler accepts only the approved ten-code batch (no WordPress writes)
+        run: |
+          python3 -m py_compile scripts/scheduled-dtc-reviewed-queue.py
+          python3 -u scripts/scheduled-dtc-reviewed-queue.py --check-only
