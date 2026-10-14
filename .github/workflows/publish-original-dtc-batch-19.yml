@@ -1,0 +1,28 @@
+name: Publish original mixed DTC batch19
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-original-dtc-batch-19.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check full Arabic guides and strict P U U C B family diversity
+        run: |
+          python3 -m py_compile scripts/publish-dtc-original-batch-19.py
+          python3 scripts/publish-dtc-original-batch-19.py --dry-run
+      - name: Require all five previous guides' featured art, body image and OG verification
+        run: python3 -u scripts/audit-dtc-og-images.py --batch 18
+      - name: Publish only missing codes through audited Direct Bridge live preflight
+        run: python3 -u scripts/publish-dtc-original-batch-19.py
