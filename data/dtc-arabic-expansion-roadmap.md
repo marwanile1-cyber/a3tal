@@ -121,3 +121,15 @@ Do not publish only P-prefix codes. Every five-guide editorial batch must includ
 Preferred batch mix: 2P + 1U + 1C + 1B; sometimes rotate to 1P + 2U + 1C + 1B. Every new post must pass existing-catalog intent check, include five meaningful checks, source caveat and a unique locally created featured 1200x800 WebP. Featured image must appear in article and match Yoast og:image. A page only gets vehicle-model links when the actual OEM reference confirms applicability to that generation/engine; generic codes are useful references, not automatically "common faults" of each vehicle.
 
 Batch 11 (mixed) published October 14: P0217 / P0463 / U0155 / C0035 / B0001, original posts 83613 through 83617, run https://github.com/marwanile1-cyber/a3tal/actions/runs/38551648148. Featured illustrations run separately and must be verified before declaring fully finished. A3tal archive and model guide filters were updated to read all PBCU letters rather than only powertrain.
+
+
+## Mixed-family batch 12 | 2026-10-14
+Source articles data/dtc-original-batch-12.json; publisher scripts/publish-dtc-original-batch-12.py; unique original art scripts/attach-dtc-batch-12-art.py; release workflows publish-original-dtc-batch-12.yml and publish-dtc-original-batch-12-art.yml.
+Balance 2 P + 1 U + 1 C + 1 B:
+- P0380: diesel glow plug pre-heater circuit A, never confuse with petrol spark plugs.
+- P0530: automotive A/C refrigerant pressure sensor circuit, never infer missing refrigerant or vent pressurised refrigerant.
+- U0073: Bus A off and network integrity, do not automatically replace PCM.
+- C0040: right-front wheel speed sensor only where OEM ABS reference agrees (not universal); retain suffix, module and VIN caveat. GM/NHTSA technical bulletin is the grounding reference.
+- B0010: passenger front Stage 1 airbag SRS, require subcode and OEM verification; absolutely no DIY probing of pyrotechnic initiators.
+
+Published only after live duplicate preflight and full previous-batch image/OG audit. Artwork must be 1200x800 exclusive WebP, set as featured, visible within body and confirmed via Yoast og:image before calling completed. The next batch should rotate to 1P+2U+1C+1B when valuable documented U-code gaps exist, instead of blindly producing another 2P batch.
