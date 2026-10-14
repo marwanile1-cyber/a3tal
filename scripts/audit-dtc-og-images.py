@@ -5,7 +5,7 @@ This tool never mutates WordPress.
 import argparse,json,re,time,urllib.request,urllib.error,urllib.parse
 BASE="https://a3tal.com"
 BATCHES={"07":["P0137","P0138","P0192","P0193","P0449"],"08":["P0105","P0140","P0190","P0205","P0481"],
-         "09":["P0012","P0206","P0452","P0506","P0706"],"10":["P0017","P0116","P0139","P0234","P0453"],"11":["P0217","P0463","U0155","C0035","B0001"]}
+         "09":["P0012","P0206","P0452","P0506","P0706"],"10":["P0017","P0116","P0139","P0234","P0453"],"11":["P0217","P0463","U0155","C0035","B0001"],"12":["P0380","P0530","U0073","C0040","B0010"]}
 def read(url):
     headers={"User-Agent":"Mozilla/5.0 (compatible; A3tal-Image-Integrity/1.0)","Accept":"application/json,text/html;q=0.9,*/*;q=0.5","Cache-Control":"no-cache"}
     for n in range(3):
