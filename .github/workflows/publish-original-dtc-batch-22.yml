@@ -1,0 +1,29 @@
+name: Publish original mixed DTC batch22 guides
+on:
+  workflow_run:
+    workflows:
+      - Attach original batch21 DTC cover art
+    types: [completed]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate original P2563 U0107 C1241 C0237 B1421 guides without repeats
+        run: |
+          python3 -m py_compile scripts/publish-dtc-original-batch-22.py
+          python3 scripts/publish-dtc-original-batch-22.py --dry-run
+      - name: Require all previous five article image and OpenGraph results successful
+        run: python3 -u scripts/audit-dtc-og-images.py --batch 21
+      - name: Publish missing codes through live duplicate-safe Direct Bridge
+        run: python3 -u scripts/publish-dtc-original-batch-22.py
