@@ -1,0 +1,42 @@
+name: Validate diversified DTC batch14
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/validate-dtc-batch-14.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Confirm 5 original guides and exact P U U C B balance
+        run: |
+          python3 -m py_compile scripts/publish-dtc-original-batch-14.py scripts/attach-dtc-batch-14-art.py
+          python3 scripts/publish-dtc-original-batch-14.py --dry-run
+      - name: Install WebP artwork support
+        run: python3 -m pip install -q pillow
+      - name: Verify five distinct image renderings and correct code mapping
+        run: |
+          python3 - <<'PY'
+          import json,runpy
+          from pathlib import Path
+          from PIL import Image
+          from io import BytesIO
+          data=json.loads(Path('data/dtc-original-batch-14.json').read_text())
+          codes=[i['code'] for i in data['items']]
+          assert codes==['P0243','U0102','U0129','C0045','B0081']
+          art=runpy.run_path('scripts/attach-dtc-batch-14-art.py')
+          assert art['CODES']==codes
+          seen=set()
+          for code in codes:
+            data=art['image_for'](code)
+            im=Image.open(BytesIO(data))
+            assert im.format=='WEBP' and im.size==(1200,800) and 10000<len(data)<450000
+            assert data not in seen
+            seen.add(data)
+            print('IMAGE QA PASS',code,len(data))
+          PY
