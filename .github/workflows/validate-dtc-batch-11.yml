@@ -1,0 +1,40 @@
+name: Validate mixed P U C B DTC batch 11
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/validate-dtc-batch-11.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate full Arabic editorial guides and P/U/C/B diversity
+        run: |
+          python3 -m py_compile scripts/publish-dtc-original-batch-11.py scripts/attach-dtc-batch-11-art.py
+          python3 scripts/publish-dtc-original-batch-11.py --dry-run
+      - name: Install illustration renderer
+        run: python3 -m pip install -q pillow
+      - name: Verify five original distinct illustrations with no borrowed graphics
+        run: |
+          python3 - <<'PY'
+          import runpy,json
+          from pathlib import Path
+          from io import BytesIO
+          from PIL import Image
+          catalog=json.loads(Path('data/dtc-original-batch-11.json').read_text())
+          codes=[r['code'] for r in catalog['items']]
+          assert codes==['P0217','P0463','U0155','C0035','B0001']
+          n=runpy.run_path('scripts/attach-dtc-batch-11-art.py')
+          assert n['CODES']==codes
+          for code in codes:
+              raw=n['image_for'](code)
+              img=Image.open(BytesIO(raw))
+              assert img.format=='WEBP' and img.size==(1200,800)
+              assert 10000<len(raw)<450000,(code,len(raw))
+              print('IMAGE VERIFIED',code,len(raw))
+          PY
