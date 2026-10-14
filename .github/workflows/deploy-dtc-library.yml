@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/deploy-dtc-library.yml'
       - 'scripts/deploy-dtc-library.py'
+      - 'theme-source/a3tal-global/dtc-library-single.php'
   workflow_dispatch:
   workflow_call:
     inputs:
