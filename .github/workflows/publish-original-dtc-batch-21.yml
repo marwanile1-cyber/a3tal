@@ -1,0 +1,28 @@
+name: Publish original mixed DTC batch21 guides
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-original-dtc-batch-21.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate unique P0523 U0106 U0159 C0236 B0094 content and OEM caveats
+        run: |
+          python3 -m py_compile scripts/publish-dtc-original-batch-21.py
+          python3 scripts/publish-dtc-original-batch-21.py --dry-run
+      - name: Require that prior batch20 has five unique visible covers and correct social sharing images
+        run: python3 -u scripts/audit-dtc-og-images.py --batch 20
+      - name: Verify no published duplicates and create only five missing guides via authorized Direct Bridge
+        run: python3 -u scripts/publish-dtc-original-batch-21.py
