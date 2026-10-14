@@ -1,0 +1,42 @@
+name: Attach original five mixed DTC batch17 covers
+on:
+  workflow_run:
+    workflows:
+      - Publish five mixed original DTC guides - Batch 17
+    types: [completed]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-media
+  cancel-in-progress: false
+jobs:
+  cover:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install original WebP renderer
+        run: python3 -m pip install -q pillow
+      - name: Confirm five correct independent 1200x800 images
+        run: |
+          python3 - <<'PY'
+          import runpy
+          from PIL import Image
+          from io import BytesIO
+          a=runpy.run_path('scripts/attach-dtc-batch-17-art.py')
+          assert len(a['CODES'])==5
+          for code in a['CODES']:
+            b=a['image_for'](code);p=Image.open(BytesIO(b))
+            assert p.format=='WEBP' and p.size==(1200,800) and len(b)>10000
+            print('ART VALID',code,len(b))
+          PY
+      - name: Attach art only to verified five published WordPress DTC pages
+        run: python3 -u scripts/attach-dtc-batch-17-art.py
+      - name: Synchronize Yoast og:image and X picture for each original cover
+        run: python3 -u scripts/repair-dtc-og-canary.py --batch 17
+      - name: Public check of all five image attachments, body images and og:image values
+        run: python3 -u scripts/audit-dtc-og-images.py --batch 17
