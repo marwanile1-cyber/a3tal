@@ -1,0 +1,42 @@
+name: Publish five unique P U C B cover artworks - Batch 12
+on:
+  workflow_run:
+    workflows:
+      - Publish mixed P U C B codes - Batch 12
+    types: [completed]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-media
+  cancel-in-progress: false
+jobs:
+  images:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install local image renderer
+        run: python3 -m pip install -q pillow
+      - name: Validate five different WebP images before any write
+        run: |
+          python3 - <<'PY'
+          import runpy
+          from PIL import Image
+          from io import BytesIO
+          n=runpy.run_path('scripts/attach-dtc-batch-12-art.py')
+          for code in n['CODES']:
+              raw=n['image_for'](code)
+              im=Image.open(BytesIO(raw))
+              assert im.format=='WEBP' and im.size==(1200,800)
+              print('ART OK',code,len(raw))
+          PY
+      - name: Resolve post IDs and attach one original image per verified DTC slug
+        run: python3 -u scripts/attach-dtc-batch-12-art.py
+      - name: Set Yoast og:image to the original featured attachment
+        run: python3 -u scripts/repair-dtc-og-canary.py --batch 12
+      - name: Verify every article body image and share image publicly
+        run: python3 -u scripts/audit-dtc-og-images.py --batch 12
