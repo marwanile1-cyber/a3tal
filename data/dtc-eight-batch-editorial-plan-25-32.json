@@ -2,15 +2,15 @@
   "title": "A3TAL approved-design editorial pipeline: next eight 10-code releases",
   "generated_on": "2026-10-15",
   "target_publication": "GitHub scheduled at minute 07 and 37 UTC, one ready batch per run",
-  "strict_notice": "Planning this 8-batch backlog DOES NOT create 80 publish-ready explanations. Automation must not write WordPress until each independent long-form explanation, technical validation, ten 1600×900 WebP images, and OG verification scripts pass. OEM definitions never generalized.",
+  "strict_notice": "This plan includes ONE finished and approved ten-code batch (25), while the seven later sets (26-32) are unique-code editorial outlines only and must not be published until their entire original researched content and images pass QA. The timer cannot author them.",
   "initial_catalog": 197,
   "expected_after_all_eight_if_approved_and_published": 277,
   "batches": [
     {
       "batch": 25,
       "planned_publication_slot": 1,
-      "status": "OUTLINE_ONLY_NOT_READY_TO_PUBLISH",
-      "ready_for_auto_publish": false,
+      "status": "EDITORIAL_AND_IMAGES_VALIDATED_READY_GUARDED_PUBLICATION",
+      "ready_for_auto_publish": true,
       "mix": "3P / 3U / 2C / 2B",
       "items": [
         {
@@ -93,7 +93,10 @@
           "reference_to_verify": "https://www.fordservicecontent.com/Ford_Content/pubs/content/~WT/~MUS~LEN/3550/tsb01-06-02.htm",
           "editorial_review": "pending original explanatory text, pinout-free safe diagnosis and artwork"
         }
-      ]
+      ],
+      "validated_draft": "data/dtc-original-batch-25.json",
+      "validation_run": "https://github.com/marwanile1-cyber/a3tal/actions/runs/38643812106",
+      "release_safety": "First run after completion of batch24 public image audit; actual publishing controlled by scheduled queue and no-duplicate safeguard."
     },
     {
       "batch": 26,
