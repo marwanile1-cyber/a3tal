@@ -1,0 +1,36 @@
+name: Auto-publish 10 reviewed Arabic DTC codes every 30 minutes
+
+on:
+  schedule:
+    # Twice per hour, offset from the crowded start-of-hour GitHub Actions queue (UTC).
+    - cron: '7,37 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/scheduled-dtc-reviewed-queue.yml'
+      - 'scripts/scheduled-dtc-reviewed-queue.py'
+
+permissions:
+  contents: read
+
+# Shares the production lock with manually triggered DTC/article publishing:
+# Never run two WordPress mutation pipelines simultaneously.
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+
+jobs:
+  publish-at-most-ten:
+    runs-on: ubuntu-latest
+    timeout-minutes: 140
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install WebP image validator
+        run: python3 -m pip install --quiet Pillow
+      - name: Validate queue runner Python code
+        run: python3 -m py_compile scripts/scheduled-dtc-reviewed-queue.py
+      - name: Publish exactly one ready, reviewed 10-code batch or safely skip
+        run: python3 -u scripts/scheduled-dtc-reviewed-queue.py
