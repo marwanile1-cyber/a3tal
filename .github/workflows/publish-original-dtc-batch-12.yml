@@ -1,0 +1,28 @@
+name: Publish mixed P U C B codes - Batch 12
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-original-dtc-batch-12.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate exactly five original 2P 1U 1C 1B technical guides
+        run: |
+          python3 -m py_compile scripts/publish-dtc-original-batch-12.py
+          python3 scripts/publish-dtc-original-batch-12.py --dry-run
+      - name: Verify previous P U C B batch is ready with individual original images
+        run: python3 -u scripts/audit-dtc-og-images.py --batch 11
+      - name: Publish only verified missing DTC codes via Direct Bridge
+        run: python3 -u scripts/publish-dtc-original-batch-12.py
