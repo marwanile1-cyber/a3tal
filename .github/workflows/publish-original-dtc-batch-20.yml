@@ -1,0 +1,29 @@
+name: Publish original mixed DTC batch20 guides
+on:
+  workflow_run:
+    workflows:
+      - Attach verified original batch19 diagnostic artwork
+    types: [completed]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate original 1P 1U 2C 1B content and duplicate guards
+        run: |
+          python3 -m py_compile scripts/publish-dtc-original-batch-20.py
+          python3 scripts/publish-dtc-original-batch-20.py --dry-run
+      - name: Confirm prior five original article images and Yoast OG data on live website
+        run: python3 -u scripts/audit-dtc-og-images.py --batch 19
+      - name: Publish missing Arabic P0691 U023A C0051 C0800 B1325 guides through Direct Bridge
+        run: python3 -u scripts/publish-dtc-original-batch-20.py
