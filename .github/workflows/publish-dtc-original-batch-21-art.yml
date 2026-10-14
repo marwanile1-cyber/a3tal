@@ -1,0 +1,44 @@
+name: Attach original batch21 DTC cover art
+on:
+  workflow_run:
+    workflows:
+      - Publish original mixed DTC batch21 guides
+    types: [completed]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-media
+  cancel-in-progress: false
+jobs:
+  media:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install original cover rendering library
+        run: python3 -m pip install -q pillow
+      - name: Confirm all five nonduplicate 1200x800 WebP images offline
+        run: |
+          python3 - <<'PY'
+          import runpy
+          from PIL import Image
+          from io import BytesIO
+          art=runpy.run_path('scripts/attach-dtc-batch-21-art.py')
+          imgs=set()
+          for code in art['CODES']:
+            raw=art['image_for'](code);img=Image.open(BytesIO(raw))
+            assert img.format=='WEBP' and img.size==(1200,800)
+            assert 10000<len(raw)<450000 and raw not in imgs
+            imgs.add(raw)
+            print('SAFE UNIQUE COVER',code,len(raw))
+          PY
+      - name: Upload only for confirmed canonical code pages; attach exclusive image
+        run: python3 -u scripts/attach-dtc-batch-21-art.py
+      - name: Set Yoast share image to matched featured art
+        run: python3 -u scripts/repair-dtc-og-canary.py --batch 21
+      - name: Publicly verify each article body image, featured attachment and OG
+        run: python3 -u scripts/audit-dtc-og-images.py --batch 21
