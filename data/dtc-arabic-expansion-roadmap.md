@@ -1,3 +1,12 @@
+## Automated reviewed-batch publishing schedule (GitHub)
+- Workflow: `.github/workflows/scheduled-dtc-reviewed-queue.yml`; scheduled at **:07 and :37 UTC** every hour (about 30 minutes apart). GitHub may delay scheduled jobs; no guaranteed wall-clock start.
+- Publisher: `scripts/scheduled-dtc-reviewed-queue.py`. Shared production concurrency lock prevents overlap with manually published DTC batches.
+- Only one new **10-guide** batch is handled per run; quota is at most 20 guides per hour when a fully authored and reviewed queue is available. Existing pages are never overwritten blindly.
+- **Safety gate:** New queue starts at batch 25. Requires an original authored `data/dtc-original-batch-NN.json` containing `"ready_for_auto_publish": true`, exactly ten independent guides with proper 3P/3U/2C/2B balance, the existing reviewed publisher, original renderer and upload scripts, and matching registration in both OG/image audit helpers.
+- Every guide must have OEM-scoped definition if required, a technical source, five concrete diagnostic steps and three FAQs. Ten unique 1600x900 WebP covers, no duplicates, and Yoast share-image verification are mandatory.
+- On an empty/incomplete content queue the run records **WAITING** and does no WordPress write. This scheduler is NOT an AI content generator, and does not magically author 480 original reviewed pages/day.
+- To provision the next release: author and review batch25's full JSON, photo script and publishing script and add batch25 to the audit maps. Only after all gates are complete set `ready_for_auto_publish` true; the next scheduled run will publish it. Do not confuse activating the timer with having future original content authored.
+
 # A3TAL DTC publishing cadence from batch 24 onward
 - Each approved publishing batch adds **10 original Arabic DTC guides**, not 5, distributed approximately 3 powertrain (P), 3 communications (U), 2 chassis (C), and 2 body (B).
 - Before publication check both the live exact code search and any legacy composite guide to protect existing traffic and canonical URLs.
