@@ -599,12 +599,12 @@
           "editorial_review": "pending exact network module definition and source validation"
         },
         {
-          "code": "C0065",
+          "code": "C006A",
           "category": "C",
-          "topic": "تعريف شاسيه/فرامل يتحدد بدليل السيارة واللاحقة",
+          "topic": "حساس التسارع متعدد المحاور لمنظومة الثبات، وفق تعريف SAE",
           "scope": "VERIFY_OEM_DEFINITION_BEFORE_AUTHORING",
-          "reference_to_verify": "OEM ABS/ESC manufacturer service manual",
-          "editorial_review": "BLOCKED until model-specific definition and suffix confirmed"
+          "reference_to_verify": "https://www.slideshare.net/slideshow/sae-dtc-definitions-j2012-revised-dec2007/259479876",
+          "editorial_review": "BLOCKED until full OEM subcode, safe VIN-scoped diagnosis and original art verified"
         },
         {
           "code": "C0069",
@@ -688,12 +688,12 @@
           "editorial_review": "pending exact network module definition and source validation"
         },
         {
-          "code": "C0070",
+          "code": "C0072",
           "category": "C",
-          "topic": "تعريف شاسيه/فرامل يتحدد بدليل السيارة واللاحقة",
+          "topic": "تجاوز حرارة الفرامل الحد المسموح وفق تعريف SAE",
           "scope": "VERIFY_OEM_DEFINITION_BEFORE_AUTHORING",
-          "reference_to_verify": "OEM ABS/ESC manufacturer service manual",
-          "editorial_review": "BLOCKED until model-specific definition and suffix confirmed"
+          "reference_to_verify": "https://www.slideshare.net/slideshow/sae-dtc-definitions-j2012-revised-dec2007/259479876",
+          "editorial_review": "BLOCKED until full OEM subcode, safe VIN-scoped diagnosis and original art verified"
         },
         {
           "code": "C0071",
@@ -721,5 +721,6 @@
         }
       ]
     }
-  ]
+  ],
+  "editorial_validation_note": "Replaced C0065 and C0070 because the SAE generic chassis code table reserves those codes; substituted documented generic C006A and C0072. Never publish an SAE-reserved code as if it had a generic definition."
 }
