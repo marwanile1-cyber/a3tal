@@ -1,0 +1,44 @@
+name: Validate original mixed DTC batch21
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/validate-dtc-batch-21.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate originality, 1P 2U 1C 1B balance, code definitions and duplicate exclusion
+        run: |
+          python3 -m py_compile scripts/publish-dtc-original-batch-21.py scripts/attach-dtc-batch-21-art.py
+          python3 scripts/publish-dtc-original-batch-21.py --dry-run
+      - name: Install offline WebP drawing toolkit
+        run: python3 -m pip install -q pillow
+      - name: Render 5 original distinct safe cover illustrations
+        run: |
+          python3 - <<'PY'
+          import json,runpy
+          from pathlib import Path
+          from io import BytesIO
+          from PIL import Image
+          rows=json.loads(Path('data/dtc-original-batch-21.json').read_text())['items']
+          codes=[r['code'] for r in rows]
+          assert codes==['P0523','U0106','U0159','C0236','B0094']
+          assert sum(c.startswith('U') for c in codes)==2
+          assert 'Toyota' in rows[3]['summary'] and 'GM' in rows[3]['summary']
+          assert 'لا' in rows[4]['safety']
+          a=runpy.run_path('scripts/attach-dtc-batch-21-art.py')
+          assert a['CODES']==codes
+          seen=set()
+          for code in codes:
+            raw=a['image_for'](code);im=Image.open(BytesIO(raw))
+            assert im.format=='WEBP' and im.size==(1200,800) and 10000<len(raw)<450000,(code,len(raw))
+            assert raw not in seen
+            seen.add(raw)
+            print('VERIFIED ORIGINAL WEBP',code,len(raw))
+          PY
