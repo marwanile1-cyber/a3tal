@@ -1,0 +1,40 @@
+name: Validate balanced P U C B batch12
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/validate-dtc-batch-12.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Review original content family balance and duplicate exclusion
+        run: |
+          python3 -m py_compile scripts/publish-dtc-original-batch-12.py scripts/attach-dtc-batch-12-art.py
+          python3 scripts/publish-dtc-original-batch-12.py --dry-run
+      - name: Install Pillow
+        run: python3 -m pip install -q pillow
+      - name: Render and check all five original 1200x800 WebP images
+        run: |
+          python3 - <<'PY'
+          import runpy,json
+          from pathlib import Path
+          from io import BytesIO
+          from PIL import Image
+          b=json.loads(Path('data/dtc-original-batch-12.json').read_text())
+          codes=[x['code'] for x in b['items']]
+          assert codes==['P0380','P0530','U0073','C0040','B0010']
+          art=runpy.run_path('scripts/attach-dtc-batch-12-art.py')
+          assert art['CODES']==codes
+          for code in codes:
+            raw=art['image_for'](code)
+            img=Image.open(BytesIO(raw))
+            assert img.size==(1200,800) and img.format=='WEBP'
+            assert 10000<len(raw)<450000,(code,len(raw))
+            print('ART PASS',code,len(raw))
+          PY
