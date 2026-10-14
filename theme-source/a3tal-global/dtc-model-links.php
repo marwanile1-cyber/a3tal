@@ -47,7 +47,7 @@ function a3g_gg_guide_entries(int $limit = 12): array {
     $filtered = [];
     foreach ($catalog as $item) {
        if (get_post_type((int)$item['id']) !== 'a3_dtc') continue;
-       if (!preg_match('/^P[0-9][0-9A-F]{3}$/',$item['code'])) continue;
+       if (!preg_match('/^[PBCU][0-9][0-9A-F]{3}$/',$item['code'])) continue;
        $post = get_post((int)$item['id']);
        if (!$post || strlen(wp_strip_all_tags($post->post_content)) < 1200) continue;
        $filtered[] = ['code'=>$item['code'],'title'=>$item['title'],'url'=>$item['url']];

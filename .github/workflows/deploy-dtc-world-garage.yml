@@ -11,6 +11,7 @@ on:
       - 'theme-source/a3tal-global/dtc-model-links.css'
       - 'theme-source/a3tal-global/dtc-library-single.php'
       - 'theme-source/a3tal-global/assets/js/dtc-world-garage.js'
+      - 'theme-source/a3tal-global/dtc-model-links.php'
 
 permissions:
   contents: read

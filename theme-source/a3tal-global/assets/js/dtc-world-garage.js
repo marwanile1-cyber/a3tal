@@ -128,11 +128,18 @@ function drawDiagnostics(){
   var car=selectedModel?selectVehicleRecord(selected,selectedModel):null;
   var verified=car&&Array.isArray(car.verified_codes)?car.verified_codes:[];
   var guides=Array.isArray(ggData.guides)?ggData.guides:[];
-  var generic=guides.filter(function(x){return /^P[0-9][0-9A-F]{3}$/.test(x.code);});
+  var generic=guides.filter(function(x){return /^[PBCU][0-9][0-9A-F]{3}$/.test(x.code);});
   var rows=[];
   verified.forEach(function(code){var found=guides.find(function(item){return item.code===code;});if(found)rows.push({data:found,verified:true});});
   // Start with the five newly reviewed guides, then continue with existing code pages.
-  var preferred=['P0137','P0138','P0192','P0193','P0449'];
+  // Always show a mix of the four systems once real guides are published.
+  // An empty category must never invent a diagnostic page.
+  var preferred=['P0017','P0234','U0155','C0035','B0001'];
+  ['P','U','C','B'].forEach(function(family){
+    var found=generic.slice().reverse().find(function(x){return x.code[0]===family;});
+    if(found&&!rows.some(function(x){return x.data.code===found.code;}))
+      rows.push({data:found,verified:false});
+  });
   preferred.forEach(function(code){var data=generic.find(function(x){return x.code===code;});if(data&&!rows.some(function(x){return x.data.code===code;}))rows.push({data:data,verified:false});});
   generic.slice().reverse().forEach(function(data){if(rows.length>=15)return;if(!rows.some(function(x){return x.data.code===data.code;}))rows.push({data:data,verified:false});});
   var d=document.getElementById('gg-diagnostics-description');
