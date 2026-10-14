@@ -305,10 +305,58 @@ def scene_seat(a,accent):
     cable(d,[(1158,490),(1135,556),(1123,692),(843,716)],w=25)
     d.line([(736,542),(792,472),(997,412)],fill=(*accent,255),width=9)
 
+
+def scene_throttle(a,accent):
+    """Throttle body, angle sensor and accelerator pedal assembly."""
+    d=ImageDraw.Draw(a); shadow(a,(210,680,1350,820))
+    tube(d,[(132,421),(282,438),(407,450)],width=93)
+    metal(d,(395,279,974,681),r=77,base_col=(62,80,88),stroke=(185,199,184))
+    d.ellipse((481,336,839,628),fill=(25,42,53),outline=(215,200,159),width=24)
+    d.ellipse((553,397,772,569),fill=(117,136,142),outline=(*accent,255),width=9)
+    d.line((558,422,763,547),fill=(46,68,75),width=20)
+    metal(d,(842,358,1057,566),r=26,base_col=(41,63,74))
+    for x in (880,907,933,960):
+        d.line((x,383,x,528),fill=(78,150,170),width=8)
+    cable(d,[(1022,408),(1131,294),(1439,274)],w=19)
+    d.line([(1045,559),(1109,651),(1315,664)],fill=(*accent,255),width=13)
+    d.polygon([(1246,388),(1297,343),(1458,533),(1391,591)],fill=(139,151,149),outline=(220,209,170))
+    d.polygon([(1284,411),(1322,389),(1401,493),(1363,515)],fill=(49,73,82))
+    metal(d,(1228,556,1470,637),r=22,base_col=(44,62,74))
+def scene_reference(a,accent):
+    """PCM reference feed branching to three sensor connectors."""
+    d=ImageDraw.Draw(a); shadow(a,(200,685,1370,840))
+    metal(d,(180,310,746,677),r=59,base_col=(52,72,83),stroke=(178,203,201))
+    for yy in range(359,621,58):
+        d.line((249,yy,667,yy),fill=(99,144,154),width=10)
+    for xx in range(273,681,82):
+        d.ellipse((xx,337,xx+22,359),fill=(*accent,255))
+    for i in range(3):
+        y=255+i*204
+        metal(d,(1080,y,1430,y+151),r=31,base_col=(49,65,78),stroke=(179,205,186))
+        for yy in (y+45,y+84,y+116):
+            d.line((1150,yy,1356,yy),fill=(91,158,176),width=8)
+        cable(d,[(720,477),(876,477),(928,y+74),(1070,y+74)],w=17)
+        d.line((922,y+74,1075,y+74),fill=(*accent,255),width=7)
+def scene_tone_wheel(a,accent):
+    """Rear ABS magnetic ring and encoder adjacent to read head."""
+    d=ImageDraw.Draw(a);shadow(a,(240,678,1370,835))
+    d.ellipse((290,217,1057,795),fill=(48,66,74),outline=(191,200,181),width=30)
+    d.ellipse((391,308,955,694),fill=(31,45,55),outline=(132,161,165),width=16)
+    for j in range(40):
+        th=j*math.tau/40
+        x=675+int(250*math.cos(th)); y=503+int(161*math.sin(th))
+        d.ellipse((x-13,y-13,x+13,y+13),fill=(*accent,255))
+    d.ellipse((516,376,836,629),fill=(67,85,88),outline=(211,207,175),width=13)
+    d.ellipse((633,467,718,542),fill=(39,56,65),outline=(145,178,173),width=9)
+    metal(d,(967,326,1373,520),r=43,base_col=(48,66,77),stroke=(171,190,190))
+    d.rounded_rectangle((1017,373,1132,471),radius=25,fill=(62,82,87),outline=(*accent,255),width=7)
+    cable(d,[(1362,414),(1433,296),(1562,308)],w=27)
+    d.line((1027,497,882,571),fill=(*accent,255),width=10)
+
 SCENES={
-"P0221":scene_seat,"P0641":scene_battery,"P0732":scene_shift,
+"P0221":scene_throttle,"P0641":scene_reference,"P0732":scene_shift,
 "U0001":scene_display,"U0402":scene_invalid,"U0416":scene_vdc,
-"C0038":scene_abs,"C0039":scene_abs_front,"B1600":scene_key,"B1601":scene_key
+"C0038":scene_abs,"C0039":scene_tone_wheel,"B1600":scene_key,"B1601":scene_key
 }
 
 def image_for(code):
