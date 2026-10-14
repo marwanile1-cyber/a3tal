@@ -1,0 +1,56 @@
+name: Publish original DTC batch23 with exclusive photos
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'assets/dtc-batch23/*.webp'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install WebP reader
+        run: python3 -m pip install --quiet Pillow
+      - name: Validate reviewed 5-guide editorial and approved original cover files
+        run: |
+          python3 -m py_compile scripts/publish-dtc-original-batch-23.py scripts/attach-dtc-batch-23-photos.py scripts/repair-dtc-og-canary.py scripts/audit-dtc-og-images.py
+          python3 scripts/publish-dtc-original-batch-23.py --dry-run
+          python3 - <<'PY'
+          from pathlib import Path
+          from hashlib import sha256
+          from PIL import Image
+          codes=['P0119','U0156','U0186','C0036','B1422']
+          digests=set()
+          for code in codes:
+              path=Path('assets/dtc-batch23')/f'a3tal-dtc-{code.lower()}-exclusive.webp'
+              if not path.is_file(): raise SystemExit('STOP, missing verified original photo: '+str(path))
+              data=path.read_bytes()
+              if not 25_000<len(data)<500_000: raise SystemExit('STOP, suspicious original image size: '+code)
+              with Image.open(path) as image:
+                  if image.format!='WEBP' or image.width<1600 or image.height<900: raise SystemExit('STOP, image dimensions or mime incorrect: '+code)
+                  image.verify()
+              digest=sha256(data).hexdigest()
+              if digest in digests: raise SystemExit('STOP, reused featured photograph: '+code)
+              digests.add(digest)
+              print('PHOTO_READY',code,str(path),len(data))
+          print('PHOTO_GATE_PASSED',len(digests))
+          PY
+      - name: Verify previous batch22 photos, visible HTML and Yoast OG
+        run: python3 -u scripts/audit-dtc-og-images.py --batch 22
+      - name: Publish five nonduplicate 1P 2U 1C 1B articles through Direct Bridge
+        run: python3 -u scripts/publish-dtc-original-batch-23.py
+      - name: Upload and attach five original photographic WebP covers through Direct Bridge
+        run: python3 -u scripts/attach-dtc-batch-23-photos.py
+      - name: Make Yoast Facebook, Twitter and featured image consistent
+        run: python3 -u scripts/repair-dtc-og-canary.py --batch 23
+      - name: Verify each article, visible photo and OG image live
+        run: python3 -u scripts/audit-dtc-og-images.py --batch 23
