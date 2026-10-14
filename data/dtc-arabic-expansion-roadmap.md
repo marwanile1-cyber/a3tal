@@ -109,3 +109,15 @@ Do not call any pending/failed workflow a successful production deployment. Do n
 - Batch 09 original art was uploaded, assigned and validated on the post metadata, and Yoast OG verified; the first media pipeline failed only at HTML image display because the live custom template previously limited image display to batch07/08. Theme change to accept all reviewed five-guide batches committed; deployment in progress. On successful scoped theme deployment a safe idempotent batch09 media/OG/display verification workflow retries and must pass before batch10.
 - Batch 10 correctly gap-audited against FIXED_EXISTING, replacing the originally considered P0011 P0335 P0340 P0507 P0562 because these were already published. New five: P0017 P0116 P0139 P0234 P0453. Original text in data/dtc-original-batch-10.json. Review + image generation validation passed in action #38442331688. Publish will only follow full success of batch09 artwork+OG HTML audit; all five new codes still subject to live catalog duplicate preflight.
 - No manufacturer/year/engine-specific fault associations to be invented from generic OBD explanations; those require references for each link.
+
+
+## Permanent family diversity policy | 14 October 2026
+Do not publish only P-prefix codes. Every five-guide editorial batch must include genuine original content in all four systems when a verified, useful gap exists:
+- P: powertrain (engine / transmission).
+- U: network, loss of communication, gateways (read originating module, current/historical state).
+- C: chassis, ABS/ESP/steering/suspension (OEM code definition and suffix must be confirmed; no presumed make compatibility).
+- B: body/interior/airbags/SRS (OEM full suffix matters; do not give DIY probing or disabling advice for pyrotechnic equipment).
+
+Preferred batch mix: 2P + 1U + 1C + 1B; sometimes rotate to 1P + 2U + 1C + 1B. Every new post must pass existing-catalog intent check, include five meaningful checks, source caveat and a unique locally created featured 1200x800 WebP. Featured image must appear in article and match Yoast og:image. A page only gets vehicle-model links when the actual OEM reference confirms applicability to that generation/engine; generic codes are useful references, not automatically "common faults" of each vehicle.
+
+Batch 11 (mixed) published October 14: P0217 / P0463 / U0155 / C0035 / B0001, original posts 83613 through 83617, run https://github.com/marwanile1-cyber/a3tal/actions/runs/38551648148. Featured illustrations run separately and must be verified before declaring fully finished. A3tal archive and model guide filters were updated to read all PBCU letters rather than only powertrain.
