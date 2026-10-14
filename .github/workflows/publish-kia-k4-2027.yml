@@ -1,0 +1,36 @@
+name: Publish Kia K4 2027 Egypt
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-kia-k4-2027.yml'
+      - 'scripts/publish-kia-k4-2027.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: a3tal-kia-k4-2027-article
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check publisher source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/publish-kia-k4-2027.py
+          test -n "$A3TAL_API_KEY"
+      - name: Publish K4 prices with local-spec article and three WebP photos
+        shell: bash
+        run: |
+          python3 -m pip install --quiet Pillow
+          python3 -u scripts/publish-kia-k4-2027.py
