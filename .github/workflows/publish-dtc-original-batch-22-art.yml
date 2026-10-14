@@ -1,0 +1,43 @@
+name: Attach original batch22 diagnostic WebP covers
+on:
+  workflow_run:
+    workflows:
+      - Publish original mixed DTC batch22 guides
+    types: [completed]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-media
+  cancel-in-progress: false
+jobs:
+  media:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install WebP renderer
+        run: python3 -m pip install -q pillow
+      - name: Render offline and confirm five separate covers
+        run: |
+          python3 - <<'PY'
+          import runpy
+          from io import BytesIO
+          from PIL import Image
+          d=runpy.run_path('scripts/attach-dtc-batch-22-art.py')
+          assert len(d['CODES'])==5
+          for code in d['CODES']:
+            raw=d['image_for'](code)
+            im=Image.open(BytesIO(raw))
+            assert im.format=='WEBP' and im.size==(1200,800) and 10000<len(raw)<450000
+            print('RENDERED UNIQUE',code,len(raw))
+          PY
+      - name: Set original cover only on confirmed article id and public permalink
+        run: python3 -u scripts/attach-dtc-batch-22-art.py
+      - name: Set Yoast OpenGraph to each corresponding featured image
+        run: python3 -u scripts/repair-dtc-og-canary.py --batch 22
+      - name: Audit images inside HTML, featured metadata and share media
+        run: python3 -u scripts/audit-dtc-og-images.py --batch 22
