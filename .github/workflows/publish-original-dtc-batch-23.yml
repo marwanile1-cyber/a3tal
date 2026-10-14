@@ -27,8 +27,12 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
           from hashlib import sha256
+          import json
           from PIL import Image
           codes=['P0119','U0156','U0186','C0036','B1422']
+          manifest=json.loads(Path('assets/dtc-batch23/manifest.json').read_text())
+          approved={f['code']:f for f in manifest['files']}
+          if set(approved)!=set(codes):raise SystemExit('STOP, manifest code mismatch')
           digests=set()
           for code in codes:
               path=Path('assets/dtc-batch23')/f'a3tal-dtc-{code.lower()}-exclusive.webp'
@@ -39,6 +43,8 @@ jobs:
                   if image.format!='WEBP' or image.width<1600 or image.height<900: raise SystemExit('STOP, image dimensions or mime incorrect: '+code)
                   image.verify()
               digest=sha256(data).hexdigest()
+              if digest!=approved[code]['sha256'] or len(data)!=approved[code]['bytes']:
+                  raise SystemExit('STOP, cover does not match approved original manifest: '+code)
               if digest in digests: raise SystemExit('STOP, reused featured photograph: '+code)
               digests.add(digest)
               print('PHOTO_READY',code,str(path),len(data))
