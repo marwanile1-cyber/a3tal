@@ -1,0 +1,42 @@
+name: Publish five original diverse covers - Batch 14
+on:
+  workflow_run:
+    workflows:
+      - Publish mixed P U C B diagnostic guides - Batch 14
+    types: [completed]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-media
+  cancel-in-progress: false
+jobs:
+  images:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install image renderer
+        run: python3 -m pip install -q pillow
+      - name: Confirm five original WebP illustrations and unique codes before uploads
+        run: |
+          python3 - <<'PY'
+          import runpy
+          from io import BytesIO
+          from PIL import Image
+          m=runpy.run_path('scripts/attach-dtc-batch-14-art.py')
+          for code in m['CODES']:
+              raw=m['image_for'](code)
+              img=Image.open(BytesIO(raw))
+              assert img.format=='WEBP' and img.size==(1200,800) and len(raw)>10000
+              print('VERIFIED ART',code,len(raw))
+          PY
+      - name: Upload original cover to each uniquely published article
+        run: python3 -u scripts/attach-dtc-batch-14-art.py
+      - name: Synchronize original Yoast featured OpenGraph image
+        run: python3 -u scripts/repair-dtc-og-canary.py --batch 14
+      - name: Verify all five images visibly rendered and shared correctly
+        run: python3 -u scripts/audit-dtc-og-images.py --batch 14
