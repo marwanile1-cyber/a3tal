@@ -1,0 +1,42 @@
+name: Attach verified original batch19 diagnostic artwork
+on:
+  workflow_run:
+    workflows:
+      - Publish original mixed DTC batch19
+    types: [completed]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-media
+  cancel-in-progress: false
+jobs:
+  covers:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install offline WebP rendering dependency
+        run: python3 -m pip install -q pillow
+      - name: Validate correct 5 individually original WebP photos
+        run: |
+          python3 - <<'PY'
+          import runpy
+          from io import BytesIO
+          from PIL import Image
+          art=runpy.run_path('scripts/attach-dtc-batch-19-art.py')
+          for code in art['CODES']:
+            raw=art['image_for'](code)
+            img=Image.open(BytesIO(raw))
+            assert img.format=='WEBP' and img.size==(1200,800) and len(raw)>10000
+            print('WEBP READY',code,len(raw))
+          PY
+      - name: Attach one unique image to each live canonical WordPress post only
+        run: python3 -u scripts/attach-dtc-batch-19-art.py
+      - name: Point social media OG and X images at original featured covers
+        run: python3 -u scripts/repair-dtc-og-canary.py --batch 19
+      - name: Confirm publicly rendered cover, featured media and social OG for each guide
+        run: python3 -u scripts/audit-dtc-og-images.py --batch 19
