@@ -1,0 +1,43 @@
+name: Validate mixed DTC batch15 before WordPress
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/validate-dtc-batch-15.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify full original articles safety and 1P 1U 2C 1B balance
+        run: |
+          python3 -m py_compile scripts/publish-dtc-original-batch-15.py scripts/attach-dtc-batch-15-art.py
+          python3 scripts/publish-dtc-original-batch-15.py --dry-run
+      - name: Install offline illustration support
+        run: python3 -m pip install -q pillow
+      - name: Check five unique 1200x800 original WebP images
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import runpy,json
+          from io import BytesIO
+          from PIL import Image
+          obj=json.loads(Path('data/dtc-original-batch-15.json').read_text())
+          codes=[v['code'] for v in obj['items']]
+          assert codes==['P0421','U0415','C0110','C0161','B0051']
+          art=runpy.run_path('scripts/attach-dtc-batch-15-art.py')
+          assert art['CODES']==codes
+          signatures=set()
+          for code in codes:
+              raw=art['image_for'](code)
+              image=Image.open(BytesIO(raw))
+              assert image.format=='WEBP' and image.size==(1200,800)
+              assert 10000<len(raw)<450000,(code,len(raw))
+              assert raw not in signatures
+              signatures.add(raw)
+              print('ORIGINAL COVER PASS',code,len(raw))
+          PY
