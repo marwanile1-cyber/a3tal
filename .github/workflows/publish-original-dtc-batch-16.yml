@@ -1,0 +1,29 @@
+name: Publish original mixed DTC batch16 Arabic guides
+on:
+  workflow_run:
+    workflows:
+      - Publish original mixed DTC batch15 WebP covers
+    types: [completed]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate safe 1P 2U 1C 1B original guides and duplicate guards
+        run: |
+          python3 -m py_compile scripts/publish-dtc-original-batch-16.py
+          python3 scripts/publish-dtc-original-batch-16.py --dry-run
+      - name: Inspect all five prior artwork and Yoast share images on the live site
+        run: python3 -u scripts/audit-dtc-og-images.py --batch 15
+      - name: Publish missing codes only after real-time read-only duplicate checks
+        run: python3 -u scripts/publish-dtc-original-batch-16.py
