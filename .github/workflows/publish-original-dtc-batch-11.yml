@@ -1,0 +1,28 @@
+name: Publish original mixed P U C B codes - Batch 11
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-original-dtc-batch-11.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate five original texts with two P, one U, one C, one B
+        run: |
+          python3 -m py_compile scripts/publish-dtc-original-batch-11.py
+          python3 scripts/publish-dtc-original-batch-11.py --dry-run
+      - name: Confirm batch10 image presence inside articles and unique social cards
+        run: python3 -u scripts/audit-dtc-og-images.py --batch 10
+      - name: Publish after real-time duplicate and live permalink checks
+        run: python3 -u scripts/publish-dtc-original-batch-11.py
