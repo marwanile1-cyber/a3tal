@@ -202,3 +202,14 @@ Automatic gate: only after full successful batch15 artwork/OG verified publish b
 - **B1421 Toyota OEM caveat:** a solar sensor fault may be logged during dark-room A/C scan although the sensor is healthy. Check live response under documented illumination before parts replacement.
 - Batch22 publishing workflow .github/workflows/publish-original-dtc-batch-22.yml triggers automatically only after batch21 art workflow success and a new public media/OG audit, then batch22 art workflow on successful publication. Do not claim batch22 live before GitHub success and individual post IDs.
 - No generic DTC guide is evidence that a particular marque/model/year has a frequent defect. Vehicle-specific links require independent OEM/TSB/reference source metadata.
+
+
+## Verified mixed-family batch 23 | 2026-10-14
+- Publication and full media/SEO audit succeeded in run https://github.com/marwanile1-cyber/a3tal/actions/runs/38615275206
+- New original codes: P0119, U0156, U0186, C0036, B1422 (1P/2U/1C/1B).
+- Exactly five newly published canonical code posts IDs 83804–83808, no duplicates or overwritten legacy content.
+- Five unique locally generated original technical WebP visualizations (1600×900), media IDs 83809–83813. These are original technical illustrations, **not** real photographs or manufacturer-accurate wiring diagrams.
+- All five featured images are visible inside individual articles. WordPress image IDs, WebP content, Yoast OpenGraph, Twitter thumbnails and public HTML were independently checked in the successful final audit.
+- Public archive after batch: **187 code explanations**. All five individual pages are index/follow, with OEM qualifier for C0036 ABS and Toyota-only B1422 scope.
+- Batch 23 was already authored and staged when this continuation started; the missing artwork assets were the release blocker. Added reproducible illustration renderer `scripts/render-dtc-batch-23-art.py` and revised batch23 release workflow to generate/check originals before publishing.
+- Next work begins at **batch 24**, subject to live duplicate/catalog SEO check, accurate OEM-specific definitions and individually unique WebP art. Do not simply relabel this completed batch or claim any generic DTC is a frequent fault on a particular model.
