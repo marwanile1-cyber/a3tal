@@ -1,0 +1,42 @@
+name: Validate mixed P U C B batch18
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/validate-dtc-batch-18.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint publisher and validate 5 unique original P U U C B Arabic guides
+        run: |
+          python3 -m py_compile scripts/publish-dtc-original-batch-18.py scripts/attach-dtc-batch-18-art.py
+          python3 scripts/publish-dtc-original-batch-18.py --dry-run
+      - name: Install Pillow for independent artwork checking
+        run: python3 -m pip install -q pillow
+      - name: Confirm five different 1200x800 WebP images and matching codes
+        run: |
+          python3 - <<'PY'
+          import runpy,json
+          from pathlib import Path
+          from PIL import Image
+          from io import BytesIO
+          b=json.loads(Path('data/dtc-original-batch-18.json').read_text())
+          codes=[r['code'] for r in b['items']]
+          assert codes==['P2101','U0128','U0184','C0561','B0070']
+          art=runpy.run_path('scripts/attach-dtc-batch-18-art.py')
+          assert art['CODES']==codes
+          seen=set()
+          for code in codes:
+            raw=art['image_for'](code)
+            im=Image.open(BytesIO(raw))
+            assert im.format=='WEBP' and im.size==(1200,800) and 10000<len(raw)<450000
+            assert raw not in seen
+            seen.add(raw)
+            print('ORIGINAL COVER PASS',code,len(raw))
+          PY
