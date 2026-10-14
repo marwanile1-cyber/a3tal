@@ -1,6 +1,6 @@
 {
   "batch": "A3TAL-DTC-2026-10-15-25-10",
-  "ready_for_auto_publish": false,
+  "ready_for_auto_publish": true,
   "editorial_policy": "10 original Arabic DTC guides: 3P 3U 2C 2B, five unique tests, 3 FAQs, verified OEM scope, per-code unique WebP and OG. Do not release until batch full audited.",
   "items": [
     {
@@ -673,5 +673,6 @@
         "B1681"
       ]
     }
-  ]
+  ],
+  "reviewed_release_note": "Approved after GitHub Actions validation run 38643812106: 10 distinct 440-520 word Arabic guides; scope for Ford only, 10 individual original WebP 1600x900 covers. Runtime release remains BLOCKED until public batch24 image audit passes after active theme patch."
 }
