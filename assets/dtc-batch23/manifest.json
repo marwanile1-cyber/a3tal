@@ -1,0 +1,39 @@
+{
+  "project": "A3TAL DTC Batch 23",
+  "size": "1600x900",
+  "format": "image/webp",
+  "source": "Five distinct cropped photographic diagnostic scenes generated for A3tal in ChatGPT on 2026-10-14; no borrowed images.",
+  "files": [
+    {
+      "code": "P0119",
+      "filename": "a3tal-dtc-p0119-exclusive.webp",
+      "bytes": 82132,
+      "sha256": "c949abd086060acc6f29ef206f78fe47e463eff729fb18c93d1218da99ac3fd7"
+    },
+    {
+      "code": "U0156",
+      "filename": "a3tal-dtc-u0156-exclusive.webp",
+      "bytes": 60668,
+      "sha256": "3eec494ec302684b4638608f0095d308a244525070d069bde439262c5385ac88"
+    },
+    {
+      "code": "U0186",
+      "filename": "a3tal-dtc-u0186-exclusive.webp",
+      "bytes": 83314,
+      "sha256": "978d745688599e24deb4f1439a938b3a679efbd07916110fd55e14bda7248eca"
+    },
+    {
+      "code": "C0036",
+      "filename": "a3tal-dtc-c0036-exclusive.webp",
+      "bytes": 62956,
+      "sha256": "05479b6cb09451b934e1f86c4444d3566d11c06910a0e59c58ae9259de69fbef"
+    },
+    {
+      "code": "B1422",
+      "filename": "a3tal-dtc-b1422-exclusive.webp",
+      "bytes": 74878,
+      "sha256": "690f81c547118f5f392e31b54542688f1e6ab55e0db0aabded7da2133851f3ae"
+    }
+  ],
+  "editorial_check": "Must match approved image bytes; if any differs, stop publication. Distinct originals, one featured media per code, public OG and HTML verification mandatory."
+}
