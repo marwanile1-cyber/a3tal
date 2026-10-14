@@ -208,7 +208,7 @@ def publish_one(row):
             "_a3_code_scope": row["scope"],
             "_a3_drive_advice": row["safety"],
             "_a3_source_url": row["source"],
-            "_a3_source_checked_at": "2026-10-13",
+            "_a3_source_checked_at": "2026-10-14",
             "_a3_dtc_batch": "A3TAL-DTC-2026-10-14-11-5",
         }
     }
