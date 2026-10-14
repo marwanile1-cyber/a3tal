@@ -1,0 +1,42 @@
+name: Publish original mixed DTC batch15 WebP covers
+on:
+  workflow_run:
+    workflows:
+      - Publish mixed DTC batch15 Arabic diagnostic guides
+    types: [completed]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-media
+  cancel-in-progress: false
+jobs:
+  images:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install WebP renderer
+        run: python3 -m pip install -q pillow
+      - name: Confirm all five images render before uploading
+        run: |
+          python3 - <<'PY'
+          import runpy
+          from io import BytesIO
+          from PIL import Image
+          x=runpy.run_path('scripts/attach-dtc-batch-15-art.py')
+          for code in x['CODES']:
+            raw=x['image_for'](code)
+            image=Image.open(BytesIO(raw))
+            assert image.format=='WEBP' and image.size==(1200,800) and len(raw)>10000
+            print('VERIFIED COVER',code,len(raw))
+          PY
+      - name: Resolve confirmed WordPress post IDs and assign original pictures
+        run: python3 -u scripts/attach-dtc-batch-15-art.py
+      - name: Synchronize social images with original featured pictures
+        run: python3 -u scripts/repair-dtc-og-canary.py --batch 15
+      - name: Audit all five visible images, attachments and OG image meta
+        run: python3 -u scripts/audit-dtc-og-images.py --batch 15
