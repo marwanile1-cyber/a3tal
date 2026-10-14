@@ -133,3 +133,18 @@ Balance 2 P + 1 U + 1 C + 1 B:
 - B0010: passenger front Stage 1 airbag SRS, require subcode and OEM verification; absolutely no DIY probing of pyrotechnic initiators.
 
 Published only after live duplicate preflight and full previous-batch image/OG audit. Artwork must be 1200x800 exclusive WebP, set as featured, visible within body and confirmed via Yoast og:image before calling completed. The next batch should rotate to 1P+2U+1C+1B when valuable documented U-code gaps exist, instead of blindly producing another 2P batch.
+
+
+## Mixed-families batch 13, 2026-10-14
+- Published all 5 new codes: P2002 / U0109 / U0126 / C0050 / B0028.
+- Original editorial: data/dtc-original-batch-13.json, assembled from independently authored verified drafts data/dtc-batch13-*.json.
+- Publisher completed with five created and no duplicates: https://github.com/marwanile1-cyber/a3tal/actions/runs/38558331375
+- Exclusive 1200x800 WebP pictures for each, plus Yoast image synchronization and body display audit: https://github.com/marwanile1-cyber/a3tal/actions/runs/38558607486. Do not mark artwork fully complete until run success.
+- OEM-specific caveat C0050 right-rear wheel ABS only in applications such as GM with code suffix. B0028 is right side airbag deployment circuit in supported OEM systems, and absolutely no consumer squib/airbag probing instructions.
+
+## Mixed-families batch 14, staged only
+- Planned codes P0243 / U0102 / U0129 / C0045 / B0081, preserving 1P+2U+1C+1B.
+- Original drafts in data/dtc-batch14-*.json assembled in data/dtc-original-batch-14.json; guarded publisher scripts/publish-dtc-original-batch-14.py; five new original technical illustrations scripts/attach-dtc-batch-14-art.py.
+- Five article and five WebP QA workflow successful: https://github.com/marwanile1-cyber/a3tal/actions/runs/38559521771.
+- Publishing is gated to successful completion of batch13 artwork and a fresh direct public audit of all five images and Yoast share cards. Never claim batch14 live before publishing log confirms actual post IDs and new slugs.
+- B0081 passenger presence system definitions/suffix vary by OEM; use linked GM service bulletin and VIN-specific wording. Do not allow incorrect OEM assumptions to become model-specific links.
