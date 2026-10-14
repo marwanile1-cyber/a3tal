@@ -1,0 +1,722 @@
+{
+  "title": "A3TAL approved-design editorial pipeline: next eight 10-code releases",
+  "generated_on": "2026-10-15",
+  "target_publication": "GitHub scheduled at minute 07 and 37 UTC, one ready batch per run",
+  "strict_notice": "Planning this 8-batch backlog DOES NOT create 80 publish-ready explanations. Automation must not write WordPress until each independent long-form explanation, technical validation, ten 1600×900 WebP images, and OG verification scripts pass. OEM definitions never generalized.",
+  "initial_catalog": 197,
+  "expected_after_all_eight_if_approved_and_published": 277,
+  "batches": [
+    {
+      "batch": 25,
+      "planned_publication_slot": 1,
+      "status": "OUTLINE_ONLY_NOT_READY_TO_PUBLISH",
+      "ready_for_auto_publish": false,
+      "mix": "3P / 3U / 2C / 2B",
+      "items": [
+        {
+          "code": "P0221",
+          "category": "P",
+          "topic": "أداء إشارة حساس موضع الخانق/الدواسة B",
+          "scope": "generic",
+          "reference_to_verify": "https://dmv.de.gov/VehicleServices/inspections/pdfs/dtc_list.pdf",
+          "editorial_review": "pending diagnostic text, alternatives, 5 procedures, FAQs and art"
+        },
+        {
+          "code": "P0641",
+          "category": "P",
+          "topic": "الدائرة المرجعية لجهد الحساسات A مفتوحة",
+          "scope": "generic",
+          "reference_to_verify": "https://dmv.de.gov/VehicleServices/inspections/pdfs/dtc_list.pdf",
+          "editorial_review": "pending diagnostic text, alternatives, 5 procedures, FAQs and art"
+        },
+        {
+          "code": "P0732",
+          "category": "P",
+          "topic": "نسبة تعشيق النقلة الثانية غير صحيحة",
+          "scope": "generic",
+          "reference_to_verify": "https://dmv.de.gov/VehicleServices/inspections/pdfs/dtc_list.pdf",
+          "editorial_review": "pending diagnostic text, alternatives, 5 procedures, FAQs and art"
+        },
+        {
+          "code": "U0001",
+          "category": "U",
+          "topic": "خلل خط اتصالات CAN عالي السرعة",
+          "scope": "generic_or_OEM_dependent",
+          "reference_to_verify": "SAE J2012 / OEM workshop manual",
+          "editorial_review": "pending exact network module definition and source validation"
+        },
+        {
+          "code": "U0402",
+          "category": "U",
+          "topic": "بيانات غير صالحة مستقبلة من TCM",
+          "scope": "generic_or_OEM_dependent",
+          "reference_to_verify": "SAE J2012 / OEM workshop manual",
+          "editorial_review": "pending exact network module definition and source validation"
+        },
+        {
+          "code": "U0416",
+          "category": "U",
+          "topic": "بيانات غير صالحة مستقبلة من وحدة ديناميكيات السيارة",
+          "scope": "generic_or_OEM_dependent",
+          "reference_to_verify": "SAE J2012 / OEM workshop manual",
+          "editorial_review": "pending exact network module definition and source validation"
+        },
+        {
+          "code": "C0038",
+          "category": "C",
+          "topic": "تعريف شاسيه/فرامل يتحدد بدليل السيارة واللاحقة",
+          "scope": "VERIFY_OEM_DEFINITION_BEFORE_AUTHORING",
+          "reference_to_verify": "OEM ABS/ESC manufacturer service manual",
+          "editorial_review": "BLOCKED until model-specific definition and suffix confirmed"
+        },
+        {
+          "code": "C0039",
+          "category": "C",
+          "topic": "تعريف شاسيه/فرامل يتحدد بدليل السيارة واللاحقة",
+          "scope": "VERIFY_OEM_DEFINITION_BEFORE_AUTHORING",
+          "reference_to_verify": "OEM ABS/ESC manufacturer service manual",
+          "editorial_review": "BLOCKED until model-specific definition and suffix confirmed"
+        },
+        {
+          "code": "B1600",
+          "category": "B",
+          "topic": "وحدة مانع السرقة لم تقرأ شريحة المفتاح في فورد",
+          "scope": "oem:ford",
+          "reference_to_verify": "https://www.fordservicecontent.com/Ford_Content/pubs/content/~WT/~MUS~LEN/3550/tsb01-06-02.htm",
+          "editorial_review": "pending original explanatory text, pinout-free safe diagnosis and artwork"
+        },
+        {
+          "code": "B1601",
+          "category": "B",
+          "topic": "مفتاح PATS غير مبرمج أو غير معروف في تطبيقات فورد",
+          "scope": "oem:ford",
+          "reference_to_verify": "https://www.fordservicecontent.com/Ford_Content/pubs/content/~WT/~MUS~LEN/3550/tsb01-06-02.htm",
+          "editorial_review": "pending original explanatory text, pinout-free safe diagnosis and artwork"
+        }
+      ]
+    },
+    {
+      "batch": 26,
+      "planned_publication_slot": 2,
+      "status": "OUTLINE_ONLY_NOT_READY_TO_PUBLISH",
+      "ready_for_auto_publish": false,
+      "mix": "3P / 3U / 2C / 2B",
+      "items": [
+        {
+          "code": "P0251",
+          "category": "P",
+          "topic": "أداء دائرة التحكم في قياس الوقود بمضخة الحقن A",
+          "scope": "generic",
+          "reference_to_verify": "https://dmv.de.gov/VehicleServices/inspections/pdfs/dtc_list.pdf",
+          "editorial_review": "pending diagnostic text, alternatives, 5 procedures, FAQs and art"
+        },
+        {
+          "code": "P0460",
+          "category": "P",
+          "topic": "خلل دائرة حساس مستوى الوقود",
+          "scope": "generic",
+          "reference_to_verify": "https://dmv.de.gov/VehicleServices/inspections/pdfs/dtc_list.pdf",
+          "editorial_review": "pending diagnostic text, alternatives, 5 procedures, FAQs and art"
+        },
+        {
+          "code": "P061B",
+          "category": "P",
+          "topic": "خلل حساب عزم المحرك داخل وحدة التحكم",
+          "scope": "generic",
+          "reference_to_verify": "https://dmv.de.gov/VehicleServices/inspections/pdfs/dtc_list.pdf",
+          "editorial_review": "pending diagnostic text, alternatives, 5 procedures, FAQs and art"
+        },
+        {
+          "code": "U0110",
+          "category": "U",
+          "topic": "فقد الاتصال بوحدة التحكم بمحرك الدفع A",
+          "scope": "generic_or_OEM_dependent",
+          "reference_to_verify": "SAE J2012 / OEM workshop manual",
+          "editorial_review": "pending exact network module definition and source validation"
+        },
+        {
+          "code": "U0123",
+          "category": "U",
+          "topic": "فقد الاتصال بوحدة مستشعر الالتفاف Yaw",
+          "scope": "generic_or_OEM_dependent",
+          "reference_to_verify": "SAE J2012 / OEM workshop manual",
+          "editorial_review": "pending exact network module definition and source validation"
+        },
+        {
+          "code": "U0124",
+          "category": "U",
+          "topic": "فقد الاتصال بوحدة حساس التسارع الجانبي",
+          "scope": "generic_or_OEM_dependent",
+          "reference_to_verify": "SAE J2012 / OEM workshop manual",
+          "editorial_review": "pending exact network module definition and source validation"
+        },
+        {
+          "code": "C0042",
+          "category": "C",
+          "topic": "تعريف شاسيه/فرامل يتحدد بدليل السيارة واللاحقة",
+          "scope": "VERIFY_OEM_DEFINITION_BEFORE_AUTHORING",
+          "reference_to_verify": "OEM ABS/ESC manufacturer service manual",
+          "editorial_review": "BLOCKED until model-specific definition and suffix confirmed"
+        },
+        {
+          "code": "C0043",
+          "category": "C",
+          "topic": "تعريف شاسيه/فرامل يتحدد بدليل السيارة واللاحقة",
+          "scope": "VERIFY_OEM_DEFINITION_BEFORE_AUTHORING",
+          "reference_to_verify": "OEM ABS/ESC manufacturer service manual",
+          "editorial_review": "BLOCKED until model-specific definition and suffix confirmed"
+        },
+        {
+          "code": "B1602",
+          "category": "B",
+          "topic": "قراءة جزئية/غير سليمة من شريحة المفتاح PATS في فورد",
+          "scope": "oem:ford",
+          "reference_to_verify": "https://www.fordservicecontent.com/Ford_Content/pubs/content/~WT/~MUS~LEN/3550/tsb01-06-02.htm",
+          "editorial_review": "pending original explanatory text, pinout-free safe diagnosis and artwork"
+        },
+        {
+          "code": "B1681",
+          "category": "B",
+          "topic": "وحدة PATS لا تتلقى إشارة هوائي استشعار المفتاح في فورد",
+          "scope": "oem:ford",
+          "reference_to_verify": "https://www.fordservicecontent.com/Ford_Content/pubs/content/~WT/~MUS~LEN/3550/tsb01-06-02.htm",
+          "editorial_review": "pending original explanatory text, pinout-free safe diagnosis and artwork"
+        }
+      ]
+    },
+    {
+      "batch": 27,
+      "planned_publication_slot": 3,
+      "status": "OUTLINE_ONLY_NOT_READY_TO_PUBLISH",
+      "ready_for_auto_publish": false,
+      "mix": "3P / 3U / 2C / 2B",
+      "items": [
+        {
+          "code": "P0261",
+          "category": "P",
+          "topic": "انخفاض إشارة دائرة بخاخ الأسطوانة الأولى",
+          "scope": "generic",
+          "reference_to_verify": "https://dmv.de.gov/VehicleServices/inspections/pdfs/dtc_list.pdf",
+          "editorial_review": "pending diagnostic text, alternatives, 5 procedures, FAQs and art"
+        },
+        {
+          "code": "P0327",
+          "category": "P",
+          "topic": "انخفاض إشارة حساس الطرق رقم 1",
+          "scope": "generic",
+          "reference_to_verify": "https://dmv.de.gov/VehicleServices/inspections/pdfs/dtc_list.pdf",
+          "editorial_review": "pending diagnostic text, alternatives, 5 procedures, FAQs and art"
+        },
+        {
+          "code": "P0571",
+          "category": "P",
+          "topic": "خلل دائرة مفتاح الفرامل A",
+          "scope": "generic",
+          "reference_to_verify": "https://dmv.de.gov/VehicleServices/inspections/pdfs/dtc_list.pdf",
+          "editorial_review": "pending diagnostic text, alternatives, 5 procedures, FAQs and art"
+        },
+        {
+          "code": "U0125",
+          "category": "U",
+          "topic": "فقد الاتصال بوحدة حساسات التسارع متعددة المحاور",
+          "scope": "generic_or_OEM_dependent",
+          "reference_to_verify": "SAE J2012 / OEM workshop manual",
+          "editorial_review": "pending exact network module definition and source validation"
+        },
+        {
+          "code": "U0132",
+          "category": "U",
+          "topic": "فقد الاتصال بوحدة التحكم في ارتفاع التعليق",
+          "scope": "generic_or_OEM_dependent",
+          "reference_to_verify": "SAE J2012 / OEM workshop manual",
+          "editorial_review": "pending exact network module definition and source validation"
+        },
+        {
+          "code": "U0141",
+          "category": "U",
+          "topic": "فقد الاتصال بوحدة التحكم في جسم السيارة A",
+          "scope": "generic_or_OEM_dependent",
+          "reference_to_verify": "SAE J2012 / OEM workshop manual",
+          "editorial_review": "pending exact network module definition and source validation"
+        },
+        {
+          "code": "C0044",
+          "category": "C",
+          "topic": "تعريف شاسيه/فرامل يتحدد بدليل السيارة واللاحقة",
+          "scope": "VERIFY_OEM_DEFINITION_BEFORE_AUTHORING",
+          "reference_to_verify": "OEM ABS/ESC manufacturer service manual",
+          "editorial_review": "BLOCKED until model-specific definition and suffix confirmed"
+        },
+        {
+          "code": "C0046",
+          "category": "C",
+          "topic": "تعريف شاسيه/فرامل يتحدد بدليل السيارة واللاحقة",
+          "scope": "VERIFY_OEM_DEFINITION_BEFORE_AUTHORING",
+          "reference_to_verify": "OEM ABS/ESC manufacturer service manual",
+          "editorial_review": "BLOCKED until model-specific definition and suffix confirmed"
+        },
+        {
+          "code": "B1213",
+          "category": "B",
+          "topic": "عدد المفاتيح المسجلة أقل من الحد المطلوب في تطبيقات فورد",
+          "scope": "oem:ford",
+          "reference_to_verify": "https://www.fordservicecontent.com/Ford_Content/pubs/content/~WT/~MUS~LEN/3550/tsb01-06-02.htm",
+          "editorial_review": "pending original explanatory text, pinout-free safe diagnosis and artwork"
+        },
+        {
+          "code": "B1232",
+          "category": "B",
+          "topic": "خلل هوائي جهاز الاستقبال لنظام PATS في فورد",
+          "scope": "oem:ford",
+          "reference_to_verify": "https://www.fordservicecontent.com/Ford_Content/pubs/content/~WT/~MUS~LEN/3550/tsb01-06-02.htm",
+          "editorial_review": "pending original explanatory text, pinout-free safe diagnosis and artwork"
+        }
+      ]
+    },
+    {
+      "batch": 28,
+      "planned_publication_slot": 4,
+      "status": "OUTLINE_ONLY_NOT_READY_TO_PUBLISH",
+      "ready_for_auto_publish": false,
+      "mix": "3P / 3U / 2C / 2B",
+      "items": [
+        {
+          "code": "P0262",
+          "category": "P",
+          "topic": "ارتفاع إشارة دائرة بخاخ الأسطوانة الأولى",
+          "scope": "generic",
+          "reference_to_verify": "https://dmv.de.gov/VehicleServices/inspections/pdfs/dtc_list.pdf",
+          "editorial_review": "pending diagnostic text, alternatives, 5 procedures, FAQs and art"
+        },
+        {
+          "code": "P0354",
+          "category": "P",
+          "topic": "خلل دائرة ملف الإشعال D",
+          "scope": "generic",
+          "reference_to_verify": "https://dmv.de.gov/VehicleServices/inspections/pdfs/dtc_list.pdf",
+          "editorial_review": "pending diagnostic text, alternatives, 5 procedures, FAQs and art"
+        },
+        {
+          "code": "P0620",
+          "category": "P",
+          "topic": "خلل دائرة التحكم في المولد (الدينامو)",
+          "scope": "generic",
+          "reference_to_verify": "https://dmv.de.gov/VehicleServices/inspections/pdfs/dtc_list.pdf",
+          "editorial_review": "pending diagnostic text, alternatives, 5 procedures, FAQs and art"
+        },
+        {
+          "code": "U0142",
+          "category": "U",
+          "topic": "فقد الاتصال بوحدة BCM B",
+          "scope": "generic_or_OEM_dependent",
+          "reference_to_verify": "SAE J2012 / OEM workshop manual",
+          "editorial_review": "pending exact network module definition and source validation"
+        },
+        {
+          "code": "U0150",
+          "category": "U",
+          "topic": "فقد الاتصال بوحدة بوابة الاتصال Gateway A",
+          "scope": "generic_or_OEM_dependent",
+          "reference_to_verify": "SAE J2012 / OEM workshop manual",
+          "editorial_review": "pending exact network module definition and source validation"
+        },
+        {
+          "code": "U0153",
+          "category": "U",
+          "topic": "فقد الاتصال بوحدة التحكم في وسائد الجانب الأيسر",
+          "scope": "generic_or_OEM_dependent",
+          "reference_to_verify": "SAE J2012 / OEM workshop manual",
+          "editorial_review": "pending exact network module definition and source validation"
+        },
+        {
+          "code": "C0052",
+          "category": "C",
+          "topic": "تعريف شاسيه/فرامل يتحدد بدليل السيارة واللاحقة",
+          "scope": "VERIFY_OEM_DEFINITION_BEFORE_AUTHORING",
+          "reference_to_verify": "OEM ABS/ESC manufacturer service manual",
+          "editorial_review": "BLOCKED until model-specific definition and suffix confirmed"
+        },
+        {
+          "code": "C0053",
+          "category": "C",
+          "topic": "تعريف شاسيه/فرامل يتحدد بدليل السيارة واللاحقة",
+          "scope": "VERIFY_OEM_DEFINITION_BEFORE_AUTHORING",
+          "reference_to_verify": "OEM ABS/ESC manufacturer service manual",
+          "editorial_review": "BLOCKED until model-specific definition and suffix confirmed"
+        },
+        {
+          "code": "B2103",
+          "category": "B",
+          "topic": "انقطاع هوائي جهاز التعرف على المفتاح في تطبيقات فورد",
+          "scope": "oem:ford",
+          "reference_to_verify": "https://www.fordservicecontent.com/Ford_Content/pubs/content/~WT/~MUS~LEN/3550/tsb01-06-02.htm",
+          "editorial_review": "pending original explanatory text, pinout-free safe diagnosis and artwork"
+        },
+        {
+          "code": "B2431",
+          "category": "B",
+          "topic": "فشل برمجة مفتاح ترانسبوندر بنظام PATS لدى فورد",
+          "scope": "oem:ford",
+          "reference_to_verify": "https://www.fordservicecontent.com/Ford_Content/pubs/content/~WT/~MUS~LEN/3550/tsb01-06-02.htm",
+          "editorial_review": "pending original explanatory text, pinout-free safe diagnosis and artwork"
+        }
+      ]
+    },
+    {
+      "batch": 29,
+      "planned_publication_slot": 5,
+      "status": "OUTLINE_ONLY_NOT_READY_TO_PUBLISH",
+      "ready_for_auto_publish": false,
+      "mix": "3P / 3U / 2C / 2B",
+      "items": [
+        {
+          "code": "P0316",
+          "category": "P",
+          "topic": "اختلال احتراق عند بدء تشغيل المحرك",
+          "scope": "generic",
+          "reference_to_verify": "https://dmv.de.gov/VehicleServices/inspections/pdfs/dtc_list.pdf",
+          "editorial_review": "pending diagnostic text, alternatives, 5 procedures, FAQs and art"
+        },
+        {
+          "code": "P0496",
+          "category": "P",
+          "topic": "تدفق EVAP أثناء عدم إصدار أمر التطهير",
+          "scope": "generic",
+          "reference_to_verify": "https://dmv.de.gov/VehicleServices/inspections/pdfs/dtc_list.pdf",
+          "editorial_review": "pending diagnostic text, alternatives, 5 procedures, FAQs and art"
+        },
+        {
+          "code": "P0733",
+          "category": "P",
+          "topic": "نسبة تعشيق النقلة الثالثة غير صحيحة",
+          "scope": "generic",
+          "reference_to_verify": "https://dmv.de.gov/VehicleServices/inspections/pdfs/dtc_list.pdf",
+          "editorial_review": "pending diagnostic text, alternatives, 5 procedures, FAQs and art"
+        },
+        {
+          "code": "U0154",
+          "category": "U",
+          "topic": "فقد الاتصال بوحدة تصنيف شاغل المقعد",
+          "scope": "generic_or_OEM_dependent",
+          "reference_to_verify": "SAE J2012 / OEM workshop manual",
+          "editorial_review": "pending exact network module definition and source validation"
+        },
+        {
+          "code": "U0163",
+          "category": "U",
+          "topic": "فقد الاتصال بوحدة الملاحة",
+          "scope": "generic_or_OEM_dependent",
+          "reference_to_verify": "SAE J2012 / OEM workshop manual",
+          "editorial_review": "pending exact network module definition and source validation"
+        },
+        {
+          "code": "U0170",
+          "category": "U",
+          "topic": "فقد الاتصال بمستشعر نظام حماية الركاب A",
+          "scope": "generic_or_OEM_dependent",
+          "reference_to_verify": "SAE J2012 / OEM workshop manual",
+          "editorial_review": "pending exact network module definition and source validation"
+        },
+        {
+          "code": "C0061",
+          "category": "C",
+          "topic": "تعريف شاسيه/فرامل يتحدد بدليل السيارة واللاحقة",
+          "scope": "VERIFY_OEM_DEFINITION_BEFORE_AUTHORING",
+          "reference_to_verify": "OEM ABS/ESC manufacturer service manual",
+          "editorial_review": "BLOCKED until model-specific definition and suffix confirmed"
+        },
+        {
+          "code": "C0062",
+          "category": "C",
+          "topic": "تعريف شاسيه/فرامل يتحدد بدليل السيارة واللاحقة",
+          "scope": "VERIFY_OEM_DEFINITION_BEFORE_AUTHORING",
+          "reference_to_verify": "OEM ABS/ESC manufacturer service manual",
+          "editorial_review": "BLOCKED until model-specific definition and suffix confirmed"
+        },
+        {
+          "code": "B1411",
+          "category": "B",
+          "topic": "دائرة حساس درجة حرارة المقصورة في مكيف بعض سيارات تويوتا",
+          "scope": "oem:toyota",
+          "reference_to_verify": "https://www.tochr.net/1803/diagnostic_trouble_code_chart.html",
+          "editorial_review": "pending original explanatory text, pinout-free safe diagnosis and artwork"
+        },
+        {
+          "code": "B1412",
+          "category": "B",
+          "topic": "دائرة حساس درجة حرارة الهواء الخارجي لدى تويوتا",
+          "scope": "oem:toyota",
+          "reference_to_verify": "https://www.tochr.net/1803/diagnostic_trouble_code_chart.html",
+          "editorial_review": "pending original explanatory text, pinout-free safe diagnosis and artwork"
+        }
+      ]
+    },
+    {
+      "batch": 30,
+      "planned_publication_slot": 6,
+      "status": "OUTLINE_ONLY_NOT_READY_TO_PUBLISH",
+      "ready_for_auto_publish": false,
+      "mix": "3P / 3U / 2C / 2B",
+      "items": [
+        {
+          "code": "P0328",
+          "category": "P",
+          "topic": "ارتفاع إشارة حساس الطرق رقم 1",
+          "scope": "generic",
+          "reference_to_verify": "https://dmv.de.gov/VehicleServices/inspections/pdfs/dtc_list.pdf",
+          "editorial_review": "pending diagnostic text, alternatives, 5 procedures, FAQs and art"
+        },
+        {
+          "code": "P0560",
+          "category": "P",
+          "topic": "خلل جهد النظام الكهربائي",
+          "scope": "generic",
+          "reference_to_verify": "https://dmv.de.gov/VehicleServices/inspections/pdfs/dtc_list.pdf",
+          "editorial_review": "pending diagnostic text, alternatives, 5 procedures, FAQs and art"
+        },
+        {
+          "code": "P0650",
+          "category": "P",
+          "topic": "خلل دائرة التحكم في لمبة أعطال المحرك",
+          "scope": "generic",
+          "reference_to_verify": "https://dmv.de.gov/VehicleServices/inspections/pdfs/dtc_list.pdf",
+          "editorial_review": "pending diagnostic text, alternatives, 5 procedures, FAQs and art"
+        },
+        {
+          "code": "U0180",
+          "category": "U",
+          "topic": "فقد الاتصال بوحدة التحكم في الإضاءة الأوتوماتيكية",
+          "scope": "generic_or_OEM_dependent",
+          "reference_to_verify": "SAE J2012 / OEM workshop manual",
+          "editorial_review": "pending exact network module definition and source validation"
+        },
+        {
+          "code": "U0181",
+          "category": "U",
+          "topic": "فقد الاتصال بوحدة تسوية المصابيح الأمامية",
+          "scope": "generic_or_OEM_dependent",
+          "reference_to_verify": "SAE J2012 / OEM workshop manual",
+          "editorial_review": "pending exact network module definition and source validation"
+        },
+        {
+          "code": "U0182",
+          "category": "U",
+          "topic": "فقد الاتصال بوحدة الإضاءة الأمامية",
+          "scope": "generic_or_OEM_dependent",
+          "reference_to_verify": "SAE J2012 / OEM workshop manual",
+          "editorial_review": "pending exact network module definition and source validation"
+        },
+        {
+          "code": "C0063",
+          "category": "C",
+          "topic": "تعريف شاسيه/فرامل يتحدد بدليل السيارة واللاحقة",
+          "scope": "VERIFY_OEM_DEFINITION_BEFORE_AUTHORING",
+          "reference_to_verify": "OEM ABS/ESC manufacturer service manual",
+          "editorial_review": "BLOCKED until model-specific definition and suffix confirmed"
+        },
+        {
+          "code": "C0064",
+          "category": "C",
+          "topic": "تعريف شاسيه/فرامل يتحدد بدليل السيارة واللاحقة",
+          "scope": "VERIFY_OEM_DEFINITION_BEFORE_AUTHORING",
+          "reference_to_verify": "OEM ABS/ESC manufacturer service manual",
+          "editorial_review": "BLOCKED until model-specific definition and suffix confirmed"
+        },
+        {
+          "code": "B1413",
+          "category": "B",
+          "topic": "دائرة حساس حرارة المبخر في مكيف تويوتا",
+          "scope": "oem:toyota",
+          "reference_to_verify": "https://www.tochr.net/1803/diagnostic_trouble_code_chart.html",
+          "editorial_review": "pending original explanatory text, pinout-free safe diagnosis and artwork"
+        },
+        {
+          "code": "B1423",
+          "category": "B",
+          "topic": "دائرة حساس ضغط وسيط التبريد في مكيف تويوتا",
+          "scope": "oem:toyota",
+          "reference_to_verify": "https://www.tochr.net/1803/diagnostic_trouble_code_chart.html",
+          "editorial_review": "pending original explanatory text, pinout-free safe diagnosis and artwork"
+        }
+      ]
+    },
+    {
+      "batch": 31,
+      "planned_publication_slot": 7,
+      "status": "OUTLINE_ONLY_NOT_READY_TO_PUBLISH",
+      "ready_for_auto_publish": false,
+      "mix": "3P / 3U / 2C / 2B",
+      "items": [
+        {
+          "code": "P0369",
+          "category": "P",
+          "topic": "إشارة متقطعة لحساس الكامة B في Bank 1",
+          "scope": "generic",
+          "reference_to_verify": "https://dmv.de.gov/VehicleServices/inspections/pdfs/dtc_list.pdf",
+          "editorial_review": "pending diagnostic text, alternatives, 5 procedures, FAQs and art"
+        },
+        {
+          "code": "P0505",
+          "category": "P",
+          "topic": "خلل نظام التحكم بسرعة السلانسيه",
+          "scope": "generic",
+          "reference_to_verify": "https://dmv.de.gov/VehicleServices/inspections/pdfs/dtc_list.pdf",
+          "editorial_review": "pending diagnostic text, alternatives, 5 procedures, FAQs and art"
+        },
+        {
+          "code": "P0685",
+          "category": "P",
+          "topic": "دائرة التحكم في ريلاي تغذية ECM/PCM مفتوحة",
+          "scope": "generic",
+          "reference_to_verify": "https://dmv.de.gov/VehicleServices/inspections/pdfs/dtc_list.pdf",
+          "editorial_review": "pending diagnostic text, alternatives, 5 procedures, FAQs and art"
+        },
+        {
+          "code": "U0183",
+          "category": "U",
+          "topic": "فقد الاتصال بوحدة الإضاءة الخلفية",
+          "scope": "generic_or_OEM_dependent",
+          "reference_to_verify": "SAE J2012 / OEM workshop manual",
+          "editorial_review": "pending exact network module definition and source validation"
+        },
+        {
+          "code": "U0185",
+          "category": "U",
+          "topic": "فقد الاتصال بوحدة الهوائي",
+          "scope": "generic_or_OEM_dependent",
+          "reference_to_verify": "SAE J2012 / OEM workshop manual",
+          "editorial_review": "pending exact network module definition and source validation"
+        },
+        {
+          "code": "U0190",
+          "category": "U",
+          "topic": "فقد الاتصال بوحدة تشغيل/تبديل الأقراص الرقمية A",
+          "scope": "generic_or_OEM_dependent",
+          "reference_to_verify": "SAE J2012 / OEM workshop manual",
+          "editorial_review": "pending exact network module definition and source validation"
+        },
+        {
+          "code": "C0065",
+          "category": "C",
+          "topic": "تعريف شاسيه/فرامل يتحدد بدليل السيارة واللاحقة",
+          "scope": "VERIFY_OEM_DEFINITION_BEFORE_AUTHORING",
+          "reference_to_verify": "OEM ABS/ESC manufacturer service manual",
+          "editorial_review": "BLOCKED until model-specific definition and suffix confirmed"
+        },
+        {
+          "code": "C0069",
+          "category": "C",
+          "topic": "تعريف شاسيه/فرامل يتحدد بدليل السيارة واللاحقة",
+          "scope": "VERIFY_OEM_DEFINITION_BEFORE_AUTHORING",
+          "reference_to_verify": "OEM ABS/ESC manufacturer service manual",
+          "editorial_review": "BLOCKED until model-specific definition and suffix confirmed"
+        },
+        {
+          "code": "B1441",
+          "category": "B",
+          "topic": "دائرة مشغل بوابة خلط الهواء جهة الراكب في تويوتا",
+          "scope": "oem:toyota",
+          "reference_to_verify": "https://www.tochr.net/1803/diagnostic_trouble_code_chart.html",
+          "editorial_review": "pending original explanatory text, pinout-free safe diagnosis and artwork"
+        },
+        {
+          "code": "B1442",
+          "category": "B",
+          "topic": "دائرة مشغل بوابة دخول الهواء في تويوتا",
+          "scope": "oem:toyota",
+          "reference_to_verify": "https://www.tochr.net/1803/diagnostic_trouble_code_chart.html",
+          "editorial_review": "pending original explanatory text, pinout-free safe diagnosis and artwork"
+        }
+      ]
+    },
+    {
+      "batch": 32,
+      "planned_publication_slot": 8,
+      "status": "OUTLINE_ONLY_NOT_READY_TO_PUBLISH",
+      "ready_for_auto_publish": false,
+      "mix": "3P / 3U / 2C / 2B",
+      "items": [
+        {
+          "code": "P0345",
+          "category": "P",
+          "topic": "خلل دائرة حساس الكامة A في Bank 2",
+          "scope": "generic",
+          "reference_to_verify": "https://dmv.de.gov/VehicleServices/inspections/pdfs/dtc_list.pdf",
+          "editorial_review": "pending diagnostic text, alternatives, 5 procedures, FAQs and art"
+        },
+        {
+          "code": "P0742",
+          "category": "P",
+          "topic": "قابض محول العزم عالق في وضع التفعيل",
+          "scope": "generic",
+          "reference_to_verify": "https://dmv.de.gov/VehicleServices/inspections/pdfs/dtc_list.pdf",
+          "editorial_review": "pending diagnostic text, alternatives, 5 procedures, FAQs and art"
+        },
+        {
+          "code": "P0868",
+          "category": "P",
+          "topic": "ضغط زيت ناقل الحركة منخفض",
+          "scope": "generic",
+          "reference_to_verify": "https://dmv.de.gov/VehicleServices/inspections/pdfs/dtc_list.pdf",
+          "editorial_review": "pending diagnostic text, alternatives, 5 procedures, FAQs and art"
+        },
+        {
+          "code": "U0194",
+          "category": "U",
+          "topic": "فقد الاتصال بوحدة التحكم في الصوت الرقمي A",
+          "scope": "generic_or_OEM_dependent",
+          "reference_to_verify": "SAE J2012 / OEM workshop manual",
+          "editorial_review": "pending exact network module definition and source validation"
+        },
+        {
+          "code": "U0422",
+          "category": "U",
+          "topic": "بيانات غير صالحة مستقبلة من BCM",
+          "scope": "generic_or_OEM_dependent",
+          "reference_to_verify": "SAE J2012 / OEM workshop manual",
+          "editorial_review": "pending exact network module definition and source validation"
+        },
+        {
+          "code": "U0418",
+          "category": "U",
+          "topic": "بيانات غير صالحة مستقبلة من وحدة التحكم في الفرامل",
+          "scope": "generic_or_OEM_dependent",
+          "reference_to_verify": "SAE J2012 / OEM workshop manual",
+          "editorial_review": "pending exact network module definition and source validation"
+        },
+        {
+          "code": "C0070",
+          "category": "C",
+          "topic": "تعريف شاسيه/فرامل يتحدد بدليل السيارة واللاحقة",
+          "scope": "VERIFY_OEM_DEFINITION_BEFORE_AUTHORING",
+          "reference_to_verify": "OEM ABS/ESC manufacturer service manual",
+          "editorial_review": "BLOCKED until model-specific definition and suffix confirmed"
+        },
+        {
+          "code": "C0071",
+          "category": "C",
+          "topic": "تعريف شاسيه/فرامل يتحدد بدليل السيارة واللاحقة",
+          "scope": "VERIFY_OEM_DEFINITION_BEFORE_AUTHORING",
+          "reference_to_verify": "OEM ABS/ESC manufacturer service manual",
+          "editorial_review": "BLOCKED until model-specific definition and suffix confirmed"
+        },
+        {
+          "code": "B1443",
+          "category": "B",
+          "topic": "دائرة مشغل بوابة توزيع الهواء في تويوتا",
+          "scope": "oem:toyota",
+          "reference_to_verify": "https://www.tochr.net/1803/diagnostic_trouble_code_chart.html",
+          "editorial_review": "pending original explanatory text, pinout-free safe diagnosis and artwork"
+        },
+        {
+          "code": "B1446",
+          "category": "B",
+          "topic": "دائرة مشغل بوابة خلط الهواء جهة السائق في تويوتا",
+          "scope": "oem:toyota",
+          "reference_to_verify": "https://www.tochr.net/1803/diagnostic_trouble_code_chart.html",
+          "editorial_review": "pending original explanatory text, pinout-free safe diagnosis and artwork"
+        }
+      ]
+    }
+  ]
+}
