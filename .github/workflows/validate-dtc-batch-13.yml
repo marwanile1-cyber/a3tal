@@ -1,0 +1,43 @@
+name: Validate mixed P U C B batch13
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/validate-dtc-batch-13.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate five original 1P 2U 1C 1B articles and guard duplicates
+        run: |
+          python3 -m py_compile scripts/publish-dtc-original-batch-13.py scripts/attach-dtc-batch-13-art.py
+          python3 scripts/publish-dtc-original-batch-13.py --dry-run
+      - name: Install Pillow
+        run: python3 -m pip install -q pillow
+      - name: Verify five unique illustrated 1200x800 WebP files
+        run: |
+          python3 - <<'PY'
+          import runpy,json
+          from pathlib import Path
+          from io import BytesIO
+          from PIL import Image
+          obj=json.loads(Path('data/dtc-original-batch-13.json').read_text())
+          codes=[r['code'] for r in obj['items']]
+          assert codes==['P2002','U0109','U0126','C0050','B0028']
+          n=runpy.run_path('scripts/attach-dtc-batch-13-art.py')
+          assert n['CODES']==codes
+          sizes=set()
+          for code in codes:
+              raw=n['image_for'](code)
+              im=Image.open(BytesIO(raw))
+              assert im.format=='WEBP' and im.size==(1200,800)
+              assert 10000<len(raw)<450000,(code,len(raw))
+              sizes.add(len(raw))
+              print('WEBP PASS',code,len(raw))
+          assert len(sizes)==5,'duplicate images'
+          PY
