@@ -1,0 +1,28 @@
+name: Publish mixed P U C B diagnostic guides - Batch 13
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-original-dtc-batch-13.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate unique original 1P 2U 1C 1B content
+        run: |
+          python3 -m py_compile scripts/publish-dtc-original-batch-13.py
+          python3 scripts/publish-dtc-original-batch-13.py --dry-run
+      - name: Confirm previous batch images displayed with correct OG cards
+        run: python3 -u scripts/audit-dtc-og-images.py --batch 12
+      - name: Publish only missing codes after live duplicate checks
+        run: python3 -u scripts/publish-dtc-original-batch-13.py
