@@ -1,0 +1,43 @@
+name: Validate original four-system DTC batch17
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/validate-dtc-batch-17.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate editorial depth P U U C B and duplicate exclusions
+        run: |
+          python3 -m py_compile scripts/publish-dtc-original-batch-17.py scripts/attach-dtc-batch-17-art.py
+          python3 scripts/publish-dtc-original-batch-17.py --dry-run
+      - name: Install independent WebP artwork toolkit
+        run: python3 -m pip install -q pillow
+      - name: Render five different exclusive hardware drawings with no external downloads
+        run: |
+          python3 - <<'PY'
+          import json,runpy
+          from pathlib import Path
+          from io import BytesIO
+          from PIL import Image
+          batch=json.loads(Path('data/dtc-original-batch-17.json').read_text())
+          codes=[x['code'] for x in batch['items']]
+          assert codes==['P06DD','U0103','U0164','C0265','B0090']
+          art=runpy.run_path('scripts/attach-dtc-batch-17-art.py')
+          assert art['CODES']==codes
+          seen=set()
+          for code in codes:
+            raw=art['image_for'](code)
+            im=Image.open(BytesIO(raw))
+            assert im.format=='WEBP' and im.size==(1200,800)
+            assert 10000<len(raw)<450000,(code,len(raw))
+            assert raw not in seen
+            seen.add(raw)
+            print('EXCLUSIVE WEBP',code,len(raw))
+          PY
