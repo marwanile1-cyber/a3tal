@@ -1,0 +1,29 @@
+name: Publish original mixed DTC batch18 guides
+on:
+  workflow_run:
+    workflows:
+      - Attach original five mixed DTC batch17 covers
+    types: [completed]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate five distinct P U U C B guides and no known duplicates
+        run: |
+          python3 -m py_compile scripts/publish-dtc-original-batch-18.py
+          python3 scripts/publish-dtc-original-batch-18.py --dry-run
+      - name: Verify batch17 has five live images visibly rendered and OG-matched
+        run: python3 -u scripts/audit-dtc-og-images.py --batch 17
+      - name: Publish missing DTCs through verified authorized Direct Bridge
+        run: python3 -u scripts/publish-dtc-original-batch-18.py
