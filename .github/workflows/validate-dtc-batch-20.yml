@@ -1,0 +1,42 @@
+name: Validate original mixed DTC batch20
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/validate-dtc-batch-20.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate fresh 1P 1U 2C 1B guides and duplicate gate
+        run: |
+          python3 -m py_compile scripts/publish-dtc-original-batch-20.py scripts/attach-dtc-batch-20-art.py
+          python3 scripts/publish-dtc-original-batch-20.py --dry-run
+      - name: Install exclusive WebP renderer
+        run: python3 -m pip install -q pillow
+      - name: Verify five exclusive 1200x800 WebP illustrations
+        run: |
+          python3 - <<'PY'
+          import runpy,json
+          from io import BytesIO
+          from pathlib import Path
+          from PIL import Image
+          b=json.loads(Path('data/dtc-original-batch-20.json').read_text())
+          codes=[r['code'] for r in b['items']]
+          assert codes==['P0691','U023A','C0051','C0800','B1325']
+          a=runpy.run_path('scripts/attach-dtc-batch-20-art.py')
+          assert a['CODES']==codes
+          images=set()
+          for code in codes:
+            raw=a['image_for'](code)
+            im=Image.open(BytesIO(raw))
+            assert im.format=='WEBP' and im.size==(1200,800) and 10000<len(raw)<450000
+            assert raw not in images
+            images.add(raw)
+            print('COVER VERIFIED',code,len(raw))
+          PY
