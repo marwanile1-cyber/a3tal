@@ -1,0 +1,70 @@
+name: Publish original DTC batch24 ten diverse guides with exclusive WebP
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/render-dtc-batch-24-art.py'
+      - 'scripts/attach-dtc-batch-24-photos.py'
+      - 'scripts/publish-dtc-original-batch-24.py'
+      - 'data/dtc-original-batch-24.json'
+      - '.github/workflows/publish-original-dtc-batch-24.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 130
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install exclusive WebP renderer
+        run: python3 -m pip install --quiet Pillow
+      - name: Render ten original 1600x900 WebP automotive diagnostic images
+        run: python3 -u scripts/render-dtc-batch-24-art.py
+      - name: Validate code safety, brand specificity and image identity before any mutation
+        run: |
+          python3 -m py_compile scripts/publish-dtc-original-batch-24.py scripts/attach-dtc-batch-24-photos.py scripts/repair-dtc-og-canary.py scripts/audit-dtc-og-images.py scripts/render-dtc-batch-24-art.py
+          python3 -u scripts/publish-dtc-original-batch-24.py --dry-run
+          python3 - <<'PY'
+          from pathlib import Path
+          from hashlib import sha256
+          from PIL import Image
+          import json
+          codes=['P0237','P0451','P0765','U0122','U0401','U0167','C0037','C0041','B1318','B0092']
+          manifest=json.loads(Path('assets/dtc-batch24/manifest.json').read_text())
+          assert manifest['batch']==24 and len(manifest['files'])==10
+          media={entry['code']:entry for entry in manifest['files']}
+          assert set(media)==set(codes)
+          editorial={a['code']:a for a in json.loads(Path('data/dtc-original-batch-24.json').read_text())['items']}
+          assert set(editorial)==set(codes)
+          assert editorial['B1318']['scope']=='oem:ford' and editorial['B0092']['scope']=='oem:gm'
+          hashes=set()
+          for code in codes:
+              path=Path('assets/dtc-batch24')/f'a3tal-dtc-{code.lower()}-exclusive.webp'
+              raw=path.read_bytes()
+              assert 25000<len(raw)<500000,(code,len(raw))
+              with Image.open(path) as img:
+                  assert img.format=='WEBP' and img.size==(1600,900),(code,img.size)
+                  img.verify()
+              assert sha256(raw).hexdigest()==media[code]['sha256']
+              assert len(raw)==media[code]['bytes']
+              hashes.add(sha256(raw).hexdigest())
+              print('VERIFIED_ORIGINAL_ART',code,len(raw))
+          assert len(hashes)==10,'Repeated covers would be rejected'
+          print('TEN_UNIQUE_IMAGES_AND_OEM_SCOPES_PASSED')
+          PY
+      - name: Verify previous batch23 artwork, visible HTML and OG
+        run: python3 -u scripts/audit-dtc-og-images.py --batch 23
+      - name: Publish ten original 3P 3U 2C 2B Arabic diagnostic guides with live duplicate checks
+        run: python3 -u scripts/publish-dtc-original-batch-24.py
+      - name: Upload ten exclusive illustrations and set featured media
+        run: python3 -u scripts/attach-dtc-batch-24-photos.py
+      - name: Set Yoast Facebook and Twitter images to matching WebP covers
+        run: python3 -u scripts/repair-dtc-og-canary.py --batch 24
+      - name: Audit all ten published pages and share images
+        run: python3 -u scripts/audit-dtc-og-images.py --batch 24
