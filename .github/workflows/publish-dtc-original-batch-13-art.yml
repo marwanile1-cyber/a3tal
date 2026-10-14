@@ -1,0 +1,41 @@
+name: Publish exclusive P U C B covers - Batch 13
+on:
+  workflow_run:
+    workflows:
+      - Publish mixed P U C B diagnostic guides - Batch 13
+    types: [completed]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-media
+  cancel-in-progress: false
+jobs:
+  images:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare image drawing
+        run: python3 -m pip install -q pillow
+      - name: Verify distinct five drawings before any production writes
+        run: |
+          python3 - <<'PY'
+          import runpy
+          from PIL import Image
+          from io import BytesIO
+          x=runpy.run_path('scripts/attach-dtc-batch-13-art.py')
+          for code in x['CODES']:
+            data=x['image_for'](code);im=Image.open(BytesIO(data))
+            assert im.format=='WEBP' and im.size==(1200,800) and 10000<len(data)<450000
+            print(code,'image valid',len(data))
+          PY
+      - name: Link one original WebP cover to each uniquely verified published DTC
+        run: python3 -u scripts/attach-dtc-batch-13-art.py
+      - name: Update social share cards to original featured image
+        run: python3 -u scripts/repair-dtc-og-canary.py --batch 13
+      - name: Audit article body, featured media and OG for every DTC
+        run: python3 -u scripts/audit-dtc-og-images.py --batch 13
