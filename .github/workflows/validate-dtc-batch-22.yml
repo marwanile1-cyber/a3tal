@@ -1,0 +1,43 @@
+name: Validate original Toyota and GM aware DTC batch22
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/validate-dtc-batch-22.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate five original guides and mixed P U C C B families
+        run: |
+          python3 -m py_compile scripts/publish-dtc-original-batch-22.py scripts/attach-dtc-batch-22-art.py
+          python3 scripts/publish-dtc-original-batch-22.py --dry-run
+      - name: Install image tooling
+        run: python3 -m pip install -q pillow
+      - name: Verify unique original WebP drawings and dark-room B1421 technical caveat
+        run: |
+          python3 - <<'PY'
+          import runpy,json
+          from pathlib import Path
+          from PIL import Image
+          from io import BytesIO
+          b=json.loads(Path('data/dtc-original-batch-22.json').read_text())
+          codes=[r['code'] for r in b['items']]
+          assert codes==['P2563','U0107','C1241','C0237','B1421']
+          assert 'الظلام' in b['items'][4]['summary']
+          a=runpy.run_path('scripts/attach-dtc-batch-22-art.py')
+          assert a['CODES']==codes
+          seen=set()
+          for code in codes:
+            raw=a['image_for'](code)
+            img=Image.open(BytesIO(raw))
+            assert img.format=='WEBP' and img.size==(1200,800) and 10000<len(raw)<450000
+            assert raw not in seen
+            seen.add(raw)
+            print('VERIFIED NEW ART',code,len(raw))
+          PY
