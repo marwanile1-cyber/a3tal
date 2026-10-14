@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Attach five approved original photographic WebP covers to matching published DTC records.
+"""Attach five original code-specific illustrated WebP covers to matching published DTC records.
 No borrowed photography, no invented vehicle-specific wiring diagrams, no third-party image CDN.
 No unsafe write retries. This job is idempotent if the post already has a featured image.
 """
@@ -12,11 +12,11 @@ ROOT="https://a3tal.com/wp-json/a3tal-direct/v1"
 CODES=["P0119","U0156","U0186","C0036","B1422"]
 RECOVER_UPLOAD={}
 ALT={
-"P0119":"فني يفحص حساس حرارة مياه المحرك مع جهاز تشخيص إلكتروني للكود P0119",
-"U0156":"فحص شاشة معلومات السيارة واتصالات وحدات التحكم U0156 في ورشة سيارات",
-"U0186":"فني يراجع أسلاك وحدة مضخم الصوت الإلكترونية بالسيارة U0186",
-"C0036":"فحص حساس ABS وسرعة العجلة في نظام الفرامل للكود C0036",
-"B1422":"فحص كمبروسر التكييف وسير المحرك للتأكد من سبب B1422 في بعض سيارات تويوتا"
+"P0119":"تصميم فني حصري لحساس حرارة مياه المحرك وضفيرته أثناء تشخيص كود P0119",
+"U0156":"تصميم تشخيصي أصلي لشاشة معلومات السيارة واتصال البيانات للكود U0156",
+"U0186":"رسم فني أصلي لمضخم الصوت الإلكتروني وتوصيلاته في السيارة للكود U0186",
+"C0036":"رسم توضيحي حصري لمجموعة عجلة وحساس ABS مع إشارات تشخيص C0036، تختلف الدائرة حسب الشركة",
+"B1422":"تصميم فني أصلي لكمبروسر التكييف وبكرته عند تشخيص B1422 في بعض سيارات تويوتا"
 }
 PHOTO_ROOT=Path("assets/dtc-batch23")
 def image_for(code):
@@ -25,10 +25,10 @@ def image_for(code):
         raise RuntimeError("Missing reviewed original photographic cover: "+str(path))
     raw=path.read_bytes()
     if not 25_000<len(raw)<500_000:
-        raise RuntimeError("Invalid photographic cover byte size for "+code)
+        raise RuntimeError("Invalid illustration byte size for "+code)
     with Image.open(io.BytesIO(raw)) as photo:
         if photo.format!="WEBP" or photo.width<1600 or photo.height<900:
-            raise RuntimeError("Cover must be a high-resolution photorealistic 1600x900 WebP: "+code)
+            raise RuntimeError("Cover must be original high-resolution 1600x900 WebP: "+code)
         photo.verify()
     return raw
 last=0.0
@@ -74,9 +74,9 @@ def main():
             continue
         print("Published post preflight",code,"featured=",post.get("featured_media"),flush=True)
         img=image_for(code)
-        if not (10_000<len(img)<450_000):raise RuntimeError("Unexpected photograph size for "+code)
+        if not (10_000<len(img)<450_000):raise RuntimeError("Unexpected original illustration size for "+code)
         payload={"post_id":post_id,"filename":"a3tal-dtc-"+code.lower()+"-exclusive.webp",
-                 "title":"A3tal "+code+" photographic diagnostic cover","alt":ALT[code],
+                 "title":"A3tal "+code+" original diagnostic visual","alt":ALT[code],
                  "image_base64":base64.b64encode(img).decode("ascii"),"convert_webp":False}
         # If an image upload has an uncertain response, never blindly repeat the mutation.
         if code in RECOVER_UPLOAD:
@@ -101,5 +101,5 @@ def main():
         if int(checked.get("featured_media") or 0)!=media_id:
             raise RuntimeError("Featured image persisted in mutation response but post endpoint not consistent for "+code)
         print("VERIFIED COVER",code,checked["link"],"image",media_id,"bytes",len(img),flush=True)
-    print("All batch 23 photographic featured covers processed safely",flush=True)
+    print("All batch 23 original diagnostic illustrations processed safely",flush=True)
 if __name__=="__main__":main()
