@@ -1,0 +1,42 @@
+name: Attach original batch20 P U C B diagnostic covers
+on:
+  workflow_run:
+    workflows:
+      - Publish original mixed DTC batch20 guides
+    types: [completed]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-media
+  cancel-in-progress: false
+jobs:
+  covers:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install original WebP drawing toolkit
+        run: python3 -m pip install -q pillow
+      - name: Validate five exclusive cover dimensions and illustrations
+        run: |
+          python3 - <<'PY'
+          import runpy
+          from PIL import Image
+          from io import BytesIO
+          a=runpy.run_path('scripts/attach-dtc-batch-20-art.py')
+          for code in a['CODES']:
+            raw=a['image_for'](code)
+            im=Image.open(BytesIO(raw))
+            assert im.size==(1200,800) and im.format=='WEBP' and len(raw)>10000
+            print('VALID',code,len(raw))
+          PY
+      - name: Attach five unique covers to verified WordPress codes
+        run: python3 -u scripts/attach-dtc-batch-20-art.py
+      - name: Synchronize original social OG images through Yoast
+        run: python3 -u scripts/repair-dtc-og-canary.py --batch 20
+      - name: Verify live featured media, visible body artwork and matching og:image
+        run: python3 -u scripts/audit-dtc-og-images.py --batch 20
