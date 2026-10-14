@@ -148,3 +148,11 @@ Published only after live duplicate preflight and full previous-batch image/OG a
 - Five article and five WebP QA workflow successful: https://github.com/marwanile1-cyber/a3tal/actions/runs/38559521771.
 - Publishing is gated to successful completion of batch13 artwork and a fresh direct public audit of all five images and Yoast share cards. Never claim batch14 live before publishing log confirms actual post IDs and new slugs.
 - B0081 passenger presence system definitions/suffix vary by OEM; use linked GM service bulletin and VIN-specific wording. Do not allow incorrect OEM assumptions to become model-specific links.
+
+
+## Verified follow-up 14 October 2026
+- Batch13 article publication: SUCCESS run 38558331375, post IDs 83649-83653, five created zero duplicates.
+- Batch13 1200x800 individually original WebP attachment, post readback, Yoast og:image and rendered image audits: SUCCESS run 38558607486, media IDs 83654-83658.
+- Batch14 original 1P 2U 1C 1B: P0243 / U0102 / U0129 / C0045 / B0081. Five original articles staged in data/dtc-original-batch-14.json, five distinct original drawings staged and independently passed run 38559521771.
+- Batch14 publishing automatically triggered after successful batch13 art with fresh public audit. Run 38559901880; do not label as published until real success with five new canonical slugs.
+- Batch14 art workflow automatically follows successful publication; always require full media/post verification and social OG matching.
