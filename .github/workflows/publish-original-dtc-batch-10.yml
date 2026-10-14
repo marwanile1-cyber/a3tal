@@ -1,9 +1,5 @@
 name: Publish five original DTC guides - Batch 10
 on:
-  workflow_run:
-    workflows:
-      - Create five original DTC illustrations - Batch 09
-    types: [completed]
   workflow_dispatch:
 permissions:
   contents: read
