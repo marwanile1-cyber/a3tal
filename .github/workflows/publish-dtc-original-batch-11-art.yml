@@ -1,0 +1,46 @@
+name: Create original mixed DTC images - Batch 11
+on:
+  workflow_run:
+    workflows:
+      - Publish original mixed P U C B codes - Batch 11
+    types: [completed]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-media
+  cancel-in-progress: false
+jobs:
+  images:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install independent WebP drawing toolkit
+        run: python3 -m pip install -q pillow
+      - name: Validate all original diagrams and corresponding published code IDs offline
+        run: |
+          python3 - <<'PY'
+          import runpy,json
+          from io import BytesIO
+          from pathlib import Path
+          from PIL import Image
+          n=runpy.run_path('scripts/attach-dtc-batch-11-art.py')
+          rows=json.loads(Path('data/dtc-original-batch-11.json').read_text())['items']
+          codes=[x['code'] for x in rows]
+          assert codes==n['CODES']==['P0217','P0463','U0155','C0035','B0001']
+          for code in codes:
+            raw=n['image_for'](code)
+            img=Image.open(BytesIO(raw))
+            assert img.format=='WEBP' and img.size==(1200,800) and 10000<len(raw)<450000
+            print('VERIFIED',code,len(raw))
+          PY
+      - name: Attach one unique original picture per confirmed published article
+        run: python3 -u scripts/attach-dtc-batch-11-art.py
+      - name: Synchronize each Yoast og:image with confirmed featured artwork
+        run: python3 -u scripts/repair-dtc-og-canary.py --batch 11
+      - name: Audit article body images, featured attachment and Yoast og:image
+        run: python3 -u scripts/audit-dtc-og-images.py --batch 11
