@@ -1,0 +1,41 @@
+name: Validate original mixed DTC batch16
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/validate-dtc-batch-16.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate reviewed 1P 2U 1C 1B articles with existing-code protection
+        run: |
+          python3 -m py_compile scripts/publish-dtc-original-batch-16.py scripts/attach-dtc-batch-16-art.py
+          python3 scripts/publish-dtc-original-batch-16.py --dry-run
+      - name: Install standalone rendering toolkit
+        run: python3 -m pip install -q pillow
+      - name: Render and inspect five different original WebP covers
+        run: |
+          python3 - <<'PY'
+          import json,runpy
+          from pathlib import Path
+          from PIL import Image
+          from io import BytesIO
+          codes=[r['code'] for r in json.loads(Path('data/dtc-original-batch-16.json').read_text())['items']]
+          assert codes==['P2459','U0131','U0151','C0550','B0020']
+          z=runpy.run_path('scripts/attach-dtc-batch-16-art.py')
+          assert z['CODES']==codes
+          sig=set()
+          for code in codes:
+            data=z['image_for'](code)
+            im=Image.open(BytesIO(data))
+            assert im.format=='WEBP' and im.size==(1200,800) and 10000<len(data)<450000
+            assert data not in sig
+            sig.add(data)
+            print('ORIGINAL COVER PASS',code,len(data))
+          PY
