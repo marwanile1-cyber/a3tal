@@ -79,6 +79,17 @@ def check_batch(number,path):
     if not isinstance(items,list) or len(items)!=10:
         raise RuntimeError(f"Batch {number} is not exactly 10 authored guides")
     codes=[item.get("code","") for item in items]
+    registry_path=DATA/"dtc-eight-batch-editorial-plan-25-32.json"
+    if not registry_path.is_file():
+        raise RuntimeError("Approved eight-batch code registry is missing")
+    registry=json.loads(registry_path.read_text(encoding="utf-8"))
+    matches=[row for row in registry.get("batches",[]) if row.get("batch")==number]
+    if len(matches)!=1 or [r["code"] for r in matches[0]["items"]]!=codes:
+        raise RuntimeError("New published codes differ from the pre-reviewed eight-batch plan")
+    for item,outlined in zip(items,matches[0]["items"]):
+        intended=str(outlined.get("scope",""))
+        if intended.startswith("oem:") and item.get("scope")!=intended:
+            raise RuntimeError("OEM scope changed relative to approved editorial plan: "+item["code"])
     if len(set(codes))!=10 or any(not CODE_RE.fullmatch(c) for c in codes):
         raise RuntimeError(f"Batch {number} contains duplicate or invalid codes")
     if {p:sum(c.startswith(p) for c in codes) for p in DISTRIBUTION}!=DISTRIBUTION:
@@ -159,6 +170,11 @@ def process_one(number,items,files,check_only):
         raise RuntimeError("Noncontiguous partial publication; stop to avoid duplicates")
     if any(r is not None for r in status[active:]):
         raise RuntimeError("Noncontiguous partial publication; stop for manual review")
+
+    # Do not start a new publication wave while the previous ten-code
+    # batch lacks publicly visible featured images or correct share art.
+    if number==25:
+        run(sys.executable,SCRIPTS/"audit-dtc-og-images.py","--batch","24")
 
     # Covers render locally and are verified BEFORE further WordPress posts.
     run(sys.executable,files[1])
