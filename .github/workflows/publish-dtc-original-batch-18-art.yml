@@ -1,0 +1,41 @@
+name: Publish original mixed DTC batch18 covers
+on:
+  workflow_run:
+    workflows:
+      - Publish original mixed DTC batch18 guides
+    types: [completed]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-media
+  cancel-in-progress: false
+jobs:
+  art:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare original WebP drawing
+        run: python3 -m pip install -q pillow
+      - name: Preflight all code-aligned unique 1200x800 local illustrations
+        run: |
+          python3 - <<'PY'
+          import runpy
+          from PIL import Image
+          from io import BytesIO
+          m=runpy.run_path('scripts/attach-dtc-batch-18-art.py')
+          for code in m['CODES']:
+            b=m['image_for'](code);im=Image.open(BytesIO(b))
+            assert im.size==(1200,800) and im.format=='WEBP' and len(b)>10000
+            print('ART PASS',code,len(b))
+          PY
+      - name: Set original cover on verified published post IDs only
+        run: python3 -u scripts/attach-dtc-batch-18-art.py
+      - name: Set correct Yoast OpenGraph and X image to individual featured cover
+        run: python3 -u scripts/repair-dtc-og-canary.py --batch 18
+      - name: Audit visible body cover, WordPress featured and OG for all five
+        run: python3 -u scripts/audit-dtc-og-images.py --batch 18
