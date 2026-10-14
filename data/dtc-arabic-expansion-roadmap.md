@@ -175,3 +175,12 @@ Automatic gate: only after full successful batch15 artwork/OG verified publish b
 - Batch18 publication workflow .github/workflows/publish-original-dtc-batch-18.yml automatically runs only after successful batch17 art and an independently fresh five-post HTML+OG audit; media workflow only after successful batch18 publication. Do not count batch18 as live until it reports five newly created canonical slugs and art QA success.
 - IMPORTANT: C0561 has manufacturer-dependent meanings; detailed article explicitly limits System Disabled Information Stored interpretation to relevant GM EBCM setups and calls for full OEM suffix. B0070 references a pyrotechnic belt pretensioner: no live electrical circuit testing advice.
 - **Longer-term:** build truly useful vehicle-specific owner pages from validated OEM/year/engine evidence and cite it. Do not hallucinate that a generic code is a frequent fault of any model just because that model can use OBD. Add verified model links only where source evidence exists.
+
+
+## Follow-up: 60 original guides reached in batches 7–18 | 2026-10-14
+- Batch17 live publication success, P06DD U0103 U0164 C0265 B0090, exactly 5 new post IDs 83714–83718, 0 duplicate slugs: https://github.com/marwanile1-cyber/a3tal/actions/runs/38571133497
+- Batch17 artwork fully verified, five unique image IDs 83719–83723, all HTML body and Yoast OpenGraph passed: https://github.com/marwanile1-cyber/a3tal/actions/runs/38571464828
+- Batch18 published P2101 U0128 U0184 C0561 B0070 with 5 newly created post IDs 83729–83733, zero duplicates: https://github.com/marwanile1-cyber/a3tal/actions/runs/38572973237
+- Batch18 exclusive featured art is handled by GitHub Actions at https://github.com/marwanile1-cyber/a3tal/actions/runs/38573304307. Wait for five actual media assignments and five verified OG records before calling media complete.
+- Internal-links, vehicle-specific code associations, and indexing require separate real verification. Do not infer real model failures from generic OBD DTC reference pages.
+- After completing batch18, prioritize a non-duplicative content/SEO audit and verified model-specific evidence connections rather than simply continuing bulk publication without QA.
