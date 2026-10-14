@@ -1,0 +1,20 @@
+name: Validate reviewed mixed DTC batch23
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/publish-dtc-original-batch-23.py'
+      - 'data/dtc-original-batch-23.json'
+      - '.github/workflows/validate-original-dtc-batch-23.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile batch publisher
+        run: python3 -m py_compile scripts/publish-dtc-original-batch-23.py
+      - name: Validate five original reviewed guides (no live writes)
+        run: python3 scripts/publish-dtc-original-batch-23.py --dry-run
