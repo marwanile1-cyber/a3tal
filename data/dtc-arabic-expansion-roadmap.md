@@ -1,3 +1,17 @@
+# A3TAL DTC publishing cadence from batch 24 onward
+- Each approved publishing batch adds **10 original Arabic DTC guides**, not 5, distributed approximately 3 powertrain (P), 3 communications (U), 2 chassis (C), and 2 body (B).
+- Before publication check both the live exact code search and any legacy composite guide to protect existing traffic and canonical URLs.
+- Where a B/C/U definition varies by automaker, keep the full code and suffix and limit the explanation explicitly to the referenced OEM. Do not invent VIN-to-code compatibility.
+- All 10 articles require distinct reviewed 1600×900 WebP featured illustrations plus verifiable Yoast OG/Twitter sharing images.
+- The articles must teach code-specific diagnostic steps, safe testing, associated codes, and why the code alone is insufficient to authorize component replacement.
+- Use the existing connected GitHub/WordPress bridge and free GitHub Actions only. A write timeout or Cloudflare 522 is ambiguous; never blindly replay a mutation.
+
+## Batch 24, started 2026-10-15
+Ten articles: P0237, P0451, P0765, U0122, U0401, U0167, C0037, C0041, B1318 (Ford only), B0092 (GM applications only).
+Original editorial data: data/dtc-original-batch-24.json. Publisher: scripts/publish-dtc-original-batch-24.py. Art: scripts/render-dtc-batch-24-art.py, scripts/attach-dtc-batch-24-photos.py.
+GitHub workflow: https://github.com/marwanile1-cyber/a3tal/actions/runs/38639796993.
+Article publication verified: all ten WordPress posts exist as published. Media, OG and independent final image audit: pending workflow completion. Expected code catalog count after publication is 197; verify archive before announcing.
+
 # A3TAL CODE LAB | Arabic OBD-II library expansion
 
 ## Product position
