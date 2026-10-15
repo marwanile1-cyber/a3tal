@@ -19,15 +19,39 @@ $cg_markets = $cg_car_ids ? get_terms(['taxonomy'=>'a3_market','object_ids'=>$cg
 if (is_wp_error($cg_markets)) $cg_markets = [];
 $cg_bodies = $cg_car_ids ? get_terms(['taxonomy'=>'a3_car_body','object_ids'=>$cg_car_ids,'hide_empty'=>true]) : [];
 if (is_wp_error($cg_bodies)) $cg_bodies = [];
-$cg_all = $GLOBALS['wp_query']->posts ?? [];
-$cg_top = array_slice($cg_all,0,6);
-$cg_more = array_slice($cg_all,6);
-$cg_search = isset($_GET['s']) && is_string($_GET['s']) ? sanitize_text_field(wp_unslash($_GET['s'])) : '';
+$cg_search = isset($_GET['car_search']) && is_string($_GET['car_search']) ? trim(sanitize_text_field(wp_unslash($_GET['car_search']))) : '';
+$cg_search = function_exists('mb_substr') ? mb_substr($cg_search,0,85) : substr($cg_search,0,85);
 $cg_brand = get_query_var('brand');
 $cg_market = get_query_var('market');
 $cg_body = get_query_var('vehicle_type');
 $cg_year = get_query_var('year');
 $cg_archive_filtered = $cg_search !== '' || isset($_GET['brand']) || isset($_GET['market']) || isset($_GET['vehicle_type']) || isset($_GET['year']);
+// WordPress interprets ?s= as a global site search and may swap this archive
+// for index.php. Use a scoped, paginated vehicle-only search instead.
+$cg_listing = $GLOBALS['wp_query'];
+if ($cg_search !== '') {
+  $cg_tax_query = ['relation'=>'AND'];
+  foreach (['brand'=>'a3_brand','market'=>'a3_market','vehicle_type'=>'a3_car_body'] as $param=>$taxonomy) {
+    $raw = isset($_GET[$param]) && is_string($_GET[$param]) ? sanitize_title(wp_unslash($_GET[$param])) : '';
+    if ($raw !== '') $cg_tax_query[] = ['taxonomy'=>$taxonomy,'field'=>'slug','terms'=>[$raw]];
+  }
+  $cg_args = [
+    'post_type'=>'a3_car','post_status'=>'publish','s'=>$cg_search,
+    'posts_per_page'=>20,'paged'=>max(1,(int)get_query_var('paged')),
+    'orderby'=>'date','order'=>'DESC',
+    'ignore_sticky_posts'=>true
+  ];
+  if (count($cg_tax_query)>1) $cg_args['tax_query']=$cg_tax_query;
+  if (isset($_GET['year']) && is_scalar($_GET['year'])) {
+    $requested_year=absint($_GET['year']);
+    if($requested_year>=1950 && $requested_year<=2100)
+      $cg_args['meta_query']=[['key'=>'_a3_year','value'=>(string)$requested_year,'compare'=>'=']];
+  }
+  $cg_listing = new WP_Query($cg_args);
+}
+$cg_all = $cg_listing->posts ?? [];
+$cg_top = array_slice($cg_all,0,6);
+$cg_more = array_slice($cg_all,6);
 $cg_hero_ids = get_posts([
   'post_type'=>'a3_car','post_status'=>'publish','posts_per_page'=>7,
   'fields'=>'ids','no_found_rows'=>true,'meta_query'=>[['key'=>'_thumbnail_id','compare'=>'EXISTS']]
@@ -89,7 +113,7 @@ get_header();
       <p>دليل السيارات الجديدة والمواصفات والفئات والمقارنات، من بيانات الموديلات والمقالات المنشورة بالفعل على أعطال.كوم.</p>
       <form class="cg-search" role="search" action="<?php echo esc_url($cg_url); ?>" method="get">
         <label class="screen-reader-text" for="cg-car-search">ابحث عن سيارة أو موديل</label>
-        <input type="search" id="cg-car-search" name="s" placeholder="ابحث عن سيارة... تويوتا، كيا، جيلي، نيسان" value="<?php echo esc_attr($cg_search); ?>" maxlength="85">
+        <input type="search" id="cg-car-search" name="car_search" placeholder="ابحث عن سيارة... تويوتا، كيا، جيلي، نيسان" value="<?php echo esc_attr($cg_search); ?>" maxlength="85">
         <button type="submit" aria-label="ابحث في دليل السيارات"><?php echo a3g_icon('search'); ?><span>ابحث</span></button>
       </form>
       <nav class="cg-quick" aria-label="التنقل في دليل السيارات">
@@ -133,7 +157,7 @@ get_header();
 
       <div class="cg-models-col">
         <section class="cg-surface cg-models-section" id="cg-popular" aria-labelledby="cg-popular-title">
-          <div class="cg-section-heading"><div><span class="cg-kicker">موديلات منشورة ومعلومات فعلية</span><h2 id="cg-popular-title">أحدث السيارات في الدليل</h2></div><span class="cg-total"><?php echo esc_html(number_format_i18n((int)$GLOBALS['wp_query']->found_posts)); ?> نتيجة</span></div>
+          <div class="cg-section-heading"><div><span class="cg-kicker">موديلات منشورة ومعلومات فعلية</span><h2 id="cg-popular-title">أحدث السيارات في الدليل</h2></div><span class="cg-total"><?php echo esc_html(number_format_i18n((int)$cg_listing->found_posts)); ?> نتيجة</span></div>
           <?php if($cg_top): ?><div class="cg-cars-grid"><?php foreach($cg_top as $car){$cg_render_card($car);} ?></div><?php else: ?><p class="cg-empty">مفيش موديلات مطابقة للفلاتر دي حاليًا. جرّب مسح الفلاتر أو اسم موديل تاني.</p><?php endif; ?>
         </section>
       </div>
@@ -150,7 +174,7 @@ get_header();
     <section class="cg-surface cg-all" id="cg-all" aria-labelledby="cg-all-title">
       <div class="cg-section-heading"><div><span class="cg-kicker">قائمة الموديلات</span><h2 id="cg-all-title">كل السيارات والفئات المتاحة</h2><p>استخدم الفلاتر لتضييق النتائج. روابط السيارات القديمة محفوظة بدون تعديل.</p></div><a href="<?php echo esc_url($cg_url); ?>">إعادة ضبط البحث ←</a></div>
       <form class="cg-filter" id="cg-filters" method="get" action="<?php echo esc_url($cg_url); ?>">
-        <label>اسم السيارة<input name="s" type="search" maxlength="85" value="<?php echo esc_attr($cg_search); ?>" placeholder="موديل أو ماركة"></label>
+        <label>اسم السيارة<input name="car_search" type="search" maxlength="85" value="<?php echo esc_attr($cg_search); ?>" placeholder="موديل أو ماركة"></label>
         <label>الماركة<select name="brand"><option value="">كل الماركات</option><?php foreach($cg_brands as $t): ?><option value="<?php echo esc_attr($t->slug); ?>" <?php selected($cg_brand,$t->slug); ?>><?php echo esc_html($t->name); ?></option><?php endforeach; ?></select></label>
         <label>السوق<select name="market"><option value="">كل الأسواق</option><?php foreach($cg_markets as $t): ?><option value="<?php echo esc_attr($t->slug); ?>" <?php selected($cg_market,$t->slug); ?>><?php echo esc_html($t->name); ?></option><?php endforeach; ?></select></label>
         <label>الهيكل<select name="vehicle_type"><option value="">كل الأنواع</option><?php foreach($cg_bodies as $t): ?><option value="<?php echo esc_attr($t->slug); ?>" <?php selected($cg_body,$t->slug); ?>><?php echo esc_html($t->name); ?></option><?php endforeach; ?></select></label>
@@ -158,7 +182,16 @@ get_header();
         <button type="submit">تطبيق الفلاتر</button>
       </form>
       <?php if($cg_more): ?><div class="cg-cars-grid cg-cars-rest"><?php foreach($cg_more as $car){$cg_render_card($car);} ?></div><?php endif; ?>
-      <?php if($cg_top): ?><div class="cg-pagination"><?php the_posts_pagination(['mid_size'=>2,'prev_text'=>'السابق','next_text'=>'التالي']); ?></div><?php endif; ?>
+      <?php if($cg_top): ?><div class="cg-pagination"><?php if($cg_search !== ''):
+            echo paginate_links([
+              'total'=>max(1,(int)$cg_listing->max_num_pages),
+              'current'=>max(1,(int)get_query_var('paged')),
+              'prev_text'=>'السابق','next_text'=>'التالي',
+              'add_args'=>['car_search'=>$cg_search]
+            ]);
+          else:
+            the_posts_pagination(['mid_size'=>2,'prev_text'=>'السابق','next_text'=>'التالي']);
+          endif; ?></div><?php endif; ?>
     </section>
 
     <section class="cg-guides" aria-labelledby="cg-guide-links">
