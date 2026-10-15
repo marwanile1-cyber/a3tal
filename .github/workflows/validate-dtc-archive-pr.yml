@@ -1,0 +1,39 @@
+name: Validate DTC archive changes
+on:
+  pull_request:
+    paths:
+      - 'theme-source/a3tal-global/dtc-library-archive.php'
+      - 'theme-source/a3tal-global/dtc-library-support.php'
+      - 'theme-source/a3tal-global/assets/js/dtc-live-search.js'
+      - 'theme-source/a3tal-global/assets/css/dtc-live-search.css'
+      - 'scripts/deploy-dtc-world-garage.py'
+      - '.github/workflows/validate-dtc-archive-pr.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Syntax checks
+        run: |
+          set -euo pipefail
+          php -l theme-source/a3tal-global/dtc-library-archive.php
+          php -l theme-source/a3tal-global/dtc-library-support.php
+          node --check theme-source/a3tal-global/assets/js/dtc-live-search.js
+          python3 -m py_compile scripts/deploy-dtc-world-garage.py
+      - name: Archive integration invariants
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          s=Path('theme-source/a3tal-global/dtc-library-support.php').read_text()
+          a=Path('theme-source/a3tal-global/dtc-library-archive.php').read_text()
+          d=Path('scripts/deploy-dtc-world-garage.py').read_text()
+          for needle in ['a3g_dtc_filter_catalog', 'a3g_dtc_ajax_lookup', 'a3g_dtc_standard_system', 'CollectionPage', 'ItemList']:
+              assert needle in s, needle
+          assert 'a3g_dtc_filter_catalog' in a
+          for needle in ['assets/js/dtc-live-search.js','assets/css/dtc-live-search.css']:
+              assert needle in d and needle in s, needle
+          print('Scoped DTC integration checks passed')
+          PY

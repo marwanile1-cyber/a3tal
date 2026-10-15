@@ -49,8 +49,124 @@ function a3g_dtc_content_id($post_id) {
 }
 
 /** Deduplicate records and legacy guides by code, with explicit records first. */
+/**
+ * Consistent display taxonomy for verified diagnostic code families.
+ * This deliberately does not mutate editorial terms or infer OEM-specific meanings.
+ */
+function a3g_dtc_standard_system($code, $stored = '') {
+    $fallback = ['P'=>'المحرك وناقل الحركة','B'=>'الهيكل والمقصورة','C'=>'الشاسيه والفرامل','U'=>'الشبكات والاتصالات'];
+    if (preg_match('/^P03(?:3[5-9]|4[0-9])$/', $code)) return 'المحرك / حساسات عمود الكرنك والكامات CKP-CMP';
+    if (preg_match('/^P017[0-5]$/', $code)) return 'المحرك / خليط الوقود والهواء Fuel Trim';
+    if (preg_match('/^P03A[0-8]$/', $code)) return 'المحرك / حساس ضغط الأسطوانة';
+    if (in_array($code, ['P0420','P0430'], true)) return 'المحرك / المحول الحفاز والانبعاثات';
+    if ($code === 'P0700') return 'ناقل الحركة / نظام التحكم TCM';
+    if ($code === 'P0011') return 'المحرك / توقيت عمود الكامات VVT';
+    return trim($stored) !== '' ? trim($stored) : ($fallback[substr($code,0,1)] ?? 'أنظمة السيارة');
+}
+
+/** Filter the unified catalog without limiting results to the current page. */
+function a3g_dtc_filter_catalog($catalog, $query = '', $family = '') {
+    $query = trim(preg_replace('/\\s+/u', ' ', (string)$query));
+    $family = strtoupper((string)$family);
+    if (!in_array($family, ['P','B','C','U'], true)) $family = '';
+    if (function_exists('mb_strlen') && mb_strlen($query, 'UTF-8') > 80) return [];
+    if (!function_exists('mb_strlen') && strlen($query) > 240) return [];
+    $compact = strtoupper(preg_replace('/\\s+/u', '', $query));
+    return array_values(array_filter($catalog, static function ($entry) use ($query, $compact, $family) {
+        if ($family !== '' && substr($entry['code'],0,1) !== $family) return false;
+        if ($query === '') return true;
+        if (strpos($entry['code'], $compact) === 0) return true;
+        $text = (string)($entry['search_text'] ?? $entry['title'] . ' ' . $entry['category']);
+        if (function_exists('mb_stripos')) return mb_stripos($text, $query, 0, 'UTF-8') !== false;
+        return stripos($text, $query) !== false;
+    }));
+}
+
+function a3g_dtc_ajax_lookup() {
+    $raw = isset($_GET['q']) && is_string($_GET['q']) ? wp_unslash($_GET['q']) : '';
+    $query = sanitize_text_field(a3g_dtc_digits($raw));
+    $family = isset($_GET['family']) && is_string($_GET['family']) ? sanitize_text_field(wp_unslash($_GET['family'])) : '';
+    $matches = a3g_dtc_filter_catalog(a3g_dtc_catalog(), $query, $family);
+    $results = [];
+    foreach (array_slice($matches, 0, 12) as $entry) {
+        $results[] = [
+            'code' => $entry['code'],
+            'title' => $entry['title'],
+            'url' => $entry['url'],
+            'system' => $entry['category']
+        ];
+    }
+    wp_send_json_success(['total'=>count($matches), 'results'=>$results]);
+}
+add_action('wp_ajax_a3g_dtc_lookup', 'a3g_dtc_ajax_lookup');
+add_action('wp_ajax_nopriv_a3g_dtc_lookup', 'a3g_dtc_ajax_lookup');
+
+/** SEO metadata and graph for the canonical DTC collection only. */
+function a3g_dtc_archive_seo_data() {
+    return [
+        'title' => 'مكتبة أكواد أعطال السيارات (OBD-II DTC) وتفسيرها بالعربي | أعطال.كوم',
+        'description' => 'مرجع عربي لتفسير أكواد أعطال السيارات P وB وC وU: معنى الكود والأعراض ودرجة الخطورة عند توثيقها، وخطوات الفحص قبل تغيير القطع.'
+    ];
+}
+add_filter('wpseo_title', static function($title) {
+    return is_post_type_archive('a3_dtc') ? a3g_dtc_archive_seo_data()['title'] : $title;
+}, 120);
+add_filter('wpseo_metadesc', static function($description) {
+    return is_post_type_archive('a3_dtc') ? a3g_dtc_archive_seo_data()['description'] : $description;
+}, 120);
+add_filter('wpseo_opengraph_title', static function($title) {
+    return is_post_type_archive('a3_dtc') ? a3g_dtc_archive_seo_data()['title'] : $title;
+}, 120);
+add_filter('wpseo_opengraph_desc', static function($description) {
+    return is_post_type_archive('a3_dtc') ? a3g_dtc_archive_seo_data()['description'] : $description;
+}, 120);
+add_filter('document_title_parts', static function($parts) {
+    if (is_post_type_archive('a3_dtc')) $parts['title'] = a3g_dtc_archive_seo_data()['title'];
+    return $parts;
+}, 120);
+add_action('wp_head', static function() {
+    if (!is_post_type_archive('a3_dtc') || a3g_dtc_is_variant()) return;
+    $url = get_post_type_archive_link('a3_dtc') ?: home_url('/dtc/');
+    $catalog = a3g_dtc_catalog();
+    $items = [];
+    foreach (array_slice($catalog, 0, 18) as $index => $entry) {
+        $items[] = [
+            '@type' => 'ListItem',
+            'position' => $index + 1,
+            'item' => [
+                '@type' => 'DefinedTerm',
+                'termCode' => $entry['code'],
+                'name' => $entry['title'],
+                'url' => $entry['url'],
+                'description' => $entry['category']
+            ]
+        ];
+    }
+    $graph = [
+        '@context' => 'https://schema.org',
+        '@graph' => [
+            [
+                '@type' => 'CollectionPage',
+                '@id' => $url . '#webpage',
+                'url' => $url,
+                'name' => a3g_dtc_archive_seo_data()['title'],
+                'description' => a3g_dtc_archive_seo_data()['description'],
+                'mainEntity' => ['@id' => $url . '#dtc-itemlist']
+            ],
+            [
+                '@type' => 'ItemList',
+                '@id' => $url . '#dtc-itemlist',
+                'name' => 'أكواد الأعطال المنشورة',
+                'numberOfItems' => count($items),
+                'itemListElement' => $items
+            ]
+        ]
+    ];
+    echo '<script type="application/ld+json">' . wp_json_encode($graph, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) . '</script>' . "\n";
+}, 20);
+
 function a3g_dtc_catalog() {
-    $cached = get_transient('a3g_dtc_catalog_v1');
+    $cached = get_transient('a3g_dtc_catalog_v2');
     if (is_array($cached)) return $cached;
     $entries = [];
     $records = get_posts(['post_type'=>'a3_dtc','post_status'=>'publish','posts_per_page'=>-1,'orderby'=>'title','order'=>'ASC','no_found_rows'=>true]);
@@ -59,24 +175,32 @@ function a3g_dtc_catalog() {
         if ($post->post_password !== '') continue;
         foreach (a3g_dtc_codes_in_title($post->ID) as $code) {
             if (isset($entries[$code])) continue;
-            $category = (string)get_post_meta($post->ID, '_a3_dtc_system', true);
-            if ($category === '') {
-                $category = ['P'=>'المحرك وناقل الحركة','B'=>'الهيكل والمقصورة','C'=>'الشاسيه والفرامل','U'=>'الشبكات والاتصالات'][$code[0]];
-            }
-            $entries[$code] = ['code'=>$code,'title'=>get_the_title($post->ID),'url'=>get_permalink($post->ID),'id'=>(int)$post->ID,'category'=>$category,'excerpt'=>a3g_excerpt($post->ID, 22)];
+            $category = a3g_dtc_standard_system($code, (string)get_post_meta($post->ID, '_a3_dtc_system', true));
+            $excerpt = a3g_excerpt($post->ID, 22);
+            $focus = get_post_meta($post->ID, '_yoast_wpseo_focuskw', true);
+            $focus = is_string($focus) ? $focus : '';
+            $entries[$code] = [
+                'code' => $code,
+                'title' => get_the_title($post->ID),
+                'url' => get_permalink($post->ID),
+                'id' => (int)$post->ID,
+                'category' => $category,
+                'excerpt' => $excerpt,
+                'search_text' => implode(' ', [$code, get_the_title($post->ID), $category, $excerpt, $focus])
+            ];
         }
     }
     ksort($entries);
     $entries = array_values($entries);
-    set_transient('a3g_dtc_catalog_v1', $entries, 10 * MINUTE_IN_SECONDS);
+    set_transient('a3g_dtc_catalog_v2', $entries, 10 * MINUTE_IN_SECONDS);
     return $entries;
 }
 
 function a3g_dtc_clear_catalog($post_id) {
-    if (in_array(get_post_type($post_id), ['post','a3_dtc'], true)) delete_transient('a3g_dtc_catalog_v1');
+    if (in_array(get_post_type($post_id), ['post','a3_dtc'], true)) delete_transient('a3g_dtc_catalog_v2');
 }
 add_action('save_post', 'a3g_dtc_clear_catalog');
-add_action('deleted_post', static function() { delete_transient('a3g_dtc_catalog_v1'); });
+add_action('deleted_post', static function() { delete_transient('a3g_dtc_catalog_v2'); });
 add_action('trashed_post', 'a3g_dtc_clear_catalog');
 add_action('untrashed_post', 'a3g_dtc_clear_catalog');
 
@@ -110,6 +234,13 @@ add_action('wp_enqueue_scripts', static function() {
     wp_enqueue_style('a3g-dtc-library', get_template_directory_uri().'/dtc-library.css', ['a3g-style'], A3G_DTC_VERSION);
     // The global garage only runs on the archive. Version by file modification to avoid stale cached UI.
     if (is_post_type_archive('a3_dtc')) {
+        $search_js = get_template_directory() . '/assets/js/dtc-live-search.js';
+        $search_css = get_template_directory() . '/assets/css/dtc-live-search.css';
+        if (is_file($search_css)) wp_enqueue_style('a3g-dtc-live-search', get_template_directory_uri() . '/assets/css/dtc-live-search.css', ['a3g-dtc-library'], (string)filemtime($search_css));
+        if (is_file($search_js)) {
+            wp_enqueue_script('a3g-dtc-live-search', get_template_directory_uri() . '/assets/js/dtc-live-search.js', [], (string)filemtime($search_js), true);
+            wp_localize_script('a3g-dtc-live-search', 'a3talDtcLookup', ['endpoint' => admin_url('admin-ajax.php')]);
+        }
         $gg_css = get_template_directory() . '/dtc-world-garage.css';
         $gg_js = get_template_directory() . '/assets/js/dtc-world-garage.js';
         if (is_file($gg_css)) wp_enqueue_style('a3g-global-garage', get_template_directory_uri() . '/dtc-world-garage.css', ['a3g-dtc-library'], (string)filemtime($gg_css));
