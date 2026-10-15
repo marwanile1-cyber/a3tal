@@ -6,6 +6,8 @@ Never mutates content or invents prices. Writes report artifact + job summary.
 import importlib.util
 import json
 import os
+import time
+from urllib.error import HTTPError, URLError
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.request import Request, urlopen
@@ -23,7 +25,18 @@ REQUIRED=[
 FIELDS="_fields=id,slug,link,title,featured_media"
 def public(url):
     req=Request(url,headers={"User-Agent":"A3tal-Car-QA/1.0","Accept":"application/json","Cache-Control":"no-cache"})
-    with urlopen(req,timeout=35) as res:return json.load(res)
+    # Origin may return 522 briefly while the production bridge changes theme files.
+    # Reads are safe to retry, writes remain strictly disabled.
+    for attempt in range(4):
+        try:
+            with urlopen(req,timeout=45) as res:return json.load(res)
+        except HTTPError as error:
+            if error.code not in (429,500,502,503,504,520,522,524) or attempt == 3:raise
+            print("CAR_AUDIT_PUBLIC_TRANSIENT",error.code,"retry",attempt+1,flush=True)
+        except (URLError,TimeoutError) as error:
+            if attempt == 3:raise
+            print("CAR_AUDIT_PUBLIC_TRANSPORT_RETRY",attempt+1,flush=True)
+        time.sleep(25*(attempt+1))
 def clean(meta,k):
     raw=meta.get(k,[])
     if isinstance(raw,list):v=raw[0] if raw else ""

@@ -4,13 +4,17 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/audit-car-prices-top10.yml'
+      - 'scripts/audit-car-prices-top10.py'
   workflow_dispatch:
 permissions:
   contents: read
+concurrency:
+  group: a3tal-production-theme
+  cancel-in-progress: false
 jobs:
   audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 35
     env:
       A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
     steps:
