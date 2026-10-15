@@ -10,6 +10,7 @@ on:
     paths:
       - '.github/workflows/scheduled-dtc-reviewed-queue.yml'
       - 'scripts/scheduled-dtc-reviewed-queue.py'
+      - 'data/dtc-original-batch-26.json'
 
 permissions:
   contents: read
