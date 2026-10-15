@@ -1,4 +1,5 @@
 name: Deploy DTC archive fix safely (source bridge)
+# Hotfix: CSS stored in existing theme root to respect bridge file parent checks.
 on:
   push:
     branches: [main]
