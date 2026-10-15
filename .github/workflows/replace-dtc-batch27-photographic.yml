@@ -1,11 +1,13 @@
-name: Replace reviewed DTC batch27 covers via A3tal Bridge
+name: Deploy batch27 photorealistic covers safely (A3tal Bridge)
 
 on:
   workflow_dispatch:
   push:
     branches: [main]
     paths:
-      - 'assets/dtc-batch27-photographic/**'
+      - 'assets/dtc-batch27-photographic.zip'
+      - 'scripts/replace-dtc-batch27-photographic.py'
+      - '.github/workflows/replace-dtc-batch27-photographic.yml'
 
 permissions:
   contents: read
@@ -15,16 +17,51 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  replace-reviewed-images:
+  validate-and-replace-images:
     runs-on: ubuntu-latest
-    timeout-minutes: 80
+    timeout-minutes: 95
     env:
       A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
     steps:
       - uses: actions/checkout@v4
-      - name: Validate runtime
+      - name: Validate safe release script
         run: |
           python3 -m pip install --quiet Pillow
           python3 -m py_compile scripts/replace-dtc-batch27-photographic.py
-      - name: Replace only verified batch27 featured media
-        run: python3 -u scripts/replace-dtc-batch27-photographic.py
+      - name: Check for the reviewed ZIP (never synthesize fallback illustrations)
+        id: assets
+        run: |
+          if [ -f assets/dtc-batch27-photographic.zip ]; then
+            echo 'ready=true' >> "$GITHUB_OUTPUT"
+            echo 'VERIFIED_BINARY_PRESENT'
+          else
+            echo 'ready=false' >> "$GITHUB_OUTPUT"
+            echo 'AWAITING_REAL_PHOTOGRAPHIC_WEBP_ZIP: no WordPress writes'
+          fi
+      - name: Verify 10 exact images and fixed archive checksum
+        if: steps.assets.outputs.ready == 'true'
+        run: python3 -u scripts/replace-dtc-batch27-photographic.py validate
+      - name: Read all previous featured images before any write
+        if: steps.assets.outputs.ready == 'true'
+        run: python3 -u scripts/replace-dtc-batch27-photographic.py prepare --state "$RUNNER_TEMP/photo-rollback.json"
+      - name: Encrypt existing featured and Yoast image state
+        if: steps.assets.outputs.ready == 'true'
+        run: |
+          openssl enc -aes-256-cbc -salt -pbkdf2 -iter 200000 \
+            -pass env:A3TAL_API_KEY \
+            -in "$RUNNER_TEMP/photo-rollback.json" \
+            -out "$RUNNER_TEMP/photo-rollback.enc"
+      - name: Preserve encrypted rollback before touching WordPress
+        if: steps.assets.outputs.ready == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-batch27-original-photos-${{ github.run_id }}
+          path: ${{ runner.temp }}/photo-rollback.enc
+          retention-days: 7
+          if-no-files-found: error
+      - name: Replace only the 10 verified pictures and synchronize Yoast OG
+        if: steps.assets.outputs.ready == 'true'
+        run: python3 -u scripts/replace-dtc-batch27-photographic.py apply --state "$RUNNER_TEMP/photo-rollback.json"
+      - name: Independently audit featured and social images on every published article
+        if: steps.assets.outputs.ready == 'true'
+        run: python3 -u scripts/audit-dtc-og-images.py --batch 27
