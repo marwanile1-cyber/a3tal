@@ -1,0 +1,29 @@
+name: Audit 10 existing car price records (read only)
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/audit-car-prices-top10.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint read-only audit
+        run: python3 -m py_compile scripts/audit-car-prices-top10.py
+      - name: Inspect ten existing WordPress car records
+        run: python3 scripts/audit-car-prices-top10.py
+      - name: Preserve private-to-repo audit artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: car-price-record-evidence-${{ github.run_id }}
+          path: car-price-audit-output
+          if-no-files-found: warn
+          retention-days: 7
