@@ -17,7 +17,7 @@ spec.loader.exec_module(release)
 
 THEME = Path("theme-source/a3tal-global")
 FILES = (
-    "assets/css/dtc-live-search.css",
+    "dtc-live-search.css",
     "assets/js/dtc-live-search.js",
     "dtc-library-support.php",
     "dtc-library-archive.php",
