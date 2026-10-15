@@ -5,7 +5,6 @@
  * Published data only: no fabricated price, availability or timestamp.
  */
 if (!defined('ABSPATH')) exit;
-if (!is_post_type_archive('a3_car')) return;
 $cg_url = get_post_type_archive_link('a3_car') ?: home_url('/cars/');
 $cg_car_ids = get_posts([
   'post_type'=>'a3_car','post_status'=>'publish','posts_per_page'=>-1,
@@ -28,7 +27,7 @@ $cg_brand = get_query_var('brand');
 $cg_market = get_query_var('market');
 $cg_body = get_query_var('vehicle_type');
 $cg_year = get_query_var('year');
-$cg_archive_filtered = $cg_search !== '' || isset($_GET['brand'],$_GET['market']) || isset($_GET['brand']) || isset($_GET['market']) || isset($_GET['vehicle_type']) || isset($_GET['year']);
+$cg_archive_filtered = $cg_search !== '' || isset($_GET['brand']) || isset($_GET['market']) || isset($_GET['vehicle_type']) || isset($_GET['year']);
 $cg_hero_ids = get_posts([
   'post_type'=>'a3_car','post_status'=>'publish','posts_per_page'=>7,
   'fields'=>'ids','no_found_rows'=>true,'meta_query'=>[['key'=>'_thumbnail_id','compare'=>'EXISTS']]
@@ -110,7 +109,7 @@ get_header();
       <div class="cg-brands-grid">
         <?php foreach(array_slice($cg_brands,0,18) as $term): ?>
           <a class="cg-brand" data-brand-name="<?php echo esc_attr($term->name); ?>" href="<?php echo esc_url(add_query_arg('brand',$term->slug,$cg_url)); ?>">
-            <span class="cg-brand-icon" aria-hidden="true"><?php echo esc_html(mb_substr($term->name,0,2)); ?></span>
+            <span class="cg-brand-icon" aria-hidden="true"><?php echo esc_html(function_exists('mb_substr') ? mb_substr($term->name,0,2) : substr($term->name,0,2)); ?></span>
             <span class="cg-brand-name"><?php echo esc_html($term->name); ?></span>
           </a>
         <?php endforeach; ?>
