@@ -24,12 +24,15 @@ $cg_search = function_exists('mb_substr') ? mb_substr($cg_search,0,85) : substr(
 $cg_brand = get_query_var('brand');
 $cg_market = get_query_var('market');
 $cg_body = get_query_var('vehicle_type');
-$cg_year = get_query_var('year');
-$cg_archive_filtered = $cg_search !== '' || isset($_GET['brand']) || isset($_GET['market']) || isset($_GET['vehicle_type']) || isset($_GET['year']);
+// WP reserves "year" for post publication dates, which makes ?year=2027 a 404.
+// The price guide uses a separate, archive-scoped car_year query parameter.
+$cg_year = isset($_GET['car_year']) && is_scalar($_GET['car_year']) ? absint(wp_unslash($_GET['car_year'])) : 0;
+$cg_year = ($cg_year >= 1950 && $cg_year <= 2100) ? $cg_year : 0;
+$cg_archive_filtered = $cg_search !== '' || $cg_year > 0 || isset($_GET['brand']) || isset($_GET['market']) || isset($_GET['vehicle_type']);
 // WordPress interprets ?s= as a global site search and may swap this archive
 // for index.php. Use a scoped, paginated vehicle-only search instead.
 $cg_listing = $GLOBALS['wp_query'];
-if ($cg_search !== '') {
+if ($cg_search !== '' || $cg_year > 0) {
   $cg_tax_query = ['relation'=>'AND'];
   foreach (['brand'=>'a3_brand','market'=>'a3_market','vehicle_type'=>'a3_car_body'] as $param=>$taxonomy) {
     $raw = isset($_GET[$param]) && is_string($_GET[$param]) ? sanitize_title(wp_unslash($_GET[$param])) : '';
@@ -42,10 +45,8 @@ if ($cg_search !== '') {
     'ignore_sticky_posts'=>true
   ];
   if (count($cg_tax_query)>1) $cg_args['tax_query']=$cg_tax_query;
-  if (isset($_GET['year']) && is_scalar($_GET['year'])) {
-    $requested_year=absint($_GET['year']);
-    if($requested_year>=1950 && $requested_year<=2100)
-      $cg_args['meta_query']=[['key'=>'_a3_year','value'=>(string)$requested_year,'compare'=>'=']];
+  if ($cg_year > 0) {
+    $cg_args['meta_query']=[['key'=>'_a3_year','value'=>(string)$cg_year,'compare'=>'=','type'=>'NUMERIC']];
   }
   $cg_listing = new WP_Query($cg_args);
 }
@@ -178,16 +179,18 @@ get_header();
         <label>الماركة<select name="brand"><option value="">كل الماركات</option><?php foreach($cg_brands as $t): ?><option value="<?php echo esc_attr($t->slug); ?>" <?php selected($cg_brand,$t->slug); ?>><?php echo esc_html($t->name); ?></option><?php endforeach; ?></select></label>
         <label>السوق<select name="market"><option value="">كل الأسواق</option><?php foreach($cg_markets as $t): ?><option value="<?php echo esc_attr($t->slug); ?>" <?php selected($cg_market,$t->slug); ?>><?php echo esc_html($t->name); ?></option><?php endforeach; ?></select></label>
         <label>الهيكل<select name="vehicle_type"><option value="">كل الأنواع</option><?php foreach($cg_bodies as $t): ?><option value="<?php echo esc_attr($t->slug); ?>" <?php selected($cg_body,$t->slug); ?>><?php echo esc_html($t->name); ?></option><?php endforeach; ?></select></label>
-        <label>سنة الموديل<input type="number" name="year" min="1950" max="2100" value="<?php echo esc_attr($cg_year ? absint($cg_year) : ''); ?>" placeholder="2027"></label>
+        <label>سنة الموديل<input type="number" name="car_year" min="1950" max="2100" value="<?php echo esc_attr($cg_year ? absint($cg_year) : ''); ?>" placeholder="2027"></label>
         <button type="submit">تطبيق الفلاتر</button>
       </form>
       <?php if($cg_more): ?><div class="cg-cars-grid cg-cars-rest"><?php foreach($cg_more as $car){$cg_render_card($car);} ?></div><?php endif; ?>
-      <?php if($cg_top): ?><div class="cg-pagination"><?php if($cg_search !== ''):
+      <?php if($cg_top): ?><div class="cg-pagination"><?php if($cg_search !== '' || $cg_year > 0):
             echo paginate_links([
               'total'=>max(1,(int)$cg_listing->max_num_pages),
               'current'=>max(1,(int)get_query_var('paged')),
               'prev_text'=>'السابق','next_text'=>'التالي',
-              'add_args'=>['car_search'=>$cg_search]
+              'add_args'=>array_filter(['car_search'=>$cg_search,'car_year'=>$cg_year ?: null,
+                'brand'=>get_query_var('brand'),'market'=>get_query_var('market'),
+                'vehicle_type'=>get_query_var('vehicle_type')],static function($v){return $v !== '' && $v !== null;})
             ]);
           else:
             the_posts_pagination(['mid_size'=>2,'prev_text'=>'السابق','next_text'=>'التالي']);
