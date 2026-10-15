@@ -8,6 +8,8 @@ on:
       - 'theme-source/a3tal-global/car-price-brand-logos.js'
       - 'theme-source/a3tal-global/archive-a3_car.php'
       - 'scripts/deploy-car-price-guide.py'
+      - 'scripts/audit-car-prices-top10.py'
+      - '.github/workflows/audit-car-prices-top10.yml'
       - '.github/workflows/deploy-car-price-guide.yml'
       - '.github/workflows/validate-car-price-guide.yml'
   workflow_dispatch:
@@ -25,7 +27,7 @@ jobs:
           php -l theme-source/a3tal-global/archive-a3_car.php
           node --check theme-source/a3tal-global/car-price-guide.js
           node --check theme-source/a3tal-global/car-price-brand-logos.js
-          python3 -m py_compile scripts/deploy-car-price-guide.py
+          python3 -m py_compile scripts/deploy-car-price-guide.py scripts/audit-car-prices-top10.py
       - name: Link and data provenance guards
         run: |
           python3 - <<'PY'
@@ -36,6 +38,11 @@ jobs:
           for needle in ['a3cp_vehicle_price','a3g_first_term','_a3_source_checked_at','get_permalink','get_post_type_archive_link', "cat'=>374", 'a3g_cat_link(21)',"a3g_platform_link('a3_listing'"]:
               assert needle in p,needle
           assert 'car-price-guide.php' in archive
+          assert 'name="car_year"' in p
+          assert "get_query_var('year')" not in p
+          assert "isset($_GET['year'])" not in p
+          assert "'car_year'=>$cg_year" in p
+          assert "if ($cg_search !== '' || $cg_year > 0)" in p
           assert 'register_post_type' not in p and 'add_rewrite_rule' not in p
           assert 'wp_update_post' not in p and 'wp_insert_post' not in p
           assert 'cg-brands-grid' in css and '@media(max-width:480px)' in css
