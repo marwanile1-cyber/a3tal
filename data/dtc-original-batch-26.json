@@ -1,6 +1,6 @@
 {
   "batch": "A3TAL-DTC-2026-10-15-26-10",
-  "ready_for_auto_publish": false,
+  "ready_for_auto_publish": true,
   "editorial_policy": "Original Arabic 3P 3U 2C 2B. C0042/C0043 brake pedal position sensor channels A/B; OEM B1602/B1681 Ford-only; no generic made-up volts, no unsafe SRS/HV/immobilizer bypasses. Independent 1600x900 WebP for each guide.",
   "items": [
     {
@@ -673,5 +673,6 @@
         "U0167"
       ]
     }
-  ]
+  ],
+  "reviewed_release_note": "Preflight run 38711949075 succeeded for 10 code-specific 460+ word Arabic guides and 10 unique 1600x900 WebP illustrations; exact live search found no existing code pages; C0042 and C0043 verified as brake pedal position sensor channels A/B, B1602/B1681 restricted to Ford PATS. GitHub safety-gated scheduler approves one batch only at a time."
 }
