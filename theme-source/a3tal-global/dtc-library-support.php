@@ -234,6 +234,13 @@ add_action('wp_enqueue_scripts', static function() {
     wp_enqueue_style('a3g-dtc-library', get_template_directory_uri().'/dtc-library.css', ['a3g-style'], A3G_DTC_VERSION);
     // The global garage only runs on the archive. Version by file modification to avoid stale cached UI.
     if (is_post_type_archive('a3_dtc')) {
+        $search_js = get_template_directory() . '/assets/js/dtc-live-search.js';
+        $search_css = get_template_directory() . '/assets/css/dtc-live-search.css';
+        if (is_file($search_css)) wp_enqueue_style('a3g-dtc-live-search', get_template_directory_uri() . '/assets/css/dtc-live-search.css', ['a3g-dtc-library'], (string)filemtime($search_css));
+        if (is_file($search_js)) {
+            wp_enqueue_script('a3g-dtc-live-search', get_template_directory_uri() . '/assets/js/dtc-live-search.js', [], (string)filemtime($search_js), true);
+            wp_localize_script('a3g-dtc-live-search', 'a3talDtcLookup', ['endpoint' => admin_url('admin-ajax.php')]);
+        }
         $gg_css = get_template_directory() . '/dtc-world-garage.css';
         $gg_js = get_template_directory() . '/assets/js/dtc-world-garage.js';
         if (is_file($gg_css)) wp_enqueue_style('a3g-global-garage', get_template_directory_uri() . '/dtc-world-garage.css', ['a3g-dtc-library'], (string)filemtime($gg_css));
