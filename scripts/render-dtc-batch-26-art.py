@@ -363,7 +363,7 @@ def scene_injection_pump(a,accent):
         x=760+k*69
         metal(d,(x,327,x+44,501),r=17,base_col=(47,73,78),stroke=(197,195,170),width=5)
         tube(d,[(x+20,332),(x+48,228),(x+63,178)],clr=(175,179,163),width=14)
-    metal(d,(1017,363,1270,552),r=36,base_col=(43,65,79),stroke=(*accent,255),width=6)
+    metal(d,(1017,363,1270,552),r=36,base_col=(43,65,79),stroke=accent,width=6)
     for k in range(5):
         y=400+k*28;d.line((1080,y,1221,y),fill=(91,151,169),width=7)
     cable(d,[(1226,425),(1326,259),(1488,274)],w=22)
@@ -380,7 +380,7 @@ def scene_level_sender(a,accent):
     d.line((756,495,1057,561),fill=(203,209,171),width=14)
     d.ellipse((1006,519,1103,608),fill=(*accent,255),outline=(239,225,188),width=8)
     cable(d,[(771,152),(883,103),(1041,134)],w=20)
-    metal(d,(1240,332,1469,541),r=25,base_col=(41,67,80),stroke=(*accent,255))
+    metal(d,(1240,332,1469,541),r=25,base_col=(41,67,80),stroke=accent)
     d.arc((1275,370,1435,506),200,340,fill=(210,222,198),width=9)
     d.line((1352,440,1410,395),fill=(*accent,255),width=9)
 
@@ -420,7 +420,7 @@ def scene_brake_position(a,accent):
     d.rounded_rectangle((780,594,1185,723),radius=26,fill=(57,74,81),outline=(196,205,189),width=15)
     for x in range(824,1133,36):
         d.line((x,627,x+38,693),fill=(36,58,65),width=12)
-    metal(d,(488,336,699,480),r=27,base_col=(39,66,82),stroke=(*accent,255),width=8)
+    metal(d,(488,336,699,480),r=27,base_col=(39,66,82),stroke=accent,width=8)
     d.ellipse((541,376,642,455),fill=(98,164,170),outline=(217,216,183),width=6)
     for y in (363,409,457):
         d.line((699,y,848,y),fill=(*accent,255),width=9)
@@ -434,7 +434,7 @@ def scene_pats_receiver(a,accent):
     d=ImageDraw.Draw(a)
     d.arc((284,235,835,738),20,340,fill=(*accent,255),width=20)
     d.arc((242,191,877,771),195,318,fill=(102,197,219),width=11)
-    metal(d,(1129,635,1442,771),r=25,base_col=(33,62,78),stroke=(*accent,255))
+    metal(d,(1129,635,1442,771),r=25,base_col=(33,62,78),stroke=accent)
     for x in range(1175,1390,41):
         d.line((x,677,x,730),fill=(113,173,192),width=9)
     cable(d,[(1325,633),(1398,537),(1440,411)],w=14)
