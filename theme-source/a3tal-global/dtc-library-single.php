@@ -24,6 +24,28 @@ while (have_posts()): the_post();
   $GLOBALS['post'] = $dtc_content_post;
   setup_postdata($dtc_content_post);
   $dtc_body = apply_filters('the_content', $dtc_content_post->post_content);
+  // Safe approved-video renderer. WordPress strips arbitrary iframes for safety.
+  // Only these three editorially checked tutorial IDs may be embedded here.
+  $dtc_video_allowlist = [
+    'P0261' => 'FwccYUkKr8M',
+    'P0327' => '1m-hftSBNwk',
+    'P0571' => 'DT5DP61e2HI',
+  ];
+  $dtc_video_id = $dtc_video_allowlist[strtoupper((string)$dtc_code)] ?? '';
+  if ($dtc_video_id !== '' && strpos($dtc_body, 'a3-dtc-video') !== false &&
+      strpos($dtc_body, 'youtube.com/watch?v=' . $dtc_video_id) !== false) {
+    $dtc_iframe = '<iframe loading="lazy" title="فيديو تشخيص ' . esc_attr($dtc_code) .
+      '" src="https://www.youtube-nocookie.com/embed/' . esc_attr($dtc_video_id) .
+      '" style="position:absolute;inset:0;width:100%;height:100%;border:0" ' .
+      'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ' .
+      'referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>';
+    $dtc_body = preg_replace(
+      '~(<figure\\b[^>]*class="a3-dtc-video"[^>]*>\\s*<div\\b[^>]*>)\\s*(</div>)~is',
+      '$1' . $dtc_iframe . '$2',
+      $dtc_body,
+      1
+    );
+  }
   $GLOBALS['post'] = $dtc_original_post;
   setup_postdata($dtc_original_post);
   $dtc_toc = [];
