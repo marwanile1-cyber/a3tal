@@ -1,0 +1,32 @@
+name: Enrich four A3tal editorial articles in place
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/upgrade-editorial-oct15.yml'
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  enrich:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Preflight live update safety checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/upgrade-editorial-oct15.py
+          test -f data/expansions/oct15-mg5-price.html
+          test -f data/expansions/oct15-mg5-sunny.html
+          test -f data/expansions/oct15-brake-judder.html
+          test -f data/expansions/oct15-motorcycle-chain.html
+      - name: Upgrade original four articles and verify live pages
+        run: python3 -u scripts/upgrade-editorial-oct15.py
