@@ -11,6 +11,7 @@ on:
       - '.github/workflows/scheduled-dtc-reviewed-queue.yml'
       - 'scripts/scheduled-dtc-reviewed-queue.py'
       - 'data/dtc-original-batch-26.json'
+      - 'data/dtc-original-batch-27.json'
 
 permissions:
   contents: read
