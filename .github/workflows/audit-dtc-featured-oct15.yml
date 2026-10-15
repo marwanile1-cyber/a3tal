@@ -1,0 +1,36 @@
+name: Audit DTC featured media mismatches
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/audit-dtc-featured-oct15.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Inspect public WordPress post images without mutations
+        run: |
+          python3 - <<'PY'
+          import json,re,urllib.request,urllib.parse,html,time
+          base='https://a3tal.com'
+          slugs=['p03a3-cylinder-2-pressure-sensor-intermittent','p0700-transmission-control-system-malfunction']
+          for slug in slugs:
+            url=base+'/wp-json/wp/v2/posts?'+urllib.parse.urlencode({'slug':slug,'_fields':'id,slug,status,featured_media,content,yoast_head_json'})
+            req=urllib.request.Request(url,headers={'Accept':'application/json','User-Agent':'Mozilla/5.0 Firefox/128.0','Cache-Control':'no-cache'})
+            with urllib.request.urlopen(req,timeout=45) as res:posts=json.load(res)
+            print('SLUG',slug,'MATCHES',len(posts))
+            for p in posts:
+              print('POST',p.get('id'),'FEATURED',p.get('featured_media'))
+              content=p.get('content',{}).get('rendered','')
+              tags=re.findall(r'<img\b[^>]*>',content,flags=re.I)
+              for tag in tags[:10]:
+                cls=re.search(r'wp-image-(\d+)',tag)
+                alt=re.search(r'alt="([^"]*)"',tag)
+                src=re.search(r'src="([^"]*)"',tag)
+                print('CONTENT_IMG','media',cls.group(1) if cls else 'unknown','alt',html.unescape(alt.group(1))[:110] if alt else '', 'src',html.unescape(src.group(1)).split('/')[-1][:110] if src else '')
+              og=p.get('yoast_head_json',{}).get('og_image',[])
+              print('OG',[(x.get('url','').split('/')[-1]) for x in og[:2]])
+            time.sleep(3)
+          PY
