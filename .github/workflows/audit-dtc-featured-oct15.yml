@@ -29,7 +29,7 @@ jobs:
                 cls=re.search(r'wp-image-(\d+)',tag)
                 alt=re.search(r'alt="([^"]*)"',tag)
                 src=re.search(r'src="([^"]*)"',tag)
-                print('CONTENT_IMG','media',cls.group(1) if cls else 'unknown','alt',html.unescape(alt.group(1))[:110] if alt else '', 'src',html.unescape(src.group(1)).split('/')[-1][:110] if src else '')
+                print('CONTENT_IMG','media',cls.group(1) if cls else 'unknown','alt',html.unescape(alt.group(1))[:110] if alt else '', 'src',html.unescape(src.group(1)) if src else '')
               og=p.get('yoast_head_json',{}).get('og_image',[])
               print('OG',[(x.get('url','').split('/')[-1]) for x in og[:2]])
             time.sleep(3)
