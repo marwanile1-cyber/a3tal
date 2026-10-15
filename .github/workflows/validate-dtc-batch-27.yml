@@ -1,0 +1,56 @@
+name: Validate batch27 original Arabic editorial and artwork before release
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/validate-dtc-batch-27.yml'
+      - 'scripts/render-dtc-batch-27-art.py'
+      - 'scripts/publish-dtc-original-batch-27.py'
+      - 'scripts/attach-dtc-batch-27-photos.py'
+      - 'data/dtc-original-batch-27.json'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  safety-and-image-preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Pillow
+        run: python3 -m pip install --quiet Pillow
+      - name: Validate ten original long-form guides without any website changes
+        run: |
+          python3 -m py_compile scripts/publish-dtc-original-batch-27.py scripts/render-dtc-batch-27-art.py scripts/attach-dtc-batch-27-photos.py
+          python3 -u scripts/publish-dtc-original-batch-27.py --dry-run
+      - name: Render unique 1600x900 WebP assets
+        run: python3 -u scripts/render-dtc-batch-27-art.py
+      - name: Confirm ten different valid illustration files and matching code identities
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          import hashlib,json
+          manifest=json.loads(Path('assets/dtc-batch27/manifest.json').read_text())
+          codes=[x['code'] for x in manifest['files']]
+          expected={'P0261','P0327','P0571','U0125','U0132','U0141','C0044','C0046','B1213','B1232'}
+          assert manifest['batch']==27 and len(codes)==10 and set(codes)==expected
+          sha=[]
+          for row in manifest['files']:
+              code=row['code']
+              path=Path('assets/dtc-batch27')/row['filename']
+              raw=path.read_bytes()
+              assert 25000<len(raw)<500000,(code,len(raw))
+              assert hashlib.sha256(raw).hexdigest()==row['sha256']
+              with Image.open(path) as pic:
+                  assert pic.format=='WEBP' and pic.size==(1600,900)
+                  pic.verify()
+              sha.append(row['sha256'])
+              print('REVIEWED_ORIGINAL',code,len(raw))
+          assert len(set(sha))==10
+          print('BATCH27_PREPUBLICATION_VALIDATION_SUCCESS')
+          PY
+      - name: Verify queue scheduler accepts only the approved ten-code batch (no WordPress writes)
+        run: |
+          python3 -m py_compile scripts/scheduled-dtc-reviewed-queue.py
+          python3 -u scripts/scheduled-dtc-reviewed-queue.py --check-only
