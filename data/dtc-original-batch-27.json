@@ -1,6 +1,6 @@
 {
   "batch": "A3TAL-DTC-2026-10-15-27-10",
-  "ready_for_auto_publish": false,
+  "ready_for_auto_publish": true,
   "editorial_policy": "10 authored, original code-specific guides 3P 3U 2C 2B. Ford PATS references limited to Ford, brake hydraulic safety. Ten unique original 1600x900 WebP illustrations required before release.",
   "items": [
     {
@@ -1040,5 +1040,6 @@
         ]
       ]
     }
-  ]
+  ],
+  "reviewed_release_note": "10 encyclopedic Arabic diagnostic guides with 4 code-specific in-depth chapters + diagnostic decision tables; three verified contextual YouTube video embeds on P0261/P0327/P0571; 10 unique 1600x900 WebP original covers. All preflight checks succeeded at GitHub run 38723509597. Safety-gated scheduler prevents duplicates and inspects previous batch."
 }
