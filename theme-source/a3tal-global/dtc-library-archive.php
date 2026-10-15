@@ -4,8 +4,8 @@ $dtc_catalog = a3g_dtc_catalog();
 $dtc_library_url = get_post_type_archive_link('a3_dtc') ?: home_url('/dtc/');
 $dtc_query_code = get_query_var('code', '');
 $dtc_raw_code = isset($_GET['code']) && is_string($_GET['code']) ? wp_unslash($_GET['code']) : (is_string($dtc_query_code) ? $dtc_query_code : '');
-$dtc_search = strtoupper(preg_replace('/\s+/u', '', sanitize_text_field(a3g_dtc_digits($dtc_raw_code))));
-$dtc_valid_search = $dtc_search === '' || preg_match('/^[PBCU][0-9][0-9A-F]{3}$/', $dtc_search);
+$dtc_search = trim(preg_replace('/\s+/u', ' ', sanitize_text_field(a3g_dtc_digits($dtc_raw_code))));
+$dtc_valid_search = function_exists('mb_strlen') ? mb_strlen($dtc_search, 'UTF-8') <= 80 : strlen($dtc_search) <= 240;
 $dtc_family = isset($_GET['family']) && is_string($_GET['family']) ? strtoupper(sanitize_text_field(wp_unslash($_GET['family']))) : '';
 if (!in_array($dtc_family, ['P', 'B', 'C', 'U'], true)) $dtc_family = '';
 $dtc_families = [
@@ -14,9 +14,7 @@ $dtc_families = [
   'C' => ['الشاسيه والفرامل', 'Chassis'],
   'U' => ['الشبكات والاتصالات', 'Network'],
 ];
-$dtc_matches = array_values(array_filter($dtc_catalog, static function ($entry) use ($dtc_search, $dtc_valid_search, $dtc_family) {
-  return $dtc_valid_search && ($dtc_search === '' || $entry['code'] === $dtc_search) && ($dtc_family === '' || substr($entry['code'], 0, 1) === $dtc_family);
-}));
+$dtc_matches = $dtc_valid_search ? a3g_dtc_filter_catalog($dtc_catalog, $dtc_search, $dtc_family) : [];
 $dtc_total = count($dtc_matches);
 $dtc_pages = max(1, (int) ceil($dtc_total / 18));
 $dtc_page = isset($_GET['dtc_page']) && is_scalar($_GET['dtc_page']) ? max(1, absint($_GET['dtc_page'])) : 1;
@@ -31,13 +29,13 @@ get_header('dtc');
   <section class="d-hero">
     <div class="d-wrap d-hero-grid">
       <div class="d-hero-copy">
-        <p class="d-eyebrow">مرجعك العربي لفهم أكواد السيارة</p>
+        <p class="d-eyebrow">مكتبة أكواد أعطال السيارات OBD-II</p>
         <h1>كل كود له حكاية.<br><span>اعرف تبدأ منين.</span></h1>
         <p class="d-hero-description">افهم معنى العطل، رتّب خطوات الفحص، واستفد من تجارب الناس قبل ما تغيّر أي قطعة.</p>
         <form class="d-search" action="<?php echo esc_url($dtc_library_url); ?>#dtc-codes" method="get" role="search" aria-label="البحث في أكواد الأعطال" data-dtc-search>
           <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg>
           <label class="screen-reader-text" for="dtc-code-search">كود العطل</label>
-          <input id="dtc-code-search" type="text" name="code" value="<?php echo esc_attr($dtc_search); ?>" placeholder="اكتب الكود، مثل P0172" maxlength="12" autocomplete="off" autocapitalize="characters" spellcheck="false" dir="ltr">
+          <input id="dtc-code-search" type="text" name="code" value="<?php echo esc_attr($dtc_search); ?>" placeholder="ابحث بالكود أو اسم الحساس، مثل P0172 أو حساس الكامة" maxlength="80" autocomplete="off" autocapitalize="characters" spellcheck="false" dir="ltr">
           <?php if ($dtc_family): ?><input type="hidden" name="family" value="<?php echo esc_attr($dtc_family); ?>"><?php endif; ?>
           <button type="submit">فسّر الكود</button>
         </form>
@@ -59,12 +57,12 @@ get_header('dtc');
   </div></nav>
   <div class="d-wrap d-main">
     <section id="dtc-codes" aria-labelledby="dtc-codes-title">
-      <div class="d-section-heading"><div><p class="d-kicker"><?php echo $dtc_search !== '' || $dtc_family !== '' ? 'نتائج البحث والتصفح' : 'مكتبة أعطال الحالية'; ?></p><h2 id="dtc-codes-title"><?php echo $dtc_search !== '' ? 'نتائج الكود ' . esc_html($dtc_search) : ($dtc_family ? esc_html($dtc_families[$dtc_family][0]) : 'ابدأ من الكود اللي عندك'); ?></h2><p><?php echo esc_html(number_format_i18n($dtc_total)); ?> شرحًا متاحًا<?php if ($dtc_pages > 1): ?> · صفحة <?php echo esc_html(number_format_i18n($dtc_page)); ?> من <?php echo esc_html(number_format_i18n($dtc_pages)); ?><?php endif; ?></p></div><?php if ($dtc_search !== '' || $dtc_family !== ''): ?><a class="d-text-link" href="<?php echo esc_url($dtc_library_url . '#dtc-codes'); ?>">كل الأكواد <span aria-hidden="true">←</span></a><?php endif; ?></div>
+      <div class="d-section-heading"><div><p class="d-kicker"><?php echo $dtc_search !== '' || $dtc_family !== '' ? 'نتائج البحث والتصفح' : 'مكتبة أعطال الحالية'; ?></p><h2 id="dtc-codes-title"><?php echo $dtc_search !== '' ? 'نتائج البحث عن ' . esc_html($dtc_search) : ($dtc_family ? esc_html($dtc_families[$dtc_family][0]) : 'ابدأ من الكود اللي عندك'); ?></h2><p><?php echo esc_html(number_format_i18n($dtc_total)); ?> شرحًا متاحًا<?php if ($dtc_pages > 1): ?> · صفحة <?php echo esc_html(number_format_i18n($dtc_page)); ?> من <?php echo esc_html(number_format_i18n($dtc_pages)); ?><?php endif; ?></p></div><?php if ($dtc_search !== '' || $dtc_family !== ''): ?><a class="d-text-link" href="<?php echo esc_url($dtc_library_url . '#dtc-codes'); ?>">كل الأكواد <span aria-hidden="true">←</span></a><?php endif; ?></div>
       <div class="d-code-grid">
         <?php foreach ($dtc_entries as $dtc_entry): ?>
           <article class="d-code-card"><a href="<?php echo esc_url($dtc_entry['url']); ?>"><div class="d-code-card-top"><b class="d-code" dir="ltr"><?php echo esc_html($dtc_entry['code']); ?></b><span class="d-card-arrow" aria-hidden="true">←</span></div><h3><?php echo esc_html($dtc_entry['title']); ?></h3><?php if (!empty($dtc_entry['excerpt'])): ?><p><?php echo esc_html($dtc_entry['excerpt']); ?></p><?php endif; ?><span class="d-code-category"><?php echo esc_html(!empty($dtc_entry['category']) ? $dtc_entry['category'] : $dtc_families[substr($dtc_entry['code'], 0, 1)][0]); ?></span></a></article>
         <?php endforeach; ?>
-        <?php if (!$dtc_entries): ?><div class="d-empty"><span class="d-empty-code" dir="ltr"><?php echo esc_html($dtc_search ?: ($dtc_family ?: 'OBD-II')); ?></span><h3><?php echo $dtc_valid_search ? 'لا يوجد شرح منشور مطابق حاليًا' : 'راجع كتابة كود العطل'; ?></h3><p><?php echo $dtc_valid_search ? 'جرّب كودًا آخر، أو تصفح الشروحات المتاحة في المكتبة.' : 'الكود يبدأ بحرف P أو B أو C أو U، يليه رقم ثم ثلاثة أرقام أو أحرف من A إلى F. مثال: P0172.'; ?></p><a class="d-button" href="<?php echo esc_url($dtc_library_url . '#dtc-codes'); ?>">تصفح المكتبة</a></div><?php endif; ?>
+        <?php if (!$dtc_entries): ?><div class="d-empty"><span class="d-empty-code" dir="ltr"><?php echo esc_html($dtc_search ?: ($dtc_family ?: 'OBD-II')); ?></span><h3><?php echo $dtc_valid_search ? 'لا يوجد شرح منشور مطابق حاليًا' : 'عبارة البحث طويلة جدًا'; ?></h3><p><?php echo $dtc_valid_search ? 'جرّب رقم الكود أو اسم الحساس بالعربية أو الإنجليزية، أو تصفح الشروحات المتاحة.' : 'اختصر عبارة البحث إلى 80 حرفًا كحد أقصى.'; ?></p><a class="d-button" href="<?php echo esc_url($dtc_library_url . '#dtc-codes'); ?>">تصفح المكتبة</a></div><?php endif; ?>
       </div>
       <?php if ($dtc_pages > 1): ?><nav class="d-pagination" aria-label="صفحات أكواد الأعطال"><?php if ($dtc_page > 1): ?><a class="d-button d-button-quiet" rel="prev" href="<?php echo esc_url(add_query_arg(['code' => $dtc_search ?: false, 'family' => $dtc_family ?: false, 'dtc_page' => $dtc_page - 1], $dtc_library_url) . '#dtc-codes'); ?>">الصفحة السابقة</a><?php endif; ?><span><?php echo esc_html(number_format_i18n($dtc_page)); ?> / <?php echo esc_html(number_format_i18n($dtc_pages)); ?></span><?php if ($dtc_page < $dtc_pages): ?><a class="d-button d-button-quiet" rel="next" href="<?php echo esc_url(add_query_arg(['code' => $dtc_search ?: false, 'family' => $dtc_family ?: false, 'dtc_page' => $dtc_page + 1], $dtc_library_url) . '#dtc-codes'); ?>">الصفحة التالية</a><?php endif; ?></nav><?php endif; ?>
     </section>
