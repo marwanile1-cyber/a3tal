@@ -52,6 +52,9 @@ jobs:
           paths={
             '/cars/':['cg-guide','cg-brands-grid','cg-cars-grid','car-price-guide.css','car-price-brand-logos.js','car-price-guide.js'],
             '/cars/?car_search=Kia':['cg-guide','car_search','Kia'],
+            '/cars/?car_year=2027':['cg-guide','car_year','K4'],
+            '/cars/?brand=kia&car_year=2027':['cg-guide','car_year','K4','Seltos'],
+            '/cars/?brand=kia&car_search=Kia&car_year=2027':['cg-guide','car_year','K4','Seltos'],
             '/cars/kia-k4-2027-egypt/':['كيا','K4'],
             '/dtc/':['dtc-codes','مكتبة'],
             '/':['كل ما يخص عالم السيارات'],
