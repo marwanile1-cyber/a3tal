@@ -71,16 +71,41 @@ def deploy(api,folder):
             raise RuntimeError('Live hash mismatch: '+name)
     print('CAR_GUIDE_DEPLOY_VERIFIED exact five source files read back correctly',flush=True)
 
+def rollback(api,folder):
+    state_file=folder/'snapshot.json'
+    if not state_file.exists():
+        print('CAR_GUIDE_ROLLBACK_SKIP no state captured; nothing was deployed',flush=True)
+        return
+    state=json.loads(state_file.read_text(encoding='utf-8'))
+    name='archive-a3_car.php'
+    original=state['originals'].get(name)
+    if not original:
+        raise RuntimeError('No original car archive in backup: cannot safely rollback')
+    current=api.read(name)
+    if current['sha256']==original['sha256']:
+        print('CAR_GUIDE_ROLLBACK_NOT_NEEDED original archive is still active',flush=True)
+        return
+    if current['sha256']!=sha(state['sources'][name]):
+        raise RuntimeError('Archive changed independently; refuse automatic rollback')
+    api.write(name,original['content'],current['sha256'])
+    api.flush()
+    if api.read(name)['sha256'] != original['sha256']:
+        raise RuntimeError('Legacy car archive rollback verification failed')
+    print('CAR_GUIDE_ARCHIVE_ROLLED_BACK original /cars/ template restored',flush=True)
+
+
 def main():
     p=argparse.ArgumentParser()
-    p.add_argument('phase',choices=('prepare','deploy'))
+    p.add_argument('phase',choices=('prepare','deploy','rollback'))
     p.add_argument('--state-dir',required=True,type=Path)
     a=p.parse_args()
     api=base.Bridge()
     if a.phase=='prepare':
         prepare(api,a.state_dir)
-    else:
+    elif a.phase=='deploy':
         deploy(api,a.state_dir)
+    else:
+        rollback(api,a.state_dir)
 
 if __name__=='__main__':
     main()
