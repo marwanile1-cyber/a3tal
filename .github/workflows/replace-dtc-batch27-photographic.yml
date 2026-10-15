@@ -1,0 +1,30 @@
+name: Replace reviewed DTC batch27 covers via A3tal Bridge
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'assets/dtc-batch27-photographic/**'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+
+jobs:
+  replace-reviewed-images:
+    runs-on: ubuntu-latest
+    timeout-minutes: 80
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate runtime
+        run: |
+          python3 -m pip install --quiet Pillow
+          python3 -m py_compile scripts/replace-dtc-batch27-photographic.py
+      - name: Replace only verified batch27 featured media
+        run: python3 -u scripts/replace-dtc-batch27-photographic.py
