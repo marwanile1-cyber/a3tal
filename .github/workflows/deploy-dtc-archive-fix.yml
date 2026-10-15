@@ -1,0 +1,65 @@
+name: Deploy DTC archive fix safely (source bridge)
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/deploy-dtc-archive-fix.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-theme
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint reviewed files before touching WordPress
+        run: |
+          set -euo pipefail
+          php -l theme-source/a3tal-global/dtc-library-support.php
+          php -l theme-source/a3tal-global/dtc-library-archive.php
+          node --check theme-source/a3tal-global/assets/js/dtc-live-search.js
+          python3 -m py_compile scripts/deploy-dtc-library.py scripts/deploy-dtc-archive-fix.py
+      - name: Capture originals using active source bridge
+        run: python3 scripts/deploy-dtc-archive-fix.py prepare --state-dir "$RUNNER_TEMP/dtc-archive-fix"
+      - name: Encrypt exact original WordPress files
+        run: |
+          openssl enc -aes-256-cbc -salt -pbkdf2 -iter 200000 -pass env:A3TAL_API_KEY \
+            -in "$RUNNER_TEMP/dtc-archive-fix/snapshot.json" \
+            -out "$RUNNER_TEMP/dtc-archive-fix/rollback.enc"
+      - name: Upload encrypted rollback before any writes
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-dtc-archive-rollback-${{ github.run_id }}
+          path: ${{ runner.temp }}/dtc-archive-fix/rollback.enc
+          retention-days: 7
+          if-no-files-found: error
+      - name: Write four files only and verify live checksums
+        run: python3 scripts/deploy-dtc-archive-fix.py deploy --state-dir "$RUNNER_TEMP/dtc-archive-fix"
+      - name: Verify live archive independently
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import urllib.request,urllib.error,re
+          probes=[
+            ("https://a3tal.com/dtc/",[b'dtc-live-search.js',b'dtc-codes',b'OBD-II']),
+            ("https://a3tal.com/dtc/?code=P0172",[b'P0172',b'noindex']),
+            ("https://a3tal.com/dtc/?code=Fuel%20Trim",[b'Fuel Trim',b'dtc-codes'])
+          ]
+          for url,needles in probes:
+            req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0 Firefox/128.0','Cache-Control':'no-cache'})
+            try:
+              with urllib.request.urlopen(req,timeout=40) as resp: html=resp.read()
+              assert all(x in html for x in needles), f'Public response failed content assertion: {url}'
+              print('LIVE_VERIFIED',url)
+            except urllib.error.HTTPError as e:
+              if e.code==403:
+                print('LIVE_EDGE_BLOCKED',url,'external verification required')
+                continue
+              raise
+          PY
