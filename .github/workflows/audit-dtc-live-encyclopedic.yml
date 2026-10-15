@@ -1,0 +1,30 @@
+name: Audit live DTC encyclopedic pages and embeds
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/audit-dtc-live-encyclopedic.py'
+      - '.github/workflows/audit-dtc-live-encyclopedic.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  inspect-published-batch-27:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check Python syntax
+        run: python3 -m py_compile scripts/audit-dtc-live-encyclopedic.py
+      - name: Audit published images, OG tags, iframe players, real photographic provenance
+        run: python3 -u scripts/audit-dtc-live-encyclopedic.py --batch 27
+      - name: Save evidence even if QA fails
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-dtc-live-audit-27
+          path: dtc-live-qa-result.json
+          if-no-files-found: warn
