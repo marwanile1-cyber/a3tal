@@ -1,0 +1,74 @@
+name: Deploy A3tal car price guide
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/deploy-car-price-guide.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-theme
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - name: Checkout reviewed sources
+        uses: actions/checkout@v4
+      - name: Static validation before production access
+        run: |
+          set -euo pipefail
+          php -l theme-source/a3tal-global/car-price-guide.php
+          php -l theme-source/a3tal-global/archive-a3_car.php
+          node --check theme-source/a3tal-global/car-price-guide.js
+          node --check theme-source/a3tal-global/car-price-brand-logos.js
+          python3 -m py_compile scripts/deploy-dtc-library.py scripts/deploy-car-price-guide.py
+      - name: Verify theme and capture exact live originals
+        run: python3 scripts/deploy-car-price-guide.py prepare --state-dir "$RUNNER_TEMP/car-price-guide"
+      - name: Encrypt rollback snapshot before any writes
+        run: |
+          openssl enc -aes-256-cbc -salt -pbkdf2 -iter 200000 -pass env:A3TAL_API_KEY \
+            -in "$RUNNER_TEMP/car-price-guide/snapshot.json" \
+            -out "$RUNNER_TEMP/car-price-guide/rollback.enc"
+      - name: Preserve encrypted restoration backup
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-car-price-guide-backup-${{ github.run_id }}
+          path: ${{ runner.temp }}/car-price-guide/rollback.enc
+          retention-days: 7
+          if-no-files-found: error
+      - name: Deploy reviewed files, archive activation LAST
+        run: python3 scripts/deploy-car-price-guide.py deploy --state-dir "$RUNNER_TEMP/car-price-guide"
+      - name: Public homepage, price guide, filters and legacy links QA
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import urllib.request
+          import urllib.parse
+          paths={
+            '/cars/':['cg-guide','cg-brands-grid','cg-cars-grid','car-price-guide.css','car-price-brand-logos.js','car-price-guide.js'],
+            '/cars/?car_search=Kia':['cg-guide','car_search','Kia'],
+            '/cars/kia-k4-2027-egypt/':['كيا','K4'],
+            '/dtc/':['dtc-codes','مكتبة'],
+            '/':['كل ما يخص عالم السيارات'],
+            '/category/دليل-الشراء-buying-guides/اسعار-السيارات-الجديدة/':['اسعار السيارات الجديدة'],
+          }
+          for path,markers in paths.items():
+            url='https://a3tal.com'+urllib.parse.quote(path,safe='/?=&%')
+            req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0 Firefox/128.0','Accept-Language':'ar,en;q=0.7','Cache-Control':'no-cache'})
+            with urllib.request.urlopen(req,timeout=40) as r:
+              assert r.status==200,(url,r.status)
+              html=r.read().decode('utf-8','replace')
+            for marker in markers:
+              assert marker in html,('Missing marker',url,marker)
+            assert not any(e in html.lower() for e in ['there has been a critical error on this website','fatal error:','parse error:']),url
+            print('LIVE_QA_PASS',url,flush=True)
+          print('CAR_PRICE_GUIDE_LIVE_VERIFIED_AND_LEGACY_LINKS_INTACT',flush=True)
+          PY
+      - name: Roll back original car archive if deploy or public QA fails
+        if: failure()
+        run: python3 scripts/deploy-car-price-guide.py rollback --state-dir "$RUNNER_TEMP/car-price-guide"

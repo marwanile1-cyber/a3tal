@@ -1,0 +1,172 @@
+/* A3TAL /cars/ discovery interface. Strictly scoped so existing post, DTC and motorcycle URLs/designs are untouched. */
+.cg-guide{background:#f4f7fb;color:#0c1c31;padding-bottom:46px;font-family:"IBM Plex Sans Arabic",system-ui,sans-serif}
+.cg-container{width:min(1240px,calc(100% - 40px));margin-inline:auto}
+.cg-guide *{box-sizing:border-box}
+.cg-guide a{text-decoration:none}
+.cg-guide a:focus-visible,.cg-guide button:focus-visible,.cg-guide input:focus-visible,.cg-guide select:focus-visible{outline:3px solid #1c9ded;outline-offset:3px}
+.cg-hero{min-height:418px;position:relative;overflow:hidden;background:radial-gradient(circle at 45% 8%,#304b6b 0,#0c1b2f 65%,#081522 100%);isolation:isolate;color:#fff;text-align:center}
+.cg-hero-cars{position:absolute;inset:0;display:grid;grid-template-columns:repeat(3,1fr);opacity:.79;filter:saturate(.94);z-index:-2;pointer-events:none}
+.cg-hero-photo{overflow:hidden}
+.cg-hero-photo img{width:100%;height:100%;object-fit:cover;object-position:center}
+.cg-hero-photo:nth-child(2){transform:scale(1.08);z-index:1}
+.cg-hero-photo:nth-child(3){filter:brightness(.8)}
+.cg-hero-shade{position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(5,18,35,.82) 0%,rgba(5,19,35,.65) 40%,rgba(5,18,35,.83) 100%),linear-gradient(90deg,transparent,#112b426b,transparent)}
+.cg-hero-content{position:relative;z-index:2;padding:43px 0 36px}
+.cg-eyebrow{color:#8ddcfb;letter-spacing:.14em;font-size:10px;font-weight:900}
+.cg-hero h1{font-family:"Alexandria",sans-serif;font-size:clamp(30px,4.4vw,52px);letter-spacing:-.03em;line-height:1.35;margin:9px 0}
+.cg-hero p{max-width:800px;margin:0 auto 23px;color:#dce8f2;font-size:15px;line-height:1.9}
+.cg-search{display:flex;width:min(730px,100%);margin:0 auto 20px;gap:6px;padding:6px;background:#fff;box-shadow:0 15px 52px #0008;border-radius:15px;direction:rtl}
+.cg-search input{border:0;background:transparent;flex:1;min-width:0;outline:0;color:#19263a;font-size:14px;padding:11px 15px}
+.cg-search input::placeholder{color:#8091a5}
+.cg-search button{display:flex;gap:8px;align-items:center;justify-content:center;background:#ef263b;color:#fff;border:0;border-radius:11px;font-weight:800;padding:10px 20px;cursor:pointer;transition:.2s}
+.cg-search button:hover{background:#d91531}
+.cg-search button svg{width:21px;height:21px}
+.cg-quick{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:0 auto}
+.cg-quick a{min-width:104px;min-height:67px;padding:10px 13px;border-radius:13px;color:#f4f8ff;border:1px solid #ffffff3d;background:#0b1e31ad;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:5px;font-size:12px;font-weight:850;transition:.2s}
+.cg-quick svg{width:25px;height:25px}
+.cg-quick a:hover,.cg-quick a.is-active{border-color:#ee3649;color:#fff;background:#c91d35b3;transform:translateY(-2px)}
+.cg-surface{background:#fff;border:1px solid #e7edf4;border-radius:18px;box-shadow:0 8px 28px #1236590a}
+.cg-brands{padding:20px 22px 24px;margin:24px 0 22px}
+.cg-section-heading{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:17px}
+.cg-kicker{display:block;color:#1d70cc;font-size:10px;font-weight:900;margin-bottom:3px}
+.cg-section-heading h2{font-family:"Alexandria",sans-serif;font-size:20px;letter-spacing:-.035em;line-height:1.45;margin:0;color:#0f1b2d}
+.cg-section-heading p{font-size:12px;margin:4px 0;color:#6b7890}
+.cg-section-heading a,.cg-secondary-link{font-size:12px;color:#146bd6;font-weight:800;white-space:nowrap}
+.cg-section-heading a:hover,.cg-secondary-link:hover{text-decoration:underline}
+.cg-brands-grid{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:9px}
+.cg-brand{display:flex;min-width:0;min-height:91px;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:10px 5px;border:1px solid #e8edf4;border-radius:12px;background:linear-gradient(160deg,#fff,#fafcff);color:#29364b;transition:.2s}
+.cg-brand:hover{box-shadow:0 10px 20px #1c5ca015;border-color:#b4d2ed;transform:translateY(-3px)}
+.cg-brand-icon{display:grid;place-items:center;width:50px;height:44px;color:#24425d;font:850 22px "Alexandria",sans-serif}
+.cg-brand-icon img{width:100%;height:100%;object-fit:contain}
+.cg-brand-name{display:block;width:100%;font-size:11px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cg-discovery-layout{display:grid;grid-template-columns:300px minmax(0,1fr);gap:18px;align-items:stretch}
+.cg-news{padding:20px;align-self:start}
+.cg-news .cg-section-heading h2{font-size:17px}
+.cg-news-list{display:grid}
+.cg-news-row{display:grid;grid-template-columns:74px minmax(0,1fr);gap:10px;padding:12px 0;border-bottom:1px solid #e8edf3}
+.cg-news-image{width:74px;height:66px;background:#eef3f8;border-radius:9px;overflow:hidden;display:block}
+.cg-news-image img{width:100%;height:100%;object-fit:cover}
+.cg-news-row h3{font-family:"Alexandria",sans-serif;font-size:11px;line-height:1.72;margin:0;color:#16283e}
+.cg-news-row h3 a:hover{color:#216bd1}
+.cg-news-row time{font-size:10px;color:#718096}
+.cg-secondary-link{display:block;border-radius:10px;background:#f0f6fd;padding:12px;text-align:center;margin-top:14px}
+.cg-models-section{padding:21px}
+.cg-total{border:1px solid #dfebf3;border-radius:999px;padding:5px 12px;color:#586e87;font-size:11px;font-weight:800;white-space:nowrap}
+.cg-cars-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.cg-car-card{min-width:0;border:1px solid #e4eaf3;border-radius:13px;overflow:hidden;background:#fff;transition:.2s}
+.cg-car-card:hover{box-shadow:0 12px 25px #17476d1a;transform:translateY(-3px)}
+.cg-car-photo{position:relative;height:155px;background:linear-gradient(130deg,#f4f8fc,#e7edf3);display:block;overflow:hidden}
+.cg-car-photo img{width:100%;height:100%;object-fit:cover;object-position:center;transition:transform .3s}
+.cg-car-card:hover .cg-car-photo img{transform:scale(1.03)}
+.cg-photo-empty{display:grid;height:100%;place-items:center;color:#a1b4c8;font-weight:900;letter-spacing:.08em}
+.cg-year-badge{position:absolute;inset-inline-start:9px;top:9px;font-size:10px;font-weight:800;background:#dff7eb;color:#187d50;border-radius:7px;padding:2px 8px}
+.cg-car-info{padding:12px}
+.cg-car-meta{display:flex;flex-wrap:wrap;justify-content:space-between;gap:5px;font-size:10px;color:#54708e}
+.cg-car-meta span:last-child{background:#e8f3ff;border-radius:6px;padding:1px 7px;color:#226ac4}
+.cg-car-info h3{font-family:"Alexandria",sans-serif;font-size:12px;margin:9px 0 7px;line-height:1.65;min-height:39px;color:#102540}
+.cg-car-info h3 a:hover{color:#146bd6}
+.cg-price{font-size:13px;color:#df1e37;font-weight:950;margin:5px 0;direction:rtl}
+.cg-no-price{font-size:11px;color:#718096;font-weight:750;margin:5px 0}
+.cg-checked{display:block;font-size:10px;color:#8290a0;line-height:1.6}
+.cg-car-more{display:block;margin-top:9px;font-size:11px;font-weight:850;color:#145dc7}
+.cg-car-more span{display:inline-block;margin-inline-start:4px}
+.cg-empty{padding:25px;border-radius:12px;text-align:center;color:#6a7890;background:#f8fafc}
+.cg-benefits{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin:17px 0 25px}
+.cg-benefits>div{display:grid;grid-template-columns:40px 1fr;column-gap:9px;align-content:center;min-height:74px;padding:12px;border-radius:14px;background:#fff;border:1px solid #e8edf3}
+.cg-benefit-symbol{grid-row:span 2;width:40px;height:40px;display:grid;place-items:center;border-radius:50%;font-size:19px;font-weight:900;color:#fff;background:#2388e7}
+.cg-benefits>div:nth-child(2) .cg-benefit-symbol{background:#f97316}
+.cg-benefits>div:nth-child(3) .cg-benefit-symbol{background:#8c3af1}
+.cg-benefits>div:nth-child(4) .cg-benefit-symbol{background:#14a162}
+.cg-benefits>div:nth-child(5) .cg-benefit-symbol{background:#ef3450}
+.cg-benefits strong{font-size:11px;line-height:1.5}
+.cg-benefits small{font-size:10px;color:#718198}
+.cg-all{padding:24px;margin-bottom:25px}
+.cg-filter{display:grid;grid-template-columns:repeat(5,minmax(0,1fr)) auto;gap:10px;align-items:end;padding:14px;border:1px solid #e9edf3;background:#f7f9fc;border-radius:12px;margin-bottom:18px}
+.cg-filter label{min-width:0;font-size:11px;color:#334863;font-weight:800}
+.cg-filter input,.cg-filter select{display:block;width:100%;max-width:100%;margin-top:5px;padding:9px 8px;min-height:41px;border-radius:8px;border:1px solid #d9e2ed;background:#fff;color:#17283b;font-size:12px}
+.cg-filter button{min-height:41px;padding:10px 15px;background:#ef3149;color:#fff;border:0;border-radius:8px;font-weight:850;font-size:12px;cursor:pointer}
+.cg-filter button:hover{background:#d6243b}
+.cg-all .cg-cars-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:15px}
+.cg-all .cg-car-photo{height:155px}
+.cg-pagination{display:flex;justify-content:center;margin-top:23px}
+.cg-pagination .nav-links{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.cg-pagination .page-numbers{border:1px solid #dbe4ed;padding:6px 12px;border-radius:8px;background:#fff;font-weight:800;font-size:12px}
+.cg-pagination .page-numbers.current{background:#126cce;color:#fff}
+.cg-guide-links{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}
+.cg-guide-links a{display:flex;flex-direction:column;gap:6px;padding:18px;background:#0e2236;border-radius:12px;color:#fff}
+.cg-guide-links b{font-family:"Alexandria",sans-serif;font-size:13px}
+.cg-guide-links span{font-size:11px;color:#b5d7ec}
+.cg-guide-links a:hover{background:#174367}
+.cg-guides{padding-bottom:9px}
+.cg-disclaimer{font-size:12px;margin:25px 0 0;color:#697a8e;line-height:1.85}
+@media(max-width:1100px){
+  .cg-brands-grid{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .cg-discovery-layout{grid-template-columns:255px minmax(0,1fr)}
+  .cg-news{padding:16px}
+  .cg-cars-grid{gap:10px}
+  .cg-car-photo{height:140px}
+  .cg-benefits{grid-template-columns:repeat(3,1fr)}
+  .cg-all .cg-cars-grid{grid-template-columns:repeat(3,1fr)}
+  .cg-filter{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:800px){
+  .cg-container{width:min(100% - 24px,680px)}
+  .cg-hero{min-height:410px}
+  .cg-hero-cars{grid-template-columns:repeat(2,1fr)}
+  .cg-hero-photo:nth-child(3){display:none}
+  .cg-hero-content{padding:48px 0 27px}
+  .cg-hero p{font-size:12px}
+  .cg-quick{gap:7px}
+  .cg-quick a{min-width:73px;min-height:63px;padding:7px;font-size:10px}
+  .cg-quick svg{width:22px;height:22px}
+  .cg-brands{padding:16px 13px;margin:13px 0 16px}
+  .cg-brands-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+  .cg-brand{min-height:76px}
+  .cg-brand-icon{height:33px;width:42px;font-size:18px}
+  .cg-brand-name{font-size:10px}
+  .cg-discovery-layout{display:flex;flex-direction:column}
+  .cg-models-col{order:1}
+  .cg-news{order:2}
+  .cg-cars-grid,.cg-all .cg-cars-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cg-models-section,.cg-all{padding:15px}
+  .cg-news-list{grid-template-columns:repeat(2,1fr);column-gap:18px}
+  .cg-benefits{grid-template-columns:repeat(2,1fr)}
+  .cg-guide-links{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:480px){
+  .cg-hero{min-height:373px}
+  .cg-hero-content{padding:38px 0 22px}
+  .cg-hero h1{font-size:27px}
+  .cg-hero p{font-size:11px;margin-bottom:17px}
+  .cg-hero-cars{opacity:.52}
+  .cg-hero-shade{background:linear-gradient(180deg,#061629eb,#071a2cc2,#081622ef)}
+  .cg-search{border-radius:10px;padding:4px}
+  .cg-search input{padding:10px 9px;font-size:11px}
+  .cg-search button{padding:8px 12px;border-radius:8px}
+  .cg-search button span{display:none}
+  .cg-quick{flex-wrap:nowrap;gap:5px}
+  .cg-quick a{flex:1;min-width:0;font-size:9px}
+  .cg-brands-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+  .cg-brand{padding:6px 3px;min-height:72px}
+  .cg-brand-icon{width:36px;height:30px}
+  .cg-section-heading{align-items:start}
+  .cg-section-heading h2{font-size:16px}
+  .cg-section-heading a{font-size:10px}
+  .cg-cars-grid,.cg-all .cg-cars-grid{gap:8px}
+  .cg-car-photo,.cg-all .cg-car-photo{height:110px}
+  .cg-car-info{padding:10px 9px}
+  .cg-car-info h3{font-size:11px}
+  .cg-price{font-size:11px}
+  .cg-news-list{display:block}
+  .cg-benefits>div{padding:9px;grid-template-columns:34px 1fr;column-gap:6px}
+  .cg-benefit-symbol{width:34px;height:34px;font-size:15px}
+  .cg-benefits strong{font-size:10px}
+  .cg-benefits small{font-size:9px}
+  .cg-filter{grid-template-columns:repeat(2,1fr);gap:8px;padding:10px}
+  .cg-filter button{grid-column:span 2}
+  .cg-guide-links{gap:8px}
+  .cg-guide-links a{padding:12px}
+  .cg-guide-links b{font-size:11px}
+  .cg-guide-links span{font-size:10px}
+}
+@media(prefers-reduced-motion:reduce){.cg-guide *{scroll-behavior:auto!important;transition:none!important}}

@@ -1,0 +1,47 @@
+name: Validate A3tal car price guide
+on:
+  pull_request:
+    paths:
+      - 'theme-source/a3tal-global/car-price-guide.php'
+      - 'theme-source/a3tal-global/car-price-guide.css'
+      - 'theme-source/a3tal-global/car-price-guide.js'
+      - 'theme-source/a3tal-global/car-price-brand-logos.js'
+      - 'theme-source/a3tal-global/archive-a3_car.php'
+      - 'scripts/deploy-car-price-guide.py'
+      - '.github/workflows/deploy-car-price-guide.yml'
+      - '.github/workflows/validate-car-price-guide.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Static syntax checks
+        run: |
+          set -euo pipefail
+          php -l theme-source/a3tal-global/car-price-guide.php
+          php -l theme-source/a3tal-global/archive-a3_car.php
+          node --check theme-source/a3tal-global/car-price-guide.js
+          node --check theme-source/a3tal-global/car-price-brand-logos.js
+          python3 -m py_compile scripts/deploy-car-price-guide.py
+      - name: Link and data provenance guards
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('theme-source/a3tal-global/car-price-guide.php').read_text()
+          archive=Path('theme-source/a3tal-global/archive-a3_car.php').read_text()
+          css=Path('theme-source/a3tal-global/car-price-guide.css').read_text()
+          for needle in ['a3cp_vehicle_price','a3g_first_term','_a3_source_checked_at','get_permalink','get_post_type_archive_link', "cat'=>374", 'a3g_cat_link(21)',"a3g_platform_link('a3_listing'"]:
+              assert needle in p,needle
+          assert 'car-price-guide.php' in archive
+          assert 'register_post_type' not in p and 'add_rewrite_rule' not in p
+          assert 'wp_update_post' not in p and 'wp_insert_post' not in p
+          assert 'cg-brands-grid' in css and '@media(max-width:480px)' in css
+          assert 'get_header()' in p and 'get_footer()' in p
+          release=Path('scripts/deploy-car-price-guide.py').read_text()
+          assert 'archive-a3_car.php' in release and 'snapshot.json' in release
+          assert release.index("'archive-a3_car.php'") > release.index("'car-price-guide.php'")
+          print('Legacy URLs, source pricing and scoped design integration checks passed')
+          PY
