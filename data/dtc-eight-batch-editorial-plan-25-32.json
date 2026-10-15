@@ -2,7 +2,7 @@
   "title": "A3TAL approved-design editorial pipeline: next eight 10-code releases",
   "generated_on": "2026-10-15",
   "target_publication": "GitHub scheduled at minute 07 and 37 UTC, one ready batch per run",
-  "strict_notice": "Reviewed and approved batch25, batch26 and batch27. Batches28-32 remain outlines only. New batch27 deliberately uses comprehensive in-depth content, unique art and verified contextual third-party YouTube embeds where a relevant teaching video is known. Automatic scheduling must not publish outlines.",
+  "strict_notice": "Reviewed released batches25-27. Batches28-32 remain outlines, NOT release-ready. Batch28 technical plan corrected 2026-10-15: U0150=Gateway E; U0153=RIGHT side restraint; C0052/C0053=steering position signal A/B (OEM-dependent); B2103=transceiver antenna failure; B2431=unprogrammed Ford PATS key within supported applications. Do not publish until real-looking photography and video audit. Existing batch27 artwork is programmatically drawn and needs photographic replacement.",
   "initial_catalog": 197,
   "expected_after_all_eight_if_approved_and_published": 277,
   "batches": [
@@ -286,7 +286,7 @@
     {
       "batch": 28,
       "planned_publication_slot": 4,
-      "status": "OUTLINE_ONLY_NOT_READY_TO_PUBLISH",
+      "status": "EDITORIAL_RESEARCH_CORRECTED_PHOTO_AND_VIDEO_QA_REQUIRED",
       "ready_for_auto_publish": false,
       "mix": "3P / 3U / 2C / 2B",
       "items": [
@@ -325,52 +325,53 @@
         {
           "code": "U0150",
           "category": "U",
-          "topic": "فقد الاتصال بوحدة بوابة الاتصال Gateway A",
+          "topic": "فقد الاتصال بوحدة البوابة Gateway E، وليس Gateway A",
           "scope": "generic_or_OEM_dependent",
-          "reference_to_verify": "SAE J2012 / OEM workshop manual",
-          "editorial_review": "pending exact network module definition and source validation"
+          "reference_to_verify": "https://www.obd-codes.com/u0150",
+          "editorial_review": "Reviewed candidate meaning; VIN/OEM application confirmation and code-specific reference remain mandatory before release."
         },
         {
           "code": "U0153",
           "category": "U",
-          "topic": "فقد الاتصال بوحدة التحكم في وسائد الجانب الأيسر",
+          "topic": "فقد الاتصال بوحدة التحكم في وسائد الحماية الجانبية اليمنى، وليس اليسرى",
           "scope": "generic_or_OEM_dependent",
-          "reference_to_verify": "SAE J2012 / OEM workshop manual",
-          "editorial_review": "pending exact network module definition and source validation"
+          "reference_to_verify": "https://icarsoft.com/knowledge/article/u0153-lost-communication-with-side-restraints-control-module-right",
+          "editorial_review": "Reviewed candidate meaning; VIN/OEM application confirmation and code-specific reference remain mandatory before release."
         },
         {
           "code": "C0052",
           "category": "C",
-          "topic": "تعريف شاسيه/فرامل يتحدد بدليل السيارة واللاحقة",
+          "topic": "إشارة A في حساس موضع عجلة القيادة، مع ضرورة مراجعة تعريف الشركة واللاحقة",
           "scope": "VERIFY_OEM_DEFINITION_BEFORE_AUTHORING",
-          "reference_to_verify": "OEM ABS/ESC manufacturer service manual",
-          "editorial_review": "BLOCKED until model-specific definition and suffix confirmed"
+          "reference_to_verify": "https://www.icarsoft.com/knowledge/article/c0052-steering-wheel-position-sensor-signal-a",
+          "editorial_review": "Reviewed candidate meaning; VIN/OEM application confirmation and code-specific reference remain mandatory before release."
         },
         {
           "code": "C0053",
           "category": "C",
-          "topic": "تعريف شاسيه/فرامل يتحدد بدليل السيارة واللاحقة",
+          "topic": "إشارة B في حساس موضع عجلة القيادة، مع ضرورة مراجعة تعريف الشركة واللاحقة",
           "scope": "VERIFY_OEM_DEFINITION_BEFORE_AUTHORING",
-          "reference_to_verify": "OEM ABS/ESC manufacturer service manual",
-          "editorial_review": "BLOCKED until model-specific definition and suffix confirmed"
+          "reference_to_verify": "https://www.icarsoft.com/knowledge/article/c0053-steering-wheel-position-sensor-signal-b",
+          "editorial_review": "Reviewed candidate meaning; VIN/OEM application confirmation and code-specific reference remain mandatory before release."
         },
         {
           "code": "B2103",
           "category": "B",
-          "topic": "انقطاع هوائي جهاز التعرف على المفتاح في تطبيقات فورد",
+          "topic": "خلل هوائي وحدة استقبال المفتاح Transceiver في تطبيقات فورد PATS",
           "scope": "oem:ford",
           "reference_to_verify": "https://www.fordservicecontent.com/Ford_Content/pubs/content/~WT/~MUS~LEN/3550/tsb01-06-02.htm",
-          "editorial_review": "pending original explanatory text, pinout-free safe diagnosis and artwork"
+          "editorial_review": "Reviewed candidate meaning; VIN/OEM application confirmation and code-specific reference remain mandatory before release."
         },
         {
           "code": "B2431",
           "category": "B",
-          "topic": "فشل برمجة مفتاح ترانسبوندر بنظام PATS لدى فورد",
+          "topic": "مفتاح تشغيل غير مبرمج في نظام فورد PATS ضمن التطبيقات المذكورة بنشرة الشركة",
           "scope": "oem:ford",
           "reference_to_verify": "https://www.fordservicecontent.com/Ford_Content/pubs/content/~WT/~MUS~LEN/3550/tsb01-06-02.htm",
-          "editorial_review": "pending original explanatory text, pinout-free safe diagnosis and artwork"
+          "editorial_review": "Reviewed candidate meaning; VIN/OEM application confirmation and code-specific reference remain mandatory before release."
         }
-      ]
+      ],
+      "release_safety": "Do not publish batch28 until ten original, reviewed, truly photorealistic 1600x900 WebP covers are committed or supplied to the protected bridge; each video must have a verified exact matching tutorial, live playable embed or documented absence, and every guide must pass content depth and VIN/OEM checks. Scripted Pillow drawings are not accepted as featured photographs."
     },
     {
       "batch": 29,
@@ -729,5 +730,14 @@
       ]
     }
   ],
-  "editorial_validation_note": "Replaced C0065 and C0070 because the SAE generic chassis code table reserves those codes; substituted documented generic C006A and C0072. Never publish an SAE-reserved code as if it had a generic definition."
+  "editorial_validation_note": "Replaced C0065 and C0070 because the SAE generic chassis code table reserves those codes; substituted documented generic C006A and C0072. Never publish an SAE-reserved code as if it had a generic definition.",
+  "editorial_photography_gate": {
+    "applicable_from_batch": 28,
+    "required": "Ten original photorealistic 1600x900 WebP featured photos depicting relevant real-workshop scenes. AI-image-generated photographs may be used when technically plausible; Pillow-drawn shapes are forbidden. Check model/sensor plausibility, photo realism, duplicate reuse, featured_media and og:image before declaring release.",
+    "reviewed_assets_required": true
+  },
+  "editorial_video_gate": {
+    "applicable_from_batch": 28,
+    "required": "Only embed a video if title/channel/content relevance and embeddability have been checked. Verify working player on the public page post-publish. If no sufficiently relevant licensed video exists, record honest absence and never insert a random video."
+  }
 }
