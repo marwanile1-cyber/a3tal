@@ -2,7 +2,7 @@
   "title": "A3TAL approved-design editorial pipeline: next eight 10-code releases",
   "generated_on": "2026-10-15",
   "target_publication": "GitHub scheduled at minute 07 and 37 UTC, one ready batch per run",
-  "strict_notice": "Batches 25 and 26 have ten independently written and image-validated articles each. Releases 27 through 32 remain OUTLINE_ONLY, not approved; the half-hour timer never manufactures content or posts incomplete guides.",
+  "strict_notice": "Reviewed and approved batch25, batch26 and batch27. Batches28-32 remain outlines only. New batch27 deliberately uses comprehensive in-depth content, unique art and verified contextual third-party YouTube embeds where a relevant teaching video is known. Automatic scheduling must not publish outlines.",
   "initial_catalog": 197,
   "expected_after_all_eight_if_approved_and_published": 277,
   "batches": [
@@ -194,8 +194,8 @@
     {
       "batch": 27,
       "planned_publication_slot": 3,
-      "status": "OUTLINE_ONLY_NOT_READY_TO_PUBLISH",
-      "ready_for_auto_publish": false,
+      "status": "READY_ENCYCLOPEDIC_DIAGNOSTICS_WITH_10_WEBP_AND_3_VERIFIED_YOUTUBE_EMBEDS",
+      "ready_for_auto_publish": true,
       "mix": "3P / 3U / 2C / 2B",
       "items": [
         {
@@ -278,7 +278,10 @@
           "reference_to_verify": "https://www.fordservicecontent.com/Ford_Content/pubs/content/~WT/~MUS~LEN/3550/tsb01-06-02.htm",
           "editorial_review": "pending original explanatory text, pinout-free safe diagnosis and artwork"
         }
-      ]
+      ],
+      "validated_draft": "data/dtc-original-batch-27.json",
+      "validation_run": "https://github.com/marwanile1-cyber/a3tal/actions/runs/38723509597",
+      "editorial_upgrade": "Each of ten guides includes four unique workshop sections, a 3-row diagnostic decision table, 5 safe diagnostic steps, 3 FAQ and all originally published sections; P0261 P0327 P0571 have verified contextual third-party YouTube video embed with safety notes and fallback links."
     },
     {
       "batch": 28,
