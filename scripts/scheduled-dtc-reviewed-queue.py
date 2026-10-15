@@ -71,8 +71,8 @@ def fetch_published_code(code):
                 raise RuntimeError("Duplicate WordPress page detected for "+code)
             return exact[0] if exact else None
         except urllib.error.HTTPError as exc:
-            if attempt==2 or exc.code not in (429, 502, 503, 504, 520, 522, 524):
-                if exc.code in (429, 502, 503, 504, 520, 522, 524):
+            if attempt==2 or exc.code not in (408, 429, 500, 502, 503, 504, 520, 521, 522, 523, 524, 525, 526):
+                if exc.code in (408, 429, 500, 502, 503, 504, 520, 521, 522, 523, 524, 525, 526):
                     raise TransientReadError("Temporary HTTP "+str(exc.code)+" reading "+code) from exc
                 raise RuntimeError("Unexpected HTTP "+str(exc.code)+" reading "+code) from exc
             time.sleep(19*(attempt+1))
