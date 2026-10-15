@@ -1,0 +1,30 @@
+name: Publish four diverse A3tal editorial features
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-editorial-oct15.yml'
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify source, assets, and protected secret
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-editorial-oct15.py
+          python3 -m json.tool data/editorial-oct-15-2026.json >/dev/null
+      - name: Install photo tools
+        run: python3 -m pip install --quiet Pillow
+      - name: Publish price, comparison, brakes, and motorcycle articles
+        run: python3 -u scripts/publish-editorial-oct15.py
