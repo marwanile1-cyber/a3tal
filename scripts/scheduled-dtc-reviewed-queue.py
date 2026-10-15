@@ -38,6 +38,11 @@ CODE_RE=re.compile(r"^[PBCU][0-9][0-9A-F]{3}$")
 DISTRIBUTION={"P":3,"U":3,"C":2,"B":2}
 
 
+class TransientReadError(RuntimeError):
+    """Temporary site or edge outage before any publication mutation."""
+
+
+
 def print_state(*parts):
     print("AUTO_DTC_QUEUE", *parts, flush=True)
 
@@ -65,9 +70,15 @@ def fetch_published_code(code):
             if len(exact)>1:
                 raise RuntimeError("Duplicate WordPress page detected for "+code)
             return exact[0] if exact else None
+        except urllib.error.HTTPError as exc:
+            if attempt==2 or exc.code not in (429, 502, 503, 504, 520, 522, 524):
+                if exc.code in (429, 502, 503, 504, 520, 522, 524):
+                    raise TransientReadError("Temporary HTTP "+str(exc.code)+" reading "+code) from exc
+                raise RuntimeError("Unexpected HTTP "+str(exc.code)+" reading "+code) from exc
+            time.sleep(19*(attempt+1))
         except (urllib.error.URLError,TimeoutError) as exc:
             if attempt==2:
-                raise RuntimeError("Cannot reliably verify WordPress post "+code) from exc
+                raise TransientReadError("Temporary site connection failure reading "+code) from exc
             time.sleep(19*(attempt+1))
 
 
@@ -237,7 +248,13 @@ def main():
             print_state("WAITING",number,reason,"No WordPress writes.")
             return
         items,files=ready
-        existing=[fetch_published_code(i["code"]) for i in items]
+        try:
+            existing=[fetch_published_code(i["code"]) for i in items]
+        except TransientReadError as exc:
+            # No writes have occurred in this scheduled run. Defer without
+            # incorrectly classifying a Cloudflare 522 as a content failure.
+            print_state("PREFLIGHT_DEFERRED_NO_WRITES",str(exc))
+            return
         if all(p is not None and p.get("featured_media") and p.get("yoast_head_json",{}).get("og_image") for p in existing):
             print_state("ALREADY_PUBLISHED_WITH_COVERS",number)
             continue
