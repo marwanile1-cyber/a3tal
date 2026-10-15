@@ -75,6 +75,25 @@ def check_batch(number,path):
     data=json.loads(path.read_text(encoding="utf-8"))
     if data.get("ready_for_auto_publish") is not True:
         return None,"awaiting explicit reviewed-ready flag"
+    if number >= 28:
+        qa=data.get("release_quality",{})
+        required=(
+            "photographic_covers_manually_reviewed",
+            "article_specific_diagnostic_depth_reviewed",
+            "source_and_oem_scope_verified",
+            "relevant_video_embeds_checked_or_absence_explained",
+            "originality_and_duplicate_intent_reviewed",
+        )
+        if not isinstance(qa,dict) or any(qa.get(k) is not True for k in required):
+            return None,"batch28+ is blocked until photographic/editorial/video safety reviews are complete"
+        for entry in data.get("items",[]):
+            if not entry.get("video") and len(entry.get("no_video_reason","").strip())<40:
+                return None,"video absent without specific source-research explanation: "+entry.get("code","unknown")
+        renderer=SCRIPTS/f"render-dtc-batch-{number:02d}-art.py"
+        if renderer.is_file():
+            code=renderer.read_text(encoding="utf-8")
+            if "ImageDraw" in code or "entirely drawn" in code.lower():
+                return None,"Pillow-drawn featured images are forbidden for new DTC releases"
     items=data.get("items")
     if not isinstance(items,list) or len(items)!=10:
         raise RuntimeError(f"Batch {number} is not exactly 10 authored guides")
@@ -125,6 +144,14 @@ def unique_images(codes,number):
     assets=data.get("files",[])
     if len(assets)!=10 or {entry["code"] for entry in assets}!=set(codes):
         raise RuntimeError("Original art manifest does not match the ten codes")
+    if number>=28:
+        qa=data.get("photographic_qa",{})
+        entries=data.get("files",[])
+        if qa.get("approved") is not True or qa.get("reviewer","").strip()=="" or \
+           any(item.get("photorealism_approved") is not True or
+               item.get("image_origin") not in ("original_photo","original_ai_photorealistic")
+               for item in entries):
+            raise RuntimeError("New DTC covers lack human-reviewed photographic provenance")
     digests=set()
     from PIL import Image
     for code in codes:
