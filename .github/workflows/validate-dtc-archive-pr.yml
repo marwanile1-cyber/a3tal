@@ -5,7 +5,7 @@ on:
       - 'theme-source/a3tal-global/dtc-library-archive.php'
       - 'theme-source/a3tal-global/dtc-library-support.php'
       - 'theme-source/a3tal-global/assets/js/dtc-live-search.js'
-      - 'theme-source/a3tal-global/assets/css/dtc-live-search.css'
+      - 'theme-source/a3tal-global/dtc-live-search.css'
       - 'scripts/deploy-dtc-world-garage.py'
       - '.github/workflows/validate-dtc-archive-pr.yml'
   workflow_dispatch:
@@ -33,7 +33,7 @@ jobs:
           for needle in ['a3g_dtc_filter_catalog', 'a3g_dtc_ajax_lookup', 'a3g_dtc_standard_system', 'CollectionPage', 'ItemList']:
               assert needle in s, needle
           assert 'a3g_dtc_filter_catalog' in a
-          for needle in ['assets/js/dtc-live-search.js','assets/css/dtc-live-search.css']:
+          for needle in ['assets/js/dtc-live-search.js','dtc-live-search.css']:
               assert needle in d and needle in s, needle
           print('Scoped DTC integration checks passed')
           PY
