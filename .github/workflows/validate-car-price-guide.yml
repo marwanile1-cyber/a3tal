@@ -7,6 +7,7 @@ on:
       - 'theme-source/a3tal-global/car-price-guide.js'
       - 'theme-source/a3tal-global/car-price-brand-logos.js'
       - 'theme-source/a3tal-global/archive-a3_car.php'
+      - 'scripts/deploy-car-price-guide.py'
       - '.github/workflows/validate-car-price-guide.yml'
   workflow_dispatch:
 permissions:
@@ -23,6 +24,7 @@ jobs:
           php -l theme-source/a3tal-global/archive-a3_car.php
           node --check theme-source/a3tal-global/car-price-guide.js
           node --check theme-source/a3tal-global/car-price-brand-logos.js
+          python3 -m py_compile scripts/deploy-car-price-guide.py
       - name: Link and data provenance guards
         run: |
           python3 - <<'PY'
@@ -37,5 +39,8 @@ jobs:
           assert 'wp_update_post' not in p and 'wp_insert_post' not in p
           assert 'cg-brands-grid' in css and '@media(max-width:480px)' in css
           assert 'get_header()' in p and 'get_footer()' in p
+          release=Path('scripts/deploy-car-price-guide.py').read_text()
+          assert 'archive-a3_car.php' in release and 'snapshot.json' in release
+          assert release.index("'archive-a3_car.php'") > release.index("'car-price-guide.php'")
           print('Legacy URLs, source pricing and scoped design integration checks passed')
           PY
