@@ -18,7 +18,7 @@ FILES = [
   'assets/js/dtc-brand-logos.generated.js',
   'dtc-world-garage.css',
   'assets/js/dtc-world-garage.js',
-  'assets/css/dtc-live-search.css',
+  'dtc-live-search.css',
   'assets/js/dtc-live-search.js',
   'dtc-world-garage.php',
   'dtc-library-support.php',
