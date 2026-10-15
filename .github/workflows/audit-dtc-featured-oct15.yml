@@ -34,7 +34,7 @@ jobs:
               print('OG',[(x.get('url','').split('/')[-1]) for x in og[:2]])
             time.sleep(3)
           # Identify original media IDs for suitable P03A3 images, without modifying them.
-          url=base+'/wp-json/wp/v2/media?'+urllib.parse.urlencode({'search':'unnamed-25','per_page':100,'_fields':'id,source_url,alt_text,mime_type'})
+          url=base+'/wp-json/wp/v2/media?'+urllib.parse.urlencode({'slug':'unnamed-25','per_page':100,'_fields':'id,source_url,alt_text,mime_type'})
           req=urllib.request.Request(url,headers={'Accept':'application/json','User-Agent':'Mozilla/5.0 Firefox/128.0','Cache-Control':'no-cache'})
           with urllib.request.urlopen(req,timeout=45) as resp: media=json.load(resp)
           print('GLOW_PLUG_CANDIDATES',len(media))
