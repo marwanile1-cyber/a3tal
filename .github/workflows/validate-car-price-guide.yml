@@ -8,6 +8,7 @@ on:
       - 'theme-source/a3tal-global/car-price-brand-logos.js'
       - 'theme-source/a3tal-global/archive-a3_car.php'
       - 'scripts/deploy-car-price-guide.py'
+      - '.github/workflows/deploy-car-price-guide.yml'
       - '.github/workflows/validate-car-price-guide.yml'
   workflow_dispatch:
 permissions:
