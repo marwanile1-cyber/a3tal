@@ -2,7 +2,7 @@
 /**
  * Plugin Name: A3tal Direct Bridge
  * Description: Secure administrator-grade REST bridge for managing A3tal.com content, SEO, media, users, plugins, themes, settings and wp-content from trusted AI clients.
- * Version: 3.3.1
+ * Version: 3.3.2
  * Author: A3tal.com
  * Update URI: https://github.com/marwanile1-cyber/a3tal
  */
@@ -298,11 +298,22 @@ CSS;
             return '';
         }
         $raw = (string) $post->post_modified_gmt;
-        if ($raw === '' || $raw === '0000-00-00 00:00:00') {
-            return '';
+        if ($raw !== '' && $raw !== '0000-00-00 00:00:00') {
+            $dt = DateTimeImmutable::createFromFormat('!Y-m-d H:i:s', $raw, new DateTimeZone('UTC'));
+            if ($dt instanceof DateTimeImmutable) {
+                return $dt->format('c');
+            }
         }
-        $dt = DateTimeImmutable::createFromFormat('!Y-m-d H:i:s', $raw, new DateTimeZone('UTC'));
-        return $dt instanceof DateTimeImmutable ? $dt->format('c') : '';
+        // Some older custom-post drafts have no valid post_modified_gmt.
+        // Bind their revision to exact immutable-in-the-read post fields instead
+        // of allowing an unguarded update or treating an empty date as current.
+        $revision_fields = [
+            (int) $post->ID, (string) $post->post_type,
+            (string) $post->post_name, (string) $post->post_status,
+            (string) $post->post_title, (string) $post->post_excerpt,
+            (string) $post->post_content,
+        ];
+        return 'content-sha256:' . hash('sha256', wp_json_encode($revision_fields));
     }
 
     private static function check_content_revision($post, $expected) {
@@ -343,7 +354,7 @@ CSS;
         return rest_ensure_response([
             'ok' => true,
             'plugin' => 'A3tal Direct Bridge',
-            'version' => '3.3.1',
+            'version' => '3.3.2',
             'site' => home_url('/'),
             'time_gmt' => current_time('mysql', true),
             'routes' => [
@@ -2764,7 +2775,7 @@ CSS;
         ];
         ?>
         <div class="wrap" style="max-width:1150px">
-            <h1>A3tal Direct Bridge <span style="font-size:14px;font-weight:400;color:#64748b">v3.3.1</span></h1>
+            <h1>A3tal Direct Bridge <span style="font-size:14px;font-weight:400;color:#64748b">v3.3.2</span></h1>
             <p>Manage trusted automation credentials and publishing safety for A3tal.com. All secrets remain on your server, never in GitHub source files.</p>
             <?php if ($notice) : ?>
                 <div class="notice <?php echo $notice_error ? 'notice-error' : 'notice-success'; ?> is-dismissible"><p><?php echo esc_html($notice); ?></p></div>
@@ -2867,4 +2878,4 @@ CSS;
 
 A3tal_Direct_Bridge::init();
 
-// Console and scoped credentials release: 3.3.1
+// Console and scoped credentials release: 3.3.2
