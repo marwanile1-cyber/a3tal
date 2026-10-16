@@ -18,8 +18,11 @@ FILES = (
     'car-price-guide.css',
     'car-price-brand-logos.js',
     'car-price-guide.js',
+    'car-price-trims.css',
+    'car-price-trims.php',
     'car-price-guide.php',
-    'archive-a3_car.php',  # only activation change: legacy endpoint /cars/ intact
+    'platform-single-vehicle.php', # activate trim UI only after helper, CSS, logos
+    'archive-a3_car.php',  # legacy /cars/ archive endpoint unchanged
 )
 ORIGINAL_WRAPPER = "<?php $a3g_vehicle_type='a3_car'; require get_template_directory().'/platform-archive-vehicle.php'; ?>"
 
@@ -74,24 +77,26 @@ def deploy(api,folder):
 def rollback(api,folder):
     state_file=folder/'snapshot.json'
     if not state_file.exists():
-        print('CAR_GUIDE_ROLLBACK_SKIP no state captured; nothing was deployed',flush=True)
+        print('CAR_GUIDE_ROLLBACK_SKIP no state captured',flush=True)
         return
     state=json.loads(state_file.read_text(encoding='utf-8'))
-    name='archive-a3_car.php'
-    original=state['originals'].get(name)
-    if not original:
-        raise RuntimeError('No original car archive in backup: cannot safely rollback')
-    current=api.read(name)
-    if current['sha256']==original['sha256']:
-        print('CAR_GUIDE_ROLLBACK_NOT_NEEDED original archive is still active',flush=True)
-        return
-    if current['sha256']!=sha(state['sources'][name]):
-        raise RuntimeError('Archive changed independently; refuse automatic rollback')
-    api.write(name,original['content'],current['sha256'])
+    # Restore activation templates before dependencies. Never clobber unrelated edits.
+    # A readback after an ambiguous HTTP 522 makes this safe to retry.
+    for name in ('archive-a3_car.php','platform-single-vehicle.php'):
+        original=state['originals'].get(name)
+        if not original:
+            continue
+        current=api.read(name)
+        if current['sha256']==original['sha256']:
+            print('CAR_GUIDE_ROLLBACK_NOT_NEEDED',name,flush=True)
+            continue
+        if current['sha256']!=sha(state['sources'][name]):
+            raise RuntimeError('Activation template changed independently: '+name)
+        api.write(name,original['content'],current['sha256'])
+        if api.read(name)['sha256'] != original['sha256']:
+            raise RuntimeError('Failed to restore original activation template: '+name)
+        print('CAR_GUIDE_ROLLED_BACK',name,flush=True)
     api.flush()
-    if api.read(name)['sha256'] != original['sha256']:
-        raise RuntimeError('Legacy car archive rollback verification failed')
-    print('CAR_GUIDE_ARCHIVE_ROLLED_BACK original /cars/ template restored',flush=True)
 
 
 def main():
