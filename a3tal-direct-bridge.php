@@ -2,7 +2,7 @@
 /**
  * Plugin Name: A3tal Direct Bridge
  * Description: Secure administrator-grade REST bridge for managing A3tal.com content, SEO, media, users, plugins, themes, settings and wp-content from trusted AI clients.
- * Version: 3.2.2
+ * Version: 3.3.0
  * Author: A3tal.com
  * Update URI: https://github.com/marwanile1-cyber/a3tal
  */
@@ -163,6 +163,12 @@ CSS;
             'permission_callback' => [__CLASS__, 'authorize'],
         ]);
 
+        register_rest_route(self::NS, '/dtc-upsert', [
+            'methods' => 'POST',
+            'callback' => [__CLASS__, 'dtc_upsert'],
+            'permission_callback' => [__CLASS__, 'authorize'],
+        ]);
+
         register_rest_route(self::NS, '/admin', [
             'methods' => ['GET', 'POST'],
             'callback' => [__CLASS__, 'admin_gateway'],
@@ -200,7 +206,7 @@ CSS;
         if ($scope === 'admin') {
             return true;
         }
-        if ($method === 'POST' && in_array($scope, ['editorial', 'diagnostics'], true) &&
+        if ($method === 'POST' && $scope === 'editorial' &&
             in_array($route, [
                 '/a3tal-direct/v1/create-post',
                 '/a3tal-direct/v1/update-post',
@@ -211,6 +217,26 @@ CSS;
                 '/a3tal-direct/v1/insert-images',
             ], true)) {
             return true;
+        }
+        // Diagnostics keys can publish only dedicated DTC entities.
+        // They cannot access the generic administrator gateway or modify normal posts.
+        if ($scope === 'diagnostics' && $method === 'POST') {
+            if ($route === '/a3tal-direct/v1/dtc-upsert') {
+                return true;
+            }
+            if (in_array($route, [
+                '/a3tal-direct/v1/upload-image-data',
+                '/a3tal-direct/v1/upload-image',
+                '/a3tal-direct/v1/set-featured-image',
+            ], true)) {
+                $data = $request->get_json_params();
+                $data = is_array($data) ? $data : [];
+                $target_id = (int) ($data['post_id'] ?? $data['id'] ?? 0);
+                if ($route === '/a3tal-direct/v1/set-featured-image' && !$target_id) {
+                    return false;
+                }
+                return !$target_id || get_post_type($target_id) === 'a3_dtc';
+            }
         }
         if ($scope === 'design' && $route === '/a3tal-direct/v1/admin') {
             $data = $method === 'GET' ? $request->get_params() : $request->get_json_params();
@@ -303,7 +329,7 @@ CSS;
         return rest_ensure_response([
             'ok' => true,
             'plugin' => 'A3tal Direct Bridge',
-            'version' => '3.2.2',
+            'version' => '3.3.0',
             'site' => home_url('/'),
             'time_gmt' => current_time('mysql', true),
             'routes' => [
@@ -315,6 +341,7 @@ CSS;
                 'POST /upload-image',
                 'POST /upload-image-data',
                 'POST /publish-bundle',
+                'POST /dtc-upsert',
                 'POST /set-featured-image',
                 'POST /insert-images',
                 'POST /redirect',
@@ -1540,6 +1567,111 @@ CSS;
         return $items;
     }
 
+    /**
+     * Dedicated, revision-guarded DTC endpoint for independent diagnostics repos.
+     * Never grants access to /admin or arbitrary WP post types.
+     */
+    public static function dtc_upsert(WP_REST_Request $request) {
+        $data = $request->get_json_params();
+        if (!is_array($data)) {
+            return new WP_Error('a3tal_dtc_payload_required', 'Valid JSON body is required.', ['status' => 400]);
+        }
+        $allowed = ['code', 'slug', 'title', 'status', 'content', 'excerpt',
+            'meta', 'featured_media', 'expected_modified_gmt', 'confirm_code',
+            'reviewed', 'create_only', 'id'];
+        foreach (array_keys($data) as $field) {
+            if (!in_array($field, $allowed, true)) {
+                return new WP_Error('a3tal_dtc_unexpected_field', 'Unsupported DTC field.', ['status' => 400]);
+            }
+        }
+        $code = strtoupper(trim((string) ($data['code'] ?? '')));
+        if (!preg_match('/^[PBCU][0-9][0-9A-F]{3}$/D', $code)) {
+            return new WP_Error('a3tal_dtc_invalid_code', 'A valid P/B/C/U DTC code is required.', ['status' => 400]);
+        }
+        $slug = strtolower($code);
+        if ((string) ($data['slug'] ?? '') !== $slug
+            || strtoupper(trim((string) ($data['confirm_code'] ?? ''))) !== $code
+            || empty($data['reviewed'])) {
+            return new WP_Error('a3tal_dtc_review_required', 'Explicit reviewed=true, exact slug and confirm_code are required.', ['status' => 400]);
+        }
+        $status = (string) ($data['status'] ?? '');
+        if (!in_array($status, ['draft', 'publish'], true)) {
+            return new WP_Error('a3tal_dtc_status_blocked', 'Use draft or publish status.', ['status' => 400]);
+        }
+        $title = (string) ($data['title'] ?? '');
+        $content = (string) ($data['content'] ?? '');
+        if (mb_strlen(trim($title)) < 25 || mb_strlen(wp_strip_all_tags($content)) < 2000
+            || mb_strlen(trim((string) ($data['excerpt'] ?? ''))) < 40) {
+            return new WP_Error('a3tal_dtc_insufficient_content', 'Full reviewed diagnostic article and excerpt are required.', ['status' => 400]);
+        }
+        $meta = $data['meta'] ?? [];
+        $meta_keys = [
+            '_a3_dtc_code', '_a3_dtc_system', '_a3_code_scope',
+            '_a3_drive_advice', '_a3_source_url',
+            '_a3_source_checked_at', '_a3_dtc_batch',
+        ];
+        if (!is_array($meta) || array_diff(array_keys($meta), $meta_keys)
+            || (string) ($meta['_a3_dtc_code'] ?? '') !== $code
+            || !in_array((string) ($meta['_a3_code_scope'] ?? ''), ['generic'], true)
+               && !preg_match('/^oem:[a-z0-9_-]+$/D', (string) ($meta['_a3_code_scope'] ?? ''))) {
+            return new WP_Error('a3tal_dtc_meta_blocked', 'Invalid DTC metadata, code or scope.', ['status' => 400]);
+        }
+        $source = (string) ($meta['_a3_source_url'] ?? '');
+        if (strpos($source, 'https://') !== 0 || !wp_http_validate_url($source)) {
+            return new WP_Error('a3tal_dtc_source_required', 'Verified HTTPS diagnostic source URL is required.', ['status' => 400]);
+        }
+        $attachment = (int) ($data['featured_media'] ?? 0);
+        if ($status === 'publish' && (!$attachment || !wp_attachment_is_image($attachment))) {
+            return new WP_Error('a3tal_dtc_photo_required', 'Public DTC pages require a verified WordPress featured image.', ['status' => 400]);
+        }
+        $id = (int) ($data['id'] ?? 0);
+        $create_only = !empty($data['create_only']);
+        if ($id && $create_only) {
+            return new WP_Error('a3tal_dtc_create_only_conflict', 'create_only cannot include a post id.', ['status' => 400]);
+        }
+
+        $lock_key = 'a3tal_dtc_write_' . strtolower($code);
+        // Atomic SQL option add holds the code's write slot across parallel DTC repo runs.
+        $locked = add_option($lock_key, time(), '', false);
+        if (!$locked) {
+            return new WP_Error('a3tal_dtc_busy', 'A DTC write is already in progress. Do not retry blindly.', ['status' => 409]);
+        }
+        try {
+            $existing = get_page_by_path($slug, OBJECT, 'a3_dtc');
+            if ($existing instanceof WP_Post) {
+                if ($create_only) {
+                    return new WP_Error('a3tal_dtc_duplicate', 'This DTC code already exists. Stop and inspect the live page.', ['status' => 409]);
+                }
+                if (!$id || $id !== (int) $existing->ID) {
+                    return new WP_Error('a3tal_dtc_id_mismatch', 'Existing code requires its exact verified WordPress post id.', ['status' => 409]);
+                }
+                $expected = (string) ($data['expected_modified_gmt'] ?? '');
+                if ($expected === '') {
+                    return new WP_Error('a3tal_dtc_revision_required', 'Updates require expected_modified_gmt.', ['status' => 428]);
+                }
+                $checked = self::check_content_revision($existing, $expected);
+                if (is_wp_error($checked)) {
+                    return $checked;
+                }
+                self::save_backup($id);
+            } elseif ($id || !$create_only) {
+                return new WP_Error('a3tal_dtc_create_only_required', 'New codes require create_only=true; updates require existing id.', ['status' => 409]);
+            }
+            $upsert = $data;
+            unset($upsert['code'], $upsert['confirm_code'], $upsert['reviewed'],
+                $upsert['create_only'], $upsert['expected_modified_gmt']);
+            $upsert['type'] = 'a3_dtc';
+            $result = self::admin_platform_entity_upsert($upsert);
+            if (is_wp_error($result)) {
+                return $result;
+            }
+            self::admin_audit('dtc_scoped_upsert', true, $code . ':' . $status);
+            return rest_ensure_response(['ok' => true, 'code' => $code, 'result' => $result]);
+        } finally {
+            delete_option($lock_key);
+        }
+    }
+
     private static function admin_platform_entity_upsert($data) {
         $allowed_types = [
             'a3_car',
@@ -2618,7 +2750,7 @@ CSS;
         ];
         ?>
         <div class="wrap" style="max-width:1150px">
-            <h1>A3tal Direct Bridge <span style="font-size:14px;font-weight:400;color:#64748b">v3.2.2</span></h1>
+            <h1>A3tal Direct Bridge <span style="font-size:14px;font-weight:400;color:#64748b">v3.3.0</span></h1>
             <p>Manage trusted automation credentials and publishing safety for A3tal.com. All secrets remain on your server, never in GitHub source files.</p>
             <?php if ($notice) : ?>
                 <div class="notice <?php echo $notice_error ? 'notice-error' : 'notice-success'; ?> is-dismissible"><p><?php echo esc_html($notice); ?></p></div>
@@ -2721,4 +2853,4 @@ CSS;
 
 A3tal_Direct_Bridge::init();
 
-// Console and scoped credentials release: 3.2.2
+// Console and scoped credentials release: 3.3.0
