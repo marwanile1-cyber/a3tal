@@ -1,0 +1,16 @@
+/* Car-only price trim comparisons: motorbike templates are unaffected. */
+.cg-trim-panel{margin-top:22px;border:1px solid #dbe6f3;background:#fff;box-shadow:0 10px 30px #0b12200b}
+.cg-trim-panel .g-section-head{margin-bottom:13px}
+.cg-trim-lead{color:#53667e;font-size:14px;line-height:1.9;margin:0 0 18px}
+.cg-trim-scroller{max-width:100%;overflow-x:auto;overscroll-behavior-inline:contain;border:1px solid #dfe8f3;border-radius:13px;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.cg-trim-table{border-collapse:collapse;width:100%;min-width:590px;font-size:14px;text-align:right;direction:rtl;background:white}
+.cg-trim-table th,.cg-trim-table td{padding:15px 17px;vertical-align:middle;border-bottom:1px solid #e7edf4;text-align:right}
+.cg-trim-table thead th{background:#0b233b;color:#fff;font-weight:800}
+.cg-trim-table tbody th{color:#152a44;font-weight:800}
+.cg-trim-table tbody tr:nth-child(even){background:#f4f8fd}
+.cg-trim-table tbody tr:last-child th,.cg-trim-table tbody tr:last-child td{border-bottom:0}
+.cg-trim-price{color:#c5223e;font-weight:900;font-variant-numeric:tabular-nums}
+.cg-trim-proof{margin:12px 0 0;font-size:12px;line-height:1.9;color:#536980}
+.cg-trim-proof a{color:#176dcb;text-decoration:underline;text-underline-offset:3px}
+.cg-trim-scroller:focus-visible{outline:3px solid #0ea5e9;outline-offset:2px}
+@media(max-width:600px){.cg-trim-panel{padding:16px!important}.cg-trim-table{font-size:12px;min-width:520px}.cg-trim-table th,.cg-trim-table td{padding:12px 13px}.cg-trim-lead{font-size:13px}}
