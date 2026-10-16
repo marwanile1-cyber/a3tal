@@ -60,7 +60,7 @@ jobs:
           assert "'car_year'=>$cg_year" in p
           assert "'_a3_price_min'" in p and "budget" in p and "price_asc" in p
           assert "cg-budget-strip" in css and "cg-budget-links" in css
-          assert "if ($cg_search !== '' || $cg_year > 0)" in p
+          assert "if ($cg_search !== '' || $cg_year > 0 || $cg_budget !== '' || $cg_sort !== 'newest')" in p
           assert 'register_post_type' not in p and 'add_rewrite_rule' not in p
           assert 'wp_update_post' not in p and 'wp_insert_post' not in p
           assert 'cg-brands-grid' in css and '@media(max-width:480px)' in css
