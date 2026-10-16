@@ -8,6 +8,11 @@ on:
       - 'theme-source/a3tal-global/car-price-brand-logos.js'
       - 'theme-source/a3tal-global/archive-a3_car.php'
       - 'scripts/deploy-car-price-guide.py'
+      - 'theme-source/a3tal-global/platform-single-vehicle.php'
+      - 'theme-source/a3tal-global/car-price-trims.php'
+      - 'theme-source/a3tal-global/car-price-trims.css'
+      - 'scripts/audit-car-prices-all.py'
+      - '.github/workflows/audit-car-prices-all.yml'
       - 'scripts/audit-car-prices-top10.py'
       - '.github/workflows/audit-car-prices-top10.yml'
       - '.github/workflows/deploy-car-price-guide.yml'
@@ -25,9 +30,11 @@ jobs:
           set -euo pipefail
           php -l theme-source/a3tal-global/car-price-guide.php
           php -l theme-source/a3tal-global/archive-a3_car.php
+          php -l theme-source/a3tal-global/car-price-trims.php
+          php -l theme-source/a3tal-global/platform-single-vehicle.php
           node --check theme-source/a3tal-global/car-price-guide.js
           node --check theme-source/a3tal-global/car-price-brand-logos.js
-          python3 -m py_compile scripts/deploy-car-price-guide.py scripts/audit-car-prices-top10.py
+          python3 -m py_compile scripts/deploy-car-price-guide.py scripts/audit-car-prices-top10.py scripts/audit-car-prices-all.py
       - name: Link and data provenance guards
         run: |
           python3 - <<'PY'
@@ -38,6 +45,15 @@ jobs:
           for needle in ['a3cp_vehicle_price','a3g_first_term','_a3_source_checked_at','get_permalink','get_post_type_archive_link', "cat'=>374", 'a3g_cat_link(21)',"a3g_platform_link('a3_listing'"]:
               assert needle in p,needle
           assert 'car-price-guide.php' in archive
+          trim=Path('theme-source/a3tal-global/car-price-trims.php').read_text()
+          single=Path('theme-source/a3tal-global/platform-single-vehicle.php').read_text()
+          assert "get_post_type($post_id) !== 'a3_car'" in trim
+          assert "_a3_source_checked_at" in trim and "_a3_source_url" in trim
+          assert "_a3_trim_prices_v1" in trim and "count($rows)>24" in trim
+          assert "a3tal_car_render_trims" in single
+          assert "if (!$is_moto)" in single
+          assert "platform-single-vehicle.php" in Path('scripts/deploy-car-price-guide.py').read_text()
+          assert "car-price-trims.php" in Path('scripts/deploy-car-price-guide.py').read_text()
           assert 'name="car_year"' in p
           assert "get_query_var('year')" not in p
           assert "isset($_GET['year'])" not in p

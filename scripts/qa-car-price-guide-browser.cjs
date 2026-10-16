@@ -59,6 +59,40 @@ async function filters(browser){
   }
   await ctx.close();
 }
+async function verifyTrimTables(browser){
+  const context=await browser.newContext({viewport:{width:390,height:844},locale:'ar-EG'});
+  const page=await context.newPage();
+  for(const [slug,names,prices] of [
+    ['skoda-octavia-2027-egypt',['Loft','Lounge','Suite'],[1825000,2050000,2250000]],
+    ['mazda-3-2027-egypt',['Highline سيدان','Highline هاتشباك'],[1609000,1619000]],
+    ['suzuki-alto-2027-egypt',['مانيوال'],[535000]],
+    ['jac-js2-2027-egypt',['Smart'],[775000]]
+  ]){
+    const res=await page.goto(BASE+'/cars/'+slug+'/',{waitUntil:'domcontentloaded',timeout:60000});
+    if(!res||res.status()!==200)throw Error('Car URL changed or failed '+slug);
+    const region=page.locator('#trims.cg-trim-panel');
+    await region.waitFor({timeout:20000});
+    const txt=await region.innerText();
+    for(const name of names)if(!txt.includes(name))throw Error('Missing verified trim '+slug+' '+name);
+    const shown=await page.locator('#trims tbody tr .cg-trim-price').allInnerTexts();
+    const normalized=shown.map(t=>Number(t.replace(/[\u0660-\u0669\u06f0-\u06f9]/g,c=>{
+      const code=c.charCodeAt(0);return String(code>=0x06f0?code-0x06f0:code-0x0660);
+    }).replace(/[^0-9]/g,'')));
+    if(JSON.stringify(normalized)!==JSON.stringify(prices))
+      throw Error('Trim prices not exact for '+slug+' '+JSON.stringify(normalized));
+    const headers=await page.locator('#trims .cg-trim-table thead th').count();
+    if(headers!==3)throw Error('Invalid trim table structure '+slug);
+    const scroll=await page.evaluate(()=>{
+      const el=document.querySelector('.cg-trim-scroller');
+      return !!el&&el.clientWidth<=innerWidth&&el.scrollWidth>=el.clientWidth;
+    });
+    if(!scroll)throw Error('Mobile trim scroller misconfigured '+slug);
+    summary.push({trim:slug,status:res.status(),rows:await page.locator('#trims tbody tr').count()});
+    console.log('TRIMS_QA_PASS',slug);
+  }
+  await context.close();
+}
+
 (async()=>{
  const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
  try{
@@ -66,6 +100,7 @@ async function filters(browser){
   await screenshotAndTest(browser,768,920,'tablet-768');
   await screenshotAndTest(browser,1440,900,'desktop-1440');
   await filters(browser);
+  await verifyTrimTables(browser);
   fs.writeFileSync(path.join(DIR,'report.json'),JSON.stringify(summary,null,2));
   console.log('CAR_VISUAL_AND_FILTER_QA_COMPLETE',summary.length);
  }finally{await browser.close();}

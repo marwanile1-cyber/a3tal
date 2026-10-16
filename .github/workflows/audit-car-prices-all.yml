@@ -1,0 +1,32 @@
+name: Audit every published car record (read-only)
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/audit-car-prices-all.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-theme
+  cancel-in-progress: false
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Audit script syntax
+        run: python3 -m py_compile scripts/audit-car-prices-all.py
+      - name: Read all published car metadata, preserve slugs and prices
+        run: python3 -u scripts/audit-car-prices-all.py
+      - name: Export data completeness report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-all-car-records-audit-${{ github.run_id }}
+          path: car-price-audit-output
+          retention-days: 7
+          if-no-files-found: warn

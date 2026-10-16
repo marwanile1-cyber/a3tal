@@ -64,8 +64,8 @@ $cg_price_updates = new WP_Query([
 ]);
 // Scoped assets: only the cars archive, never motorcycle, DTC or posts.
 wp_enqueue_style('a3tal-car-price-guide',get_template_directory_uri().'/car-price-guide.css',[], '1.0.0');
-wp_enqueue_script('a3tal-car-price-logos',get_template_directory_uri().'/car-price-brand-logos.js',[], '1.0.0',true);
-wp_enqueue_script('a3tal-car-price-guide',get_template_directory_uri().'/car-price-guide.js',['a3tal-car-price-logos'],'1.0.0',true);
+wp_enqueue_script('a3tal-car-price-logos',get_template_directory_uri().'/car-price-brand-logos.js',[], '1.1.0',true);
+wp_enqueue_script('a3tal-car-price-guide',get_template_directory_uri().'/car-price-guide.js',['a3tal-car-price-logos'],'1.1.0',true);
 // Fix the unhelpful default archive SEO title, without changing any URLs.
 add_filter('wpseo_title',static function($title){return is_post_type_archive('a3_car')?'أسعار السيارات في مصر | الموديلات والمواصفات وأحدث التحديثات | أعطال.كوم':$title;},120);
 add_filter('wpseo_metadesc',static function($desc){return is_post_type_archive('a3_car')?'تصفح أسعار السيارات الجديدة في مصر حسب الماركة والموديل والسنة، واستعرض المواصفات والفئات وأحدث تحديثات الأسعار والمقارنات المنشورة على أعطال.كوم.':$desc;},120);
