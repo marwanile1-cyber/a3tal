@@ -1591,7 +1591,7 @@ CSS;
         $slug = strtolower($code);
         if ((string) ($data['slug'] ?? '') !== $slug
             || strtoupper(trim((string) ($data['confirm_code'] ?? ''))) !== $code
-            || empty($data['reviewed'])) {
+            || ($data['reviewed'] ?? null) !== true) {
             return new WP_Error('a3tal_dtc_review_required', 'Explicit reviewed=true, exact slug and confirm_code are required.', ['status' => 400]);
         }
         $status = (string) ($data['status'] ?? '');
@@ -1625,7 +1625,7 @@ CSS;
             return new WP_Error('a3tal_dtc_photo_required', 'Public DTC pages require a verified WordPress featured image.', ['status' => 400]);
         }
         $id = (int) ($data['id'] ?? 0);
-        $create_only = !empty($data['create_only']);
+        $create_only = ($data['create_only'] ?? null) === true;
         if ($id && $create_only) {
             return new WP_Error('a3tal_dtc_create_only_conflict', 'create_only cannot include a post id.', ['status' => 400]);
         }
