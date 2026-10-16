@@ -34,10 +34,6 @@ async function screenshotAndTest(browser,w,h,name) {
   if(metrics.cards<6||metrics.brands<8||metrics.heroImages===0||!metrics.cssLoaded)throw Error(name+' missing guide components '+JSON.stringify(metrics));
   if(errors.length)throw Error(name+' JS errors '+errors.join(' | '));
   await page.screenshot({path:path.join(DIR,name+'.png'),fullPage:true});
-  if(name==='mobile-390'||name==='desktop-1440'){
-    const jpeg=await page.screenshot({type:'jpeg',quality:30,fullPage:false});
-    console.log('VISUAL_PREVIEW_'+name+' '+jpeg.toString('base64'));
-  }
   summary.push({name,status:response.status(),metrics});
   console.log('VISUAL_QA_PASS',name,JSON.stringify(metrics));
   await ctx.close();
