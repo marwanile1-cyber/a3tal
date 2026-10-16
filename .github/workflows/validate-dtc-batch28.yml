@@ -16,6 +16,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Validate Python syntax
-        run: python3 -m py_compile scripts/validate-dtc-batch28.py
+        run: python3 -m py_compile scripts/validate-dtc-batch28.py scripts/publish-dtc-original-batch-28.py scripts/render-dtc-batch-28-art.py scripts/attach-dtc-batch-28-photos.py
       - name: Check batch28 content, OEM safety and publication hold
-        run: python3 scripts/validate-dtc-batch28.py
+        run: |
+          python3 scripts/validate-dtc-batch28.py
+          python3 scripts/publish-dtc-original-batch-28.py --dry-run
