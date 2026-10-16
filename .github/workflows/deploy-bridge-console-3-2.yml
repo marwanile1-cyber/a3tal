@@ -1,4 +1,4 @@
-name: Deploy A3tal Bridge Console 3.2.0
+name: Deploy A3tal Bridge Console 3.2.1
 on:
   push:
     branches: [main]
@@ -51,14 +51,23 @@ jobs:
             jq '{code,message,data}' /tmp/a3tal-upgrade-response.json || true
             exit 1
           fi
-          jq -e '.ok == true and .result.updated == true and .result.version == "3.2.0"' /tmp/a3tal-upgrade-response.json >/dev/null
+          jq -e '.ok == true and .result.updated == true and .result.version == "3.2.1"' /tmp/a3tal-upgrade-response.json >/dev/null
           echo "Checksum-verified upgrade applied with server-side rollback copy."
-      - name: Verify live 3.2.0 and live post reads
+      - name: Verify live 3.2.1 with OPcache warmup
         shell: bash
         run: |
           set -euo pipefail
-          curl --fail --silent --show-error --retry 3 --retry-all-errors --connect-timeout 15 --max-time 75 \
-            -H "X-A3tal-Key: $A3TAL_API_KEY" "$BASE_URL/status" > /tmp/a3tal-after.json
-          jq -e '.ok == true and .version == "3.2.0"' /tmp/a3tal-after.json >/dev/null
-          echo "Live version after: $(jq -r '.version' /tmp/a3tal-after.json)"
-          echo "Bridge upgrade verified."
+          for attempt in $(seq 1 15); do
+            curl --fail --silent --show-error --retry 2 --retry-all-errors --connect-timeout 15 --max-time 60 \
+              -H "X-A3tal-Key: $A3TAL_API_KEY" "$BASE_URL/status" > /tmp/a3tal-after.json
+            ACTIVE="$(jq -r '.version // "unknown"' /tmp/a3tal-after.json)"
+            echo "Attempt $attempt: bridge REST runtime version $ACTIVE"
+            if [[ "$ACTIVE" == "3.2.1" ]]; then
+              jq -e '.ok == true and .plugin == "A3tal Direct Bridge"' /tmp/a3tal-after.json >/dev/null
+              echo "Live bridge update fully verified."
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "Bridge file update succeeded but active PHP runtime still reports an older version; inspect OPcache."
+          exit 1
