@@ -13,10 +13,30 @@ async function screenshotAndTest(browser,w,h,name) {
   const page=await ctx.newPage();
   const errors=[];
   page.on('pageerror',e=>errors.push(String(e.message||e)));
-  const response=await page.goto(BASE+'/cars/?qa_viewport='+w,{waitUntil:'domcontentloaded',timeout:60000});
-  if(!response || response.status()!==200)throw Error(name+' status '+(response&&response.status()));
-  await page.waitForSelector('.cg-car-card',{timeout:30000});
-  await page.waitForTimeout(1700);
+  let response=null;
+  let ready=false;
+  // A3tal shared hosting intermittently drops CSS/JS with 522 even when HTML is 200.
+  // Wait for *computed styles and logo hydration*, not just a <link> tag in the DOM.
+  for(let attempt=0;attempt<3;attempt++){
+    response=await page.goto(BASE+'/cars/?qa_viewport='+w+'&qa_attempt='+attempt,{waitUntil:'domcontentloaded',timeout:60000});
+    if(!response || response.status()!==200)throw Error(name+' status '+(response&&response.status()));
+    await page.waitForSelector('.cg-car-card',{timeout:30000});
+    try{
+      await page.waitForFunction(()=>{
+        const hero=document.querySelector('.cg-hero');
+        const surface=document.querySelector('.cg-brands');
+        return !!hero && !!surface &&
+          getComputedStyle(hero).position==='relative' &&
+          getComputedStyle(surface).borderRadius==='18px' &&
+          document.querySelectorAll('.cg-brand-icon img').length>=13;
+      },null,{timeout:19000});
+      ready=true;break;
+    }catch(e){
+      console.log('VISUAL_QA_STYLES_RETRY',name,attempt+1);
+    }
+  }
+  if(!ready)throw Error(name+' stylesheet or logos failed after retries');
+  await page.waitForTimeout(900);
   const metrics=await page.evaluate(()=>{
     const by=(s)=>document.querySelectorAll(s);
     const rect=(s)=>{const a=document.querySelector(s);if(!a)return null;const r=a.getBoundingClientRect();return {x:Math.round(r.x),width:Math.round(r.width),height:Math.round(r.height)};};
@@ -24,6 +44,7 @@ async function screenshotAndTest(browser,w,h,name) {
       innerWidth:innerWidth,scrollWidth:document.documentElement.scrollWidth,
       cards:by('.cg-car-card').length,brands:by('.cg-brand').length,
       brandLogos:by('.cg-brand-icon img').length,
+      loadedBrandLogos:[...by('.cg-brand-icon img')].filter(x=>x.complete&&x.naturalWidth>0).length,
       heroImages:by('.cg-hero-photo img').length,
       loadedCardImages:[...by('.cg-car-photo img')].filter(x=>x.complete&&x.naturalWidth>0).length,
       title:document.title,hero:rect('.cg-hero'),brand:rect('.cg-brands'),filter:rect('.cg-filter'),
@@ -31,7 +52,7 @@ async function screenshotAndTest(browser,w,h,name) {
     };
   });
   if(metrics.scrollWidth>metrics.innerWidth+3)throw Error(name+' horizontal overflow '+JSON.stringify(metrics));
-  if(metrics.cards<6||metrics.brands<8||metrics.heroImages===0||!metrics.cssLoaded)throw Error(name+' missing guide components '+JSON.stringify(metrics));
+  if(metrics.cards<6||metrics.brands<8||metrics.heroImages===0||!metrics.cssLoaded||metrics.brandLogos<13)throw Error(name+' missing guide components '+JSON.stringify(metrics));
   if(errors.length)throw Error(name+' JS errors '+errors.join(' | '));
   await page.screenshot({path:path.join(DIR,name+'.png'),fullPage:true});
   summary.push({name,status:response.status(),metrics});
