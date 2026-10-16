@@ -2,7 +2,7 @@
 /**
  * Plugin Name: A3tal Direct Bridge
  * Description: Secure administrator-grade REST bridge for managing A3tal.com content, SEO, media, users, plugins, themes, settings and wp-content from trusted AI clients.
- * Version: 3.2.0
+ * Version: 3.2.1
  * Author: A3tal.com
  * Update URI: https://github.com/marwanile1-cyber/a3tal
  */
@@ -227,8 +227,14 @@ CSS;
     }
 
     private static function scoped_access(WP_REST_Request $request, $provided) {
+        // Identify one named key before verifying its expensive password hash.
+        // Never hash-check every stored credential for each unauthenticated request.
+        if (!preg_match('/^a3k_([a-z0-9]{14})_[A-Za-z0-9]{56}$/D', $provided, $matches)) {
+            return new WP_Error('a3tal_bad_key', 'Invalid API key.', ['status' => 403]);
+        }
         foreach (self::console_keys() as $item) {
-            if (empty($item['hash']) || empty($item['scope']) || !empty($item['revoked'])) {
+            if (empty($item['hash']) || empty($item['scope']) || !empty($item['id'])
+                || !hash_equals((string) $item['id'], $matches[1])) {
                 continue;
             }
             if (!wp_check_password($provided, $item['hash'])) {
@@ -297,7 +303,7 @@ CSS;
         return rest_ensure_response([
             'ok' => true,
             'plugin' => 'A3tal Direct Bridge',
-            'version' => '3.2.0',
+            'version' => '3.2.1',
             'site' => home_url('/'),
             'time_gmt' => current_time('mysql', true),
             'routes' => [
@@ -2563,8 +2569,8 @@ CSS;
                     $notice_error = true;
                     $notice = 'Maximum 24 keys. Revoke unused credentials first.';
                 } else {
-                    $new_secret = 'a3k_' . wp_generate_password(56, false, false);
                     $id = strtolower(wp_generate_password(14, false, false));
+                    $new_secret = 'a3k_' . $id . '_' . wp_generate_password(56, false, false);
                     $keys[] = [
                         'id' => $id,
                         'name' => $name,
@@ -2612,7 +2618,7 @@ CSS;
         ];
         ?>
         <div class="wrap" style="max-width:1150px">
-            <h1>A3tal Direct Bridge <span style="font-size:14px;font-weight:400;color:#64748b">v3.2.0</span></h1>
+            <h1>A3tal Direct Bridge <span style="font-size:14px;font-weight:400;color:#64748b">v3.2.1</span></h1>
             <p>Manage trusted automation credentials and publishing safety for A3tal.com. All secrets remain on your server, never in GitHub source files.</p>
             <?php if ($notice) : ?>
                 <div class="notice <?php echo $notice_error ? 'notice-error' : 'notice-success'; ?> is-dismissible"><p><?php echo esc_html($notice); ?></p></div>
@@ -2715,4 +2721,4 @@ CSS;
 
 A3tal_Direct_Bridge::init();
 
-// Console and scoped credentials release: 3.2.0
+// Console and scoped credentials release: 3.2.1
