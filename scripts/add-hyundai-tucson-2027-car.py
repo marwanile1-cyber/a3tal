@@ -96,11 +96,32 @@ def main():
       }
     }
     print("Preflight succeeded: no competing Tucson model record",flush=True)
+    # Hyundai has no current brand card: ensure its taxonomy term exists before inserting the car.
+    try:
+        term=request(BASE+"/wp-json/a3tal-direct/v1/admin",
+                     {"op":"term_upsert","taxonomy":"a3_brand","slug":"hyundai","name":"هيونداي"},
+                     secure=True)
+        if not term.get("ok"):
+            raise RuntimeError("Hyundai brand term not confirmed")
+        print("Hyundai taxonomy term ready",flush=True)
+    except urllib.error.HTTPError as e:
+        try:
+            payload=json.loads(e.read(1500).decode("utf-8","replace"))
+            print("Term error:",e.code,str(payload.get("code",""))[:90],str(payload.get("message",""))[:180],flush=True)
+        except Exception:
+            print("Term HTTP error:",e.code,flush=True)
+        raise
     try:
         response=request(BASE+"/wp-json/a3tal-direct/v1/admin",payload,secure=True)
         if not response.get("ok"): raise RuntimeError("Bridge returned non-success")
         print("Bridge entity upsert returned:",response.get("result",{}).get("id"),flush=True)
-    except (urllib.error.HTTPError,urllib.error.URLError,TimeoutError) as e:
+    except urllib.error.HTTPError as e:
+        try:
+            error=json.loads(e.read(1500).decode("utf-8","replace"))
+            print("Bridge refused entity:",e.code,str(error.get("code",""))[:90],str(error.get("message",""))[:180],flush=True)
+        except Exception:
+            print("Bridge HTTP error:",e.code,flush=True)
+    except (urllib.error.URLError,TimeoutError) as e:
         print("Write response interrupted; verifying exact-slug state without repeating write:",type(e).__name__,flush=True)
     time.sleep(20)
     items=car_list(slug=SLUG)
