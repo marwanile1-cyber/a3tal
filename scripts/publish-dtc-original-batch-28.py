@@ -133,7 +133,7 @@ def validate(items):
         if any(len(k.strip())<12 or len(v.split())<57 for k,v in row["deep_dive"]):
             raise RuntimeError("Thin deep-dive diagnostic section: "+code)
         video=row.get("video")
-        video_allowlist={"P0354":"JYvhzYA_Fe4","P0620":"VkuDmEwTxrM"}
+        video_allowlist={"P0262":"KeuXbBVR6uk","P0354":"JYvhzYA_Fe4","P0620":"VkuDmEwTxrM","U0142":"ONWAExsFNeg"}
         if bool(video)!=(code in video_allowlist):
             raise RuntimeError("Video has not been matched and verified for code: "+code)
         if video and (video.get("id")!=video_allowlist[code] or len(video.get("note",""))<65):
