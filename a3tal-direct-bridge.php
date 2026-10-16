@@ -2,7 +2,7 @@
 /**
  * Plugin Name: A3tal Direct Bridge
  * Description: Secure administrator-grade REST bridge for managing A3tal.com content, SEO, media, users, plugins, themes, settings and wp-content from trusted AI clients.
- * Version: 3.3.0
+ * Version: 3.3.1
  * Author: A3tal.com
  * Update URI: https://github.com/marwanile1-cyber/a3tal
  */
@@ -291,13 +291,27 @@ CSS;
         return new WP_Error('a3tal_bad_key', 'Invalid API key.', ['status' => 403]);
     }
 
+    private static function revision_token($post) {
+        // Read the canonical GMT SQL column, not the presentation-time helper,
+        // which may return false on custom post types under some WP configurations.
+        if (!($post instanceof WP_Post)) {
+            return '';
+        }
+        $raw = (string) $post->post_modified_gmt;
+        if ($raw === '' || $raw === '0000-00-00 00:00:00') {
+            return '';
+        }
+        $dt = DateTimeImmutable::createFromFormat('!Y-m-d H:i:s', $raw, new DateTimeZone('UTC'));
+        return $dt instanceof DateTimeImmutable ? $dt->format('c') : '';
+    }
+
     private static function check_content_revision($post, $expected) {
         $expected = (string) $expected;
         if ($expected === '') {
             return true;
         }
-        $modified = get_post_modified_time('c', true, $post);
-        if (!is_string($modified) || !hash_equals($modified, $expected)) {
+        $modified = self::revision_token($post);
+        if ($modified === '' || !hash_equals($modified, $expected)) {
             return new WP_Error('a3tal_post_conflict', 'Post has changed since it was read. Refresh and retry.', [
                 'status' => 409,
                 'current_modified_gmt' => $modified,
@@ -329,7 +343,7 @@ CSS;
         return rest_ensure_response([
             'ok' => true,
             'plugin' => 'A3tal Direct Bridge',
-            'version' => '3.3.0',
+            'version' => '3.3.1',
             'site' => home_url('/'),
             'time_gmt' => current_time('mysql', true),
             'routes' => [
@@ -393,7 +407,7 @@ CSS;
             'categories' => wp_get_post_categories($post->ID),
             'tags' => wp_get_post_tags($post->ID, ['fields' => 'ids']),
             'meta' => $meta,
-            'modified_gmt' => get_post_modified_time('c', true, $post),
+            'modified_gmt' => self::revision_token($post),
         ];
     }
 
@@ -432,7 +446,7 @@ CSS;
                 'status' => $post->post_status,
                 'slug' => $post->post_name,
                 'link' => get_permalink($post),
-                'modified_gmt' => get_post_modified_time('c', true, $post),
+                'modified_gmt' => self::revision_token($post),
             ];
         }
 
@@ -2750,7 +2764,7 @@ CSS;
         ];
         ?>
         <div class="wrap" style="max-width:1150px">
-            <h1>A3tal Direct Bridge <span style="font-size:14px;font-weight:400;color:#64748b">v3.3.0</span></h1>
+            <h1>A3tal Direct Bridge <span style="font-size:14px;font-weight:400;color:#64748b">v3.3.1</span></h1>
             <p>Manage trusted automation credentials and publishing safety for A3tal.com. All secrets remain on your server, never in GitHub source files.</p>
             <?php if ($notice) : ?>
                 <div class="notice <?php echo $notice_error ? 'notice-error' : 'notice-success'; ?> is-dismissible"><p><?php echo esc_html($notice); ?></p></div>
@@ -2853,4 +2867,4 @@ CSS;
 
 A3tal_Direct_Bridge::init();
 
-// Console and scoped credentials release: 3.3.0
+// Console and scoped credentials release: 3.3.1
