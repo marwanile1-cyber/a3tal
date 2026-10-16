@@ -245,6 +245,29 @@ def main():
     for number,path in batch_files:
         ready,reason=check_batch(number,path)
         if ready is None:
+            # Batch 28 was released separately under the owner's explicit
+            # temporary-photo release. Its editorial auto-release flag must
+            # remain false, but a fully published/OG-verified batch should not
+            # permanently block future reviewed batches. This is READ-ONLY:
+            # never bypass incomplete batch 28 or release batch 29.
+            if number == 28:
+                held_data = json.loads(path.read_text(encoding="utf-8"))
+                historical_codes = "P0262 P0354 P0620 U0142 U0150 U0153 C0052 C0053 B2103 B2431".split()
+                if [row.get("code") for row in held_data.get("items", [])] == historical_codes:
+                    try:
+                        existing = [fetch_published_code(code) for code in historical_codes]
+                    except TransientReadError as exc:
+                        print_state("PREFLIGHT_DEFERRED_NO_WRITES", str(exc))
+                        return
+                    complete = all(row is not None
+                        and row.get("status") == "publish"
+                        and row.get("featured_media")
+                        and (row.get("yoast_head_json") or {}).get("og_image")
+                        for row in existing)
+                    if complete:
+                        print_state("ALREADY_PUBLISHED_WITH_COVERS",number,
+                            "Historical release verified; held flag preserved, no writes")
+                        continue
             print_state("WAITING",number,reason,"No WordPress writes.")
             return
         items,files=ready
