@@ -1,4 +1,4 @@
-name: Deploy A3tal Bridge Console 3.3.1
+name: Deploy A3tal Bridge Console 3.3.2
 on:
   push:
     branches: [main]
@@ -42,8 +42,8 @@ jobs:
           set -euo pipefail
           # A previous self-update can succeed even if the old OPcache response
           # persists until the first verification window has elapsed.
-          if jq -e '.version == "3.3.1"' /tmp/a3tal-before.json >/dev/null; then
-            echo "Live Bridge is already v3.3.1. No redundant production mutation."
+          if jq -e '.version == "3.3.2"' /tmp/a3tal-before.json >/dev/null; then
+            echo "Live Bridge is already v3.3.2. No redundant production mutation."
             exit 0
           fi
           EXPECTED="$(sha256sum a3tal-direct-bridge.php | awk '{print $1}')"
@@ -68,9 +68,9 @@ jobs:
             jq '{code,message,data}' /tmp/a3tal-upgrade-response.json || true
             exit 1
           fi
-          jq -e '.ok == true and .result.updated == true and .result.version == "3.3.1"' /tmp/a3tal-upgrade-response.json >/dev/null
+          jq -e '.ok == true and .result.updated == true and .result.version == "3.3.2"' /tmp/a3tal-upgrade-response.json >/dev/null
           echo "Checksum-verified upgrade applied with server-side rollback copy."
-      - name: Verify live 3.3.1 with OPcache warmup
+      - name: Verify live 3.3.2 with OPcache warmup
         shell: bash
         run: |
           set -euo pipefail
@@ -79,7 +79,7 @@ jobs:
               -H "X-A3tal-Key: $A3TAL_API_KEY" "$BASE_URL/status?bridge_verify=$(date +%s%N)" > /tmp/a3tal-after.json
             ACTIVE="$(jq -r '.version // "unknown"' /tmp/a3tal-after.json)"
             echo "Attempt $attempt: bridge REST runtime version $ACTIVE"
-            if [[ "$ACTIVE" == "3.3.1" ]]; then
+            if [[ "$ACTIVE" == "3.3.2" ]]; then
               jq -e '.ok == true and .plugin == "A3tal Direct Bridge"' /tmp/a3tal-after.json >/dev/null
               echo "Live bridge update fully verified."
               exit 0
