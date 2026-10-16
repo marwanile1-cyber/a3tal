@@ -1,0 +1,21 @@
+name: Validate DTC batch28 editorial drafts
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'data/dtc-original-batch-28.json'
+      - 'scripts/validate-dtc-batch28.py'
+      - '.github/workflows/validate-dtc-batch28.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate-editorial:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate Python syntax
+        run: python3 -m py_compile scripts/validate-dtc-batch28.py
+      - name: Check batch28 content, OEM safety and publication hold
+        run: python3 scripts/validate-dtc-batch28.py
