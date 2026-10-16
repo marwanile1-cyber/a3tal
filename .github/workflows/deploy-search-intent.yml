@@ -1,0 +1,90 @@
+name: Deploy A3tal intent search UX
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/deploy-search-intent.yml'
+      - 'theme-source/a3tal-global/search.php'
+      - 'theme-source/a3tal-global/search-intent.css'
+      - 'scripts/deploy-search-intent.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-theme
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate sources before production
+        run: |
+          set -euo pipefail
+          php -l theme-source/a3tal-global/search.php
+          python3 -m py_compile scripts/deploy-dtc-library.py scripts/deploy-search-intent.py
+          python3 - <<'PY'
+          from pathlib import Path
+          s=Path('theme-source/a3tal-global/search.php').read_text()
+          assert 'while (have_posts())' in s
+          assert 'si-primary-grid' in s and 'si-next-grid' in s
+          assert "'a3_dtc'" in s and "'a3_car'" in s
+          assert 'the_posts_pagination' in s
+          assert 'get_search_query(false)' in s
+          assert not any(x in s for x in ('wp_delete_post(', 'wp_insert_post(', 'redirect_canonical', 'update_post_meta('))
+          print('SEARCH_INTENT_STATIC_OK')
+          PY
+      - name: Save original theme and verify safe activation
+        run: python3 scripts/deploy-search-intent.py prepare --state-dir "$RUNNER_TEMP/search-intent"
+      - name: Encrypt rollback backup
+        run: |
+          openssl enc -aes-256-cbc -salt -pbkdf2 -iter 200000 -pass env:A3TAL_API_KEY \
+            -in "$RUNNER_TEMP/search-intent/snapshot.json" \
+            -out "$RUNNER_TEMP/search-intent/backup.enc"
+      - name: Save encrypted rollback before writing
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-search-ux-backup-${{ github.run_id }}
+          path: ${{ runner.temp }}/search-intent/backup.enc
+          retention-days: 7
+          if-no-files-found: error
+      - name: Deploy CSS first and search.php LAST
+        run: python3 scripts/deploy-search-intent.py deploy --state-dir "$RUNNER_TEMP/search-intent"
+      - name: Public search QA and indexed routes check
+        run: |
+          python3 - <<'PY'
+          import time
+          import urllib.request
+          import urllib.parse
+          import urllib.error
+          def check(path, needles):
+              url='https://a3tal.com'+path
+              last=None
+              for attempt in range(4):
+                  try:
+                      req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0','Cache-Control':'no-cache'})
+                      with urllib.request.urlopen(req,timeout=40) as resp:
+                          assert resp.status==200,(url,resp.status)
+                          body=resp.read().decode('utf-8','replace')
+                      for marker in needles:
+                          assert marker in body,('SEARCH_QA_MISSING',url,marker)
+                      assert not any(w in body.lower() for w in ['there has been a critical error on this website','fatal error:','parse error:'])
+                      print('SEARCH_INTENT_LIVE_QA_PASS',url,flush=True)
+                      return
+                  except (urllib.error.URLError,TimeoutError,AssertionError) as exc:
+                      last=exc
+                      if attempt<3: time.sleep(12*(attempt+1))
+              raise RuntimeError(f'Public search QA failed {url}: {last}')
+          for phrase,check_word in [('K4','K4'),('P0139','P0139'),('رعشة الدركسيون','رعشة')]:
+              check('/?'+urllib.parse.urlencode({'s':phrase}),['si-hero','si-results','si-next-grid',check_word])
+          check('/cars/',['cg-guide'])
+          check('/dtc/',['dtc-codes'])
+          check('/motorcycles/',['الموتوسيكلات'])
+          print('SEARCH_INTENT_PRODUCTION_VERIFIED',flush=True)
+          PY
+      - name: Restore the old search behavior if publication fails
+        if: failure()
+        run: python3 scripts/deploy-search-intent.py rollback --state-dir "$RUNNER_TEMP/search-intent"
