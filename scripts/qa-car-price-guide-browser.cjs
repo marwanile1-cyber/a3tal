@@ -1,0 +1,72 @@
+// Browser-level regression checks, screenshots and layout health for A3tal /cars/.
+// Read-only. Does not modify WordPress, payment accounts or indexed content.
+'use strict';
+const fs=require('fs');
+const path=require('path');
+const {chromium}=require('/tmp/a3tal-visual/node_modules/playwright');
+const BASE='https://a3tal.com';
+const DIR='car-visual-qa-output';
+fs.mkdirSync(DIR,{recursive:true});
+const summary=[];
+async function screenshotAndTest(browser,w,h,name) {
+  const ctx=await browser.newContext({viewport:{width:w,height:h},deviceScaleFactor:1,locale:'ar-EG',colorScheme:'light'});
+  const page=await ctx.newPage();
+  const errors=[];
+  page.on('pageerror',e=>errors.push(String(e.message||e)));
+  const response=await page.goto(BASE+'/cars/?qa_viewport='+w,{waitUntil:'domcontentloaded',timeout:60000});
+  if(!response || response.status()!==200)throw Error(name+' status '+(response&&response.status()));
+  await page.waitForSelector('.cg-car-card',{timeout:30000});
+  await page.waitForTimeout(1700);
+  const metrics=await page.evaluate(()=>{
+    const by=(s)=>document.querySelectorAll(s);
+    const rect=(s)=>{const a=document.querySelector(s);if(!a)return null;const r=a.getBoundingClientRect();return {x:Math.round(r.x),width:Math.round(r.width),height:Math.round(r.height)};};
+    return {
+      innerWidth:innerWidth,scrollWidth:document.documentElement.scrollWidth,
+      cards:by('.cg-car-card').length,brands:by('.cg-brand').length,
+      brandLogos:by('.cg-brand-icon img').length,
+      heroImages:by('.cg-hero-photo img').length,
+      loadedCardImages:[...by('.cg-car-photo img')].filter(x=>x.complete&&x.naturalWidth>0).length,
+      title:document.title,hero:rect('.cg-hero'),brand:rect('.cg-brands'),filter:rect('.cg-filter'),
+      cssLoaded:!![...document.styleSheets].find(s=>String(s.href||'').includes('car-price-guide.css'))
+    };
+  });
+  if(metrics.scrollWidth>metrics.innerWidth+3)throw Error(name+' horizontal overflow '+JSON.stringify(metrics));
+  if(metrics.cards<6||metrics.brands<8||metrics.heroImages===0||!metrics.cssLoaded)throw Error(name+' missing guide components '+JSON.stringify(metrics));
+  if(errors.length)throw Error(name+' JS errors '+errors.join(' | '));
+  await page.screenshot({path:path.join(DIR,name+'.png'),fullPage:true});
+  summary.push({name,status:response.status(),metrics});
+  console.log('VISUAL_QA_PASS',name,JSON.stringify(metrics));
+  await ctx.close();
+}
+async function filters(browser){
+  const ctx=await browser.newContext({viewport:{width:390,height:844}});
+  const page=await ctx.newPage();
+  for(const [url,expected] of [
+    ['/cars/?car_year=2027','K4'],
+    ['/cars/?brand=kia&car_year=2027','K4'],
+    ['/cars/?car_search=Kia&car_year=2027&brand=kia','Seltos'],
+  ]){
+    const response=await page.goto(BASE+url,{waitUntil:'domcontentloaded',timeout:60000});
+    if(!response||response.status()!==200)throw Error('Bad filter response '+url+' '+(response&&response.status()));
+    await page.waitForSelector('.cg-car-card',{timeout:30000});
+    if(!await page.locator('.cg-car-card').first().innerText().then(x=>x.includes(expected)).catch(()=>false)){
+      if(!await page.locator('.cg-guide').innerText().then(x=>x.includes(expected)))throw Error('Filter missing expected car '+url);
+    }
+    const robots=await page.locator('meta[name="robots"]').first().getAttribute('content');
+    if(!robots||!robots.includes('noindex'))throw Error('Query filter should be noindex '+url+' got '+robots);
+    summary.push({filter:url,status:response.status(),robots});
+    console.log('FILTER_QA_PASS',url);
+  }
+  await ctx.close();
+}
+(async()=>{
+ const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
+ try{
+  await screenshotAndTest(browser,390,844,'mobile-390');
+  await screenshotAndTest(browser,768,920,'tablet-768');
+  await screenshotAndTest(browser,1440,900,'desktop-1440');
+  await filters(browser);
+  fs.writeFileSync(path.join(DIR,'report.json'),JSON.stringify(summary,null,2));
+  console.log('CAR_VISUAL_AND_FILTER_QA_COMPLETE',summary.length);
+ }finally{await browser.close();}
+})().catch(e=>{console.error(e.stack||e);process.exit(1)});

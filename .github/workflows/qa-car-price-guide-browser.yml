@@ -1,0 +1,33 @@
+name: Browser QA for live car price guide
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/qa-car-price-guide-browser.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-theme
+  cancel-in-progress: false
+jobs:
+  browser-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install headless Chromium testing dependencies
+        run: |
+          set -euo pipefail
+          npm install --prefix /tmp/a3tal-visual --no-save --silent playwright@1.57.0
+          /tmp/a3tal-visual/node_modules/.bin/playwright install --with-deps chromium
+      - name: Test desktop, tablet, mobile, filters and capture screenshots
+        run: node scripts/qa-car-price-guide-browser.cjs
+      - name: Preserve real visual QA evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-cars-mobile-desktop-screenshots-${{ github.run_id }}
+          path: car-visual-qa-output
+          if-no-files-found: warn
+          retention-days: 7
