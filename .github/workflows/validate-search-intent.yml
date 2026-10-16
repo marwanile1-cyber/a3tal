@@ -1,0 +1,31 @@
+name: Validate A3tal intent search UX
+on:
+  pull_request:
+    paths:
+      - 'theme-source/a3tal-global/search.php'
+      - 'theme-source/a3tal-global/search-intent.css'
+      - 'scripts/deploy-search-intent.py'
+      - '.github/workflows/deploy-search-intent.yml'
+      - '.github/workflows/validate-search-intent.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: PHP and Python syntax
+        run: |
+          php -l theme-source/a3tal-global/search.php
+          python3 -m py_compile scripts/deploy-search-intent.py
+          python3 - <<'PY'
+          from pathlib import Path
+          s=Path('theme-source/a3tal-global/search.php').read_text()
+          for marker in ['si-hero','si-results','si-next-grid','get_search_query(false)','the_posts_pagination','a3g_card(']:
+              assert marker in s,marker
+          assert "'a3_dtc'" in s and "'a3_car'" in s
+          assert 'wp_redirect(' not in s
+          assert 'wp_insert_post(' not in s
+          print('SEARCH_INTENT_GUARDS_PASS')
+          PY
