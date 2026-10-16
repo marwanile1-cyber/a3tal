@@ -18,3 +18,24 @@
 @media(max-width:560px){.gg-related-grid{grid-template-columns:1fr}.gg-related{padding:17px}.gg-related-grid>a{min-height:74px}}
 
 .d-dtc-featured{margin:23px 0;border:1px solid #dde5ee;border-radius:16px;overflow:hidden;background:#101820;box-shadow:0 10px 32px rgba(13,31,49,.09)}.d-dtc-featured img{display:block;width:100%;height:auto;max-height:650px;object-fit:cover}.d-dtc-featured figcaption{font-size:12px;line-height:1.7;background:#f7f9fb;color:#42526a;padding:10px 16px;margin:0}
+
+/* Model-scoped journeys: direct steps, curated article links and a single diagnostic handoff. */
+.cg-model-journey{scroll-margin-top:24px}
+.cg-model-journey-intro{font-size:14px;line-height:1.85;color:#4c5f76;margin:0 0 18px}
+.cg-model-journey-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.cg-model-journey-card{display:flex;flex-direction:column;position:relative;min-width:0;min-height:157px;padding:17px 17px 16px 38px;border:1px solid #dce6f1;border-radius:14px;background:linear-gradient(160deg,#fff,#f5f9ff);text-align:right;text-decoration:none!important;color:#17314e!important;transition:transform .15s,border-color .15s,box-shadow .15s}
+.cg-model-journey-card:hover,.cg-model-journey-card:focus-visible{transform:translateY(-2px);border-color:#94bce8;box-shadow:0 7px 20px #1f5d8e17}
+.cg-model-journey-step{color:#2866a8;font-size:11px;font-weight:850;margin-bottom:12px}
+.cg-model-journey-card strong{font-size:14px;line-height:1.75;overflow-wrap:anywhere}
+.cg-model-journey-card small{font-size:11px;line-height:1.8;color:#596e83;margin-top:6px}
+.cg-model-journey-arrow{position:absolute;bottom:14px;left:16px;color:#236eae;font-size:21px}
+.cg-model-journey-diagnostics{background:linear-gradient(145deg,#f7fbff,#e8f2fb)}
+.cg-model-journey-empty{margin:15px 0 0;font-size:12px;color:#697a8e}
+.gg-diagnostic-paths{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px}
+.gg-diagnostic-paths a{position:relative;display:flex;flex-direction:column;min-width:0;gap:10px;padding:20px 40px 20px 17px;border-radius:13px;border:1px solid #d7e3ed;background:#f6faff;color:#18304a!important;text-decoration:none!important}
+.gg-diagnostic-paths a:hover,.gg-diagnostic-paths a:focus-visible{border-color:#a3c9e4;background:#edf6ff}
+.gg-diagnostic-paths strong{font-size:15px;line-height:1.5}
+.gg-diagnostic-paths span{font-size:12px;line-height:1.8;color:#536982}
+.gg-diagnostic-paths b{position:absolute;inset-inline-end:17px;top:18px;color:#156fb7;font-size:22px}
+@media(max-width:850px){.cg-model-journey-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.cg-model-journey-grid,.gg-diagnostic-paths{grid-template-columns:1fr}.cg-model-journey-card{min-height:128px;padding:14px 14px 14px 35px}.gg-diagnostic-paths a{padding:17px 36px 17px 15px}}
