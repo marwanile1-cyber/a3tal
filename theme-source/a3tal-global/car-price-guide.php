@@ -24,15 +24,26 @@ $cg_search = function_exists('mb_substr') ? mb_substr($cg_search,0,85) : substr(
 $cg_brand = get_query_var('brand');
 $cg_market = get_query_var('market');
 $cg_body = get_query_var('vehicle_type');
+// Budget is based on the car record's starting published price, not an estimated market quote.
+$cg_budget_options = [
+  'lt1m' => ['min'=>null,'max'=>999999,'label'=>'أقل من مليون'],
+  '1m_15m' => ['min'=>1000000,'max'=>1499999,'label'=>'من مليون إلى 1.5 مليون'],
+  '15m_2m' => ['min'=>1500000,'max'=>1999999,'label'=>'من 1.5 إلى 2 مليون'],
+  'gte2m' => ['min'=>2000000,'max'=>null,'label'=>'2 مليون فأكثر'],
+];
+$cg_budget = isset($_GET['budget']) && is_string($_GET['budget']) ? sanitize_key(wp_unslash($_GET['budget'])) : '';
+if (!isset($cg_budget_options[$cg_budget])) $cg_budget = '';
+$cg_sort = isset($_GET['sort']) && is_string($_GET['sort']) ? sanitize_key(wp_unslash($_GET['sort'])) : 'newest';
+if (!in_array($cg_sort,['newest','price_asc','price_desc'],true)) $cg_sort = 'newest';
 // WP reserves "year" for post publication dates, which makes ?year=2027 a 404.
 // The price guide uses a separate, archive-scoped car_year query parameter.
 $cg_year = isset($_GET['car_year']) && is_scalar($_GET['car_year']) ? absint(wp_unslash($_GET['car_year'])) : 0;
 $cg_year = ($cg_year >= 1950 && $cg_year <= 2100) ? $cg_year : 0;
-$cg_archive_filtered = $cg_search !== '' || $cg_year > 0 || isset($_GET['brand']) || isset($_GET['market']) || isset($_GET['vehicle_type']);
+$cg_archive_filtered = $cg_search !== '' || $cg_year > 0 || isset($_GET['brand']) || isset($_GET['market']) || isset($_GET['vehicle_type']) || isset($_GET['budget']) || isset($_GET['sort']);
 // WordPress interprets ?s= as a global site search and may swap this archive
 // for index.php. Use a scoped, paginated vehicle-only search instead.
 $cg_listing = $GLOBALS['wp_query'];
-if ($cg_search !== '' || $cg_year > 0) {
+if ($cg_search !== '' || $cg_year > 0 || $cg_budget !== '' || $cg_sort !== 'newest') {
   $cg_tax_query = ['relation'=>'AND'];
   foreach (['brand'=>'a3_brand','market'=>'a3_market','vehicle_type'=>'a3_car_body'] as $param=>$taxonomy) {
     $raw = isset($_GET[$param]) && is_string($_GET[$param]) ? sanitize_title(wp_unslash($_GET[$param])) : '';
@@ -45,8 +56,25 @@ if ($cg_search !== '' || $cg_year > 0) {
     'ignore_sticky_posts'=>true
   ];
   if (count($cg_tax_query)>1) $cg_args['tax_query']=$cg_tax_query;
+  $cg_meta_query = [];
   if ($cg_year > 0) {
-    $cg_args['meta_query']=[['key'=>'_a3_year','value'=>(string)$cg_year,'compare'=>'=','type'=>'NUMERIC']];
+    $cg_meta_query[] = ['key'=>'_a3_year','value'=>(string)$cg_year,'compare'=>'=','type'=>'NUMERIC'];
+  }
+  if ($cg_budget !== '') {
+    $limits = $cg_budget_options[$cg_budget];
+    if ($limits['min'] === null) {
+      $cg_meta_query[] = ['key'=>'_a3_price_min','value'=>$limits['max'],'compare'=>'<=','type'=>'NUMERIC'];
+    } elseif ($limits['max'] === null) {
+      $cg_meta_query[] = ['key'=>'_a3_price_min','value'=>$limits['min'],'compare'=>'>=','type'=>'NUMERIC'];
+    } else {
+      $cg_meta_query[] = ['key'=>'_a3_price_min','value'=>[$limits['min'],$limits['max']],'compare'=>'BETWEEN','type'=>'NUMERIC'];
+    }
+  }
+  if ($cg_meta_query) $cg_args['meta_query'] = $cg_meta_query;
+  if ($cg_sort !== 'newest') {
+    $cg_args['meta_key'] = '_a3_price_min';
+    $cg_args['orderby'] = 'meta_value_num';
+    $cg_args['order'] = $cg_sort === 'price_asc' ? 'ASC' : 'DESC';
   }
   $cg_listing = new WP_Query($cg_args);
 }
@@ -142,6 +170,17 @@ get_header();
       <?php else: ?><p>الماركات هتظهر هنا بمجرد نشر موديل مرتبط بماركة.</p><?php endif; ?>
     </section>
 
+    <section class="cg-budget-strip" aria-label="تصفح السيارات حسب الميزانية">
+      <div class="cg-budget-heading"><strong>اختار حسب الميزانية</strong><small>التصنيف حسب السعر المبدئي المسجل لكل سيارة</small></div>
+      <div class="cg-budget-links">
+        <?php foreach($cg_budget_options as $key=>$option): ?>
+          <a href="<?php echo esc_url(add_query_arg('budget',$key,$cg_url)); ?>"<?php if($cg_budget===$key) echo ' class="is-active" aria-current="true"'; ?>>
+            <?php echo esc_html($option['label']); ?> <span aria-hidden="true">←</span>
+          </a>
+        <?php endforeach; ?>
+      </div>
+    </section>
+
     <div class="cg-discovery-layout">
       <aside class="cg-news cg-surface" id="cg-news" aria-labelledby="cg-news-title">
         <div class="cg-section-heading"><div><span class="cg-kicker">من غرفة الأخبار</span><h2 id="cg-news-title">أحدث تحديثات الأسعار</h2></div></div>
@@ -180,17 +219,20 @@ get_header();
         <label>السوق<select name="market"><option value="">كل الأسواق</option><?php foreach($cg_markets as $t): ?><option value="<?php echo esc_attr($t->slug); ?>" <?php selected($cg_market,$t->slug); ?>><?php echo esc_html($t->name); ?></option><?php endforeach; ?></select></label>
         <label>الهيكل<select name="vehicle_type"><option value="">كل الأنواع</option><?php foreach($cg_bodies as $t): ?><option value="<?php echo esc_attr($t->slug); ?>" <?php selected($cg_body,$t->slug); ?>><?php echo esc_html($t->name); ?></option><?php endforeach; ?></select></label>
         <label>سنة الموديل<input type="number" name="car_year" min="1950" max="2100" value="<?php echo esc_attr($cg_year ? absint($cg_year) : ''); ?>" placeholder="2027"></label>
-        <button type="submit">تطبيق الفلاتر</button>
+        <label>الميزانية حسب السعر المبدئي<select name="budget"><option value="">كل الميزانيات</option><?php foreach($cg_budget_options as $key=>$opt): ?><option value="<?php echo esc_attr($key); ?>" <?php selected($cg_budget,$key); ?>><?php echo esc_html($opt['label']); ?></option><?php endforeach; ?></select></label>
+        <label>ترتيب النتائج<select name="sort"><option value="newest" <?php selected($cg_sort,'newest'); ?>>الأحدث أولًا</option><option value="price_asc" <?php selected($cg_sort,'price_asc'); ?>>الأقل سعرًا أولًا</option><option value="price_desc" <?php selected($cg_sort,'price_desc'); ?>>الأعلى سعرًا أولًا</option></select></label>
+        <button type="submit">عرض السيارات</button>
       </form>
       <?php if($cg_more): ?><div class="cg-cars-grid cg-cars-rest"><?php foreach($cg_more as $car){$cg_render_card($car);} ?></div><?php endif; ?>
-      <?php if($cg_top): ?><div class="cg-pagination"><?php if($cg_search !== '' || $cg_year > 0):
+      <?php if($cg_top): ?><div class="cg-pagination"><?php if($cg_search !== '' || $cg_year > 0 || $cg_budget !== '' || $cg_sort !== 'newest'):
             echo paginate_links([
               'total'=>max(1,(int)$cg_listing->max_num_pages),
               'current'=>max(1,(int)get_query_var('paged')),
               'prev_text'=>'السابق','next_text'=>'التالي',
               'add_args'=>array_filter(['car_search'=>$cg_search,'car_year'=>$cg_year ?: null,
                 'brand'=>get_query_var('brand'),'market'=>get_query_var('market'),
-                'vehicle_type'=>get_query_var('vehicle_type')],static function($v){return $v !== '' && $v !== null;})
+                'vehicle_type'=>get_query_var('vehicle_type'),
+                'budget'=>$cg_budget ?: null,'sort'=>$cg_sort !== 'newest' ? $cg_sort : null],static function($v){return $v !== '' && $v !== null;})
             ]);
           else:
             the_posts_pagination(['mid_size'=>2,'prev_text'=>'السابق','next_text'=>'التالي']);
