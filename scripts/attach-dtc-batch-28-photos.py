@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""Attach ten reviewed original standalone photorealistic WebP covers to matching published DTC records.
-No unreviewed illustrations, no guessed vehicle wiring, no borrowed photography or third-party CDN.
+"""Attach code-labelled temporary photographic-reference WebPs only for user-approved batch28.
+These are interim derivatives, not new code-specific original photos.
 No unsafe write retries. This job is idempotent if the post already has a featured image.
 """
 import base64, io, json, math, os, random, time, urllib.request, urllib.error
@@ -12,22 +12,22 @@ ROOT="https://a3tal.com/wp-json/a3tal-direct/v1"
 CODES=["P0262","P0354","P0620","U0142","U0150","U0153","C0052","C0053","B2103","B2431"]
 RECOVER_UPLOAD={}
 ALT={
-"P0262":"صورة فوتوغرافية حصرية لتشخيص دائرة بخاخ الأسطوانة الأولى P0262",
-"P0354":"صورة فوتوغرافية لملف الإشعال D وتشخيص P0354",
-"P0620":"صورة فوتوغرافية للدينامو ودائرة الشحن P0620",
-"U0142":"صورة فوتوغرافية لوحدة BCM B والضفيرة U0142",
-"U0150":"صورة فوتوغرافية لبوابة Gateway E للاتصالات U0150",
-"U0153":"صورة فوتوغرافية لوحدة سلامة جانبية يمنى U0153",
-"C0052":"صورة فوتوغرافية لحساس زاوية توجيه قناة A C0052",
-"C0053":"صورة فوتوغرافية لحساس زاوية توجيه قناة B C0053",
-"B2103":"صورة فوتوغرافية لهوائي قارئ مفتاح فورد PATS B2103",
-"B2431":"صورة فوتوغرافية لفحص مفتاح فورد غير المبرمج B2431"
+"P0262":"صورة فوتوغرافية توضيحية مؤقتة للبحث عن كود P0262، وليست تصويرًا حصريًا لهذا البخاخ",
+"P0354":"صورة فوتوغرافية توضيحية مؤقتة لكود P0354، وليست مرجعًا لشكل ملف الإشعال D",
+"P0620":"صورة فوتوغرافية توضيحية مؤقتة لكود P0620، وليست مرجعًا لشكل دينامو موديل محدد",
+"U0142":"صورة مرجعية فوتوغرافية مؤقتة حول إلكترونيات BCM لكود U0142",
+"U0150":"صورة مرجعية فوتوغرافية مؤقتة للوحدات الإلكترونية لكود U0150",
+"U0153":"صورة مرجعية مؤقتة حول وحدات السلامة لكود U0153 وليست دليلًا لفك مكونات SRS",
+"C0052":"صورة مرجعية مؤقتة لأجهزة السيارة لكود C0052 وليست تحديدًا لشكل حساس زاوية التوجيه",
+"C0053":"صورة مرجعية مؤقتة لأجهزة السيارة لكود C0053 وليست تحديدًا لشكل حساس زاوية التوجيه",
+"B2103":"صورة توضيحية فوتوغرافية مؤقتة لنظام قراءة مفتاح فورد PATS B2103",
+"B2431":"صورة توضيحية فوتوغرافية مؤقتة لمفتاح فورد PATS B2431"
 }
 PHOTO_ROOT=Path("assets/dtc-batch28")
 def image_for(code):
     path=PHOTO_ROOT/("a3tal-dtc-"+code.lower()+"-exclusive.webp")
     if not path.is_file():
-        raise RuntimeError("Missing reviewed original photographic cover: "+str(path))
+        raise RuntimeError("Missing preflight-verified temporary cover: "+str(path))
     raw=path.read_bytes()
     if not 25_000<len(raw)<500_000:
         raise RuntimeError("Invalid illustration byte size for "+code)
@@ -81,7 +81,7 @@ def main():
         img=image_for(code)
         if not (10_000<len(img)<450_000):raise RuntimeError("Unexpected original illustration size for "+code)
         payload={"post_id":post_id,"filename":"a3tal-dtc-"+code.lower()+"-exclusive.webp",
-                 "title":"A3tal "+code+" original diagnostic visual","alt":ALT[code],
+                 "title":"A3tal "+code+" interim diagnostic cover (temporary)","alt":ALT[code],
                  "image_base64":base64.b64encode(img).decode("ascii"),"convert_webp":False}
         # If an image upload has an uncertain response, never blindly repeat the mutation.
         if code in RECOVER_UPLOAD:
@@ -106,5 +106,5 @@ def main():
         if int(checked.get("featured_media") or 0)!=media_id:
             raise RuntimeError("Featured image persisted in mutation response but post endpoint not consistent for "+code)
         print("VERIFIED COVER",code,checked["link"],"image",media_id,"bytes",len(img),flush=True)
-    print("All batch 27 original diagnostic illustrations processed safely",flush=True)
+    print("All batch 28 interim diagnostic reference images processed safely",flush=True)
 if __name__=="__main__":main()
