@@ -2,7 +2,7 @@
 /**
  * Plugin Name: A3tal Direct Bridge
  * Description: Secure administrator-grade REST bridge for managing A3tal.com content, SEO, media, users, plugins, themes, settings and wp-content from trusted AI clients.
- * Version: 3.1.3
+ * Version: 3.2.0
  * Author: A3tal.com
  * Update URI: https://github.com/marwanile1-cyber/a3tal
  */
@@ -170,12 +170,112 @@ CSS;
         ]);
     }
 
+
+    const CONSOLE_KEYS_OPTION = 'a3tal_direct_bridge_scoped_keys';
+    const CONSOLE_CONFIG_OPTION = 'a3tal_direct_bridge_console_config';
+
+    private static function console_config() {
+        $saved = get_option(self::CONSOLE_CONFIG_OPTION, []);
+        return wp_parse_args(is_array($saved) ? $saved : [], [
+            'pause_scoped_writes' => false,
+            'require_revision' => false,
+        ]);
+    }
+
+    private static function console_keys() {
+        $keys = get_option(self::CONSOLE_KEYS_OPTION, []);
+        return is_array($keys) ? $keys : [];
+    }
+
+    private static function scope_allows($scope, WP_REST_Request $request) {
+        $route = (string) $request->get_route();
+        $method = strtoupper((string) $request->get_method());
+        $read_routes = [
+            '/a3tal-direct/v1/status',
+            '/a3tal-direct/v1/search-posts',
+        ];
+        if ($method === 'GET' && (in_array($route, $read_routes, true) || preg_match('#^/a3tal-direct/v1/post/\d+$#', $route))) {
+            return true;
+        }
+        if ($scope === 'admin') {
+            return true;
+        }
+        if ($method === 'POST' && in_array($scope, ['editorial', 'diagnostics'], true) &&
+            in_array($route, [
+                '/a3tal-direct/v1/create-post',
+                '/a3tal-direct/v1/update-post',
+                '/a3tal-direct/v1/publish-bundle',
+                '/a3tal-direct/v1/upload-image',
+                '/a3tal-direct/v1/upload-image-data',
+                '/a3tal-direct/v1/set-featured-image',
+                '/a3tal-direct/v1/insert-images',
+            ], true)) {
+            return true;
+        }
+        if ($scope === 'design' && $route === '/a3tal-direct/v1/admin') {
+            $data = $method === 'GET' ? $request->get_params() : $request->get_json_params();
+            $data = is_array($data) ? $data : [];
+            $op = sanitize_key((string) ($data['op'] ?? ''));
+            $file = trim((string) ($data['path'] ?? ''), '/');
+            return in_array($op, ['file_read', 'file_write'], true)
+                && $file === 'themes/a3tal-global/style.css'
+                && ($op === 'file_read' || ($method === 'POST'
+                    && !empty($data['expected_sha256'])
+                    && !empty($data['confirm']) && !empty($data['dangerous'])));
+        }
+        return false;
+    }
+
+    private static function scoped_access(WP_REST_Request $request, $provided) {
+        foreach (self::console_keys() as $item) {
+            if (empty($item['hash']) || empty($item['scope']) || !empty($item['revoked'])) {
+                continue;
+            }
+            if (!wp_check_password($provided, $item['hash'])) {
+                continue;
+            }
+            if (!self::scope_allows((string) $item['scope'], $request)) {
+                return new WP_Error('a3tal_scope_denied', 'This key has no permission for this operation.', ['status' => 403]);
+            }
+            $config = self::console_config();
+            $method = strtoupper((string) $request->get_method());
+            if ($method !== 'GET' && !empty($config['pause_scoped_writes'])) {
+                return new WP_Error('a3tal_scoped_writes_paused', 'Scoped key writes are paused in the bridge console.', ['status' => 423]);
+            }
+            $route = (string) $request->get_route();
+            if ($method !== 'GET' && !empty($config['require_revision'])
+                && in_array($route, ['/a3tal-direct/v1/update-post', '/a3tal-direct/v1/publish-bundle'], true)) {
+                $body = $request->get_json_params();
+                $body = is_array($body) ? $body : [];
+                $post_data = $route === '/a3tal-direct/v1/publish-bundle' ? ($body['post'] ?? []) : $body;
+                $post_id = (int) ($post_data['id'] ?? $post_data['post_id'] ?? 0);
+                $expected = (string) ($post_data['expected_modified_gmt'] ?? $body['expected_modified_gmt'] ?? '');
+                if ($post_id && $expected === '') {
+                    return new WP_Error('a3tal_revision_required', 'Read the post first and supply expected_modified_gmt.', ['status' => 428]);
+                }
+            }
+            return true;
+        }
+        return new WP_Error('a3tal_bad_key', 'Invalid API key.', ['status' => 403]);
+    }
+
+    private static function check_content_revision($post, $expected) {
+        $expected = (string) $expected;
+        if ($expected === '') {
+            return true;
+        }
+        $modified = get_post_modified_time('c', true, $post);
+        if (!is_string($modified) || !hash_equals($modified, $expected)) {
+            return new WP_Error('a3tal_post_conflict', 'Post has changed since it was read. Refresh and retry.', [
+                'status' => 409,
+                'current_modified_gmt' => $modified,
+            ]);
+        }
+        return true;
+    }
+
     public static function authorize(WP_REST_Request $request) {
         $stored = (string) get_option(self::OPTION_KEY, '');
-        if ($stored === '') {
-            return new WP_Error('a3tal_no_key', 'A3tal Direct Bridge API key is not configured.', ['status' => 403]);
-        }
-
         $provided = trim((string) $request->get_header('x-a3tal-key'));
         if ($provided === '') {
             $auth = trim((string) $request->get_header('authorization'));
@@ -184,18 +284,20 @@ CSS;
             }
         }
 
-        if ($provided === '' || !hash_equals($stored, $provided)) {
-            return new WP_Error('a3tal_bad_key', 'Invalid API key.', ['status' => 403]);
+        if ($provided !== '' && $stored !== '' && hash_equals($stored, $provided)) {
+            return true; // Preserve the existing GitHub Actions integration during migration.
         }
-
-        return true;
+        if ($provided === '') {
+            return new WP_Error('a3tal_bad_key', 'Missing API key.', ['status' => 403]);
+        }
+        return self::scoped_access($request, $provided);
     }
 
     public static function status() {
         return rest_ensure_response([
             'ok' => true,
             'plugin' => 'A3tal Direct Bridge',
-            'version' => '3.1.3',
+            'version' => '3.2.0',
             'site' => home_url('/'),
             'time_gmt' => current_time('mysql', true),
             'routes' => [
@@ -413,6 +515,10 @@ CSS;
             return new WP_Error('a3tal_not_found', 'Post not found.', ['status' => 404]);
         }
 
+        $revision_ok = self::check_content_revision($post, $data['expected_modified_gmt'] ?? '');
+        if (is_wp_error($revision_ok)) {
+            return $revision_ok;
+        }
         self::save_backup($id);
 
         $update = ['ID' => $id];
@@ -684,6 +790,10 @@ CSS;
             $post = get_post($post_id);
             if (!$post) {
                 return new WP_Error('a3tal_not_found', 'Target post not found.', ['status' => 404]);
+            }
+            $revision_ok = self::check_content_revision($post, $post_data['expected_modified_gmt'] ?? $data['expected_modified_gmt'] ?? '');
+            if (is_wp_error($revision_ok)) {
+                return $revision_ok;
             }
             self::save_backup($post_id);
 
@@ -2425,57 +2535,184 @@ CSS;
         );
     }
 
+
     public static function register_settings() {
-        register_setting('a3tal_direct_bridge', self::OPTION_KEY, [
-            'type' => 'string',
-            'sanitize_callback' => 'sanitize_text_field',
-            'default' => '',
-        ]);
+        // The legacy secret remains active for existing GitHub Actions, but is never echoed into HTML.
+        // New credentials are generated and managed exclusively by the nonce-protected console.
     }
 
     public static function settings_page() {
         if (!current_user_can('manage_options')) {
             return;
         }
-
-        if (isset($_POST['a3tal_generate_key']) && check_admin_referer('a3tal_generate_key_action')) {
-            update_option(self::OPTION_KEY, wp_generate_password(48, false, false), false);
-            echo '<div class="notice notice-success"><p>New API key generated.</p></div>';
+        $keys = self::console_keys();
+        $config = self::console_config();
+        $new_secret = '';
+        $notice = '';
+        $notice_error = false;
+        $action = isset($_POST['a3tal_bridge_action']) ? sanitize_key(wp_unslash($_POST['a3tal_bridge_action'])) : '';
+        if ($action !== '') {
+            check_admin_referer('a3tal_console_manage');
+            if ($action === 'create_key') {
+                $name = sanitize_text_field(wp_unslash($_POST['key_name'] ?? ''));
+                $scope = sanitize_key(wp_unslash($_POST['key_scope'] ?? 'editorial'));
+                if ($name === '' || strlen($name) > 80 || !in_array($scope, ['editorial', 'diagnostics', 'design', 'admin'], true)) {
+                    $notice_error = true;
+                    $notice = 'Enter a valid name and permission scope.';
+                } elseif (count($keys) >= 24) {
+                    $notice_error = true;
+                    $notice = 'Maximum 24 keys. Revoke unused credentials first.';
+                } else {
+                    $new_secret = 'a3k_' . wp_generate_password(56, false, false);
+                    $id = strtolower(wp_generate_password(14, false, false));
+                    $keys[] = [
+                        'id' => $id,
+                        'name' => $name,
+                        'scope' => $scope,
+                        'hash' => wp_hash_password($new_secret),
+                        'created_gmt' => gmdate('c'),
+                    ];
+                    update_option(self::CONSOLE_KEYS_OPTION, $keys, false);
+                    $notice = 'Key generated. Copy it now. It will not be shown again.';
+                    self::admin_audit('console_key_created', true, $scope . ':' . $name);
+                }
+            } elseif ($action === 'revoke_key') {
+                $id = sanitize_text_field(wp_unslash($_POST['key_id'] ?? ''));
+                $old_count = count($keys);
+                $keys = array_values(array_filter($keys, static function ($item) use ($id) {
+                    return !isset($item['id']) || !hash_equals((string) $item['id'], $id);
+                }));
+                if (count($keys) === $old_count) {
+                    $notice_error = true;
+                    $notice = 'Key was not found.';
+                } else {
+                    update_option(self::CONSOLE_KEYS_OPTION, $keys, false);
+                    self::admin_audit('console_key_revoked', true, $id);
+                    $notice = 'Key revoked immediately.';
+                }
+            } elseif ($action === 'save_settings') {
+                $config = [
+                    'pause_scoped_writes' => !empty($_POST['pause_scoped_writes']),
+                    'require_revision' => !empty($_POST['require_revision']),
+                ];
+                update_option(self::CONSOLE_CONFIG_OPTION, $config, false);
+                self::admin_audit('console_settings_updated', true);
+                $notice = 'Bridge safety settings saved.';
+            } else {
+                $notice_error = true;
+                $notice = 'Unknown action.';
+            }
         }
-
-        $key = (string) get_option(self::OPTION_KEY, '');
+        $legacy_active = (string) get_option(self::OPTION_KEY, '') !== '';
+        $scope_names = [
+            'editorial' => 'Articles / media / SEO',
+            'diagnostics' => 'DTC codes / media / articles',
+            'design' => 'Read and safely update the active theme CSS',
+            'admin' => 'Full bridge administrator access (high risk)',
+        ];
         ?>
-        <div class="wrap">
-            <h1>A3tal Direct Bridge</h1>
-            <p>Use this API key only in trusted clients. Never commit it to GitHub.</p>
-
-            <form method="post" action="options.php">
-                <?php settings_fields('a3tal_direct_bridge'); ?>
-                <table class="form-table">
-                    <tr>
-                        <th scope="row"><label for="<?php echo esc_attr(self::OPTION_KEY); ?>">API Key</label></th>
-                        <td>
-                            <input type="password" id="<?php echo esc_attr(self::OPTION_KEY); ?>" name="<?php echo esc_attr(self::OPTION_KEY); ?>" value="<?php echo esc_attr($key); ?>" class="regular-text" autocomplete="off">
-                            <p class="description">Header: <code>X-A3tal-Key: YOUR_KEY</code> or <code>Authorization: Bearer YOUR_KEY</code></p>
-                        </td>
-                    </tr>
+        <div class="wrap" style="max-width:1150px">
+            <h1>A3tal Direct Bridge <span style="font-size:14px;font-weight:400;color:#64748b">v3.2.0</span></h1>
+            <p>Manage trusted automation credentials and publishing safety for A3tal.com. All secrets remain on your server, never in GitHub source files.</p>
+            <?php if ($notice) : ?>
+                <div class="notice <?php echo $notice_error ? 'notice-error' : 'notice-success'; ?> is-dismissible"><p><?php echo esc_html($notice); ?></p></div>
+            <?php endif; ?>
+            <?php if ($new_secret) : ?>
+                <div class="notice notice-warning" style="padding:14px 18px;max-width:920px">
+                    <h2 style="margin-top:4px">New API key: copy before leaving this page</h2>
+                    <label for="a3tal-new-api-key"><strong>API key (shown once)</strong></label>
+                    <p style="display:flex;gap:8px;flex-wrap:wrap">
+                        <input id="a3tal-new-api-key" type="text" class="large-text code" style="flex:1;min-width:290px" value="<?php echo esc_attr($new_secret); ?>" readonly autocomplete="off" spellcheck="false" aria-label="New API key">
+                        <button type="button" class="button button-primary" id="a3tal-copy-api-key">Copy key</button>
+                    </p>
+                    <p id="a3tal-copy-feedback" aria-live="polite">Store it in GitHub Actions Secrets, never in a source file or screenshot.</p>
+                </div>
+                <script>
+                (function () {
+                    var button = document.getElementById('a3tal-copy-api-key');
+                    var input = document.getElementById('a3tal-new-api-key');
+                    var feedback = document.getElementById('a3tal-copy-feedback');
+                    button.addEventListener('click', async function () {
+                        try {
+                            if (navigator.clipboard && window.isSecureContext) {
+                                await navigator.clipboard.writeText(input.value);
+                            } else {
+                                input.focus(); input.select();
+                                if (!document.execCommand('copy')) { throw new Error('copy failed'); }
+                            }
+                            feedback.textContent = 'Copied successfully. Save it in a secure secret store.';
+                        } catch (e) {
+                            input.focus(); input.select();
+                            feedback.textContent = 'Automatic copy unavailable. Copy the selected key manually.';
+                        }
+                    });
+                }());
+                </script>
+            <?php endif; ?>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin:18px 0">
+                <div class="postbox" style="padding:18px;margin:0"><h2 style="margin:0 0 8px">REST API</h2><code style="overflow-wrap:anywhere"><?php echo esc_html(rest_url(self::NS . '/')); ?></code></div>
+                <div class="postbox" style="padding:18px;margin:0"><h2 style="margin:0 0 8px">Legacy GitHub credential</h2><strong><?php echo $legacy_active ? 'Active' : 'Not configured'; ?></strong><p>Hidden for safety. Existing workflows keep working during migration.</p></div>
+                <div class="postbox" style="padding:18px;margin:0"><h2 style="margin:0 0 8px">Independent API keys</h2><strong><?php echo esc_html((string) count($keys)); ?></strong><p>Each can be revoked without affecting the others.</p></div>
+            </div>
+            <div class="postbox" style="padding:18px">
+                <h2>Generate a new independent API key</h2>
+                <form method="post" autocomplete="off">
+                    <?php wp_nonce_field('a3tal_console_manage'); ?>
+                    <input type="hidden" name="a3tal_bridge_action" value="create_key">
+                    <p><label for="a3tal-key-name">Key name</label></p>
+                    <p><input id="a3tal-key-name" type="text" name="key_name" class="regular-text" placeholder="e.g. A3tal Articles" maxlength="80" required></p>
+                    <p><label for="a3tal-key-scope">Access scope</label></p>
+                    <p><select id="a3tal-key-scope" name="key_scope">
+                        <?php foreach ($scope_names as $scope => $label) : ?>
+                            <option value="<?php echo esc_attr($scope); ?>"><?php echo esc_html($label); ?></option>
+                        <?php endforeach; ?>
+                    </select></p>
+                    <p class="description">Full administrator keys can change plugins, themes and WordPress users. Create them only for trusted control workflows.</p>
+                    <?php submit_button('Generate and show API key', 'primary', 'submit', false); ?>
+                </form>
+            </div>
+            <div class="postbox" style="padding:18px">
+                <h2>Connected credentials</h2>
+                <table class="widefat striped">
+                    <thead><tr><th>Name</th><th>Permission</th><th>Created (UTC)</th><th>Action</th></tr></thead>
+                    <tbody>
+                    <?php if (!$keys) : ?><tr><td colspan="4">No new independent keys yet.</td></tr><?php endif; ?>
+                    <?php foreach ($keys as $item) : ?>
+                        <tr>
+                            <td><strong><?php echo esc_html($item['name'] ?? 'Unnamed'); ?></strong></td>
+                            <td><?php echo esc_html($scope_names[$item['scope'] ?? ''] ?? 'Unknown'); ?></td>
+                            <td><?php echo esc_html($item['created_gmt'] ?? ''); ?></td>
+                            <td><form method="post" onsubmit="return confirm('Revoke this key immediately?');">
+                                <?php wp_nonce_field('a3tal_console_manage'); ?>
+                                <input type="hidden" name="a3tal_bridge_action" value="revoke_key">
+                                <input type="hidden" name="key_id" value="<?php echo esc_attr($item['id'] ?? ''); ?>">
+                                <button type="submit" class="button button-secondary">Revoke</button>
+                            </form></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
                 </table>
-                <?php submit_button('Save API Key'); ?>
-            </form>
-
-            <hr>
-            <form method="post">
-                <?php wp_nonce_field('a3tal_generate_key_action'); ?>
-                <input type="hidden" name="a3tal_generate_key" value="1">
-                <?php submit_button('Generate New Random Key', 'secondary'); ?>
-            </form>
-
-            <p><strong>REST base:</strong> <code><?php echo esc_html(rest_url(self::NS . '/')); ?></code></p>
+                <p class="description">Keys are stored as password hashes. They cannot be read or recovered after the initial display.</p>
+            </div>
+            <div class="postbox" style="padding:18px">
+                <h2>Deployment and safety settings</h2>
+                <form method="post">
+                    <?php wp_nonce_field('a3tal_console_manage'); ?>
+                    <input type="hidden" name="a3tal_bridge_action" value="save_settings">
+                    <p><label><input type="checkbox" name="pause_scoped_writes" value="1" <?php checked(!empty($config['pause_scoped_writes'])); ?>> Pause writing through new keys (emergency switch). The legacy integration stays online.</label></p>
+                    <p><label><input type="checkbox" name="require_revision" value="1" <?php checked(!empty($config['require_revision'])); ?>> Require expected_modified_gmt when new keys update an existing article. Helps prevent overwriting parallel edits.</label></p>
+                    <p class="description">New content can still be created. The revision guard requires publishers to read the current post before updating it.</p>
+                    <?php submit_button('Save safety settings', 'secondary', 'submit', false); ?>
+                </form>
+            </div>
+            <p>Headers: <code>X-A3tal-Key: &lt;KEY&gt;</code> or <code>Authorization: Bearer &lt;KEY&gt;</code>. Use HTTPS only.</p>
+            <p><strong>Security boundary:</strong> WordPress and allowed wp-content changes only. This bridge does not provide hosting root access or unrestricted shell commands.</p>
         </div>
         <?php
     }
+
 }
 
 A3tal_Direct_Bridge::init();
 
-// Build package refresh: 3.1.0
+// Console and scoped credentials release: 3.2.0
