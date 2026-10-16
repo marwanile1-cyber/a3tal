@@ -72,7 +72,7 @@ def deploy(api,folder):
         actual=api.read(name)
         if actual['sha256'] != sha(state['sources'][name]):
             raise RuntimeError('Live hash mismatch: '+name)
-    print('CAR_GUIDE_DEPLOY_VERIFIED exact five source files read back correctly',flush=True)
+    print('CAR_GUIDE_DEPLOY_VERIFIED',len(FILES),'source files read back correctly',flush=True)
 
 def rollback(api,folder):
     state_file=folder/'snapshot.json'
