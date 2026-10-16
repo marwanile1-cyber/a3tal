@@ -10,7 +10,7 @@ assert [x.get("code") for x in items]==codes,"Ten approved codes or order change
 assert data.get("ready_for_auto_publish") is False,"Unsafe: release has not passed photographic/video QA"
 assert data.get("release_quality",{}).get("photographic_covers_manually_reviewed") is False
 orig=[]
-allow_video={"P0354":"JYvhzYA_Fe4","P0620":"VkuDmEwTxrM"}
+allow_video={"P0262":"KeuXbBVR6uk","P0354":"JYvhzYA_Fe4","P0620":"VkuDmEwTxrM","U0142":"ONWAExsFNeg"}
 for item in items:
     code=item["code"]
     assert item.get("source","").startswith("https://"),code+" missing technical reference"
