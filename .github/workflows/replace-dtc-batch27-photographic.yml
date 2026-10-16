@@ -65,3 +65,5 @@ jobs:
       - name: Independently audit featured and social images on every published article
         if: steps.assets.outputs.ready == 'true'
         run: python3 -u scripts/audit-dtc-og-images.py --batch 27
+
+# Operational recheck 2026-10-16: re-run idempotent approved batch27 photo and Yoast OG reconciliation.
