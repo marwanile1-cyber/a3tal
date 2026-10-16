@@ -1,0 +1,26 @@
+name: Link existing Chery car articles
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/link-chery-car-articles.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-theme
+  cancel-in-progress: false
+jobs:
+  link-existing:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate readback-aware and non-destructive script
+        run: |
+          python3 -m py_compile scripts/link-chery-existing-articles-20261016.py
+          grep -q 'CHERY_RELATED_LINK_CONFIRMED' scripts/link-chery-existing-articles-20261016.py
+      - name: Link current Chery records to existing published price articles
+        run: python3 -u scripts/link-chery-existing-articles-20261016.py
