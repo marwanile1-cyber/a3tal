@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/qa-car-price-guide-browser.yml'
+      - '.github/workflows/deploy-car-price-guide.yml'
       - 'theme-source/a3tal-global/car-price-trims.php'
       - 'scripts/qa-car-price-guide-browser.cjs'
   workflow_dispatch:
