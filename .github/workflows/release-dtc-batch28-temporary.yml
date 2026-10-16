@@ -1,0 +1,30 @@
+name: Release DTC batch28 with temporary photos (owner approved)
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/release-dtc-batch28-temporary.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  release-batch28:
+    runs-on: ubuntu-latest
+    timeout-minutes: 140
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3TAL_BATCH28_TEMP_RELEASE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare Python photo validator
+        run: python3 -m pip install --quiet Pillow
+      - name: Syntax and draft lint before any WordPress mutation
+        run: |
+          python3 -m py_compile scripts/release-dtc-batch28-temporary.py scripts/render-dtc-batch-28-art.py scripts/attach-dtc-batch-28-photos.py scripts/publish-dtc-original-batch-28.py scripts/repair-dtc-og-canary.py scripts/audit-dtc-og-images.py
+          python3 scripts/validate-dtc-batch28.py
+          python3 scripts/publish-dtc-original-batch-28.py --dry-run
+      - name: Publish only missing approved batch28 codes and attach ten interim photos
+        run: python3 -u scripts/release-dtc-batch28-temporary.py
