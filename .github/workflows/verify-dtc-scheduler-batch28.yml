@@ -1,0 +1,24 @@
+name: Verify DTC scheduler advances past released batch28 safely
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/verify-dtc-scheduler-batch28.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  read-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile scheduler without mutating WordPress
+        run: python3 -m py_compile scripts/scheduled-dtc-reviewed-queue.py
+      - name: Verify existing batch28 and maintain future release holds
+        run: |
+          set -euo pipefail
+          python3 -u scripts/scheduled-dtc-reviewed-queue.py --check-only | tee /tmp/check.log
+          grep -q 'AUTO_DTC_QUEUE ALREADY_PUBLISHED_WITH_COVERS 28 Historical release verified' /tmp/check.log
+          grep -q 'AUTO_DTC_QUEUE ALL_REVIEWED_BATCHES_COMPLETE' /tmp/check.log
+          echo "SCHEDULER_BATCH28_RECONCILED_WITHOUT_PUBLISHING"
