@@ -10,6 +10,11 @@ $price=function_exists('a3cp_vehicle_price')?a3cp_vehicle_price():'';
 $source=a3cp_field('_a3_source_url');
 $checked=a3cp_field('_a3_source_checked_at');
 $related=a3g_related_post_ids();
+if (!$is_moto) {
+  require_once get_template_directory().'/car-price-trims.php';
+  wp_enqueue_style('a3tal-car-price-trims',get_template_directory_uri().'/car-price-trims.css',[], '1.0.0');
+}
+$has_trims = !$is_moto && function_exists('a3tal_car_trim_rows') && count(a3tal_car_trim_rows(get_the_ID()))>0;
 ?>
 <?php get_header(); while(have_posts()):the_post(); ?>
 <section class="g-vehicle-hero">
@@ -25,7 +30,7 @@ $related=a3g_related_post_ids();
   </div>
 </section>
 
-<nav class="g-vehicle-tabs"><div class="g-wrap"><a href="#overview">نظرة عامة</a><a href="#specs">المواصفات</a><a href="#details">التفاصيل</a><?php if($related): ?><a href="#related">مقالات مرتبطة</a><?php endif; ?></div></nav>
+<nav class="g-vehicle-tabs"><div class="g-wrap"><a href="#overview">نظرة عامة</a><a href="#specs">المواصفات</a><?php if($has_trims): ?><a href="#trims">أسعار الفئات</a><?php endif; ?><a href="#details">التفاصيل</a><?php if($related): ?><a href="#related">مقالات مرتبطة</a><?php endif; ?></div></nav>
 
 <main class="g-wrap g-vehicle-main">
   <section id="overview" class="g-vehicle-panel">
@@ -62,6 +67,8 @@ $related=a3g_related_post_ids();
     </div>
     <?php if($source): ?><div class="g-source-note"><span>المصدر المرجعي للبيانات</span><a href="<?php echo esc_url($source); ?>" rel="nofollow noopener" target="_blank">فتح المصدر</a></div><?php endif; ?>
   </section>
+
+  <?php if ($has_trims) a3tal_car_render_trims(get_the_ID()); ?>
 
   <section id="details" class="g-vehicle-panel g-entry"><?php the_content(); ?></section>
 
