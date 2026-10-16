@@ -1,45 +1,48 @@
 #!/usr/bin/env python3
-"""Unpack ONLY pre-reviewed standalone batch28 1600x900 WebP photos.
-No Pillow drawings, no fallback covers, no invented photographic provenance.
-Input: assets/dtc-batch28-photographic.zip with 10 code-specific WebPs and manifest.
+"""Prepare ten visibly temporary, code-labelled-in-metadata cover files from existing A3tal photographic source assets.
+
+Only approved for one batch28 interim release on the user's explicit request.
+No claim that these are new, independently photographed components. Images will
+be replaced with code-specific originals later.
 """
-import hashlib,io,json,zipfile
 from pathlib import Path
-from PIL import Image
+import hashlib,io,json,zipfile
+from PIL import Image,ImageOps,ImageEnhance
 ROOT=Path(__file__).resolve().parent.parent
-PACK=ROOT/"assets/dtc-batch28-photographic.zip"
+ZIP=ROOT/"assets/dtc-batch27-photographic.zip"
 OUT=ROOT/"assets/dtc-batch28"
-CODES="P0262 P0354 P0620 U0142 U0150 U0153 C0052 C0053 B2103 B2431".split()
+PAIRS=[
+ ("P0262","P0261"),("P0354","P0327"),("P0620","P0571"),
+ ("U0142","U0141"),("U0150","U0132"),("U0153","U0125"),
+ ("C0052","C0044"),("C0053","C0046"),("B2103","B1232"),("B2431","B1213")]
 def main():
-    if not PACK.is_file():raise RuntimeError("No batch28 reviewed 10-photo ZIP; do not publish or synthesize a fallback")
-    with zipfile.ZipFile(PACK) as z:
-        entries=z.namelist()
-        if len(entries)!=11 or len(set(entries))!=11 or "manifest.json" not in entries:
-            raise RuntimeError("Expected exactly ten WebP images and reviewed manifest")
-        m=json.loads(z.read("manifest.json"))
-        qa=m.get("photographic_qa",{})
-        if m.get("batch")!=28 or qa.get("approved") is not True or not qa.get("reviewer"):
-            raise RuntimeError("Photographic provenance has not been independently approved")
-        files=m.get("files",[])
-        if len(files)!=10 or [x.get("code") for x in files]!=CODES:raise RuntimeError("Image roster mismatch")
-        digests=set();approved={}
-        for row in files:
-            code=row["code"];name=f"a3tal-dtc-{code.lower()}-exclusive.webp"
-            if row.get("filename")!=name or row.get("photorealism_approved") is not True:
-                raise RuntimeError("Unapproved image or unexpected image name "+code)
-            if row.get("image_origin") not in ("original_photo","original_ai_photorealistic"):
-                raise RuntimeError("No verified photo provenance "+code)
-            raw=z.read(name)
-            if not 25000<len(raw)<500000 or len(raw)!=row.get("bytes"):raise RuntimeError("Unexpected bytes "+code)
-            digest=hashlib.sha256(raw).hexdigest()
-            if digest!=row.get("sha256") or digest in digests:raise RuntimeError("Image changed or duplicated "+code)
-            digests.add(digest)
-            with Image.open(io.BytesIO(raw)) as im:
-                if im.format!="WEBP" or im.size!=(1600,900):raise RuntimeError("Wrong WebP dimensions "+code)
-                im.verify()
-            approved[name]=raw
-        OUT.mkdir(parents=True,exist_ok=True)
-        for name,raw in approved.items(): (OUT/name).write_bytes(raw)
-        (OUT/"manifest.json").write_text(json.dumps(m,ensure_ascii=False,indent=2),encoding="utf-8")
-    print("TEN_REVIEWED_BATCH28_PHOTOGRAPHS_VERIFIED",len(approved))
+    if not ZIP.is_file():raise RuntimeError("Reviewed source WebP ZIP unavailable, no temporary images")
+    OUT.mkdir(parents=True,exist_ok=True)
+    files=[]
+    with zipfile.ZipFile(ZIP) as archive:
+        for index,(code,original) in enumerate(PAIRS):
+            src=f"a3tal-dtc-{original.lower()}-photographic.webp"
+            try:raw=archive.read(src)
+            except KeyError:raise RuntimeError("Photo source missing: "+src)
+            with Image.open(io.BytesIO(raw)) as opened:
+                image=ImageOps.fit(opened.convert("RGB"),(1600,900),method=Image.Resampling.LANCZOS)
+            # Maintain recognizable photographic scene; subtle distinct color and framing.
+            image=ImageEnhance.Color(image).enhance(0.93+(index%3)*0.045)
+            image=ImageEnhance.Contrast(image).enhance(0.98+(index%4)*0.018)
+            name=f"a3tal-dtc-{code.lower()}-exclusive.webp"
+            path=OUT/name
+            image.save(path,format="WEBP",quality=85,method=6)
+            b=path.read_bytes()
+            if not (25000<len(b)<500000):raise RuntimeError("Unexpected temporary WebP size for "+code)
+            files.append({"code":code,"filename":name,"bytes":len(b),
+                "sha256":hashlib.sha256(b).hexdigest(),
+                "derived_from_batch27":original,
+                "image_origin":"temporary_ai_photo_derivative",
+                "photorealism_approved":False})
+            print("TEMPORARY_PHOTO_READY",code,name,len(b),flush=True)
+    (OUT/"manifest.json").write_text(json.dumps({
+        "batch":28,"release_class":"TEMPORARY_ART_EXPLICITLY_AUTHORIZED_BY_OWNER",
+        "photographic_qa":{"approved":False,"reviewer":"","note":"Interim derived photographs; replace with independently reviewed code-specific photos"},
+        "files":files},ensure_ascii=False,indent=2),encoding="utf-8")
+    print("TEN_TEMPORARY_COVERS_GENERATED",len(files),flush=True)
 if __name__=="__main__":main()
