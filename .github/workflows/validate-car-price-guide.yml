@@ -9,6 +9,8 @@ on:
       - 'theme-source/a3tal-global/archive-a3_car.php'
       - 'scripts/deploy-car-price-guide.py'
       - 'theme-source/a3tal-global/platform-single-vehicle.php'
+      - 'theme-source/a3tal-global/dtc-model-links.php'
+      - 'theme-source/a3tal-global/dtc-model-links.css'
       - 'theme-source/a3tal-global/car-price-trims.php'
       - 'theme-source/a3tal-global/car-price-trims.css'
       - 'scripts/audit-car-prices-all.py'
@@ -52,6 +54,13 @@ jobs:
           assert "_a3_trim_prices_v1" in trim and "count($rows)>24" in trim
           assert "a3tal_car_render_trims" in single
           assert "if (!$is_moto)" in single
+          assert 'id="car-explore"' in single
+          assert 'get_post_status($guide_id)' in single and 'get_permalink($guide' in single
+          assert 'a3g_gg_diagnostics_section((int)get_the_ID())' in single
+          links=Path('theme-source/a3tal-global/dtc-model-links.php').read_text()
+          assert 'gg-diagnostic-paths' in links and 'a3g_cat_link(8)' in links
+          assert 'a3g_gg_guide_entries(12)' not in links
+          assert "return $content.a3g_gg_diagnostics_section($id)" not in links
           assert "platform-single-vehicle.php" in Path('scripts/deploy-car-price-guide.py').read_text()
           assert "car-price-trims.php" in Path('scripts/deploy-car-price-guide.py').read_text()
           assert 'name="car_year"' in p

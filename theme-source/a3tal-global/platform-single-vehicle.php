@@ -10,6 +10,21 @@ $price=function_exists('a3cp_vehicle_price')?a3cp_vehicle_price():'';
 $source=a3cp_field('_a3_source_url');
 $checked=a3cp_field('_a3_source_checked_at');
 $related=a3g_related_post_ids();
+// The model hub links only to explicitly curated, published editorial records.
+// A price article about another model is never invented from a brand-level search.
+$car_guides = [];
+if (!$is_moto) {
+  foreach (array_unique(array_map('absint',$related)) as $guide_id) {
+    if (!$guide_id || get_post_type($guide_id)!=='post' || get_post_status($guide_id)!=='publish') continue;
+    $guide_label = 'شرح مرتبط بالموديل';
+    if (has_category(374,$guide_id)) $guide_label = 'الأسعار والفئات';
+    elseif (has_category(21,$guide_id)) $guide_label = 'مقارنة قبل الشراء';
+    elseif (has_category(22,$guide_id)) $guide_label = 'مراجعة وتجربة';
+    elseif (has_category(3,$guide_id)) $guide_label = 'الصيانة';
+    $car_guides[] = ['id'=>$guide_id,'label'=>$guide_label];
+    if (count($car_guides)===4) break;
+  }
+}
 if (!$is_moto) {
   require_once get_template_directory().'/car-price-trims.php';
   wp_enqueue_style('a3tal-car-price-trims',get_template_directory_uri().'/car-price-trims.css',[], '1.0.0');
@@ -30,7 +45,7 @@ $has_trims = !$is_moto && function_exists('a3tal_car_trim_rows') && count(a3tal_
   </div>
 </section>
 
-<nav class="g-vehicle-tabs"><div class="g-wrap"><a href="#overview">نظرة عامة</a><a href="#specs">المواصفات</a><?php if($has_trims): ?><a href="#trims">أسعار الفئات</a><?php endif; ?><a href="#details">التفاصيل</a><?php if($related): ?><a href="#related">مقالات مرتبطة</a><?php endif; ?></div></nav>
+<nav class="g-vehicle-tabs" aria-label="الأقسام داخل صفحة السيارة"><div class="g-wrap"><a href="#overview">نظرة عامة</a><a href="#specs">المواصفات</a><?php if($has_trims): ?><a href="#trims">أسعار الفئات</a><?php endif; ?><?php if(!$is_moto): ?><a href="#car-explore">كل ما يخص عربيتك</a><?php endif; ?><a href="#details">التفاصيل</a><?php if(!$is_moto && function_exists('a3g_gg_diagnostics_section')): ?><a href="#a3tal-vehicle-diagnostics">تشخيص الأعطال</a><?php endif; ?><?php if($is_moto && $related): ?><a href="#related">مقالات مرتبطة</a><?php endif; ?></div></nav>
 
 <main class="g-wrap g-vehicle-main">
   <section id="overview" class="g-vehicle-panel">
@@ -70,9 +85,34 @@ $has_trims = !$is_moto && function_exists('a3tal_car_trim_rows') && count(a3tal_
 
   <?php if ($has_trims) a3tal_car_render_trims(get_the_ID()); ?>
 
+  <?php if (!$is_moto): ?>
+  <section class="g-vehicle-panel cg-model-journey" id="car-explore" aria-labelledby="cg-model-journey-title">
+    <div class="g-section-head"><div><span>دليل الموديل</span><h2 id="cg-model-journey-title">كل ما يخص <?php echo esc_html(get_the_title()); ?> في مكان واحد</h2></div></div>
+    <p class="cg-model-journey-intro">اختار المعلومة التي تحتاجها الآن. الروابط التالية لمقالات مرتبطة بهذا الموديل من قاعدة بيانات أعطال، وليست مقالات عشوائية عن نفس الماركة.</p>
+    <div class="cg-model-journey-grid">
+      <a href="#specs" class="cg-model-journey-card"><span class="cg-model-journey-step">01 · داخل الصفحة</span><strong>المواصفات الفنية</strong><small>المحرك والفتيس والتجهيزات المسجلة</small><span class="cg-model-journey-arrow" aria-hidden="true">←</span></a>
+      <?php if ($has_trims): ?><a href="#trims" class="cg-model-journey-card"><span class="cg-model-journey-step">02 · داخل الصفحة</span><strong>أسعار الفئات</strong><small>الفروق السعرية الموثقة لهذه السيارة</small><span class="cg-model-journey-arrow" aria-hidden="true">←</span></a><?php endif; ?>
+      <?php foreach ($car_guides as $guide): ?>
+        <a class="cg-model-journey-card" href="<?php echo esc_url(get_permalink($guide['id'])); ?>">
+          <span class="cg-model-journey-step"><?php echo esc_html($guide['label']); ?></span>
+          <strong><?php echo esc_html(get_the_title($guide['id'])); ?></strong>
+          <small>اقرأ التفاصيل الكاملة الخاصة بهذا الموديل</small>
+          <span class="cg-model-journey-arrow" aria-hidden="true">←</span>
+        </a>
+      <?php endforeach; ?>
+      <?php if (function_exists('a3g_gg_diagnostics_section')): ?>
+        <a href="#a3tal-vehicle-diagnostics" class="cg-model-journey-card cg-model-journey-diagnostics"><span class="cg-model-journey-step">بعد الشراء · عند ظهور عطل</span><strong>تشخيص الأعطال وأكواد OBD</strong><small>اعرف ما هو موثق لهذا الموديل وما هو شرح عام فقط</small><span class="cg-model-journey-arrow" aria-hidden="true">←</span></a>
+      <?php endif; ?>
+    </div>
+    <?php if (!$car_guides): ?><p class="cg-model-journey-empty">لم تُنشر بعد مقالات متخصصة مرتبطة بهذا الموديل. سنعرضها هنا بعد التحقق منها بدل اقتراح روابط غير دقيقة.</p><?php endif; ?>
+  </section>
+  <?php endif; ?>
+
   <section id="details" class="g-vehicle-panel g-entry"><?php the_content(); ?></section>
 
-  <?php if($related): $rq=new WP_Query(['post_type'=>'post','post_status'=>'publish','post__in'=>$related,'orderby'=>'post__in','posts_per_page'=>12]); if($rq->have_posts()): ?>
+  <?php if (!$is_moto && function_exists('a3g_gg_diagnostics_section')) echo a3g_gg_diagnostics_section((int)get_the_ID()); ?>
+
+  <?php if($is_moto && $related): $rq=new WP_Query(['post_type'=>'post','post_status'=>'publish','post__in'=>$related,'orderby'=>'post__in','posts_per_page'=>12]); if($rq->have_posts()): ?>
   <section id="related" class="g-vehicle-panel">
     <div class="g-section-head"><div><span>من أعطال.كوم</span><h2>مقالات مرتبطة</h2></div></div>
     <div class="g-news-grid"><?php while($rq->have_posts()):$rq->the_post();a3g_card();endwhile;wp_reset_postdata(); ?></div>

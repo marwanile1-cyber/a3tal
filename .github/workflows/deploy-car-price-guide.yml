@@ -71,7 +71,7 @@ jobs:
             '/cars/jac-js2-2027-egypt/':['cg-trim-panel','Smart'],
             '/cars/?brand=kia&car_year=2027':['cg-guide','car_year','K4','Seltos'],
             '/cars/?brand=kia&car_search=Kia&car_year=2027':['cg-guide','car_year','K4','Seltos'],
-            '/cars/kia-k4-2027-egypt/':['كيا','K4'],
+            '/cars/kia-k4-2027-egypt/':['كيا','K4','id="car-explore"','kia-k4-2027-egypt-prices-engines','a3tal-vehicle-diagnostics'],
             '/dtc/':['dtc-codes','مكتبة'],
             '/motorcycles/':['الموتوسيكلات'],
             '/':['كل ما يخص عالم السيارات'],

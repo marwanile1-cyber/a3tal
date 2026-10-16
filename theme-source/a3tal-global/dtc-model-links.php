@@ -93,22 +93,21 @@ function a3g_gg_diagnostics_section(int $vehicle_id): string {
       <?php else: ?>
         <p class="gg-related-note">لم نتحقق بعد من أعطال مميزة لهذا الجيل والمحرك؛ لذلك لا نعرض ادعاءات غير موثقة.</p>
       <?php endif; ?>
-      <h3>ابدأ من شروحات الأكواد العامة المنشورة</h3>
-      <div class="gg-related-grid">
-        <?php foreach(a3g_gg_guide_entries(12) as $entry): ?>
-        <a href="<?php echo esc_url($entry['url']);?>"><b dir="ltr"><?php echo esc_html($entry['code']);?></b><span><?php echo esc_html(wp_trim_words($entry['title'],10,'…'));?></span></a>
-        <?php endforeach;?>
+      <div class="gg-diagnostic-paths" aria-label="اختر طريقة التشخيص">
+        <a href="<?php echo esc_url((get_post_type_archive_link('a3_dtc') ?: home_url('/dtc/')).'#dtc-codes'); ?>">
+          <strong>معاك كود من جهاز الفحص؟</strong>
+          <span>ابحث عن الكود الفعلي وابدأ خطوات التشخيص، دون افتراض أنه شائع في هذا الموديل.</span>
+          <b aria-hidden="true">←</b>
+        </a>
+        <a href="<?php echo esc_url(a3g_cat_link(8)); ?>">
+          <strong>العربية فيها عرض ومفيش كود؟</strong>
+          <span>ابدأ من دليل الأعراض والفحص الميكانيكي والكهربائي العام.</span>
+          <b aria-hidden="true">←</b>
+        </a>
       </div>
-      <a class="gg-related-all" href="<?php echo esc_url(get_post_type_archive_link('a3_dtc') ?: home_url('/dtc/')); ?>">تصفح جميع أكواد الأعطال وابحث بكود سيارتك ←</a>
     </section>
     <?php return (string)ob_get_clean();
 }
-add_filter('the_content',static function($content){
-    if (!is_singular('a3_car') || !in_the_loop() || !is_main_query()) return $content;
-    $id = (int)get_the_ID();
-    return $content.a3g_gg_diagnostics_section($id);
-},22);
-
 add_filter('the_content',static function($content) {
     if (!is_singular('a3_dtc') || !in_the_loop() || !is_main_query())return $content;
     $code = function_exists('a3g_dtc_current_code')?a3g_dtc_current_code(get_the_ID()):'';
