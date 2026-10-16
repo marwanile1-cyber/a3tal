@@ -63,10 +63,10 @@ async function verifyTrimTables(browser){
   const context=await browser.newContext({viewport:{width:390,height:844},locale:'ar-EG'});
   const page=await context.newPage();
   for(const [slug,names,prices] of [
-    ['skoda-octavia-2027-egypt',['Loft','Lounge','Suite'],['1','825','000']],
-    ['mazda-3-2027-egypt',['Highline سيدان','Highline هاتشباك'],['1','609','619']],
-    ['suzuki-alto-2027-egypt',['مانيوال'],['535']],
-    ['jac-js2-2027-egypt',['Smart'],['775']]
+    ['skoda-octavia-2027-egypt',['Loft','Lounge','Suite'],[1825000,2050000,2250000]],
+    ['mazda-3-2027-egypt',['Highline سيدان','Highline هاتشباك'],[1609000,1619000]],
+    ['suzuki-alto-2027-egypt',['مانيوال'],[535000]],
+    ['jac-js2-2027-egypt',['Smart'],[775000]]
   ]){
     const res=await page.goto(BASE+'/cars/'+slug+'/',{waitUntil:'domcontentloaded',timeout:60000});
     if(!res||res.status()!==200)throw Error('Car URL changed or failed '+slug);
@@ -74,7 +74,12 @@ async function verifyTrimTables(browser){
     await region.waitFor({timeout:20000});
     const txt=await region.innerText();
     for(const name of names)if(!txt.includes(name))throw Error('Missing verified trim '+slug+' '+name);
-    for(const price of prices)if(!txt.includes(price))throw Error('Missing verified price segment '+slug+' '+price);
+    const shown=await page.locator('#trims tbody tr .cg-trim-price').allInnerTexts();
+    const normalized=shown.map(t=>Number(t.replace(/[\u0660-\u0669\u06f0-\u06f9]/g,c=>{
+      const code=c.charCodeAt(0);return String(code>=0x06f0?code-0x06f0:code-0x0660);
+    }).replace(/[^0-9]/g,'')));
+    if(JSON.stringify(normalized)!==JSON.stringify(prices))
+      throw Error('Trim prices not exact for '+slug+' '+JSON.stringify(normalized));
     const headers=await page.locator('#trims .cg-trim-table thead th').count();
     if(headers!==3)throw Error('Invalid trim table structure '+slug);
     const scroll=await page.evaluate(()=>{
