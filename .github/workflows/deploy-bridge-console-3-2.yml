@@ -33,7 +33,7 @@ jobs:
         run: |
           set -euo pipefail
           curl --fail --silent --show-error --retry 3 --retry-all-errors --connect-timeout 15 --max-time 60 \
-            -H "X-A3tal-Key: $A3TAL_API_KEY" "$BASE_URL/status" > /tmp/a3tal-before.json
+            -H "X-A3tal-Key: $A3TAL_API_KEY" "$BASE_URL/status?bridge_verify=$(date +%s%N)" > /tmp/a3tal-before.json
           jq -e '.ok == true and .plugin == "A3tal Direct Bridge"' /tmp/a3tal-before.json >/dev/null
           echo "Live version before: $(jq -r '.version' /tmp/a3tal-before.json)"
       - name: Upgrade live plugin from checksum-verified repository source
@@ -76,7 +76,7 @@ jobs:
           set -euo pipefail
           for attempt in $(seq 1 15); do
             curl --fail --silent --show-error --retry 2 --retry-all-errors --connect-timeout 15 --max-time 60 \
-              -H "X-A3tal-Key: $A3TAL_API_KEY" "$BASE_URL/status" > /tmp/a3tal-after.json
+              -H "X-A3tal-Key: $A3TAL_API_KEY" "$BASE_URL/status?bridge_verify=$(date +%s%N)" > /tmp/a3tal-after.json
             ACTIVE="$(jq -r '.version // "unknown"' /tmp/a3tal-after.json)"
             echo "Attempt $attempt: bridge REST runtime version $ACTIVE"
             if [[ "$ACTIVE" == "3.3.0" ]]; then
