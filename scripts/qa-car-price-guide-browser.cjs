@@ -8,12 +8,35 @@ const BASE='https://a3tal.com';
 const DIR='car-visual-qa-output';
 fs.mkdirSync(DIR,{recursive:true});
 const summary=[];
+const transient=new Set([429,500,502,503,504,520,522,524]);
+async function getWithRetry(page,url,tag){
+  let last=null;
+  for(let n=0;n<4;n++){
+    const sep=url.indexOf('?')<0?'?':'&';
+    const target=url+sep+'qa_retry='+n;
+    try{
+      const response=await page.goto(target,{waitUntil:'domcontentloaded',timeout:65000});
+      if(response&&response.status()===200){
+        if(n) console.log('ORIGIN_RETRY_RECOVERED',tag,'attempt',n+1);
+        return response;
+      }
+      last='status '+(response?response.status():'no-response');
+      if(response&&!transient.has(response.status()))break;
+    }catch(error){
+      last=String(error.message||error).slice(0,240);
+    }
+    console.log('ORIGIN_TRANSIENT_RETRY',tag,'attempt',n+1,last);
+    if(n<3)await new Promise(resolve=>setTimeout(resolve,2500*(n+1)));
+  }
+  throw Error('Origin unavailable after bounded retries: '+tag+' '+last);
+}
+
 async function screenshotAndTest(browser,w,h,name) {
   const ctx=await browser.newContext({viewport:{width:w,height:h},deviceScaleFactor:1,locale:'ar-EG',colorScheme:'light'});
   const page=await ctx.newPage();
   const errors=[];
   page.on('pageerror',e=>errors.push(String(e.message||e)));
-  const response=await page.goto(BASE+'/cars/?qa_viewport='+w,{waitUntil:'domcontentloaded',timeout:60000});
+  const response=await getWithRetry(page,BASE+'/cars/?qa_viewport='+w,name);
   if(!response || response.status()!==200)throw Error(name+' status '+(response&&response.status()));
   await page.waitForSelector('.cg-car-card',{timeout:30000});
   await page.waitForTimeout(1700);
@@ -46,7 +69,7 @@ async function filters(browser){
     ['/cars/?brand=kia&car_year=2027','K4'],
     ['/cars/?car_search=Kia&car_year=2027&brand=kia','Seltos'],
   ]){
-    const response=await page.goto(BASE+url,{waitUntil:'domcontentloaded',timeout:60000});
+    const response=await getWithRetry(page,BASE+url,'filter '+url);
     if(!response||response.status()!==200)throw Error('Bad filter response '+url+' '+(response&&response.status()));
     await page.waitForSelector('.cg-car-card',{timeout:30000});
     if(!await page.locator('.cg-car-card').first().innerText().then(x=>x.includes(expected)).catch(()=>false)){
@@ -68,7 +91,7 @@ async function verifyTrimTables(browser){
     ['suzuki-alto-2027-egypt',['مانيوال'],[535000]],
     ['jac-js2-2027-egypt',['Smart'],[775000]]
   ]){
-    const res=await page.goto(BASE+'/cars/'+slug+'/',{waitUntil:'domcontentloaded',timeout:60000});
+    const res=await getWithRetry(page,BASE+'/cars/'+slug+'/','trim '+slug);
     if(!res||res.status()!==200)throw Error('Car URL changed or failed '+slug);
     const region=page.locator('#trims.cg-trim-panel');
     await region.waitFor({timeout:20000});
