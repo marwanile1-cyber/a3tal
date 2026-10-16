@@ -1,0 +1,64 @@
+name: Deploy A3tal Bridge Console 3.2.0
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/deploy-bridge-console-3-2.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: a3tal-live-bridge-upgrade
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      BASE_URL: https://a3tal.com/wp-json/a3tal-direct/v1
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate PHP and existing secret
+        shell: bash
+        run: |
+          set -euo pipefail
+          php -l a3tal-direct-bridge.php
+          test -n "$A3TAL_API_KEY" || { echo "Missing A3TAL_API_KEY secret"; exit 1; }
+      - name: Check existing live authenticated bridge
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --retry 3 --retry-all-errors --connect-timeout 15 --max-time 60 \
+            -H "X-A3tal-Key: $A3TAL_API_KEY" "$BASE_URL/status" > /tmp/a3tal-before.json
+          jq -e '.ok == true and .plugin == "A3tal Direct Bridge"' /tmp/a3tal-before.json >/dev/null
+          echo "Live version before: $(jq -r '.version' /tmp/a3tal-before.json)"
+      - name: Upgrade live plugin from checksum-verified repository source
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXPECTED="$(sha256sum a3tal-direct-bridge.php | awk '{print $1}')"
+          jq -n --arg expected "$EXPECTED" '{op:"bridge_self_update",confirm:true,dangerous:true,expected_sha256:$expected}' > /tmp/a3tal-upgrade-request.json
+          CODE="$(curl --silent --show-error --retry 3 --retry-all-errors --connect-timeout 20 --max-time 180 \
+            -o /tmp/a3tal-upgrade-response.json -w '%{http_code}' \
+            -X POST -H "X-A3tal-Key: $A3TAL_API_KEY" -H "Content-Type: application/json" \
+            --data-binary @/tmp/a3tal-upgrade-request.json "$BASE_URL/admin")"
+          echo "Bridge update HTTP: $CODE"
+          if [[ "$CODE" -lt 200 || "$CODE" -ge 300 ]]; then
+            jq '{code,message,data}' /tmp/a3tal-upgrade-response.json || true
+            exit 1
+          fi
+          jq -e '.ok == true and .result.updated == true and .result.version == "3.2.0"' /tmp/a3tal-upgrade-response.json >/dev/null
+          echo "Checksum-verified upgrade applied with server-side rollback copy."
+      - name: Verify live 3.2.0 and live post reads
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --retry 3 --retry-all-errors --connect-timeout 15 --max-time 75 \
+            -H "X-A3tal-Key: $A3TAL_API_KEY" "$BASE_URL/status" > /tmp/a3tal-after.json
+          jq -e '.ok == true and .version == "3.2.0"' /tmp/a3tal-after.json >/dev/null
+          echo "Live version after: $(jq -r '.version' /tmp/a3tal-after.json)"
+          echo "Bridge upgrade verified."
