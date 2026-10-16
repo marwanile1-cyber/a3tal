@@ -1,0 +1,32 @@
+/* A3tal search UX: intent-aware hierarchy without changing the search query. */
+.si-hero{direction:rtl;background:linear-gradient(130deg,#0b1d32,#12324e);padding:48px 0 42px;color:#fff}
+.si-eyebrow{display:block;color:#80c9ff;font-size:11px;letter-spacing:.12em;font-weight:800;margin-bottom:11px}
+.si-hero h1{font-size:clamp(25px,4vw,40px);line-height:1.45;color:#fff;margin:0 0 11px;overflow-wrap:anywhere}
+.si-hero p{max-width:760px;color:#d4e2f0;font-size:14px;line-height:1.95;margin:0 0 20px}
+.si-search-form{display:flex;align-items:center;gap:9px;max-width:760px;background:#fff;padding:8px;border-radius:14px;box-shadow:0 8px 20px #020c1840}
+.si-search-form label{font-size:12px;color:#243f58;padding:0 9px;white-space:nowrap;font-weight:800}
+.si-search-form input{flex:1;min-width:0;border:0;background:#fff;color:#182c3e;padding:12px 9px;font-size:14px;outline-offset:2px}
+.si-search-form button{padding:12px 25px;border:0;border-radius:9px;background:#df542d;color:#fff;font-size:13px;font-weight:800;cursor:pointer}
+.si-search-form button:hover,.si-search-form button:focus-visible{background:#b63b1e}
+.si-layout{direction:rtl;padding-top:34px;padding-bottom:65px}
+.si-results,.si-next{margin:0 0 38px}
+.si-heading{margin-bottom:17px}
+.si-heading>span{font-size:11px;color:#9d5d3d;font-weight:900}
+.si-heading h2{font-size:clamp(21px,2.6vw,29px);margin:6px 0 6px;color:#19334c}
+.si-heading p{color:#596c7e;font-size:13px;line-height:1.85;margin:0}
+.si-primary-grid,.si-secondary-grid{margin:0!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}
+.si-primary-grid>.g-card,.si-secondary-grid>.g-card{min-width:0}
+.si-next{padding:25px;border-radius:18px;background:#f4f8fc;border:1px solid #dae5ed}
+.si-next-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.si-next-link{position:relative;min-height:105px;padding:20px 20px 20px 45px;border:1px solid #cbdce9;border-radius:12px;display:flex;flex-direction:column;gap:9px;background:#fff;text-decoration:none!important;color:#153957!important}
+.si-next-link:hover,.si-next-link:focus-visible{border-color:#70a8c8;background:#fbfdff}
+.si-next-link strong{font-size:15px;line-height:1.5}
+.si-next-link small{font-size:12px;color:#657a90;line-height:1.7}
+.si-next-link>span{position:absolute;left:16px;bottom:17px;font-size:22px;color:#237da6}
+.si-empty{border:1px solid #e1e9f0;padding:25px;border-radius:14px;margin-bottom:26px}
+.si-empty h2{font-size:21px;margin:0 0 10px}
+.si-empty p{color:#576979;line-height:1.85}
+.si-pagination{display:flex;justify-content:center;margin:32px 0 0}
+@media(max-width:900px){.si-primary-grid,.si-secondary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.si-hero{padding:31px 0}.si-search-form{flex-wrap:wrap;padding:10px}.si-search-form label{width:100%;padding:0 4px}.si-search-form input{flex:1 1 160px}.si-search-form button{padding:12px 17px}.si-primary-grid,.si-secondary-grid,.si-next-grid{grid-template-columns:1fr}.si-next{padding:17px}.si-layout{padding-top:24px}}
+@media(prefers-reduced-motion:reduce){.si-next-link{transition:none}}
