@@ -1,0 +1,27 @@
+name: Repair source-verified car specifications
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-car-verified-drivetrains.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-theme
+  cancel-in-progress: false
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Static validation
+        run: |
+          python3 -m py_compile scripts/fix-car-verified-drivetrains-20261016.py
+          grep -q '83425' scripts/fix-car-verified-drivetrains-20261016.py
+          grep -q '83532' scripts/fix-car-verified-drivetrains-20261016.py
+      - name: Set two missing FWD values only if original fields are empty
+        run: python3 scripts/fix-car-verified-drivetrains-20261016.py
