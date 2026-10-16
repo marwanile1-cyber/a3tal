@@ -68,6 +68,9 @@ async function filters(browser){
     ['/cars/?car_year=2027','K4'],
     ['/cars/?brand=kia&car_year=2027','K4'],
     ['/cars/?car_search=Kia&car_year=2027&brand=kia','Seltos'],
+    ['/cars/?budget=lt1m','سوزوكي'],
+    ['/cars/?budget=15m_2m','K4'],
+    ['/cars/?sort=price_asc','سوزوكي'],
   ]){
     const response=await getWithRetry(page,BASE+url,'filter '+url);
     if(!response||response.status()!==200)throw Error('Bad filter response '+url+' '+(response&&response.status()));

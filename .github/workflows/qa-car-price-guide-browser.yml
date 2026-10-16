@@ -1,12 +1,8 @@
 name: Browser QA for live car price guide
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/qa-car-price-guide-browser.yml'
-      - '.github/workflows/deploy-car-price-guide.yml'
-      - 'theme-source/a3tal-global/car-price-trims.php'
-      - 'scripts/qa-car-price-guide-browser.cjs'
+  workflow_run:
+    workflows: ["Deploy A3tal car price guide"]
+    types: [completed]
   workflow_dispatch:
 permissions:
   contents: read
@@ -15,6 +11,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   browser-qa:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:
