@@ -58,6 +58,8 @@ jobs:
           assert "get_query_var('year')" not in p
           assert "isset($_GET['year'])" not in p
           assert "'car_year'=>$cg_year" in p
+          assert "'_a3_price_min'" in p and "budget" in p and "price_asc" in p
+          assert "cg-budget-strip" in css and "cg-budget-links" in css
           assert "if ($cg_search !== '' || $cg_year > 0)" in p
           assert 'register_post_type' not in p and 'add_rewrite_rule' not in p
           assert 'wp_update_post' not in p and 'wp_insert_post' not in p
