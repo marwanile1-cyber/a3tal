@@ -42,11 +42,22 @@ jobs:
           set -euo pipefail
           EXPECTED="$(sha256sum a3tal-direct-bridge.php | awk '{print $1}')"
           jq -n --arg expected "$EXPECTED" '{op:"bridge_self_update",confirm:true,dangerous:true,expected_sha256:$expected}' > /tmp/a3tal-upgrade-request.json
-          CODE="$(curl --silent --show-error --retry 3 --retry-all-errors --connect-timeout 20 --max-time 180 \
-            -o /tmp/a3tal-upgrade-response.json -w '%{http_code}' \
-            -X POST -H "X-A3tal-Key: $A3TAL_API_KEY" -H "Content-Type: application/json" \
-            --data-binary @/tmp/a3tal-upgrade-request.json "$BASE_URL/admin")"
-          echo "Bridge update HTTP: $CODE"
+          # GitHub raw/main can briefly lag the contents API after a push.
+          # The bridge enforces SHA256; wait for its downloaded bytes to match
+          # the validated checkout rather than removing that safety check.
+          for attempt in $(seq 1 12); do
+            CODE="$(curl --silent --show-error --retry 3 --retry-all-errors --connect-timeout 20 --max-time 180 \
+              -o /tmp/a3tal-upgrade-response.json -w '%{http_code}' \
+              -X POST -H "X-A3tal-Key: $A3TAL_API_KEY" -H "Content-Type: application/json" \
+              --data-binary @/tmp/a3tal-upgrade-request.json "$BASE_URL/admin")"
+            echo "Upgrade attempt $attempt HTTP: $CODE"
+            if [[ "$CODE" == "200" ]]; then break; fi
+            REASON="$(jq -r '.code // ""' /tmp/a3tal-upgrade-response.json 2>/dev/null || true)"
+            if [[ "$CODE" != "409" || "$REASON" != "a3tal_bridge_checksum_mismatch" ]]; then
+              break
+            fi
+            sleep 10
+          done
           if [[ "$CODE" -lt 200 || "$CODE" -ge 300 ]]; then
             jq '{code,message,data}' /tmp/a3tal-upgrade-response.json || true
             exit 1
