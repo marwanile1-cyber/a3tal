@@ -51,6 +51,8 @@ jobs:
           python3 - <<'PY'
           import urllib.request
           import urllib.parse
+          import urllib.error
+          import time
           paths={
             '/cars/':['cg-guide','cg-brands-grid','cg-cars-grid','car-price-guide.css','car-price-brand-logos.js','car-price-guide.js'],
             '/cars/?car_search=Kia':['cg-guide','car_search','Kia'],
@@ -70,9 +72,23 @@ jobs:
           for path,markers in paths.items():
             url='https://a3tal.com'+urllib.parse.quote(path,safe='/?=&%')
             req=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0 Firefox/128.0','Accept-Language':'ar,en;q=0.7','Cache-Control':'no-cache'})
-            with urllib.request.urlopen(req,timeout=40) as r:
-              assert r.status==200,(url,r.status)
-              html=r.read().decode('utf-8','replace')
+            html=None
+            for attempt in range(6):
+              try:
+                with urllib.request.urlopen(req,timeout=40) as r:
+                  assert r.status==200,(url,r.status)
+                  html=r.read().decode('utf-8','replace')
+                break
+              except urllib.error.HTTPError as error:
+                if error.code not in (429,500,502,503,504,520,522,524) or attempt==5:
+                  raise
+                print('LIVE_QA_TRANSIENT_ORIGIN',url,'HTTP',error.code,'retry',attempt+1,flush=True)
+              except (urllib.error.URLError,TimeoutError):
+                if attempt==5: raise
+                print('LIVE_QA_TRANSIENT_TRANSPORT',url,'retry',attempt+1,flush=True)
+              time.sleep(12*(attempt+1))
+            if html is None:
+              raise RuntimeError('Public QA did not receive an HTML response: '+url)
             for marker in markers:
               assert marker in html,('Missing marker',url,marker)
             assert not any(e in html.lower() for e in ['there has been a critical error on this website','fatal error:','parse error:']),url
