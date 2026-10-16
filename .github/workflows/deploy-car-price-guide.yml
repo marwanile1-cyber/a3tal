@@ -4,6 +4,14 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/deploy-car-price-guide.yml'
+      - 'theme-source/a3tal-global/car-price-guide.php'
+      - 'theme-source/a3tal-global/car-price-guide.css'
+      - 'theme-source/a3tal-global/car-price-guide.js'
+      - 'theme-source/a3tal-global/car-price-brand-logos.js'
+      - 'theme-source/a3tal-global/car-price-trims.php'
+      - 'theme-source/a3tal-global/car-price-trims.css'
+      - 'theme-source/a3tal-global/platform-single-vehicle.php'
+      - 'scripts/deploy-car-price-guide.py'
   workflow_dispatch:
 permissions:
   contents: read
