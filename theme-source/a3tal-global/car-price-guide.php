@@ -91,7 +91,7 @@ $cg_price_updates = new WP_Query([
   'orderby'=>'date','order'=>'DESC','no_found_rows'=>true,'ignore_sticky_posts'=>true
 ]);
 // Scoped assets: only the cars archive, never motorcycle, DTC or posts.
-wp_enqueue_style('a3tal-car-price-guide',get_template_directory_uri().'/car-price-guide.css',[], '1.0.0');
+wp_enqueue_style('a3tal-car-price-guide',get_template_directory_uri().'/car-price-guide.css',[], '1.1.0');
 wp_enqueue_script('a3tal-car-price-logos',get_template_directory_uri().'/car-price-brand-logos.js',[], '1.1.0',true);
 wp_enqueue_script('a3tal-car-price-guide',get_template_directory_uri().'/car-price-guide.js',['a3tal-car-price-logos'],'1.1.0',true);
 // Fix the unhelpful default archive SEO title, without changing any URLs.
