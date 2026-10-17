@@ -1,0 +1,35 @@
+name: Complete batch29 four missing DTC guides
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/release-dtc-batch29-completion4.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  complete-batch29:
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install photo validator
+        run: python3 -m pip install --quiet Pillow
+      - name: Syntax-check batch29 release and shared content renderer
+        run: |
+          python3 -m py_compile scripts/release-dtc-batch29-completion4.py scripts/publish-dtc-original-batch-28.py
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p=json.loads(Path('data/dtc-batch29-completion-4.json').read_text(encoding='utf-8'))
+          assert [x['code'] for x in p['items']]==['U0154','U0170','C0061','C0062']
+          assert all(len(x['steps'])==5 and len(x['deep_dive'])==4 and len(x['faqs'])==3 and len(x['decision'])==3 for x in p['items'])
+          print('BATCH29_FOUR_GUIDES_VALIDATED')
+          PY
+      - name: Publish only missing guides and verify four interim cover and Yoast images
+        run: python3 -u scripts/release-dtc-batch29-completion4.py
