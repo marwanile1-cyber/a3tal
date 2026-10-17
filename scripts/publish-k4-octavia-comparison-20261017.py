@@ -174,6 +174,13 @@ def main():
             if pause==35:raise
             print("COMPARISON_PUBLIC_RECHECK",str(exc)[:140],flush=True)
     link_both_cars(id_,data["car_slugs"])
+    # Model pages can be served from full-page cache after their relationship metadata changes.
+    # Flush once after both guarded writes. An unsuccessful purge must not repeat content writes.
+    try:
+        bridge_client().flush()
+        print("COMPARISON_MODEL_CACHE_PURGED",flush=True)
+    except RuntimeError as exc:
+        print("COMPARISON_MODEL_CACHE_PURGE_PENDING",str(exc)[:160],flush=True)
     print("COMPARISON_WITH_MODEL_LINKS_COMPLETE",link,flush=True)
 
 if __name__=="__main__":
