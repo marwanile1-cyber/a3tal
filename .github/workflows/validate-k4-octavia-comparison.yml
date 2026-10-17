@@ -1,0 +1,34 @@
+name: Validate K4 Octavia comparison
+on:
+  pull_request:
+    paths:
+      - 'data/comparisons/k4-vs-octavia-2027-egypt.json'
+      - 'scripts/publish-k4-octavia-comparison-20261017.py'
+      - '.github/workflows/publish-k4-octavia-comparison-20261017.yml'
+      - '.github/workflows/validate-k4-octavia-comparison.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate factual decision structure and publisher syntax
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/publish-k4-octavia-comparison-20261017.py
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('data/comparisons/k4-vs-octavia-2027-egypt.json').read_text())
+          assert len(d['html'])>11000 and d['html'].count('<h2>')>=7
+          assert d['html'].count('<table>')>=3
+          assert d['category_id']==21
+          assert d['car_slugs']==['kia-k4-2027-egypt','skoda-octavia-2027-egypt']
+          assert d['html'].count('https://a3tal.com/cars/')>=2
+          assert d['html'].count('<h3>')>=12
+          for s in ('1,519,900','1,719,900','1,859,900','1,825,000','2,050,000','2,250,000','305,100','105,100','34,900','190,100','264 نيوتن','250 نيوتن'):
+              assert s in d['html'],s
+          print('COMPARISON_VALIDATED')
+          PY
