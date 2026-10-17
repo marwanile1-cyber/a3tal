@@ -54,11 +54,11 @@ $showrooms=new WP_Query(['post_type'=>'a3_showroom','post_status'=>'publish','po
       <?php endif; ?>
       <div class="g-hero-content">
         <span class="g-hero-eyebrow">A3TAL AUTOMOTIVE PLATFORM</span>
-        <h1>كل ما يخص عالم السيارات والموتوسيكلات</h1>
-        <p>من الشراء والمقارنة إلى التشخيص والصيانة وقطع الغيار ومراكز الخدمة والبيع. مركبتك كلها في مكان واحد.</p>
+        <h1>أعطال السيارات وأسعار الموديلات ومواصفاتها في مكان واحد</h1>
+        <p>اكتشف عالم السيارات مع أعطال.كوم، من أحدث الأسعار والمواصفات ومقارنة الموديلات إلى موسوعة أعطال السيارات وأكواد التشخيص وطرق الإصلاح. تعرّف على الصيانة وقطع الغيار ومراكز الخدمة، وكل ما يساعدك على اختيار سيارتك والعناية بها بثقة.</p>
 
         <form class="g-hero-search g-universal-search" method="get" action="<?php echo esc_url(home_url('/')); ?>">
-          <div class="g-search-field"><?php echo a3g_icon('search'); ?><input type="search" name="s" placeholder="ابحث عن سيارة، موتوسيكل، عطل، كود P0420، قطعة غيار أو مركز خدمة..." aria-label="بحث شامل"></div>
+          <div class="g-search-field"><?php echo a3g_icon('search'); ?><input type="search" name="s" placeholder="ابحث عن سيارة، سعر، عطل، كود P0420، قطعة غيار أو مركز خدمة..." aria-label="بحث شامل"></div>
           <button type="submit"><?php echo a3g_icon('search'); ?><span>بحث</span></button>
         </form>
 
