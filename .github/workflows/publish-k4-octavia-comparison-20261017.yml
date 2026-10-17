@@ -1,0 +1,44 @@
+name: Publish K4 vs Octavia decision comparison
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-k4-octavia-comparison-20261017.yml'
+      - 'scripts/publish-k4-octavia-comparison-20261017.py'
+      - 'data/comparisons/k4-vs-octavia-2027-egypt.json'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate comparison, sources and publisher
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-k4-octavia-comparison-20261017.py scripts/deploy-dtc-library.py
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('data/comparisons/k4-vs-octavia-2027-egypt.json').read_text())
+          assert d['category_id']==21 and d['slug']=='kia-k4-vs-skoda-octavia-egypt-2027'
+          assert len(d['html'])>11000 and d['html'].count('<h2>')>=7
+          assert d['html'].count('<table>')>=3
+          assert len(d['source_photos'])==2 and all(url.startswith('https://a3tal.com/wp-content/uploads/') for url in d['source_photos'])
+          assert d['car_slugs']==['kia-k4-2027-egypt','skoda-octavia-2027-egypt']
+          for marker in ['1,519,900','1,719,900','1,825,000','2,050,000','2,250,000','305,100','105,100','34,900','190,100']:
+              assert marker in d['html'],marker
+          print('COMPARISON_EDITIONAL_VALIDATED')
+          PY
+      - name: Install real-photo processing
+        run: python3 -m pip install --quiet Pillow
+      - name: Publish sourced comparison, verify and link both model hubs
+        run: python3 -u scripts/publish-k4-octavia-comparison-20261017.py
