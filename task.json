@@ -2,26 +2,43 @@
   "requests": [
     {
       "method": "POST",
-      "path": "/upload-image-data",
+      "path": "/admin",
       "body": {
-        "post_id": 83472,
-        "filename": "el-dawly-advertisement-featured-banner.webp",
-        "title": "إعلان المركز الدولي لصيانة السيارات بالزقازيق - زيوت وقطع غيار وفلاتر الفتيس",
-        "alt": "إعلان المركز الدولي لصيانة السيارات بالزقازيق وزيوت مانول وإيجل وبترومين وهيونداي وفلاتر الفتيس الأوتوماتيك",
-        "set_featured": true,
-        "convert_webp": false,
-        "image_source_urls": [
-          "https://raw.githubusercontent.com/marwanile1-cyber/a3tal/main/assets/article-art/el-dawly-zagazig-ad-banner-original.png"
-        ],
-        "render_width": 1536,
-        "render_height": 1024,
-        "render_quality": 85
+        "op": "file_write",
+        "path": "themes/a3tal-global/front-page.php",
+        "confirm": true,
+        "dangerous": true,
+        "patches": [
+          {
+            "from": "<h1>كل ما يخص عالم السيارات والموتوسيكلات</h1>",
+            "to": "<h1>أعطال السيارات وأسعار الموديلات ومواصفاتها في مكان واحد</h1>"
+          },
+          {
+            "from": "<p>من الشراء والمقارنة إلى التشخيص والصيانة وقطع الغيار ومراكز الخدمة والبيع. مركبتك كلها في مكان واحد.</p>",
+            "to": "<p>اكتشف عالم السيارات مع أعطال.كوم، من أحدث الأسعار والمواصفات ومقارنة الموديلات إلى موسوعة أعطال السيارات وأكواد التشخيص وطرق الإصلاح. تعرّف على الصيانة وقطع الغيار ومراكز الخدمة، وكل ما يساعدك على اختيار سيارتك والعناية بها بثقة.</p>"
+          },
+          {
+            "from": "placeholder=\"ابحث عن سيارة، موتوسيكل، عطل، كود P0420، قطعة غيار أو مركز خدمة...\"",
+            "to": "placeholder=\"ابحث عن سيارة، سعر، عطل، كود P0420، قطعة غيار أو مركز خدمة...\""
+          }
+        ]
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/admin",
+      "body": {
+        "op": "cache_flush"
       }
     }
   ],
   "verify": [
     {
-      "path": "/post/83472"
+      "path": "/admin?op=file_read&path=themes/a3tal-global/front-page.php"
     }
+  ],
+  "public_verify": [
+    "<h1>أعطال السيارات وأسعار الموديلات ومواصفاتها في مكان واحد</h1>",
+    "اكتشف عالم السيارات مع أعطال.كوم"
   ]
 }
