@@ -48,7 +48,7 @@ $showrooms=new WP_Query(['post_type'=>'a3_showroom','post_status'=>'publish','po
           'alt'=>'',
           'loading'=>'eager',
           'fetchpriority'=>'high',
-          'decoding'=>'async',
+          'decoding'=>'sync',
           'sizes'=>'(max-width: 767px) 100vw, (max-width: 1280px) 92vw, 1240px',
         ]); ?>
       <?php endif; ?>
