@@ -5,6 +5,7 @@ name: Audit A3tal SEO and linking (read-only)
 # Recount 61 targeted article source links after live deployment
 # Final live QA after follow-up topical cluster deployment
 # Final low-concurrency retry-aware verification after transient origin 500s
+# Follow-up audit after 16 vetted editorial cross-links
 # Verify contextual-link release and archived canonical policy
 on:
   workflow_dispatch:
