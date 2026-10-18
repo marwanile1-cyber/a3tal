@@ -129,3 +129,22 @@ add_filter('the_content', static function($html) {
   if (!$items) return $html;
   return $html.'<p class="a3tal-code-journey" style="margin:16px 0"><strong>من موسوعة أكواد الأعطال:</strong> '.implode('، ',$items).'.</p>';
 }, 68);
+
+
+/** Unique metadata for individually indexable DTC records only. */
+add_filter('wpseo_metadesc', static function($current) {
+  if (trim((string)$current)!=='' || !is_singular('a3_dtc') || !function_exists('a3g_dtc_indexable_codes')) return $current;
+  $id=(int)get_queried_object_id();
+  if (!$id || get_post_status($id)!=='publish') return $current;
+  $code=function_exists('a3g_dtc_current_code')?a3g_dtc_current_code($id):'';
+  $approved=a3g_dtc_indexable_codes();
+  if (!$code || !isset($approved[$code])) return $current;
+  $intro=trim((string)get_post_field('post_excerpt',$id));
+  if ($intro==='') $intro=(string)get_post_field('post_content',$id);
+  $intro=trim((string)preg_replace('/\s+/u',' ',wp_strip_all_tags(strip_shortcodes($intro))));
+  if ($intro==='') return $current;
+  $text=(function_exists('mb_substr')?mb_substr($intro,0,153,'UTF-8'):wp_html_excerpt($intro,153,''));
+  $last=trim($text);
+  if ($last==='' || (function_exists('mb_strlen') && mb_strlen($last,'UTF-8')<65)) return $current;
+  return $last . ($last===$intro?'':'…');
+}, 200);
