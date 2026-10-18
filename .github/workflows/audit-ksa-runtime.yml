@@ -1,0 +1,60 @@
+name: Audit KSA route HTTP failures (read only)
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/audit-ksa-runtime.yml']
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - name: Check Egyptian and Saudi URLs without proxy
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import urllib.request, urllib.error, json, time
+          base='https://a3tal.com'
+          paths=['/','/dtc/','/ksa/','/ksa/centers/','/ksa/centers/city/jeddah/','/ksa/center/fix-auto-asfan-jeddah/']
+          for p in paths:
+            for n in (1,2):
+              u=base+p
+              req=urllib.request.Request(u,headers={'User-Agent':'Mozilla/5.0 (compatible; A3talKsaReadOnlyAudit/1.0)'})
+              try:
+                resp=urllib.request.urlopen(req,timeout=30)
+                print('ROUTE_STATUS',json.dumps({'path':p,'pass':n,'status':resp.status,'server':resp.headers.get('server'),'cache':resp.headers.get('x-litespeed-cache'),'cf':resp.headers.get('cf-cache-status'),'length':len(resp.read())}),flush=True)
+              except urllib.error.HTTPError as e:
+                print('ROUTE_STATUS',json.dumps({'path':p,'pass':n,'status':e.code,'server':e.headers.get('server'),'cache':e.headers.get('x-litespeed-cache'),'cf':e.headers.get('cf-cache-status'),'length':len(e.read(256))}),flush=True)
+              except Exception as e:
+                print('ROUTE_EXCEPTION',json.dumps({'path':p,'pass':n,'error':str(e)[:130]}),flush=True)
+              time.sleep(1)
+          PY
+      - name: Identify installed KSA plugin folders through bridge
+        if: ${{ env.A3TAL_API_KEY != '' }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import os,json,urllib.parse,urllib.request,urllib.error
+          base='https://a3tal.com/wp-json/a3tal-direct/v1/admin'
+          headers={'X-A3tal-Key':os.environ['A3TAL_API_KEY'],'Authorization':'Bearer '+os.environ['A3TAL_API_KEY']}
+          for query in [{'op':'plugins'},{'op':'file_list','path':'plugins'},{'op':'site_info'}]:
+            req=urllib.request.Request(base+'?'+urllib.parse.urlencode(query),headers=headers)
+            try:
+              data=json.load(urllib.request.urlopen(req,timeout=35))
+              val=data.get('result',data)
+              if query['op']=='plugins':
+                if isinstance(val,dict):val=val.get('plugins',val)
+                print('PLUGIN_LIST',json.dumps([{'name':p.get('name'),'file':p.get('file'),'active':p.get('active')} for p in val if isinstance(p,dict) and ('a3tal' in (p.get('name','')+' '+p.get('file','')).lower() or 'ksa' in (p.get('name','')+' '+p.get('file','')).lower())],ensure_ascii=False),flush=True)
+              elif query['op']=='file_list':
+                print('PLUGIN_FOLDERS',json.dumps([p.get('name') for p in val if isinstance(p,dict) and ('a3tal' in p.get('name','').lower() or 'ksa' in p.get('name','').lower())],ensure_ascii=False),flush=True)
+              else:
+                print('BRIDGE_HEALTH',json.dumps({'ok':data.get('ok'),'wp_version':val.get('wp_version') if isinstance(val,dict) else None}),flush=True)
+            except urllib.error.HTTPError as e:
+              print('BRIDGE_READ_ERROR',query['op'],'status',e.code,flush=True)
+            except Exception as e:
+              print('BRIDGE_READ_EXCEPTION',query['op'],str(e)[:140],flush=True)
+          PY
