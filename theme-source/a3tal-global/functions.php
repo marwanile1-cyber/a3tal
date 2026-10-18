@@ -18,6 +18,14 @@ function a3g_assets(){
   wp_enqueue_script('a3g-theme',get_template_directory_uri().'/assets/js/theme.js',[],A3G_VERSION,true);
 }
 add_action('wp_enqueue_scripts','a3g_assets');
+// Load the optional Google Fonts stylesheet without blocking the initial visual render.
+// Keep the primary theme stylesheet render-blocking to preserve layout and CLS.
+add_filter('style_loader_tag', static function($html, $handle, $href) {
+  if ($handle !== 'a3g-fonts' || is_admin() || !$href) return $html;
+  $url = esc_url($href);
+  return '<link rel="stylesheet" id="a3g-fonts-css" href="' . $url . '" media="print" onload="this.media=\'all\'">' . "\n"
+    . '<noscript><link rel="stylesheet" href="' . $url . '"></noscript>' . "\n";
+}, 10, 3);
 // Establish the font connection early without changing the typography or AdSense integration.
 add_filter('wp_resource_hints',function($urls,$relation_type){
   if($relation_type==='preconnect'){
