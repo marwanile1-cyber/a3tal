@@ -34,6 +34,33 @@ add_filter('wp_resource_hints',function($urls,$relation_type){
   }
   return $urls;
 },10,2);
+
+// Prioritize the exact responsive homepage LCP photo before the stylesheet and font downloads.
+// Match the front-page category query and sizes to avoid duplicate image requests.
+function a3g_preload_home_hero_image() {
+  if (!is_front_page()) return;
+  $posts = get_posts([
+    'post_type' => 'post',
+    'post_status' => 'publish',
+    'cat' => 374,
+    'posts_per_page' => 1,
+    'fields' => 'ids',
+    'ignore_sticky_posts' => true,
+    'no_found_rows' => true,
+  ]);
+  if (empty($posts)) return;
+  $attachment_id = get_post_thumbnail_id((int)$posts[0]);
+  if (!$attachment_id) return;
+  $source = wp_get_attachment_image_src($attachment_id, 'large');
+  if (!$source || empty($source[0])) return;
+  $srcset = wp_get_attachment_image_srcset($attachment_id, 'large');
+  $sizes = '(max-width: 767px) 100vw, (max-width: 1280px) 92vw, 1240px';
+  echo '<link rel="preload" as="image" href="'.esc_url($source[0]).'"'
+    . ($srcset ? ' imagesrcset="'.esc_attr($srcset).'"' : '')
+    . ' imagesizes="'.esc_attr($sizes).'" fetchpriority="high">'."\n";
+}
+add_action('wp_head', 'a3g_preload_home_hero_image', 2);
+
 add_action('wp_head',function(){echo '<meta name="theme-color" content="#091522">'.PHP_EOL;},1);
 
 function a3g_cat_link($id){$u=get_category_link((int)$id);return is_wp_error($u)?home_url('/'):$u;}
