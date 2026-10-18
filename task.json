@@ -2,11 +2,14 @@
   "requests": [
     {
       "method": "POST",
-      "path": "/redirect",
+      "path": "/admin",
       "body": {
-        "source_path": "/مركز-خدمة-hyundai-egypt-ghabbour-auto/",
-        "target_url": "https://a3tal.com/حجز-صيانة-هيونداي-في-مصر-كل-المراكز-وأر/",
-        "status_code": 301
+        "op": "file_write",
+        "path": "themes/a3tal-global/seo-integrity-20261018.php",
+        "content_file": "theme-source/a3tal-global/seo-integrity-20261018.php",
+        "confirm": true,
+        "dangerous": true,
+        "log_response": "sha_only"
       }
     },
     {
@@ -15,6 +18,11 @@
       "body": {
         "op": "cache_flush"
       }
+    }
+  ],
+  "verify": [
+    {
+      "path": "/admin?op=file_read&path=themes/a3tal-global/seo-integrity-20261018.php"
     }
   ],
   "public_verify": [
