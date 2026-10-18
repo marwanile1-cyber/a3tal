@@ -1,0 +1,48 @@
+name: A3tal SEO content cluster diagnostics
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/a3tal-seo-cluster-diagnostics.yml']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: a3tal-live-seo-link-audit-39159901714
+          run-id: 39159901714
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: old-audit
+      - uses: actions/download-artifact@v4
+        with:
+          name: a3tal-dtc-candidates-39160615984
+          run-id: 39160615984
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: dtc-audit
+      - name: Analyze deferred DTC and internal-link weaknesses
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,re,collections
+          from difflib import SequenceMatcher
+          d=json.load(open('dtc-audit/dtc-index-candidates.json'))
+          s=json.load(open('old-audit/seo-audit-report.json'))
+          overlap=d['article_overlap']
+          excluded=[]
+          for p in d['checked']:
+            c=p.get('code')
+            if c in overlap or p.get('status')!=200 or (p.get('canonical') or '')!='https://a3tal.com/dtc/'+c.lower()+'/' or p.get('body_chars',0)<2500:
+              excluded.append({'code':c,'canonical':p.get('canonical'),'length':p.get('body_chars'),'article_overlap':overlap.get(c,[])})
+          print('DEFERRED_CODES',json.dumps(excluded,ensure_ascii=False),flush=True)
+          pages={p['url']:p for p in s['pages']}
+          clean=[p for p in s['pages'] if p.get('status')==200 and '/dtc/' not in p['url'] and '/category/' not in p['url'] and '/cars/' not in p['url']]
+          stopped=[p for p in clean if not any(x in pages for x in p.get('context_links',[])) and len(p.get('title',''))>25]
+          print('MISSING_CONTEXT_TOP',json.dumps([{'url':p['url'],'title':p['title'][:120]} for p in stopped[:35]],ensure_ascii=False),flush=True)
+          print('MISSING_CONTEXT_COUNT',len(stopped),flush=True)
+          print('NON_SITEMAP_TARGETS',json.dumps(s['non_sitemap_link_destinations'][:65],ensure_ascii=False),flush=True)
+          PY
