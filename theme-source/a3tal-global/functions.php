@@ -13,7 +13,7 @@ function a3g_setup(){
 add_action('after_setup_theme','a3g_setup');
 
 function a3g_assets(){
-  wp_enqueue_style('a3g-fonts','https://fonts.googleapis.com/css2?family=Alexandria:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap',[],null);
+  wp_enqueue_style('a3g-fonts','https://fonts.googleapis.com/css2?family=Alexandria:wght@500..800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap',[],null);
   wp_enqueue_style('a3g-style',get_stylesheet_uri(),['a3g-fonts'],A3G_VERSION);
   wp_enqueue_script('a3g-theme',get_template_directory_uri().'/assets/js/theme.js',[],A3G_VERSION,true);
 }
