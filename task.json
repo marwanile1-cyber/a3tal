@@ -2,38 +2,30 @@
   "requests": [
     {
       "method": "POST",
-      "path": "/redirect",
+      "path": "/admin",
       "body": {
-        "source_path": "/obd2-live-data-reading-guide/",
-        "target_url": "https://a3tal.com/live-data-obd2/",
-        "status_code": 301
+        "op": "file_write",
+        "path": "themes/a3tal-global/seo-integrity-20261018.php",
+        "content_file": "theme-source/a3tal-global/seo-integrity-20261018.php",
+        "confirm": true,
+        "dangerous": true,
+        "log_response": "sha_only"
       }
     },
     {
       "method": "POST",
-      "path": "/redirect",
+      "path": "/admin",
       "body": {
-        "source_path": "/obd2-freeze-frame-data-guide/",
-        "target_url": "https://a3tal.com/freeze-frame-obd2/",
-        "status_code": 301
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/redirect",
-      "body": {
-        "source_path": "/radiator-internal-blockage-flow-temperature-test-2/",
-        "target_url": "https://a3tal.com/radiator-internal-blockage-flow-temperature-test/",
-        "status_code": 301
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/redirect",
-      "body": {
-        "source_path": "/p0300-random-misfire/",
-        "target_url": "https://a3tal.com/%D9%81%D9%83-%D9%84%D8%BA%D8%B2-%D9%83%D9%88%D8%AF-%D8%A7%D9%84%D8%B9%D8%B7%D9%84-p0300-%D9%81%D9%8A-%D8%B4%D9%8A%D9%81%D8%B1%D9%88%D9%84%D9%8A%D9%87-%D8%AF%D9%84%D9%8A%D9%84-%D8%A7%D9%84%D8%AA%D8%B4/",
-        "status_code": 301
+        "op": "file_write",
+        "path": "themes/a3tal-global/functions.php",
+        "patches": [
+          {
+            "append": "\n/* A3TAL SEO INTEGRITY 2026-10-18 */\nif (is_file(get_template_directory() . '/seo-integrity-20261018.php')) {\n    require_once get_template_directory() . '/seo-integrity-20261018.php';\n}\n"
+          }
+        ],
+        "confirm": true,
+        "dangerous": true,
+        "log_response": "sha_only"
       }
     },
     {
@@ -42,6 +34,11 @@
       "body": {
         "op": "cache_flush"
       }
+    }
+  ],
+  "verify": [
+    {
+      "path": "/admin?op=file_read&path=themes/a3tal-global/seo-integrity-20261018.php"
     }
   ],
   "public_verify": [
