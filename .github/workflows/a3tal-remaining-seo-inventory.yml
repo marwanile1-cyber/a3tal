@@ -1,0 +1,33 @@
+name: Inventory remaining SEO coverage gaps
+on:
+  workflow_dispatch:
+  push:
+    paths: ['.github/workflows/a3tal-remaining-seo-inventory.yml']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: a3tal-live-seo-link-audit-39163862793
+          run-id: 39163862793
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Classify no-context and no-inbound pages by topic
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,collections,re
+          p=json.load(open('seo-audit-report.json'))
+          pages={x['url']:x for x in p['pages']}
+          missing=p.get('no_contextual_article_links',[])
+          orphan=p.get('zero_main_inbound',[])
+          print('AUDIT_TOTAL',len(pages),'NO_CONTEXT',len(missing),'NO_INBOUND',len(orphan),flush=True)
+          for t,items in [('NO_CONTEXT',missing),('NO_INBOUND',orphan)]:
+            count=collections.Counter(('dtc' if '/dtc/' in x else 'cars' if '/cars/' in x else 'article' if x in pages and x.count('/')<=4 else 'other') for x in items)
+            print('GROUP',t,dict(count),flush=True)
+            print('LIST_'+t,json.dumps([{'url':u,'title':pages.get(u,{}).get('title','')[:120]} for u in items[:155]],ensure_ascii=False),flush=True)
+          PY
