@@ -1,0 +1,48 @@
+name: Publish 9 diverse A3tal editorial articles
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/publish-editorial-oct18.py'
+      - 'data/editorial-oct-18-2026.json'
+      - '.github/workflows/publish-editorial-oct18.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Static lint and editorial guard before publishing
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-editorial-oct18.py
+          python3 - <<'PY'
+          import json,re
+          from pathlib import Path
+          batch=json.loads(Path('data/editorial-oct-18-2026.json').read_text())
+          a=batch['items']
+          assert len(a)==9
+          assert len({x['slug'] for x in a})==9
+          assert set(x['category_id'] for x in a)=={374,21,22,8,13,3,85,3028,33}
+          for item in a:
+              h=item['html']
+              assert len(h)>3500 and h.count('<h2>')>=5 and h.count('<h3>')>=3
+              assert h.count('<a href=')>=2
+              assert len(item['photos']) in (1,2)
+              assert len(item['meta'])<=160
+              assert all(u.startswith('https://') for u in item['photos'])
+          print('NINE_EDITORIAL_ARTICLES_STATIC_PASS')
+          PY
+      - name: Prepare real-photo processing
+        run: python3 -m pip install --quiet Pillow
+      - name: Publish nine separate category articles with WebP and verified links
+        run: python3 -u scripts/publish-editorial-oct18.py
