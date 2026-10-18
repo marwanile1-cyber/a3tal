@@ -58,7 +58,8 @@ jobs:
           print('HERO_IMAGE_PRELOAD_VERIFIED',hero[0][:500])
           PY
       # Experiment: homepage hero decoding=sync after verified bridge deploy.
-NaN        shell: bash
+      - name: Lighthouse mobile homepage
+        shell: bash
         run: |
           set -uo pipefail
           set +e
