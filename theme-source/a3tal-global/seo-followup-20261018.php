@@ -82,7 +82,6 @@ function a3tal_editorial_approved_journeys(): array {
     'mg-6-engine-turbo-problems-lspi-oil' => ['mg-6-electrical-screen-battery-problems'],
     'kia-sportage-dct-gearbox-overheating-problems' => ['kia-sportage-fault-codes-dtc-full-list-guide'],
     'kia-sportage-fault-codes-dtc-full-list-guide' => ['kia-sportage-dct-gearbox-overheating-problems'],
-    'chery-arrizo-5-2026-egypt' => ['chery-arrizo-5-2026-egypt'],
     'nissan-sunny-engine-common-faults' => ['nissan-sunny-prices-service-centers-2026'],
   ];
 }
