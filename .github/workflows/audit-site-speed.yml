@@ -47,7 +47,7 @@ jobs:
           python3 - <<'PY'
           import re
           html=open('/tmp/a3tal-main.html',encoding='utf-8').read()
-          links=re.findall(r'<link\\b[^>]*>',html,re.I)
+          links=re.findall(r'<link\b[^>]*>',html,re.I)
           hero=[s for s in links if 'rel="preload"' in s and 'as="image"' in s]
           assert len(hero)==1,('Unexpected homepage image preload count',len(hero))
           assert 'imagesrcset=' in hero[0] and 'imagesizes=' in hero[0] and 'fetchpriority="high"' in hero[0]
