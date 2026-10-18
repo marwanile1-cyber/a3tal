@@ -1,0 +1,38 @@
+name: Audit DTC code indexability and content uniqueness
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/audit-dtc-indexability.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read published code entries and raw content size
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import os,re,urllib.request,json
+          origin='https://a3tal.com'
+          key=os.environ['A3TAL_API_KEY']
+          examples=['b0001','b0010','c0062','p0012']
+          for code in examples:
+            u=origin+'/dtc/'+code+'/'
+            req=urllib.request.Request(u,headers={'User-Agent':'Mozilla/5.0'})
+            html=urllib.request.urlopen(req,timeout=45).read().decode('utf-8','replace')
+            ids=re.findall(r'\\bpostid-(\\d+)\\b',html)
+            if not ids:
+              print('DTC_POST_ID_NOT_FOUND',code)
+              continue
+            pid=int(ids[0])
+            req=urllib.request.Request(origin+f'/wp-json/a3tal-direct/v1/post/{pid}',headers={'X-A3tal-Key':key,'Authorization':'Bearer '+key})
+            d=json.load(urllib.request.urlopen(req,timeout=45))
+            print('DTC_RECORD',json.dumps({'code':code,'id':pid,'type':d.get('type'),'raw_content_length':len(d.get('content') or ''),'excerpt_length':len(d.get('excerpt') or ''),'featured_media':d.get('featured_media'),'related_text_length':len(html)},ensure_ascii=False),flush=True)
+          PY
