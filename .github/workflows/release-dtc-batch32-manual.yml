@@ -5,7 +5,7 @@ on:
     paths:
       - '.github/workflows/release-dtc-batch32-manual.yml'
       - 'scripts/release-dtc-batch32-manual.py'
-      - 'data/dtc-original-batch-31.json'
+      - 'data/dtc-original-batch-32.json'
   workflow_dispatch:
 permissions:
   contents: read
@@ -29,7 +29,7 @@ jobs:
           python3 -m py_compile scripts/release-dtc-batch32-manual.py
           python3 - <<'PY'
           import json,re
-          p=json.load(open('data/dtc-original-batch-31.json',encoding='utf-8'))
+          p=json.load(open('data/dtc-original-batch-32.json',encoding='utf-8'))
           codes='P0345 P0742 P0868 U0194 U0422 U0418 C0072 C0071 B1443 B1446'.split()
           assert p['batch']==32 and [x['code'] for x in p['items']]==codes
           for item in p['items']:
