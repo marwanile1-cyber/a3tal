@@ -1,0 +1,34 @@
+name: Validate October encyclopedic rebuild
+on:
+  pull_request:
+    paths:
+      - 'data/expansions/oct18-*.html'
+      - 'scripts/upgrade-editorial-oct18.py'
+      - '.github/workflows/upgrade-editorial-oct18.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Safe in-place edits and minimum editorial depth
+        run: |
+          python3 -m py_compile scripts/upgrade-editorial-oct18.py
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,re,html
+          items=json.loads(Path('data/editorial-oct-18-2026.json').read_text())['items']
+          assert len(items)==9 and len({a['slug'] for a in items})==9
+          for a in items:
+              p=Path('data/expansions')/('oct18-'+a['slug']+'.html')
+              t=p.read_text()
+              assert t.count('<!-- A3TAL-ENCYCLOPEDIC-EXPANSION-OCT18-')==1
+              w=len(html.unescape(re.sub(r'<[^>]+>',' ',t)).split())
+              assert w>=900,(a['slug'],w)
+              minimum=1950 if a['category_id'] in (21,22) else 1500
+              base=len(html.unescape(re.sub(r'<[^>]+>',' ',a['html'])).split())
+              assert base+w>=minimum,(a['slug'],base,w,minimum)
+          print('SAFE_DEEP_EDITORIAL_VALIDATION_PASS')
+          PY

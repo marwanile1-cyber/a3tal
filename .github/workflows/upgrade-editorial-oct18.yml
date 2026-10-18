@@ -1,0 +1,48 @@
+name: Enrich 9 October automotive articles in place
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/upgrade-editorial-oct18.py'
+      - 'data/expansions/oct18-*.html'
+      - '.github/workflows/upgrade-editorial-oct18.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate complete editorial extensions before mutating published content
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/upgrade-editorial-oct18.py
+          python3 - <<'PY'
+          from pathlib import Path
+          import json,re,html
+          items=json.loads(Path('data/editorial-oct-18-2026.json').read_text())['items']
+          assert len(items)==9
+          for item in items:
+              slug=item['slug']
+              p=Path('data/expansions')/('oct18-'+slug+'.html')
+              text=p.read_text()
+              words=len(html.unescape(re.sub(r'<[^>]+>',' ',text)).split())
+              assert words>=900,(slug,words)
+              assert 'A3TAL-ENCYCLOPEDIC-EXPANSION-OCT18-' in text
+              assert len(re.findall(r'<h2\b',text))>=4
+              assert len(re.findall(r'<p\b',text))>=6
+              base=len(html.unescape(re.sub(r'<[^>]+>',' ',item['html'])).split())
+              minimum=1950 if slug in ('suzuki-alto-vs-proton-saga-2027-egypt-city-car','opel-frontera-egypt-family-review-third-row-2026') else 1500
+              assert base+words>=minimum,(slug,base,words,minimum)
+          print('OCT18_ENCYCLOPEDIC_DEPTH_ALL_NINE_PASS')
+          PY
+      - name: Expand only original published posts, check media and public readback
+        run: python3 -u scripts/upgrade-editorial-oct18.py
