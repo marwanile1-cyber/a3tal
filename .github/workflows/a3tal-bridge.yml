@@ -39,6 +39,9 @@ jobs:
           # Reject syntax errors before any live write.
           php -l theme-source/a3tal-global/functions.php
           php -l theme-source/a3tal-global/seo-integrity-20261018.php
+          php -l theme-source/a3tal-global/seo-followup-20261018.php
+          php -l theme-source/a3tal-global/dtc-library-archive.php
+          php -l theme-source/a3tal-global/dtc-approved-index-codes.php
           php -l theme-source/a3tal-global/front-page.php
           node --check theme-source/a3tal-global/assets/js/theme.js
           TASK_FILE="task.json"
