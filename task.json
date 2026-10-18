@@ -14,6 +14,15 @@
     },
     {
       "method": "POST",
+      "path": "/redirect",
+      "body": {
+        "source_path": "/سياسة-الخصوصية/",
+        "target_url": "https://a3tal.com/privacy-policy/",
+        "status_code": 301
+      }
+    },
+    {
+      "method": "POST",
       "path": "/admin",
       "body": {
         "op": "cache_flush"
