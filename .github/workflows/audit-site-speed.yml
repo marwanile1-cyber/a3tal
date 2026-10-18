@@ -6,6 +6,8 @@ on:
     paths:
       - '.github/workflows/audit-site-speed.yml'
   workflow_dispatch:
+  schedule:
+    - cron: '19 2 * * 3'
 permissions:
   contents: read
 jobs:
