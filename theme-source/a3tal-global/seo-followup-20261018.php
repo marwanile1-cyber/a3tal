@@ -166,3 +166,61 @@ add_filter('wpseo_metadesc', static function($current) {
   if ($last==='' || (function_exists('mb_strlen') && mb_strlen($last,'UTF-8')<65)) return $current;
   return $last . ($last===$intro?'':'…');
 }, 200);
+
+
+/** Vetted DTC cluster neighbors: relationships by diagnostic subsystem, not P/B/C/U first letter. */
+add_filter('the_content', static function($html) {
+  if (!is_singular('a3_dtc') || !in_the_loop() || !is_main_query() ||
+      !function_exists('a3g_dtc_current_code') || !function_exists('a3g_dtc_indexable_codes')) return $html;
+  $id=(int)get_queried_object_id();
+  $code=a3g_dtc_current_code($id);
+  $approved=a3g_dtc_indexable_codes();
+  if (!isset($approved[$code])) return $html;
+  $groups=[
+    ['P0116','P0117','P0118','P0119'],
+    ['P0121','P0122','P0123'],
+    ['P0130','P0131','P0132','P0133','P0134'],
+    ['P0137','P0138','P0139','P0140','P0141'],
+    ['P0190','P0191','P0192','P0193'],
+    ['P0200','P0201','P0202','P0203','P0204','P0205','P0206'],
+    ['P0305','P0306','P0316'],
+    ['P0325','P0327','P0328'],
+    ['P0336','P0341','P0345','P0365','P0369'],
+    ['P0351','P0352','P0353','P0354'],
+    ['P0401','P0402','P0403'],
+    ['P0441','P0443','P0446','P0456'],
+    ['P0451','P0452','P0453'],
+    ['P0505','P0506'],
+    ['P0705','P0706'],
+    ['P0715','P0716'],
+    ['P0720','P0722'],
+    ['P0730','P0731','P0732','P0733'],
+    ['U0101','U0102','U0103','U0104'],
+    ['U0121','U0122','U0123'],
+    ['C0035','C0040','C0045','C0050'],
+    ['B0001','B0010','B0020'],
+  ];
+  $near=[];
+  foreach ($groups as $group) {
+    if (in_array($code,$group,true)) {
+      $near=$group; break;
+    }
+  }
+  if (!$near) return $html;
+  $links=[];
+  foreach ($near as $peer) {
+    if ($peer===$code || !isset($approved[$peer])) continue;
+    $post=get_page_by_path(strtolower($peer),OBJECT,'a3_dtc');
+    if (!($post instanceof WP_Post) || $post->post_status!=='publish') continue;
+    $url=get_permalink($post);
+    if (!$url || strpos($html,$url)!==false) continue;
+    $links[]='<li><a href="'.esc_url($url).'">كود '.esc_html($peer).': '.esc_html(get_the_title($post)).'</a></li>';
+    if (count($links)>=3) break;
+  }
+  if (!$links) return $html;
+  return $html.'<aside class="a3tal-dtc-system-journey" aria-label="أكواد مرتبطة بنفس النظام"'
+     .' style="margin:20px 0;padding:15px 18px;border:1px solid #dae3ec;border-radius:12px">'
+     .'<h2 style="font-size:1.12em;margin:0 0 9px">أكواد مرتبطة بنفس نظام التشخيص</h2>'
+     .'<p>قد تظهر أكواد مشابهة عند فحص نفس الدائرة. معنى كل كود وطريقة اختباره مختلفان.</p>'
+     .'<ul>'.implode('',$links).'</ul></aside>';
+}, 75);
