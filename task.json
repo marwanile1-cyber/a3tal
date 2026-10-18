@@ -1,5 +1,5 @@
 {
-  "deployment_tag": "lcp-sync-decode-test-20261019",
+  "deployment_tag": "revert-lcp-sync-20261019",
   "requests": [
     {
       "method": "POST",
@@ -11,8 +11,8 @@
         "dangerous": true,
         "patches": [
           {
-            "from": "'fetchpriority'=>'high',\n          'decoding'=>'async',",
-            "to": "'fetchpriority'=>'high',\n          'decoding'=>'sync',"
+            "from": "'fetchpriority'=>'high',\n          'decoding'=>'sync',",
+            "to": "'fetchpriority'=>'high',\n          'decoding'=>'async',"
           }
         ]
       }
