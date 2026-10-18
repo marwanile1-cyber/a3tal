@@ -27,6 +27,14 @@ jobs:
               rm -f "$h"
             done
           done
+      - name: Check Google variable font API compatibility
+        shell: bash
+        run: |
+          set -euo pipefail
+          FONT_URL="https://fonts.googleapis.com/css2?family=Alexandria:wght@500..800&family=IBM+Plex+Sans+Arabic:wght@400..700&display=swap"
+          curl -fsSL --retry 2 --max-time 25 -A "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Mobile Safari/537.36" "$FONT_URL" -o /tmp/a3tal-variable-fonts.css
+          echo "VARIABLE_FONT_CSS_BYTES $(wc -c </tmp/a3tal-variable-fonts.css)"
+          grep -E 'font-family:|font-weight:' /tmp/a3tal-variable-fonts.css | sort -u | head -18
       - name: Lighthouse mobile homepage
         shell: bash
         run: |
