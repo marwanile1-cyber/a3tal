@@ -1,5 +1,6 @@
 name: Audit A3tal SEO and linking (read-only)
 # Post-repair verification: 2026-10-18
+# Verify contextual-link release and archived canonical policy
 on:
   workflow_dispatch:
   push:
