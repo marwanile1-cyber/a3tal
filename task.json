@@ -1,16 +1,20 @@
 {
-  "deployment_tag": "seo-final-ownership-clusters-20261018-v3",
+  "deployment_tag": "lcp-sync-decode-test-20261019",
   "requests": [
     {
       "method": "POST",
       "path": "/admin",
       "body": {
         "op": "file_write",
-        "path": "themes/a3tal-global/seo-followup-20261018.php",
-        "content_file": "theme-source/a3tal-global/seo-followup-20261018.php",
+        "path": "themes/a3tal-global/front-page.php",
         "confirm": true,
         "dangerous": true,
-        "log_response": "sha_only"
+        "patches": [
+          {
+            "from": "'fetchpriority'=>'high',\n          'decoding'=>'async',",
+            "to": "'fetchpriority'=>'high',\n          'decoding'=>'sync',"
+          }
+        ]
       }
     },
     {
@@ -23,7 +27,7 @@
   ],
   "verify": [
     {
-      "path": "/admin?op=file_read&path=themes/a3tal-global/seo-followup-20261018.php"
+      "path": "/admin?op=file_read&path=themes/a3tal-global/front-page.php"
     }
   ],
   "public_verify": [
