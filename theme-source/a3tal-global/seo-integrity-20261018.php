@@ -89,7 +89,8 @@ add_filter('the_content', static function($html) {
         'editorial-team', 'opel-kingdom-desouk',
         'عن-الموقع', 'شروط-الاستخدام',
     ];
-    if (!in_array($slug, $pages, true)) return $html;
+    $name = get_the_title(get_queried_object_id());
+    if (!in_array($slug, $pages, true) && !in_array($name, ['اتصل بنا', 'عن الموقع', 'شروط الاستخدام'], true)) return $html;
     return preg_replace('~<h1(\s[^>]*)?>(.*?)</h1>~isu', '<h2$1>$2</h2>', $html, 1);
 }, 48);
 
@@ -136,3 +137,55 @@ add_filter('the_content', static function($html) {
         . '<a href="'.esc_url($url).'">'.esc_html(get_the_title($vehicle)).': المواصفات والأسعار والأدلة المتاحة ←</a>'
         . '</p></aside>';
 }, 60);
+
+
+/** Complete only genuinely missing descriptions; never overwrite editorial Yoast copy. */
+add_filter('wpseo_metadesc', static function($description) {
+    if (trim((string)$description) !== '') return $description;
+    if (is_post_type_archive('a3_service_center')) {
+        return 'دليل مراكز صيانة السيارات في مصر على أعطال.كوم، مع بيانات المراكز المنشورة ووسائل التواصل والمواقع والتحقق من الجهة قبل الحجز.';
+    }
+    if (is_post_type_archive('a3_parts_vendor')) {
+        return 'دليل أماكن بيع قطع غيار السيارات والجهات المدرجة على أعطال.كوم، مع المعلومات المتاحة عن التوافق والشراء وطرق التحقق من البائع.';
+    }
+    if (is_post_type_archive('a3_maintenance_plan')) {
+        return 'جداول صيانة المركبات حسب الموديل والمسافة والوقت في أعطال.كوم، مع أدلة تغيير الزيوت والفلاتر ومراجعة تعليمات المصنع.';
+    }
+    if (!is_singular(['post','a3_motorcycle'])) return $description;
+    $post = get_post((int)get_queried_object_id());
+    if (!$post || $post->post_status !== 'publish') return $description;
+    $body = trim(preg_replace('/\s+/u', ' ', wp_strip_all_tags((string)$post->post_content)));
+    if (function_exists('mb_strlen') && mb_strlen($body,'UTF-8') < 95) return $description;
+    return wp_trim_words($body, 25, '…');
+}, 180);
+
+/**
+ * Link a car model to published, verified service centers of the same brand.
+ * Never assume any center services this exact trim without confirmation.
+ */
+add_filter('the_content', static function($html) {
+    if (!is_singular('a3_car') || !in_the_loop() || !is_main_query()) return $html;
+    $car_id=(int)get_the_ID();
+    $brand=strtolower(trim((string)a3g_first_term($car_id,'a3_brand')));
+    $title=(string)get_the_title($car_id);
+    $groups=[];
+    if ($brand==='chery' || strpos($title,'شيري')!==false) {
+        $groups=['chery-gb-abu-rawash-service-center','chery-gb-amriya-alexandria-service-center'];
+    } elseif ($brand==='skoda' || strpos($title,'سكودا')!==false) {
+        $groups=['skoda-kayan-new-cairo-service-center','skoda-express-sheikh-zayed-service-center'];
+    }
+    if (!$groups) return $html;
+    $links=[];
+    foreach($groups as $slug) {
+        $center=get_page_by_path($slug,OBJECT,'a3_service_center');
+        if (!$center || $center->post_status!=='publish') continue;
+        $url=get_permalink($center);
+        if ($url) $links[]='<li><a href="'.esc_url($url).'">'.esc_html(get_the_title($center)).'</a></li>';
+    }
+    if (!$links) return $html;
+    return $html.'<aside class="a3-seo-brand-centers" aria-label="دليل مراكز الخدمة"'
+      .' style="margin:20px 0;padding:15px 18px;border:1px solid #dde5ee;border-radius:12px;background:#f6f9fc">'
+      .'<h2 style="font-size:1.2em;margin:0 0 8px">مراكز خدمة العلامة المتاحة في دليل أعطال</h2>'
+      .'<ul style="margin:0 0 8px">'.implode('',$links).'</ul>'
+      .'<p style="margin:0">تأكد من الخدمات المتاحة لموديلك وسنة الصنع قبل الحجز.</p></aside>';
+}, 62);
