@@ -1,0 +1,27 @@
+name: Generate A3tal contextual linking proposals
+on:
+  push:
+    paths: ['.github/workflows/a3tal-context-link-proposals.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: a3tal-live-seo-link-audit-39159901714
+          run-id: 39159901714
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: old-audit
+      - name: Produce scored and reviewable topical links
+        run: python3 scripts/generate-verified-context-links.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-context-link-candidates-${{ github.run_id }}
+          path: context-links-reviewed-candidates.json
+          retention-days: 10
