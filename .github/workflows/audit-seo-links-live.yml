@@ -1,6 +1,7 @@
 name: Audit A3tal SEO and linking (read-only)
 # Post-repair verification: 2026-10-18
 # Crawl after DTC 234-index launch and topic/broken-link consolidation
+# After October 18 subsystem links and editorial navigation release
 # Verify contextual-link release and archived canonical policy
 on:
   workflow_dispatch:
