@@ -57,8 +57,8 @@ jobs:
           assert 'imagesrcset=' in hero[0] and 'imagesizes=' in hero[0] and 'fetchpriority="high"' in hero[0]
           print('HERO_IMAGE_PRELOAD_VERIFIED',hero[0][:500])
           PY
-      - name: Lighthouse mobile homepage
-        shell: bash
+      # Experiment: homepage hero decoding=sync after verified bridge deploy.
+NaN        shell: bash
         run: |
           set -uo pipefail
           set +e
