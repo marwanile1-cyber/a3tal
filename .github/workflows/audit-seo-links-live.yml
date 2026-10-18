@@ -3,6 +3,7 @@ name: Audit A3tal SEO and linking (read-only)
 # Crawl after DTC 234-index launch and topic/broken-link consolidation
 # After October 18 subsystem links and editorial navigation release
 # Recount 61 targeted article source links after live deployment
+# Final live QA after follow-up topical cluster deployment
 # Verify contextual-link release and archived canonical policy
 on:
   workflow_dispatch:
