@@ -1,0 +1,75 @@
+name: A3tal DTC sitemap and meta QA
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/a3tal-final-dtc-seo-qa.yml']
+  schedule:
+    - cron: '37 3 * * 1'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    steps:
+      - name: Install HTML parser
+        run: python3 -m pip install -q requests beautifulsoup4
+      - name: Verify every indexable code and core redirects
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import requests,concurrent.futures,collections,xml.etree.ElementTree as ET,time,json
+          from bs4 import BeautifulSoup
+          base='https://a3tal.com'
+          sess=requests.Session();sess.headers['User-Agent']='Mozilla/5.0 (compatible; A3talCodeSEOQA/1.0)'
+          r=sess.get(base+'/a3_dtc-sitemap.xml',timeout=40);r.raise_for_status()
+          root=ET.fromstring(r.content)
+          ns='{http://www.sitemaps.org/schemas/sitemap/0.9}'
+          urls=[x.text.strip() for x in root.findall('.//'+ns+'url/'+ns+'loc') if x.text]
+          codes=[x for x in urls if x.startswith(base+'/dtc/') and x!=base+'/dtc/']
+          assert len(codes)==234,(len(codes),len(urls))
+          assert len(set(codes))==234 and base+'/dtc/' in urls
+          def inspect(url):
+            error=''
+            for n in range(3):
+              try:
+                resp=requests.get(url,headers={'User-Agent':'Mozilla/5.0 (compatible; A3talCodeSEOQA/1.0)'},timeout=35)
+                if resp.status_code in (429,500,502,503,504) and n<2:
+                  time.sleep(2);continue
+                soup=BeautifulSoup(resp.text,'html.parser')
+                canonical=soup.find('link',rel='canonical')
+                robots=soup.find('meta',attrs={'name':'robots'})
+                meta=soup.find('meta',attrs={'name':'description'})
+                desc=(meta.get('content') or '').strip() if meta else ''
+                return dict(url=url,status=resp.status_code,canonical=canonical.get('href') if canonical else '',robots=robots.get('content') if robots else '',meta_len=len(desc),desc=desc)
+              except Exception as e:error=str(e)
+            return dict(url=url,error=error)
+          with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
+            results=list(pool.map(inspect,codes))
+          errors=[p for p in results if p.get('status')!=200 or p.get('canonical')!=p['url'] or 'noindex' in p.get('robots','').lower() or p.get('meta_len',0)<65]
+          dups={k:v for k,v in collections.defaultdict(list,((s,[p['url'] for p in results if p.get('desc')==s]) for s in {p.get('desc','') for p in results})).items() if k and len(v)>1}
+          print('DTC_ALL_PAGES',len(codes),'SEO_ERRORS',len(errors),'DUPLICATE_DESCRIPTIONS',len(dups),flush=True)
+          if errors:print('DTC_ERRORS',json.dumps(errors[:35],ensure_ascii=False),flush=True)
+          if dups:print('DTC_META_DUPLICATES',json.dumps(dups,ensure_ascii=False)[:3800],flush=True)
+          roothtml=BeautifulSoup(sess.get(base+'/dtc/',timeout=35).text,'html.parser')
+          direct={a.get('href') for a in roothtml.select('section.d-code-index a[href]')}
+          missing=[url for url in codes if url not in direct]
+          print('DTC_DIRECT_ARCHIVE_LINKS',len(direct),'MISSING',len(missing),flush=True)
+          if missing:print('DTC_MISSING_INDEX_LINKS',json.dumps(missing[:20]),flush=True)
+          redirections={
+            '/live-data-obd2-scanner-readings-guide/':'/live-data-obd2/',
+            '/freeze-frame-obd2-diagnostic-data/':'/freeze-frame-obd2/',
+            '/p0171-system-too-lean-bank1/':'/p0171-system-too-lean-bank-1-diagnosis/',
+            '/geely-starray-maintenance-schedule/':'/geely-starray-2026-prices-maintenance-service-centers/',
+            '/engine-oil-consumption-no-leak-causes/':'/engine-oil-loss-without-visible-leak/'
+          }
+          redirect_errors=[]
+          for old,new in redirections.items():
+            resp=sess.get(base+old,timeout=25,allow_redirects=False)
+            good=resp.status_code==301 and (resp.headers.get('location','').rstrip('/')==base+new.rstrip('/'))
+            print('REDIRECT',old,resp.status_code,resp.headers.get('location',''),good,flush=True)
+            if not good:redirect_errors.append(old)
+          if errors or dups or missing or redirect_errors:raise SystemExit(1)
+          print('A3TAL_FINAL_DTC_SEO_QA_PASS',flush=True)
+          PY
