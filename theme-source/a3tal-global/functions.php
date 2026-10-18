@@ -660,3 +660,8 @@ if (is_file(get_template_directory() . '/dtc-library-support.php')) {
 if (is_file(get_template_directory() . '/seo-integrity-20261018.php')) {
     require_once get_template_directory() . '/seo-integrity-20261018.php';
 }
+
+/* A3tal post-audit verified links and contextual journey improvements. */
+if (is_file(get_template_directory().'/seo-followup-20261018.php')) {
+  require_once get_template_directory().'/seo-followup-20261018.php';
+}
