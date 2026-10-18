@@ -1,0 +1,30 @@
+name: Validate 9 editorial articles
+on:
+  pull_request:
+    paths:
+      - 'data/editorial-oct-18-2026.json'
+      - 'scripts/publish-editorial-oct18.py'
+      - '.github/workflows/publish-editorial-oct18.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Syntax and unique editorial category check
+        run: |
+          python3 -m py_compile scripts/publish-editorial-oct18.py
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          a=json.loads(Path('data/editorial-oct-18-2026.json').read_text())['items']
+          assert len(a)==9 and len({x['slug'] for x in a})==9
+          assert {x['category_id'] for x in a}=={374,21,22,8,13,3,85,3028,33}
+          for x in a:
+              assert len(x['html'])>3500 and x['html'].count('<h2>')>=5
+              assert x['html'].count('<h3>')>=3
+              assert x['html'].count('<a href=')>=2
+          print('NINE_EDITORIAL_ARTICLES_VALIDATED')
+          PY
