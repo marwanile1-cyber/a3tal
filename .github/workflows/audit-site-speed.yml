@@ -1,0 +1,53 @@
+name: Audit A3tal site speed
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/audit-site-speed.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    steps:
+      - name: HTTP timing, caching and payload baseline
+        shell: bash
+        run: |
+          set -uo pipefail
+          for route in / /cars/ /dtc/; do
+            for pass in 1 2 3; do
+              h="$(mktemp)"
+              metrics="$(curl -sS -L --connect-timeout 12 --max-time 40 --retry 1 --retry-delay 2 \
+                -A 'Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36' \
+                -D "$h" -o /dev/null -w 'status=%{http_code} dns=%{time_namelookup} tcp=%{time_connect} tls=%{time_appconnect} ttfb=%{time_starttransfer} total=%{time_total} size=%{size_download} remote=%{remote_ip}' \
+                "https://a3tal.com$route" 2>&1)"
+              echo "HTTP_AUDIT route=$route pass=$pass $metrics cf=$(grep -im1 '^cf-cache-status:' "$h" | cut -d: -f2- | tr -d '\r' | xargs) ls=$(grep -im1 '^x-litespeed-cache:' "$h" | cut -d: -f2- | tr -d '\r' | xargs) cache=$(grep -im1 '^cache-control:' "$h" | cut -d: -f2- | tr -d '\r' | xargs) server=$(grep -im1 '^server:' "$h" | cut -d: -f2- | tr -d '\r' | xargs)"
+              rm -f "$h"
+            done
+          done
+      - name: Lighthouse mobile homepage
+        shell: bash
+        run: |
+          set -uo pipefail
+          set +e
+          npx --yes lighthouse@12.8.2 https://a3tal.com/ --chrome-path=/usr/bin/google-chrome --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" --only-categories=performance --form-factor=mobile --screenEmulation.mobile=true --throttling-method=simulate --output=json --output-path=/tmp/a3tal-lighthouse.json --quiet
+          result=$?
+          set -e
+          if [ "$result" -ne 0 ]; then echo "LIGHTHOUSE_FAILED code=$result"; exit 0; fi
+          node - <<'JS'
+          const l=require('/tmp/a3tal-lighthouse.json'),a=l.audits;
+          const metrics=['first-contentful-paint','largest-contentful-paint','speed-index','total-blocking-time','cumulative-layout-shift','server-response-time','render-blocking-resources','unused-css-rules','unused-javascript','largest-contentful-paint-element','lcp-discovery-insight','lcp-breakdown-insight','network-dependency-tree-insight','document-latency-insight','font-display-insight','image-delivery-insight'];
+          console.log('LIGHTHOUSE_SCORE',Math.round((l.categories.performance.score||0)*100));
+          for(const k of metrics)if(a[k])console.log('LH_AUDIT',k,JSON.stringify({score:a[k].score,display:a[k].displayValue,details:a[k].details?.items?.slice(0,4)}).slice(0,2000));
+          console.log('LH_RESOURCES',JSON.stringify((l.audits['network-requests']?.details?.items||[]).filter(x=>/\.css|\.js|\.woff|\.webp|\.jpg|\.png|fonts\.google/i.test(x.url||'')).slice(0,30).map(x=>({url:x.url,resourceSize:x.resourceSize,transferSize:x.transferSize,startTime:x.startTime,endTime:x.endTime}))).slice(0,8000));
+          JS
+      - name: Store Lighthouse JSON
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-speed-baseline-${{ github.run_id }}
+          path: /tmp/a3tal-lighthouse.json
+          if-no-files-found: ignore
+          retention-days: 7
