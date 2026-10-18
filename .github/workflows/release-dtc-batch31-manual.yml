@@ -27,7 +27,7 @@ jobs:
           python3 -m py_compile scripts/release-dtc-batch31-manual.py
           python3 - <<'PY'
           import json,re
-          p=json.load(open('data/dtc-original-batch-30.json',encoding='utf-8'))
+          p=json.load(open('data/dtc-original-batch-31.json',encoding='utf-8'))
           codes='P0369 P0505 P0685 U0183 U0185 U0190 C006A C0069 B1441 B1442'.split()
           assert p['batch']==31 and [x['code'] for x in p['items']]==codes
           for item in p['items']:
