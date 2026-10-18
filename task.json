@@ -1,4 +1,5 @@
 {
+  "deployment_tag": "seo-final-ownership-clusters-20261018-v3",
   "requests": [
     {
       "method": "POST",
@@ -27,6 +28,5 @@
   ],
   "public_verify": [
     "موسوعة أعطال السيارات وأكواد التشخيص والأسعار ومراكز الصيانة"
-  ],
-  "deployment_tag": "seo-encoded-slug-20261018-v2"
+  ]
 }
