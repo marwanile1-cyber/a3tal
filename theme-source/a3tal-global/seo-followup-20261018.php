@@ -54,6 +54,10 @@ add_filter('the_content', static function($html) {
 /** Exact subject journeys after manual review, avoiding cross-brand link farms. */
 function a3tal_editorial_approved_journeys(): array {
   return [
+    'cv-boot-replacement-signs-prices-egypt' => ['strut-mount-bearing-symptoms-diagnosis'],
+    'rear-dongle-suspension-bent-symptoms-zargina-vs-replacement' => ['bad-shock-absorber-symptoms-diagnosis', 'strut-mount-bearing-symptoms-diagnosis'],
+    'power-steering-rack-symptoms-and-problems' => ['eps-warning-light-heavy-steering-diagnosis', 'strut-mount-bearing-symptoms-diagnosis'],
+    'ppf-car-protection-prices-egypt-2025' => ['new-car-delivery-checklist-egypt'],
     'صفير-سير-الدينامو' => ['أعطال-كهرباء-السيارة-في-مصر-الدليل-الأ'],
     'how-to-adjust-car-headlights-egypt' => ['أعطال-كهرباء-السيارة-في-مصر-الدليل-الأ'],
     'hyundai-accent-rb-2026-review-egypt' => ['new-car-delivery-checklist-egypt'],
