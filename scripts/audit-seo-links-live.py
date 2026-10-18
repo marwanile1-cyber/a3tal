@@ -32,7 +32,24 @@ def norm(raw):
     return ORIGIN + path.lower()
 
 def fetch(url, timeout=20):
-    return session().get(url, timeout=timeout, allow_redirects=True)
+    # Respect intermittent overloaded hosting responses; do not hammer the origin.
+    # A single 500 under burst load isn't proof of a persistent broken page.
+    last_error = None
+    for attempt in range(3):
+        try:
+            response = session().get(url, timeout=timeout, allow_redirects=True)
+            if response.status_code not in (429, 500, 502, 503, 504):
+                return response
+            if attempt == 2:
+                return response
+        except requests.RequestException as error:
+            last_error = error
+            if attempt == 2:
+                raise
+        time.sleep(1.5 * (attempt + 1))
+    if last_error:
+        raise last_error
+    raise RuntimeError("No HTTP response")
 
 def sitemap_urls():
     idx = fetch(ORIGIN + "/sitemap_index.xml", 30)
@@ -101,7 +118,7 @@ def main():
     print("SITEMAP_COUNTS",json.dumps({k:len(v) for k,v in types.items()},ensure_ascii=False),flush=True)
     t0=time.time()
     results=[]
-    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as ex:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as ex:
         for i, p in enumerate(ex.map(inspect,all_urls.items()),1):
             results.append(p)
             if i%75==0: print("AUDIT_PROGRESS",i,len(all_urls),round(time.time()-t0,1),flush=True)
