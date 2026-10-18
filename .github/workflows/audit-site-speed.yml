@@ -60,11 +60,26 @@ jobs:
           for(const k of metrics)if(a[k])console.log('LH_AUDIT',k,JSON.stringify({score:a[k].score,display:a[k].displayValue,details:Array.isArray(a[k].details?.items)?a[k].details.items.slice(0,4):a[k].details?.items}).slice(0,2000));
           console.log('LH_RESOURCES',JSON.stringify((l.audits['network-requests']?.details?.items||[]).filter(x=>/\.css|\.js|\.woff|\.webp|\.jpg|\.png|fonts\.google/i.test(x.url||'')).slice(0,30).map(x=>({url:x.url,resourceSize:x.resourceSize,transferSize:x.transferSize,startTime:x.startTime,endTime:x.endTime}))).slice(0,8000));
           JS
+      - name: Lighthouse independent confirmation run
+        shell: bash
+        run: |
+          set -euo pipefail
+          npx --yes lighthouse@12.8.2 https://a3tal.com/ --chrome-path=/usr/bin/google-chrome --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" --only-categories=performance --form-factor=mobile --screenEmulation.mobile=true --throttling-method=simulate --output=json --output-path=/tmp/a3tal-lighthouse-confirm.json --quiet
+          node - <<'JS'
+          const r=require('/tmp/a3tal-lighthouse-confirm.json');
+          const m=r.audits;
+          console.log('CONFIRM_SCORE',Math.round(r.categories.performance.score*100));
+          for(const key of ['first-contentful-paint','largest-contentful-paint','speed-index','total-blocking-time','cumulative-layout-shift']){
+            console.log('CONFIRM_METRIC',key,m[key].numericValue,m[key].displayValue);
+          }
+          JS
       - name: Store Lighthouse JSON
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: a3tal-speed-baseline-${{ github.run_id }}
-          path: /tmp/a3tal-lighthouse.json
+          path: |
+            /tmp/a3tal-lighthouse.json
+            /tmp/a3tal-lighthouse-confirm.json
           if-no-files-found: ignore
           retention-days: 7
