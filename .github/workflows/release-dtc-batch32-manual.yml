@@ -1,0 +1,44 @@
+name: Publish A3tal DTC batch32 (10 guarded guides + interim media)
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/release-dtc-batch32-manual.yml'
+      - 'scripts/release-dtc-batch32-manual.py'
+      - 'data/dtc-original-batch-31.json'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  release-batch32:
+    runs-on: ubuntu-latest
+    timeout-minutes: 135
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3TAL_BATCH32_RELEASE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install photography tooling
+        run: python3 -m pip install -q Pillow
+      - name: Validate ten authored articles and release script
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/release-dtc-batch32-manual.py
+          python3 - <<'PY'
+          import json,re
+          p=json.load(open('data/dtc-original-batch-31.json',encoding='utf-8'))
+          codes='P0345 P0742 P0868 U0194 U0422 U0418 C0072 C0071 B1443 B1446'.split()
+          assert p['batch']==32 and [x['code'] for x in p['items']]==codes
+          for item in p['items']:
+              words=len(re.sub(r'<[^>]+>',' ',item['content']).split())
+              assert words>=600,(item['code'],words)
+              assert item['scope'] and item['source'].startswith('https://')
+              assert '<h2>' in item['content'] and 'تشخيص' in item['content']
+              print('REVIEWED_DTC_ARTICLE',item['code'],words)
+          print('TEN_AUTHORED_ARTICLES_VALIDATED')
+          PY
+      - name: Publish missing codes via Direct Bridge, verify features and OG
+        run: python3 -u scripts/release-dtc-batch32-manual.py
