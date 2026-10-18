@@ -16,67 +16,6 @@
       "method": "POST",
       "path": "/admin",
       "body": {
-        "op": "file_write",
-        "path": "themes/a3tal-global/functions.php",
-        "patches": [
-          {
-            "append": "\n/* A3tal post-audit verified links and contextual journey improvements. */\nif (is_file(get_template_directory().'/seo-followup-20261018.php')) {\n  require_once get_template_directory().'/seo-followup-20261018.php';\n}\n"
-          }
-        ],
-        "confirm": true,
-        "dangerous": true,
-        "log_response": "sha_only"
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/redirect",
-      "body": {
-        "source_path": "/live-data-obd2-scanner-readings-guide/",
-        "target_url": "https://a3tal.com/live-data-obd2/",
-        "status_code": 301
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/redirect",
-      "body": {
-        "source_path": "/freeze-frame-obd2-diagnostic-data/",
-        "target_url": "https://a3tal.com/freeze-frame-obd2/",
-        "status_code": 301
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/redirect",
-      "body": {
-        "source_path": "/p0171-system-too-lean-bank1/",
-        "target_url": "https://a3tal.com/p0171-system-too-lean-bank-1-diagnosis/",
-        "status_code": 301
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/redirect",
-      "body": {
-        "source_path": "/geely-starray-maintenance-schedule/",
-        "target_url": "https://a3tal.com/geely-starray-2026-prices-maintenance-service-centers/",
-        "status_code": 301
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/redirect",
-      "body": {
-        "source_path": "/engine-oil-consumption-no-leak-causes/",
-        "target_url": "https://a3tal.com/engine-oil-loss-without-visible-leak/",
-        "status_code": 301
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "body": {
         "op": "cache_flush"
       }
     }
@@ -84,9 +23,6 @@
   "verify": [
     {
       "path": "/admin?op=file_read&path=themes/a3tal-global/seo-followup-20261018.php"
-    },
-    {
-      "path": "/admin?op=file_read&path=themes/a3tal-global/functions.php"
     }
   ],
   "public_verify": [
