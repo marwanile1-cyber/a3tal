@@ -167,13 +167,17 @@ function a3tal_editorial_approved_journeys(): array {
 
 add_filter('the_content', static function($html) {
   if (!is_singular('post') || !in_the_loop() || !is_main_query()) return $html;
-  $slug=rawurldecode((string)get_post_field('post_name',get_the_ID()));
+  $slug=trim(rawurldecode((string)wp_parse_url(get_permalink(get_the_ID()),PHP_URL_PATH)),'/');
   $all=a3tal_editorial_approved_journeys();
   if (!isset($all[$slug])) return $html;
   $links=[];
   foreach ($all[$slug] as $target_slug) {
     if ($target_slug===$slug) continue;
     $post=get_page_by_path($target_slug,OBJECT,'post');
+    if (!($post instanceof WP_Post)) {
+      $target_id=url_to_postid(home_url('/'.$target_slug.'/'));
+      if ($target_id && get_post_type($target_id)==='post') $post=get_post($target_id);
+    }
     if (!($post instanceof WP_Post) || $post->post_status!=='publish' || $post->ID===get_the_ID()) continue;
     $url=get_permalink($post);
     if (!$url || strpos($html,$url)!==false) continue;
