@@ -14,6 +14,11 @@ jobs:
     steps:
       - name: Install parser
         run: python -m pip install -q requests beautifulsoup4
+      - uses: actions/download-artifact@v4
+        with:
+          name: a3tal-live-seo-link-audit-39159901714
+          run-id: 39159901714
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Census catalog and test content uniqueness
         shell: bash
         run: |
@@ -43,7 +48,7 @@ jobs:
             if not parsed or page>1 and len(parsed)<18:break
             if page>1 and len(url_by_code)==len(set(url_by_code)):pass
           print('DTC_CATALOG_SUMMARY',json.dumps({'count':len(url_by_code),'pages':len(page_counts),'last_page_size':page_counts[-1],'family':dict(collections.Counter(k[0] for k in url_by_code)),'examples':list(url_by_code)[:45]}),flush=True)
-          inspect=list(url_by_code.items())[:min(54,len(url_by_code))]
+          inspect=list(url_by_code.items())
           def check(item):
             code,url=item
             try:
@@ -58,5 +63,28 @@ jobs:
             except Exception as e:return {'code':code,'error':str(e)[:100]}
           with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
             checked=list(pool.map(check,inspect))
-          print('DTC_PAGE_SAMPLE',json.dumps(checked,ensure_ascii=False),flush=True)
+          qualified=[x for x in checked if x.get('status')==200 and (x.get('robots') or '').startswith('index') and x.get('canonical')=='https://a3tal.com/dtc/'+x['code'].lower()+'/']
+          reused=[x for x in checked if x.get('article_reused')]
+          short=[x for x in checked if x.get('body_chars',0)<2500]
+          failures=[x for x in checked if x.get('status')!=200]
+          all_pages=json.load(open('seo-audit-report.json',encoding='utf-8'))['pages']
+          old_codes=collections.defaultdict(list)
+          for guide in all_pages:
+            path=guide.get('url','')
+            if path.startswith('https://a3tal.com/dtc/') or '/category/' in path:continue
+            title=guide.get('title','')
+            for code in set(re.findall(r'(?<![A-Z0-9])([PBCU][0-9][0-9A-F]{3})(?![A-Z0-9])',title.upper())):
+              old_codes[code].append(path)
+          overlap={code:old_codes[code] for code in url_by_code if old_codes[code]}
+          print('DTC_FULL_AUDIT',json.dumps({'catalog_count':len(url_by_code),'checked':len(checked),'indexable_selfcanonical':len(qualified),'reused_count':len(reused),'reused':reused[:25],'short_count':len(short),'short':short[:25],'failures':failures[:25],'article_overlap_count':len(overlap),'article_overlap':overlap},ensure_ascii=False),flush=True)
+          open('dtc-index-candidates.json','w').write(json.dumps({'codes':url_by_code,'checked':checked,'article_overlap':overlap},ensure_ascii=False,indent=2))
           PY
+
+      - name: Store DTC candidate report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-dtc-candidates-${{ github.run_id }}
+          path: dtc-index-candidates.json
+          if-no-files-found: ignore
+          retention-days: 14
