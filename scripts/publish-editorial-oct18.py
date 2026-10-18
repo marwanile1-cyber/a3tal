@@ -15,6 +15,8 @@ if not KEY:raise SystemExit("Missing A3TAL_API_KEY")
 
 def get(url,payload=None,auth=True):
     url=url if url.startswith("https://") else API+url
+    # WordPress filenames can contain Arabic characters. HTTP request paths must be ASCII.
+    url=urllib.parse.quote(url,safe=":/?&=%#@+,;")
     headers={"User-Agent":"A3talIndependentEditorial20261018/1.0","Accept":"application/json,text/html,image/*,*/*","Cache-Control":"no-cache"}
     if auth: headers.update({"X-A3tal-Key":KEY,"Authorization":"Bearer "+KEY})
     data=None if payload is None else json.dumps(payload,ensure_ascii=False).encode("utf-8")
