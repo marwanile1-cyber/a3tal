@@ -46,6 +46,11 @@ add_filter('wpseo_exclude_from_sitemap_by_post_ids', static function($excluded) 
         ]);
         foreach ($found as $id) $excluded[] = (int) $id;
     }
+    // Legacy Arabic privacy URL now resolves to the up-to-date unified policy.
+    $legacy_policy = get_page_by_path('سياسة-الخصوصية', OBJECT, 'page');
+    if ($legacy_policy instanceof WP_Post && $legacy_policy->post_status === 'publish') {
+        $excluded[] = (int)$legacy_policy->ID;
+    }
     return array_values(array_unique(array_map('absint', $excluded)));
 }, 100);
 
