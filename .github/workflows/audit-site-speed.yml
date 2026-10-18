@@ -1,4 +1,5 @@
 name: Audit A3tal site speed
+# Verification after 234-DTC archive and SEO content-link release
 on:
   push:
     branches: [main]
