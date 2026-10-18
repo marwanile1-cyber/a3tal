@@ -1,4 +1,5 @@
 name: A3tal DTC sitemap and meta QA
+# Confirm 234 code pages after full related-guide release
 on:
   workflow_dispatch:
   push:
