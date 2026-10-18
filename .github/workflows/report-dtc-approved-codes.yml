@@ -1,0 +1,29 @@
+name: Report vetted DTC sitemap candidates
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/report-dtc-approved-codes.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: a3tal-dtc-candidates-39160615984
+          run-id: 39160615984
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Report ready codes
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json
+          d=json.load(open('dtc-index-candidates.json'))
+          collisions=set(d['article_overlap'])
+          approved=[p['code'] for p in d['checked'] if p.get('code') not in collisions and p.get('status')==200 and not p.get('article_reused') and p.get('body_chars',0)>=2500 and (p.get('robots') or '').startswith('index') and p.get('canonical')=='https://a3tal.com/dtc/'+p['code'].lower()+'/']
+          print('DTC_APPROVED_CODES',json.dumps(approved),flush=True)
+          print('DTC_APPROVED_COUNT',len(approved),flush=True)
+          PY
