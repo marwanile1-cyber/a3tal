@@ -8,7 +8,7 @@ from PIL import Image,ImageOps,ImageEnhance
 ROOT=Path(__file__).resolve().parents[1]
 SITE="https://a3tal.com"
 BRIDGE=SITE+"/wp-json/a3tal-direct/v1"
-FILE=ROOT/"data/dtc-original-batch-30.json"
+FILE=ROOT/"data/dtc-original-batch-31.json"
 ZIP=ROOT/"assets/dtc-batch27-photographic.zip"
 CODES="P0369 P0505 P0685 U0183 U0185 U0190 C006A C0069 B1441 B1442".split()
 SOURCE="P0261 P0327 P0571 U0141 U0132 U0125 C0046 C0044 B1232 B1213".split()
