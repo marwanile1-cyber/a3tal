@@ -3,7 +3,7 @@ Theme Name: A3tal Global
 Theme URI: https://a3tal.com/
 Author: A3tal.com
 Description: Premium RTL automotive platform theme for A3tal.com.
-Version: 1.7.5
+Version: 1.7.6
 Requires at least: 6.4
 Requires PHP: 8.0
 Text Domain: a3tal-global
@@ -1027,4 +1027,13 @@ html,body{max-width:100%;overflow-x:hidden}
 .g-hero-platform .g-hero-content{position:relative;z-index:2}
 @media(max-width:650px){
  .g-hero-platform::before{background:linear-gradient(180deg,rgba(5,14,24,.88),rgba(5,14,24,.78))}
+}
+
+/* A3TAL-MOBILE-PAINT-20261018: Avoid costly translucent-blur layers on small screens. */
+@media (max-width: 767px) {
+  .g-header,
+  .g-hero-action-row > a {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
 }
