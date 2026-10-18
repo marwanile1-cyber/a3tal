@@ -1,5 +1,6 @@
 name: Audit A3tal site speed
 # Verification after 234-DTC archive and SEO content-link release
+# After Alexandria font change and vetted code linking
 on:
   push:
     branches: [main]
