@@ -1,0 +1,70 @@
+name: Verify A3tal live SEO integrity
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/verify-seo-integrity.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Install read-only browserless HTML parser
+        run: pip install --quiet requests beautifulsoup4
+      - name: Verify headings, meta descriptions, sitemap and canonical redirects
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import requests,time
+          from bs4 import BeautifulSoup
+          s=requests.Session();s.headers.update({'User-Agent':'Mozilla/5.0 (compatible; A3tal-SEO-Verify/1.0)'})
+          root='https://a3tal.com'
+          bad=[]
+          def get(path,allow=True):
+            for attempt in range(3):
+              try:
+                r=s.get(root+path,timeout=30,allow_redirects=allow)
+                if r.status_code in (429,500,502,503,504) and attempt<2: time.sleep(2);continue
+                return r
+              except requests.RequestException:
+                if attempt==2:raise
+                time.sleep(2)
+          pages=['/cars-nissan-sunny/','/choose-your-car/','/اتصل-بنا/','/editorial-team/','/opel-kingdom-desouk/','/عن-الموقع/','/شروط-الاستخدام/']
+          for p in pages:
+            r=get(p)
+            h1=BeautifulSoup(r.text,'html.parser').select('h1')
+            print('H1_CHECK',p,r.status_code,len(h1),flush=True)
+            if r.status_code!=200 or len(h1)!=1:bad.append('h1:'+p)
+          meta_paths=['/fuel-pump-low-pressure-how-to-test-before-replacement/','/scooter-stalls-when-hot-causes-ignition-fuel/','/how-to-verify-authorized-car-service-center-egypt/','/motorcycles/bajaj-pulsar-180-egypt/','/motorcycles/bajaj-boxer-150-hd-egypt/','/service-centers/','/parts-stores/','/maintenance-schedules/']
+          for p in meta_paths:
+            r=get(p);soup=BeautifulSoup(r.text,'html.parser')
+            d=soup.find('meta',attrs={'name':'description'})
+            v=d.get('content','').strip() if d else ''
+            print('META_CHECK',p,r.status_code,len(v),flush=True)
+            if r.status_code!=200 or len(v)<45:bad.append('meta:'+p)
+          paths=['/obd2-live-data-reading-guide/','/obd2-freeze-frame-data-guide/','/radiator-internal-blockage-flow-temperature-test-2/','/p0300-random-misfire/','/مركز-خدمة-hyundai-egypt-ghabbour-auto/','/سياسة-الخصوصية/']
+          for p in paths:
+            r=get(p,False)
+            print('REDIRECT_CHECK',p,r.status_code,r.headers.get('location',''),flush=True)
+            if r.status_code!=301 or 'a3tal.com/' not in r.headers.get('location',''):bad.append('redirect:'+p)
+          for sitemap,forbidden in [
+              ('/a3_car-sitemap.xml',['/cars/kia-k4-2027-egypt/','/cars/skoda-octavia-2027-egypt/']),
+              ('/a3_maintenance_plan-sitemap.xml',['/maintenance-schedules/pulsar-180-first-service/']),
+              ('/post-sitemap.xml',['/radiator-internal-blockage-flow-temperature-test-2/','/p0300-random-misfire/']),
+              ('/page-sitemap.xml',['/سياسة-الخصوصية/']),
+          ]:
+            r=get(sitemap);t=r.text
+            absent=all(item not in t for item in forbidden)
+            print('SITEMAP_CHECK',sitemap,r.status_code,'forbidden_absent',absent,flush=True)
+            if r.status_code!=200 or not absent:bad.append('sitemap:'+sitemap)
+          car=get('/cars/chery-arrizo-5-egypt/').text
+          for target in ('/service-centers/chery-gb-abu-rawash-service-center/','/service-centers/chery-gb-amriya-alexandria-service-center/'):
+            print('MODEL_TO_CENTER',target,target in car,flush=True)
+            if target not in car:bad.append('model_link:'+target)
+          print('SEO_VERIFY_FAILED',bad,flush=True)
+          if bad:raise SystemExit(1)
+          print('SEO_VERIFY_ALL_PASS',flush=True)
+          PY
