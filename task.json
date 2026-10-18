@@ -16,23 +16,6 @@
       "method": "POST",
       "path": "/admin",
       "body": {
-        "op": "file_write",
-        "path": "themes/a3tal-global/functions.php",
-        "patches": [
-          {
-            "from": "Alexandria:wght@500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700",
-            "to": "Alexandria:wght@500..800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700"
-          }
-        ],
-        "confirm": true,
-        "dangerous": true,
-        "log_response": "sha_only"
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "body": {
         "op": "cache_flush"
       }
     }
@@ -40,9 +23,6 @@
   "verify": [
     {
       "path": "/admin?op=file_read&path=themes/a3tal-global/seo-followup-20261018.php"
-    },
-    {
-      "path": "/admin?op=file_read&path=themes/a3tal-global/functions.php"
     }
   ],
   "public_verify": [
