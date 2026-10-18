@@ -588,37 +588,29 @@ add_filter('wp_robots',static function($rules){
 },9999);
 
 
+/**
+ * One source of truth for DTC URLs chosen as canonical, uniquely useful
+ * indexing candidates. Share with Yoast sitemap and the archive index.
+ */
+function a3g_dtc_indexable_codes(): array {
+  static $codes=null;
+  if ($codes===null) {
+    $file=get_template_directory().'/dtc-approved-index-codes.php';
+    $codes=is_file($file)?(array)require $file:[];
+  }
+  return $codes;
+}
+
 /* A3TAL: remove 301 redirect sources and non-indexable DTC records from Yoast sitemaps.
    Article guides remain indexable, while structured stub entities still serve the site UI. */
 add_filter('wpseo_exclude_from_sitemap_by_post_ids', static function($excluded) {
   if (!is_array($excluded)) $excluded=[];
   // These legacy articles currently resolve via 301 to their specialist guides.
   $excluded=array_merge($excluded,[82275,82276,83384]);
-  // A3tal DTC SEO audit 2026-10-18: 277 codes reviewed; approve 231 standalone guides.
-  // 43 overlapping editorial topics plus three other candidates stay out of XML sitemaps.
+  // A3tal DTC SEO audit 2026-10-18: 277 codes reviewed; approve 234 standalone guides.
+  // 43 codes that reuse an existing canonical editorial guide stay out of XML sitemaps.
   // Explicit allowlist: future pages must pass review rather than auto-index.
-  $dtc_indexable_codes=array_fill_keys([
-    'B0001', 'B0010', 'B0020', 'B0028', 'B0051', 'B0070', 'B0081', 'B0090', 'B0092', 'B0094', 'B0095', 'B1213',
-    'B1232', 'B1318', 'B1325', 'B1411', 'B1412', 'B1413', 'B1421', 'B1422', 'B1423', 'B1441', 'B1442', 'B1443',
-    'B1446', 'B1600', 'B1601', 'B1602', 'B1681', 'B2103', 'B2431', 'C0035', 'C0036', 'C0037', 'C0038', 'C0039',
-    'C0040', 'C0041', 'C0042', 'C0043', 'C0044', 'C0045', 'C0046', 'C0050', 'C0051', 'C0052', 'C0053', 'C0061',
-    'C0062', 'C0063', 'C0064', 'C0069', 'C006A', 'C0071', 'C0072', 'C0110', 'C0161', 'C0236', 'C0237', 'C0265',
-    'C0299', 'C0550', 'C0561', 'C0800', 'C1241', 'P0012', 'P0017', 'P0102', 'P0103', 'P0105', 'P0106', 'P0107',
-    'P0108', 'P0113', 'P0116', 'P0119', 'P0121', 'P0122', 'P0123', 'P0130', 'P0131', 'P0132', 'P0133', 'P0134',
-    'P0137', 'P0138', 'P0139', 'P0140', 'P0141', 'P0174', 'P0190', 'P0191', 'P0192', 'P0193', 'P0200', 'P0201',
-    'P0202', 'P0203', 'P0204', 'P0205', 'P0206', 'P0217', 'P0221', 'P0234', 'P0243', 'P0251', 'P0261', 'P0262',
-    'P0305', 'P0306', 'P0316', 'P0325', 'P0327', 'P0328', 'P0336', 'P0341', 'P0345', 'P0351', 'P0352', 'P0353',
-    'P0354', 'P0365', 'P0369', 'P0380', 'P0401', 'P0402', 'P0403', 'P0421', 'P0441', 'P0443', 'P0446', 'P0449',
-    'P0451', 'P0452', 'P0453', 'P0456', 'P0460', 'P0463', 'P0480', 'P0481', 'P0496', 'P0500', 'P0505', 'P0506',
-    'P0521', 'P0523', 'P0530', 'P0544', 'P0560', 'P0571', 'P0606', 'P061B', 'P0620', 'P0641', 'P0650', 'P0685',
-    'P0691', 'P06DD', 'P0705', 'P0706', 'P0715', 'P0716', 'P0720', 'P0722', 'P0730', 'P0731', 'P0732', 'P0733',
-    'P0740', 'P0742', 'P0750', 'P0755', 'P0756', 'P0760', 'P0765', 'P0868', 'P2002', 'P2101', 'P2459', 'P2563',
-    'U0001', 'U0073', 'U0101', 'U0102', 'U0103', 'U0104', 'U0106', 'U0107', 'U0109', 'U0110', 'U0111', 'U0121',
-    'U0122', 'U0123', 'U0124', 'U0125', 'U0126', 'U0128', 'U0129', 'U0131', 'U0132', 'U0140', 'U0141', 'U0142',
-    'U0150', 'U0151', 'U0153', 'U0154', 'U0155', 'U0156', 'U0159', 'U0163', 'U0164', 'U0167', 'U0170', 'U0180',
-    'U0181', 'U0182', 'U0183', 'U0184', 'U0185', 'U0186', 'U0190', 'U0194', 'U023A', 'U0401', 'U0402', 'U0415',
-    'U0416', 'U0418', 'U0422',
-  ],true);
+  $dtc_indexable_codes=a3g_dtc_indexable_codes();
   $dtc_ids=get_posts([
     'post_type'=>'a3_dtc',
     'post_status'=>'publish',
