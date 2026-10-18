@@ -634,3 +634,8 @@ if (is_file(get_template_directory() . '/dtc-library-support.php')) {
     require_once get_template_directory() . '/dtc-library-support.php';
 }
 /* A3TAL-DTC-LIBRARY:END */
+
+/* A3TAL SEO INTEGRITY 2026-10-18 */
+if (is_file(get_template_directory() . '/seo-integrity-20261018.php')) {
+    require_once get_template_directory() . '/seo-integrity-20261018.php';
+}
