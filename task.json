@@ -5,13 +5,28 @@
       "path": "/admin",
       "body": {
         "op": "file_write",
+        "path": "themes/a3tal-global/style.css",
+        "confirm": true,
+        "dangerous": true,
+        "patches": [
+          {
+            "append": "\n/* A3TAL-MOBILE-PAINT-20261018: Avoid costly translucent-blur layers on small screens. */\n@media (max-width: 767px) {\n  .g-header,\n  .g-hero-action-row > a {\n    -webkit-backdrop-filter: none;\n    backdrop-filter: none;\n  }\n}\n"
+          }
+        ]
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/admin",
+      "body": {
+        "op": "file_write",
         "path": "themes/a3tal-global/functions.php",
         "confirm": true,
         "dangerous": true,
         "patches": [
           {
-            "from": "add_action('wp_enqueue_scripts','a3g_assets');",
-            "to": "add_action('wp_enqueue_scripts','a3g_assets');\n// A3TAL speed: defer only optional Google Fonts; preserve the blocking layout stylesheet.\nadd_filter('style_loader_tag', static function($html, $handle, $href) {\n  if ($handle !== 'a3g-fonts' || is_admin() || !$href) return $html;\n  $url = esc_url($href);\n  return '<link rel=\"stylesheet\" id=\"a3g-fonts-css\" href=\"' . $url . '\" media=\"print\" onload=\"this.media=\\'all\\'\">' . \"\\n\"\n    . '<noscript><link rel=\"stylesheet\" href=\"' . $url . '\"></noscript>' . \"\\n\";\n}, 10, 3);"
+            "from": "define('A3G_VERSION','1.7.5');",
+            "to": "define('A3G_VERSION','1.7.6');"
           }
         ]
       }
@@ -31,7 +46,7 @@
   ],
   "network_diagnostics": {
     "enabled": true,
-    "rounds": 2,
+    "rounds": 1,
     "paths": [
       "/",
       "/cars/",
