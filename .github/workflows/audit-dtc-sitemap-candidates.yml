@@ -1,0 +1,62 @@
+name: Audit DTC indexation candidates
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/audit-dtc-sitemap-candidates.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    steps:
+      - name: Install parser
+        run: python -m pip install -q requests beautifulsoup4
+      - name: Census catalog and test content uniqueness
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import requests,re,concurrent.futures,collections,json,time
+          from bs4 import BeautifulSoup
+          session=requests.Session();session.headers['User-Agent']='Mozilla/5.0 (compatible; A3talLibrarySeoAudit/1.0)'
+          base='https://a3tal.com/dtc/'
+          url_by_code={};page_counts=[]
+          for page in range(1,75):
+            r=session.get(base,params={'dtc_page':page},timeout=35)
+            r.raise_for_status()
+            soup=BeautifulSoup(r.content,'html.parser')
+            cards=soup.select('article.d-code-card')
+            parsed=[]
+            for card in cards:
+              a=card.find('a',href=True)
+              code=card.select_one('.d-code')
+              if a and code:
+                slug=code.get_text(strip=True).upper()
+                if re.fullmatch(r'[PBCU][0-9A-F]{4}',slug):
+                  parsed.append((slug,a['href']))
+                  url_by_code.setdefault(slug,a['href'])
+            page_counts.append(len(parsed))
+            if page in [1,2,10,20,30,40,50,60]:
+              print('DTC_PAGE',page,'codes',len(parsed),'total_unique',len(url_by_code),flush=True)
+            if not parsed or page>1 and len(parsed)<18:break
+            if page>1 and len(url_by_code)==len(set(url_by_code)):pass
+          print('DTC_CATALOG_SUMMARY',json.dumps({'count':len(url_by_code),'pages':len(page_counts),'last_page_size':page_counts[-1],'family':dict(collections.Counter(k[0] for k in url_by_code)),'examples':list(url_by_code)[:45]}),flush=True)
+          inspect=list(url_by_code.items())[:min(54,len(url_by_code))]
+          def check(item):
+            code,url=item
+            try:
+              r=requests.get(url,headers={'User-Agent':'Mozilla/5.0'},timeout=30)
+              soup=BeautifulSoup(r.content,'html.parser')
+              el=soup.select_one('.d-entry')
+              body=el.get_text(' ',strip=True) if el else ''
+              original=soup.find('a',string=re.compile('المقال الأصلي'))
+              robot=soup.find('meta',attrs={'name':'robots'})
+              canon=soup.find('link',rel='canonical')
+              return {'code':code,'status':r.status_code,'body_chars':len(body),'article_reused':bool(original),'original_link':original.get('href') if original else None,'robots':robot.get('content') if robot else None,'canonical':canon.get('href') if canon else None}
+            except Exception as e:return {'code':code,'error':str(e)[:100]}
+          with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
+            checked=list(pool.map(check,inspect))
+          print('DTC_PAGE_SAMPLE',json.dumps(checked,ensure_ascii=False),flush=True)
+          PY
