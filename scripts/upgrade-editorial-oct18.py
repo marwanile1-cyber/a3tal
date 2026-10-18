@@ -141,8 +141,9 @@ def main():
         # WordPress sanitizes some non-standard anchors during save, so byte-for-byte
         # checks against the final raw HTML would be a false alarm. Retain the original
         # introduction, all original H2 section headings, FAQs and editorial source note.
-        plain=lambda x: html.unescape(re.sub(r"<[^>]+>"," ",x))
-        if plain(original[:180]).strip() not in plain(final):
+        plain=lambda x: " ".join(html.unescape(re.sub(r"<[^>]+>"," ",x)).split())
+        first_para=re.search(r"<p[^>]*>(.*?)</p>",original,re.S)
+        if not first_para or plain(first_para.group(1))[:90] not in plain(final):
             raise RuntimeError("Original opening lost after update: "+slug)
         original_headings=[plain(t).strip() for t in re.findall(r"<h2[^>]*>(.*?)</h2>",original,re.S)]
         if any(h not in plain(final) for h in original_headings):
