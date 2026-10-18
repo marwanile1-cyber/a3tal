@@ -66,6 +66,43 @@ get_header('dtc');
       </div>
       <?php if ($dtc_pages > 1): ?><nav class="d-pagination" aria-label="صفحات أكواد الأعطال"><?php if ($dtc_page > 1): ?><a class="d-button d-button-quiet" rel="prev" href="<?php echo esc_url(add_query_arg(['code' => $dtc_search ?: false, 'family' => $dtc_family ?: false, 'dtc_page' => $dtc_page - 1], $dtc_library_url) . '#dtc-codes'); ?>">الصفحة السابقة</a><?php endif; ?><span><?php echo esc_html(number_format_i18n($dtc_page)); ?> / <?php echo esc_html(number_format_i18n($dtc_pages)); ?></span><?php if ($dtc_page < $dtc_pages): ?><a class="d-button d-button-quiet" rel="next" href="<?php echo esc_url(add_query_arg(['code' => $dtc_search ?: false, 'family' => $dtc_family ?: false, 'dtc_page' => $dtc_page + 1], $dtc_library_url) . '#dtc-codes'); ?>">الصفحة التالية</a><?php endif; ?></nav><?php endif; ?>
     </section>
+    <?php /* Readable, indexable entry paths for all vetted canonical diagnostic codes. */ ?>
+    <?php if ($dtc_search === '' && $dtc_family === '' && $dtc_page === 1 && function_exists('a3g_dtc_indexable_codes')): ?>
+      <?php
+        $approved_dtc_codes = a3g_dtc_indexable_codes();
+        $index_groups = ['P'=>[], 'B'=>[], 'C'=>[], 'U'=>[]];
+        foreach ($dtc_catalog as $dtc_record) {
+          $code=(string)($dtc_record['code']??'');
+          $url=(string)($dtc_record['url']??'');
+          if (!isset($approved_dtc_codes[$code]) || !preg_match('~^https?://[^/]+/dtc/[pbcu][0-9a-f]{4}/$~i',$url)) continue;
+          $letter=substr($code,0,1);
+          if (isset($index_groups[$letter])) $index_groups[$letter][$code]=$url;
+        }
+        foreach ($index_groups as &$items) ksort($items, SORT_NATURAL);
+        unset($items);
+      ?>
+      <section class="d-code-index" id="dtc-complete-index" aria-labelledby="dtc-complete-index-title">
+        <div class="d-section-heading">
+          <div>
+            <p class="d-kicker">الفهرس الفني</p>
+            <h2 id="dtc-complete-index-title">فهرس أكواد الأعطال المتاحة</h2>
+            <p>افتح مجموعة الكود للوصول إلى الشرح المناسب مباشرة. الأكواد التي لها مقال أصلي مستقل تعرض من خلال البحث بالمكتبة.</p>
+          </div>
+        </div>
+        <div class="d-code-index-groups">
+          <?php foreach ($index_groups as $letter => $items): if (!$items) continue; ?>
+            <details class="d-code-index-group">
+              <summary><span dir="ltr"><?php echo esc_html($letter); ?></span> <strong><?php echo esc_html($dtc_families[$letter][0]); ?></strong> <small><?php echo esc_html(count($items)); ?> كود</small></summary>
+              <ul class="d-code-index-links">
+                <?php foreach ($items as $code=>$url): ?>
+                  <li><a href="<?php echo esc_url($url); ?>" aria-label="<?php echo esc_attr('شرح كود '.$code); ?>" dir="ltr"><?php echo esc_html($code); ?></a></li>
+                <?php endforeach; ?>
+              </ul>
+            </details>
+          <?php endforeach; ?>
+        </div>
+      </section>
+    <?php endif; ?>
     <section id="dtc-community" class="d-community" aria-labelledby="dtc-community-title">
       <div class="d-community-intro"><span class="d-community-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3H5a2 2 0 0 0-2 2v11l4-3h9a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2Z"/><path d="M8 17v1a2 2 0 0 0 2 2h7l4 3V10a2 2 0 0 0-2-2"/></svg></span><p class="d-kicker">الأسئلة وتجارب الإصلاح</p><h2 id="dtc-community-title">نفس الكود.<br>تجارب مختلفة.</h2><p>احكي اللي بيحصل في عربيتك، واسأل الناس اللي مرّت بالتجربة. افتح صفحة الكود وشارك باسم مستعار، من غير حساب.</p><a class="d-text-link" href="#dtc-codes">اختَر الكود وشارك تجربتك <span aria-hidden="true">←</span></a></div>
       <div class="d-community-feed">
