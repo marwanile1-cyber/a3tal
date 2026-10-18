@@ -5,17 +5,13 @@
       "path": "/admin",
       "body": {
         "op": "file_write",
-        "path": "themes/a3tal-global/front-page.php",
+        "path": "themes/a3tal-global/functions.php",
         "confirm": true,
         "dangerous": true,
         "patches": [
           {
-            "from": "<h1>كل ما يخص عالم السيارات والموتوسيكلات</h1>",
-            "to": "<h1>موسوعة أعطال السيارات وأكواد التشخيص والأسعار ومراكز الصيانة</h1>"
-          },
-          {
-            "from": "<p>من الشراء والمقارنة إلى التشخيص والصيانة وقطع الغيار ومراكز الخدمة والبيع. مركبتك كلها في مكان واحد.</p>",
-            "to": "<p>اكتشف كل ما تحتاج معرفته عن سيارتك في مكان واحد. تعرّف على أعطال السيارات وأسبابها وطرق إصلاحها، وافهم أكواد الأعطال OBD-II، واستكشف أسعار السيارات ومواصفاتها ومقارناتها، مع دليل مراكز الصيانة والخدمة لمساعدتك على التشخيص الصحيح واتخاذ القرار بثقة.</p>"
+            "from": "add_action('wp_enqueue_scripts','a3g_assets');",
+            "to": "add_action('wp_enqueue_scripts','a3g_assets');\n// A3TAL speed: defer only optional Google Fonts; preserve the blocking layout stylesheet.\nadd_filter('style_loader_tag', static function($html, $handle, $href) {\n  if ($handle !== 'a3g-fonts' || is_admin() || !$href) return $html;\n  $url = esc_url($href);\n  return '<link rel=\"stylesheet\" id=\"a3g-fonts-css\" href=\"' . $url . '\" media=\"print\" onload=\"this.media=\\'all\\'\">' . \"\\n\"\n    . '<noscript><link rel=\"stylesheet\" href=\"' . $url . '\"></noscript>' . \"\\n\";\n}, 10, 3);"
           }
         ]
       }
@@ -30,11 +26,16 @@
   ],
   "verify": [
     {
-      "path": "/admin?op=file_read&path=themes/a3tal-global/front-page.php"
+      "path": "/admin?op=file_read&path=themes/a3tal-global/functions.php"
     }
   ],
-  "public_verify": [
-    "<h1>موسوعة أعطال السيارات وأكواد التشخيص والأسعار ومراكز الصيانة</h1>",
-    "اكتشف كل ما تحتاج معرفته عن سيارتك في مكان واحد. تعرّف على أعطال السيارات وأسبابها وطرق إصلاحها، وافهم أكواد الأعطال OBD-II، واستكشف أسعار السيارات ومواصفاتها ومقارناتها، مع دليل مراكز الصيانة والخدمة لمساعدتك على التشخيص الصحيح واتخاذ القرار بثقة."
-  ]
+  "network_diagnostics": {
+    "enabled": true,
+    "rounds": 2,
+    "paths": [
+      "/",
+      "/cars/",
+      "/dtc/"
+    ]
+  }
 }
