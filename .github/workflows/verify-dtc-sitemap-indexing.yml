@@ -1,0 +1,54 @@
+name: Verify DTC sitemap SEO rollout
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/verify-dtc-sitemap-indexing.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Validate DTC sitemap entries and canonical policy
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import requests,xml.etree.ElementTree as ET,concurrent.futures,collections,json
+          root='https://a3tal.com'
+          s=requests.Session()
+          s.headers['User-Agent']='Mozilla/5.0 (compatible; A3talDtcSitemapQA/1.0)'
+          response=s.get(root+'/a3_dtc-sitemap.xml',timeout=45)
+          response.raise_for_status()
+          document=ET.fromstring(response.content)
+          urls=[n.text.strip() for n in document.iter() if n.tag.endswith('}loc') and n.text]
+          codes=[u for u in urls if '/dtc/' in u and u!=root+'/dtc/']
+          assert len(urls)==232,(len(urls),len(codes))
+          assert len(codes)==231 and len(set(codes))==231
+          assert root+'/dtc/' in urls
+          excluded=['p0013','p0101','p0171','p0300','u0100']
+          assert not any(root+'/dtc/'+c+'/' in urls for c in excluded)
+          expected=['b0001','b0010','c0035','p0012','u0121']
+          assert all(root+'/dtc/'+c+'/' in urls for c in expected)
+          print('DTC_SITEMAP_COUNT',len(urls),'CODE_URLS',len(codes),flush=True)
+          from html.parser import HTMLParser
+          class HeadReader(HTMLParser):
+            def __init__(self):super().__init__();self.robots='';self.canonical=''
+            def handle_starttag(self,tag,attrs):
+              a=dict(attrs)
+              if tag=='meta' and a.get('name','').lower()=='robots':self.robots=a.get('content','')
+              if tag=='link' and a.get('rel')=='canonical':self.canonical=a.get('href','')
+          # Audit 27 pages, evenly across the sitemap (plus all four code families).
+          sample=list(dict.fromkeys([codes[int(i*(len(codes)-1)/22)] for i in range(23)]+[root+'/dtc/'+c+'/' for c in expected]))
+          def inspect(url):
+            r=requests.get(url,timeout=35,headers={'User-Agent':'Mozilla/5.0'})
+            h=HeadReader();h.feed(r.text)
+            return {'url':url,'status':r.status_code,'robots':h.robots,'canonical':h.canonical}
+          with concurrent.futures.ThreadPoolExecutor(max_workers=5) as e:checks=list(e.map(inspect,sample))
+          bad=[p for p in checks if p['status']!=200 or 'noindex' in p['robots'].lower() or p['canonical']!=p['url']]
+          print('DTC_SAMPLE_CHECKED',len(checks),'FAILED',len(bad),flush=True)
+          if bad:print('DTC_SAMPLE_ERRORS',json.dumps(bad,ensure_ascii=False),flush=True);raise SystemExit(1)
+          print('DTC_SITEMAP_VERIFIED',flush=True)
+          PY
