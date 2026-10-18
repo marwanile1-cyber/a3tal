@@ -23,7 +23,8 @@ jobs:
           response=s.get(root+'/a3_dtc-sitemap.xml',timeout=45)
           response.raise_for_status()
           document=ET.fromstring(response.content)
-          urls=[n.text.strip() for n in document.iter() if n.tag.endswith('}loc') and n.text]
+          ns='{http://www.sitemaps.org/schemas/sitemap/0.9}'
+          urls=[n.text.strip() for n in document.findall('.//'+ns+'url/'+ns+'loc') if n.text]
           codes=[u for u in urls if '/dtc/' in u and u!=root+'/dtc/']
           assert len(urls)==232,(len(urls),len(codes))
           assert len(codes)==231 and len(set(codes))==231
