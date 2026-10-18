@@ -35,6 +35,15 @@ jobs:
           curl -fsSL --retry 2 --max-time 25 -A "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Mobile Safari/537.36" "$FONT_URL" -o /tmp/a3tal-variable-fonts.css
           echo "VARIABLE_FONT_CSS_BYTES $(wc -c </tmp/a3tal-variable-fonts.css)"
           grep -E 'font-family:|font-weight:' /tmp/a3tal-variable-fonts.css | sort -u | head -18
+      - name: Verify live mobile CSS paint patch and version
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsSL --retry 2 --max-time 30 "https://a3tal.com/wp-content/themes/a3tal-global/style.css?ver=1.7.6" -o /tmp/a3tal-paint.css
+          grep -Fq "A3TAL-MOBILE-PAINT-20261018" /tmp/a3tal-paint.css
+          curl -fsSL --retry 2 --max-time 30 https://a3tal.com/ -o /tmp/a3tal-main.html
+          grep -Fq 'style.css?ver=1.7.6' /tmp/a3tal-main.html
+          echo 'LIVE_MOBILE_CSS_PATCH_VERIFIED'
       - name: Lighthouse mobile homepage
         shell: bash
         run: |
