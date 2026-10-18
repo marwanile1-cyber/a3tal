@@ -2,18 +2,38 @@
   "requests": [
     {
       "method": "POST",
-      "path": "/admin",
+      "path": "/redirect",
       "body": {
-        "op": "file_write",
-        "path": "themes/a3tal-global/functions.php",
-        "confirm": true,
-        "dangerous": true,
-        "patches": [
-          {
-            "from": "add_action('wp_head',function(){echo '<meta name=\"theme-color\" content=\"#091522\">'.PHP_EOL;},1);",
-            "to": "// Prioritize the exact responsive homepage LCP photo before the stylesheet and font downloads.\n// Match the front-page category query and sizes to avoid duplicate image requests.\nfunction a3g_preload_home_hero_image() {\n  if (!is_front_page()) return;\n  $posts = get_posts([\n    'post_type' => 'post',\n    'post_status' => 'publish',\n    'cat' => 374,\n    'posts_per_page' => 1,\n    'fields' => 'ids',\n    'ignore_sticky_posts' => true,\n    'no_found_rows' => true,\n  ]);\n  if (empty($posts)) return;\n  $attachment_id = get_post_thumbnail_id((int)$posts[0]);\n  if (!$attachment_id) return;\n  $source = wp_get_attachment_image_src($attachment_id, 'large');\n  if (!$source || empty($source[0])) return;\n  $srcset = wp_get_attachment_image_srcset($attachment_id, 'large');\n  $sizes = '(max-width: 767px) 100vw, (max-width: 1280px) 92vw, 1240px';\n  echo '<link rel=\"preload\" as=\"image\" href=\"'.esc_url($source[0]).'\"'\n    . ($srcset ? ' imagesrcset=\"'.esc_attr($srcset).'\"' : '')\n    . ' imagesizes=\"'.esc_attr($sizes).'\" fetchpriority=\"high\">'.\"\\n\";\n}\nadd_action('wp_head', 'a3g_preload_home_hero_image', 2);\nadd_action('wp_head',function(){echo '<meta name=\"theme-color\" content=\"#091522\">'.PHP_EOL;},1);"
-          }
-        ]
+        "source_path": "/obd2-live-data-reading-guide/",
+        "target_url": "https://a3tal.com/live-data-obd2/",
+        "status_code": 301
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/redirect",
+      "body": {
+        "source_path": "/obd2-freeze-frame-data-guide/",
+        "target_url": "https://a3tal.com/freeze-frame-obd2/",
+        "status_code": 301
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/redirect",
+      "body": {
+        "source_path": "/radiator-internal-blockage-flow-temperature-test-2/",
+        "target_url": "https://a3tal.com/radiator-internal-blockage-flow-temperature-test/",
+        "status_code": 301
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/redirect",
+      "body": {
+        "source_path": "/p0300-random-misfire/",
+        "target_url": "https://a3tal.com/%D9%81%D9%83-%D9%84%D8%BA%D8%B2-%D9%83%D9%88%D8%AF-%D8%A7%D9%84%D8%B9%D8%B7%D9%84-p0300-%D9%81%D9%8A-%D8%B4%D9%8A%D9%81%D8%B1%D9%88%D9%84%D9%8A%D9%87-%D8%AF%D9%84%D9%8A%D9%84-%D8%A7%D9%84%D8%AA%D8%B4/",
+        "status_code": 301
       }
     },
     {
@@ -24,13 +44,7 @@
       }
     }
   ],
-  "verify": [
-    {
-      "path": "/admin?op=file_read&path=themes/a3tal-global/functions.php"
-    }
-  ],
   "public_verify": [
-    "fetchpriority=\"high\"",
-    "g-hero-bg"
+    "موسوعة أعطال السيارات وأكواد التشخيص والأسعار ومراكز الصيانة"
   ]
 }
