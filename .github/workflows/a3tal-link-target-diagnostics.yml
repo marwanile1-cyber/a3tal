@@ -1,0 +1,29 @@
+name: Check A3tal internal link targets
+on:
+  push:
+    paths: ['.github/workflows/a3tal-link-target-diagnostics.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: a3tal-live-seo-link-audit-39159901714
+          run-id: 39159901714
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: old-audit
+      - name: Install requests
+        run: pip -q install requests
+      - name: Check top linked paths missing from sitemap
+        run: python3 scripts/check-internal-link-targets.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-link-target-results-${{ github.run_id }}
+          path: link-target-diagnostics.json
+          retention-days: 10
