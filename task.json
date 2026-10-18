@@ -1,20 +1,16 @@
 {
-  "deployment_tag": "revert-lcp-sync-20261019",
+  "deployment_tag": "seo-verified-remaining-links-20261019",
   "requests": [
     {
       "method": "POST",
       "path": "/admin",
       "body": {
         "op": "file_write",
-        "path": "themes/a3tal-global/front-page.php",
+        "path": "themes/a3tal-global/seo-followup-20261018.php",
+        "content_file": "theme-source/a3tal-global/seo-followup-20261018.php",
         "confirm": true,
         "dangerous": true,
-        "patches": [
-          {
-            "from": "'fetchpriority'=>'high',\n          'decoding'=>'sync',",
-            "to": "'fetchpriority'=>'high',\n          'decoding'=>'async',"
-          }
-        ]
+        "log_response": "sha_only"
       }
     },
     {
@@ -27,7 +23,7 @@
   ],
   "verify": [
     {
-      "path": "/admin?op=file_read&path=themes/a3tal-global/front-page.php"
+      "path": "/admin?op=file_read&path=themes/a3tal-global/seo-followup-20261018.php"
     }
   ],
   "public_verify": [
