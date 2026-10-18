@@ -194,3 +194,52 @@ add_filter('the_content', static function($html) {
       .'<ul style="margin:0 0 8px">'.implode('',$links).'</ul>'
       .'<p style="margin:0">تأكد من الخدمات المتاحة لموديلك وسنة الصنع قبل الحجز.</p></aside>';
 }, 62);
+
+
+/**
+ * Lightweight contextual further-reading links: only approved topic-specific
+ * destinations verified on the live site. No broad brand guessing or auto
+ * linking from article body keywords; rule matches the actual article title.
+ */
+add_filter('the_content', static function($html) {
+    if (!is_singular('post') || !in_the_loop() || !is_main_query()) return $html;
+    $title=(string)get_the_title();
+    $rules=[
+      ['~\b[PBCU][0-9][0-9A-F]{3}\b~iu', [
+        ['live-data-obd2','كيف تستخدم Live Data في تشخيص الكود'],
+        ['freeze-frame-obd2','قراءة Freeze Frame قبل مسح الكود']]],
+      ['~(?:طرمبة\s*(?:البنزين|وقود)|مضخة\s*(?:البنزين|الوقود)|fuel[\s-]*pump)~iu', [
+        ['fuel-pump-low-pressure-how-to-test-before-replacement','اختبارات ضغط وتدفق الوقود قبل تغيير الطرمبة']]],
+      ['~(?:فتيس\s*أوتوماتيك|ناقل\s*حركة\s*أوتوماتيك|automatic[\s-]*transmission|زيت\s*الفتيس)~iu', [
+        ['automatic-transmission-fluid-change-guide-risks','تغيير زيت الفتيس الأوتوماتيك: المخاطر وخطوات التحقق']]],
+      ['~(?:سخونة\s*(?:المحرك|العربية|السيارة)|الردياتير|دورة\s*التبريد|coolant|radiator)~iu', [
+        ['ultimate-radiator-coolant-guide-types-differences','اختيار سائل التبريد المناسب وفهم المواصفات']]],
+      ['~(?:حساس\s*الكرنك|حساس\s*الكامة|الأرضي\s*الكهربائي|هبوط\s*الجهد|voltage[\s-]*drop)~iu', [
+        ['car-ground-voltage-drop-test','فحص أرضي السيارة بهبوط الجهد']]],
+      ['~(?:STFT|LTFT|fuel[\s-]*trim|الخليط\s*الفقير|الخليط\s*الغني)~iu', [
+        ['stft-ltft-fuel-trim-diagnosis','قراءة STFT وLTFT لفهم خلل خليط الوقود']]],
+      ['~(?:صفير\s*(?:رولمان|بلي|العجل)|صوت\s*ونة\s*العجل|wheel[\s-]*bearing)~iu', [
+        ['wheel-bearing-humming-noise-diagnosis','طريقة التفريق بين صوت بلية العجل وأصوات الإطارات']]],
+      ['~(?:لمبة\s*EPS|عطل\s*EPS|باور\s*كهربائي)~iu', [
+        ['eps-warning-light-heavy-steering-diagnosis','تشخيص لمبة EPS وثقل الدركسيون']]],
+      ['~(?:زيت\s*الفرامل|سائل\s*الفرامل|brake[\s-]*fluid)~iu', [
+        ['brake-fluid-change-moisture-test-dot4','تقييم وتغيير سائل الفرامل واختبار الرطوبة']]],
+      ['~(?:فلتر\s*التكييف|فلتر\s*الكابينة|cabin[\s-]*filter)~iu', [
+        ['when-to-replace-car-cabin-air-filter-symptoms','أعراض انسداد فلتر التكييف ومتى يجب تغييره']]],
+    ];
+    $links=[];
+    foreach($rules as [$pattern,$items]){
+        if (!preg_match($pattern,$title)) continue;
+        foreach($items as [$slug,$label]){
+            $url=home_url('/'.$slug.'/');
+            if (untrailingslashit(get_permalink())===untrailingslashit($url) || strpos($html,$url)!==false) continue;
+            $links[$slug]='<li><a href="'.esc_url($url).'">'.esc_html($label).'</a></li>';
+            if(count($links)>=2) break 2;
+        }
+    }
+    if (!$links) return $html;
+    return $html.'<aside class="a3-seo-related-reading" aria-label="شروحات فنية مرتبطة"'
+      .' style="margin:24px 0;padding:16px 18px;border:1px solid #dce5ef;border-radius:12px;background:#f8fafc">'
+      .'<h2 style="font-size:1.15em;margin:0 0 8px">شروحات تساعدك على استكمال التشخيص</h2>'
+      .'<ul style="margin:0">'.implode('',$links).'</ul></aside>';
+}, 65);
