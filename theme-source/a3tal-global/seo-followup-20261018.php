@@ -54,6 +54,22 @@ add_filter('the_content', static function($html) {
 /** Exact subject journeys after manual review, avoiding cross-brand link farms. */
 function a3tal_editorial_approved_journeys(): array {
   return [
+    'صفير-سير-الدينامو' => ['أعطال-كهرباء-السيارة-في-مصر-الدليل-الأ'],
+    'how-to-adjust-car-headlights-egypt' => ['أعطال-كهرباء-السيارة-في-مصر-الدليل-الأ'],
+    'hyundai-accent-rb-2026-review-egypt' => ['new-car-delivery-checklist-egypt'],
+    'hyundai-verna-spare-parts-maintenance-egypt-2026' => ['أفضل-مواقع-بيع-قطع-غيار-السيارات-في-مصر'],
+    'baic-u5-plus-2026-price-specs-egypt' => ['new-car-delivery-checklist-egypt'],
+    'chevrolet-tornado-2026-egypt-price-specs' => ['new-car-delivery-checklist-egypt'],
+    'suzuki-celerio-2026-fuel-economy-egypt' => ['new-car-delivery-checklist-egypt'],
+    'mg-cars-fault-codes-dictionary-dtc' => ['live-data-obd2', 'freeze-frame-obd2'],
+    'chery-arrizo-5-2026-egypt' => ['common-car-maintenance-mistakes-shorten-life'],
+    'صيانة-mg-7-في-مصر' => ['common-car-maintenance-mistakes-shorten-life'],
+    'nissan-sentra-maintenance-schedule-service-centers' => ['common-car-maintenance-mistakes-shorten-life'],
+    'byd-f3-price-egypt' => ['used-cars-market-egypt-2026'],
+    'سعر-تويوتا-ياريس-2026' => ['new-car-delivery-checklist-egypt'],
+    'abs-cbs-disc-drum-motorcycle-brakes' => ['motorcycle-maintenance-schedule-guide'],
+    'قطع-غيار-مرسيدس-في-مصر-2026-الأسعار-وأماكن' => ['أفضل-مواقع-بيع-قطع-غيار-السيارات-في-مصر'],
+    'el-dawly-car-service-zagazig' => ['how-to-verify-authorized-car-service-center-egypt'],
     'stft-ltft-fuel-trim-diagnosis' => ['p0171-system-too-lean-bank-1-diagnosis'],
     '6-speed-automatic-transmission-cars-dexron-vi-oil' => ['automatic-transmission-fluid-change-guide-risks'],
     'automatic-transmission-fluid-change-guide-risks' => ['6-speed-automatic-transmission-cars-dexron-vi-oil'],
