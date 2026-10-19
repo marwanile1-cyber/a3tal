@@ -1,0 +1,23 @@
+name: Add 10 original diagnostic inline visuals to repaired Egypt articles
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/attach-egypt-original-diagrams-20261019.yml','scripts/attach-egypt-diagnostic-diagrams-20261019.py']
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  attach:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install rendering tools for reviewed Arabic diagnostic infographics
+        run: python3 -m pip install -q pillow arabic-reshaper python-bidi
+      - name: Preflight and add original images to the ten exact live articles
+        run: python3 -u scripts/attach-egypt-diagnostic-diagrams-20261019.py
