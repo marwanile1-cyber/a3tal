@@ -350,3 +350,66 @@ add_filter('the_content', static function($html) {
      .'<p>قد تظهر أكواد مشابهة عند فحص نفس الدائرة. معنى كل كود وطريقة اختباره مختلفان.</p>'
      .'<ul>'.implode('',$links).'</ul></aside>';
 }, 75);
+
+
+
+/**
+ * A3TAL_EGYPT_DTC_DEAD_LINK_PRECISION_FIX_20261019
+ * Render-time repair for confirmed dead DTC shortcuts and verified one-hop
+ * legacy URLs (2026-10-19 read-only extended audit).
+ * Does not change post slugs, post meta, the DTC catalogue, or stored content.
+ * Crucially, a missing DTC code never redirects to a different code/vehicle.
+ */
+add_filter('the_content', static function($content) {
+  if (!is_singular(['post','a3_dtc','a3_car','a3_maintenance_plan']) || !in_the_loop() || !is_main_query()) return $content;
+  if (strpos($content, 'href=') === false) return $content;
+
+  // Confirmed 404 on the live Egypt site; these are NOT valid DTC permalink IDs.
+  $missing_dtc = array_fill_keys([
+    'p0562','u0100','p0455','p0300','p0700','p0299','p0301',
+    'p0011','p0016','p0128','p0010','p0507','c1010','p0087',
+    'p0171','p0304','p0442'
+  ], true);
+
+  // Only the actual 301 endpoints observed in the 2026-10-19 crawl.
+  $redirected = [
+    'p0011-camshaft-timing-over-advanced' => 'كود-p0011-سيارات-هيونداي',
+    'p0300-random-misfire' => 'فك-لغز-كود-العطل-p0300-في-شيفروليه-دليل-التش',
+    'engine-overheating-causes-solutions' => 'ما-هي-الأسباب-الشائعة-لسخونة-محرك-السي',
+    'obd2-freeze-frame-data-guide' => 'freeze-frame-obd2',
+    'p0342-camshaft-position-sensor-circuit-low' => 'dtc-p0342-chevrolet',
+    'obd2-live-data-reading-guide' => 'live-data-obd2',
+    'jetour-t2-maintenance-schedule-spare-parts' => 'jetour-t2-maintenance-schedule-egypt',
+    'opel-insignia-p03a3-pressure-sensor-glow-plug-fix-2026' => 'p03a3-cylinder-2-pressure-sensor-intermittent',
+  ];
+  return preg_replace_callback(
+    '~<a\b[^>]*\bhref\s*=\s*(["\x27])([^"\x27]*)\1[^>]*>.*?</a>~isu',
+    static function($m) use ($missing_dtc, $redirected) {
+      $href = html_entity_decode($m[2], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+      $parts = wp_parse_url($href);
+      if (!is_array($parts)) return $m[0];
+      $host = strtolower((string)($parts['host'] ?? ''));
+      if ($host !== '' && !in_array($host, ['a3tal.com','www.a3tal.com'], true)) return $m[0];
+      $path = trim(rawurldecode((string)($parts['path'] ?? '')), '/');
+      if (preg_match('~^dtc/([pbcu][0-9a-f]{4})$~i', $path, $code)
+          && isset($missing_dtc[strtolower($code[1])])) {
+        // Preserve the editorial phrase and code, but do not send readers to 404.
+        if (preg_match('~>(.*?)</a>$~isu', $m[0], $body)) {
+          return '<span class="a3tal-unavailable-destination">'.$body[1].'</span>';
+        }
+        return wp_strip_all_tags($m[0]);
+      }
+      if (isset($redirected[$path])) {
+        $dest = esc_url(home_url('/'.$redirected[$path].'/'));
+        // Swap the href only, never edit surrounding text or linked imagery.
+        return preg_replace_callback(
+          '~(\bhref\s*=\s*)(["\x27])[^"\x27]*\2~iu',
+          static function($link) use ($dest) {return $link[1].$link[2].$dest.$link[2];},
+          $m[0],
+          1
+        );
+      }
+      return $m[0];
+    }, $content
+  );
+}, 51);
