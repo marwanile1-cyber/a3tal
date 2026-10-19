@@ -1,0 +1,27 @@
+name: Upgrade Egypt weak encyclopedic articles batch 01
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/upgrade-egypt-short-articles-20261019.yml']
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    timeout-minutes: 24
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check guarded publisher syntax and all editorial assets
+        run: |
+          python3 -m py_compile scripts/upgrade-egypt-short-articles-20261019.py
+          test -s data/expansions/egypt-20261019-kia-sportage-dct.html
+          test -s data/expansions/egypt-20261019-kia-sportage-dtc.html
+          test -s data/expansions/egypt-20261019-mg5-electrical.html
+      - name: Enrich existing posts preserving URLs and media
+        run: python3 -u scripts/upgrade-egypt-short-articles-20261019.py
