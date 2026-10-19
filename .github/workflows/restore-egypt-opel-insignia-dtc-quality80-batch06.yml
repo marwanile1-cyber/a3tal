@@ -1,0 +1,30 @@
+name: Restore Opel Insignia DTC dictionary only after manual under-80 review
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/restore-egypt-opel-insignia-dtc-quality80-batch06.yml'
+      - 'scripts/backfill-egypt-quality80-reviewed-batch06-insignia-dtc.py'
+      - 'data/quality-audits/egypt-editorial-manual-audit-20261020-06-insignia-dtc.json'
+      - 'data/expansions/egypt-editorial-quality80-batch06-insignia-dtc-20261020.json'
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    timeout-minutes: 23
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate only the manually scored Insignia article
+        run: |
+          python3 -m py_compile scripts/editorial_minimum_words.py scripts/backfill-egypt-quality80-reviewed-batch06-insignia-dtc.py
+          python3 -m json.tool data/quality-audits/egypt-editorial-manual-audit-20261020-06-insignia-dtc.json >/dev/null
+          python3 -m json.tool data/expansions/egypt-editorial-quality80-batch06-insignia-dtc-20261020.json >/dev/null
+      - name: Publish and verify 1500+ actual words and factory sources on original post
+        run: python3 -u scripts/backfill-egypt-quality80-reviewed-batch06-insignia-dtc.py
