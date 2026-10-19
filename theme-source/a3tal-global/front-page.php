@@ -59,7 +59,7 @@ $showrooms=new WP_Query(['post_type'=>'a3_showroom','post_status'=>'publish','po
 
         <form class="g-hero-search g-universal-search" method="get" action="<?php echo esc_url(home_url('/')); ?>">
           <div class="g-search-field"><?php echo a3g_icon('search'); ?><input type="search" name="s" placeholder="ابحث عن سيارة، سعر، عطل، كود P0420، قطعة غيار أو مركز خدمة..." aria-label="بحث شامل"></div>
-          <button type="submit"><?php echo a3g_icon('search'); ?><span>بحث</span></button>
+          <button type="submit" aria-label="البحث في موقع أعطال.كوم"><?php echo a3g_icon('search'); ?><span>بحث</span></button>
         </form>
 
         <div class="g-hero-action-row">
