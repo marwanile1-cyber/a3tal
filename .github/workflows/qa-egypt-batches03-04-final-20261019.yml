@@ -1,4 +1,5 @@
 name: Verify 10 repaired Egypt articles and original images batches 03 04
+# Rerun after completing official source references on Matrix and Astra 20261019
 on:
   workflow_dispatch:
   push:
