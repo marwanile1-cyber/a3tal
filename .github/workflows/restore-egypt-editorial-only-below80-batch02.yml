@@ -1,0 +1,30 @@
+name: Fix manually reviewed Astra J A14NET LSPI factual quality gap
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/restore-egypt-editorial-only-below80-batch02.yml'
+      - 'scripts/backfill-egypt-quality80-reviewed-batch02.py'
+      - 'data/expansions/egypt-editorial-quality80-batch02-20261020.json'
+      - 'data/quality-audits/egypt-editorial-manual-audit-20261020-02.json'
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  targeted-factual-quality-repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 24
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate manuscript and manual score gate
+        run: |
+          python3 -m py_compile scripts/editorial_minimum_words.py scripts/backfill-egypt-quality80-reviewed-batch02.py
+          python3 -m json.tool data/quality-audits/egypt-editorial-manual-audit-20261020-02.json >/dev/null
+          python3 -m json.tool data/expansions/egypt-editorial-quality80-batch02-20261020.json >/dev/null
+      - name: Restore only Astra J factual accuracy and encyclopedic diagnostic coverage
+        run: python3 -u scripts/backfill-egypt-quality80-reviewed-batch02.py
