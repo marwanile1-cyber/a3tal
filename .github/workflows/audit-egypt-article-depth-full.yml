@@ -1,4 +1,5 @@
 name: Audit all published Egypt articles for substantive coverage
+# Production remeasurement after ten substantive article upgrades 20261019
 on:
   workflow_dispatch:
   push:
