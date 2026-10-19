@@ -84,7 +84,7 @@ def public_verify(slug,marker):
                 "A3TAL-ENCYCLOPEDIA-WEAK-20261019-KIA-DTC":"كيف تقرأ كود عطل كيا سبورتاج دون الوقوع في تشخيص خاطئ؟",
                 "A3TAL-ENCYCLOPEDIA-WEAK-20261019-MG5-ELECTRICAL":"قبل فحص كهرباء MG5: حدد العَرَض والتجهيز",
             }
-            plain=re.sub(r"\\s+"," ",html.unescape(re.sub(r"<[^>]+>"," ",result)))
+            plain=re.sub(r"\s+"," ",html.unescape(re.sub(r"<[^>]+>"," ",result)))
             if headings[marker] not in plain:
                 raise RuntimeError("Updated editorial heading not visible")
             if "<meta property=\"og:image\"" not in result and 'property="og:image"' not in result:
