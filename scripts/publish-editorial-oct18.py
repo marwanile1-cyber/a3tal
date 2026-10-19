@@ -6,6 +6,7 @@ Source media are photos, original cover cropping with no text or screenshots.
 import base64,io,json,os,re,time,urllib.error,urllib.parse,urllib.request
 from pathlib import Path
 from PIL import Image,ImageOps,ImageEnhance,ImageDraw
+from editorial_minimum_words import require_minimum
 
 BASE="https://a3tal.com"
 API=BASE+"/wp-json/a3tal-direct/v1"
@@ -72,6 +73,8 @@ def cover(article):
 
 def validate(article):
     html=article["html"]
+    article_word_count=require_minimum(html,article["slug"])
+    print("ARTICLE_1500_WORD_GATE",article["slug"],article_word_count,flush=True)
     if len(html)<3500 or html.count("<h2>")<5 or html.count("<h3>")<3:
         raise RuntimeError("Editorial depth missing: "+article["slug"])
     if not re.fullmatch(r"[a-z0-9-]{15,110}",article["slug"]):raise RuntimeError("Unsafe slug")
