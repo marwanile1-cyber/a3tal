@@ -63,7 +63,7 @@ HEADERS={"User-Agent":"A3tal-Editorial-Original-Diagrams/1.0","Accept":"applicat
 last_bridge=0.0
 def ar(s):return get_display(arabic_reshaper.reshape(s))
 def font(n):return ImageFont.truetype(FONT,n)
-def widths(text,f,d):return d.textbbox((0,0),ar(text),font=f,direction="ltr")[2]
+def widths(text,f,d):return d.textbbox((0,0),ar(text),font=f)[2]
 def centered(d,xy,t,f,fill):
     x,y=xy;z=ar(t);l=d.textbbox((0,0),z,font=f)[2]
     d.text((x-l/2,y),z,font=f,fill=fill)
