@@ -413,3 +413,31 @@ add_filter('the_content', static function($content) {
     }, $content
   );
 }, 51);
+
+
+
+/**
+ * A3TAL_VERIFIED_BIDIRECTIONAL_CAR_JOURNEYS_20261019
+ * Show a reciprocal editorial -> exact model link when either the article
+ * explicitly pins an entity, or the model explicitly curates the article ID.
+ * A brand mention, string similarity or publication year is never sufficient.
+ */
+add_filter('the_content', static function($content) {
+  if (!is_singular('post') || !in_the_loop() || !is_main_query()
+      || !function_exists('a3g_related_vehicle_entity')) return $content;
+  $article_id = (int)get_the_ID();
+  if (!$article_id) return $content;
+  $car = a3g_related_vehicle_entity($article_id);
+  if (!($car instanceof WP_Post) || $car->post_status !== 'publish' || $car->post_type !== 'a3_car') return $content;
+  $explicit = (int)get_post_meta($article_id, '_a3_vehicle_entity_id', true);
+  $related = array_map('absint', preg_split('/[^0-9]+/', (string)get_post_meta($car->ID, '_a3_related_post_ids', true)));
+  // Validate exact IDs to avoid false matches in the fallback LIKE query.
+  if ($explicit !== (int)$car->ID && !in_array($article_id, $related, true)) return $content;
+  $url = get_permalink($car);
+  if (!$url || strpos($content, $url) !== false) return $content;
+  return $content.'<aside class="a3tal-car-model-journey" aria-label="الملف الفني للسيارة"'
+    .' style="margin:20px 0;padding:16px 18px;background:#f7fafc;border:1px solid #dce5ef;border-radius:12px">'
+    .'<h2 style="font-size:1.15em;margin:0 0 8px">ملف السيارة المرتبط بهذا الموضوع</h2>'
+    .'<p style="margin:0 0 8px">استعرض المواصفات والمعلومات الفنية وروابط المراجعات والصيانة المتاحة لهذه السيارة.</p>'
+    .'<a href="'.esc_url($url).'">'.esc_html(get_the_title($car)).' ←</a></aside>';
+}, 78);
