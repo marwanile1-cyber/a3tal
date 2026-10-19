@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-20",
+  "scope": "Opel Insignia complete fault code owner dictionary covering ECM TCM ABS and body modules",
+  "max": {
+    "factual_accuracy_and_safety": 25,
+    "actionable_diagnostics": 25,
+    "search_intent_completion": 15,
+    "specificity_and_original_value": 10,
+    "structure_and_ux": 10,
+    "visual_explanation": 10,
+    "useful_verified_linking": 5
+  },
+  "threshold_repair_if_score_lte": 80,
+  "method": "Manual independent fact, diagnostic and intent review, no word-count scoring, no automated Google grade",
+  "reviewed": [
+    {
+      "pid": 80820,
+      "slug": "opel-insignia-fault-codes-dtc-dictionary",
+      "score": 58,
+      "components": {
+        "factual_accuracy_and_safety": 18,
+        "actionable_diagnostics": 12,
+        "search_intent_completion": 11,
+        "specificity_and_original_value": 4,
+        "structure_and_ux": 7,
+        "visual_explanation": 6,
+        "useful_verified_linking": 0
+      },
+      "decision": "repair",
+      "findings": [
+        "Lists DTC possibilities but no effective model-specific step-by-step tests or controller-specific details; no OEM references, needs a genuine dictionary and prioritization.",
+        "Existing 170-word page lacks controller distinctions, current/history/freeze-frame, code-by-code fault isolation and safety triage for P0300/P0299/P0011/U0100/StabiliTrak.",
+        "New content references OEM year-specific Vauxhall manuals and preserves exact current slug and featured media."
+      ],
+      "sources": [
+        "https://www.vauxhall.co.uk/owners/information-and-safety/owners-manuals.html",
+        "https://www.vauxhall.co.uk/content/dam/vauxhall/Home/PDFs/Cars/insignia/price-guides/GML_10970043_Insignia_Spec_PG_17_May_2018-1526652146.pdf"
+      ]
+    }
+  ]
+}
