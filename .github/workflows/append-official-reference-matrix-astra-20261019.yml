@@ -1,0 +1,21 @@
+name: Complete official references Matrix and Astra J
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/append-official-reference-matrix-astra-20261019.yml','scripts/append-official-reference-matrix-astra-20261019.py']
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  improve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 13
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m py_compile scripts/append-official-reference-matrix-astra-20261019.py
+      - run: python3 -u scripts/append-official-reference-matrix-astra-20261019.py
