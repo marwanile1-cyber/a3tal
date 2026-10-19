@@ -63,7 +63,7 @@ def live_verify(e,featured):
     if re.search(r'<meta[^>]*name=["\x27]robots["\x27][^>]*noindex',page,re.I):
         raise RuntimeError("Unexpected noindex "+slug)
     if 'rel="canonical"' not in page:raise RuntimeError("Canonical absent "+slug)
-    for source in ("MG6-Brochure.pdf",) if pid==80871 else ("Insignia_2018_Ed2_GMAC-1521815487.pdf","how-to-videos/insignia.html"):
+    for source in (("MG6-Brochure.pdf",) if pid==80871 else ("Insignia_2018_Ed2_GMAC-1521815487.pdf","how-to-videos/insignia.html")):
         if source not in actual:
             raise RuntimeError("New verified OEM source is absent from live content: "+slug+" "+source)
     print("QUALITY80_REPAIR_VERIFIED_LIVE",SITE+"/"+slug+"/","words",count,"featured",featured,flush=True)
