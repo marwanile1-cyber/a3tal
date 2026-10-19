@@ -1,0 +1,28 @@
+name: Restore Tiggo Jetour Astra encyclopedia guides over 1500 words
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/backfill-egypt-1500-batch05.yml'
+      - 'scripts/backfill-egypt-1500-batch05.py'
+      - 'data/expansions/egypt-1500-rebuild-batch05-20261019.json'
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    timeout-minutes: 23
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint articles and publisher
+        run: |
+          python3 -m py_compile scripts/editorial_minimum_words.py scripts/backfill-egypt-1500-batch05.py
+          python3 -m json.tool data/expansions/egypt-1500-rebuild-batch05-20261019.json >/dev/null
+      - name: Update exactly three posts only after real 1500 word validation
+        run: python3 -u scripts/backfill-egypt-1500-batch05.py
