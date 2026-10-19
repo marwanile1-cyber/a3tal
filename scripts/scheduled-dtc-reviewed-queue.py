@@ -219,6 +219,17 @@ def process_one(number,items,files,check_only):
     unique_images(codes,number)
 
     if active<10:
+        # Enforce the owner's 1500-word minimum for each new DTC guide.
+        # Previously published pages are not silently modified or erased.
+        import runpy
+        from editorial_minimum_words import require_minimum
+        publisher = runpy.run_path(str(files[0]), run_name="a3tal_editorial_word_gate")
+        render = publisher.get("render")
+        if not callable(render):
+            raise RuntimeError("DTC publisher lacks reviewed HTML renderer")
+        for item in items[active:]:
+            n = require_minimum(render(item), "dtc/"+item["code"].lower())
+            print_state("NEW_DTC_1500_GATE_PASS",item["code"],n)
         print_state("PUBLISH_MISSING_ONLY",number,"start-index",active,"remaining",10-active)
         run(sys.executable,files[0],"--from-index",active)
     else:
