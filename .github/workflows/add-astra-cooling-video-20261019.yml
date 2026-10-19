@@ -1,0 +1,21 @@
+name: Embed verified Astra J coolant tutorial video
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/add-astra-cooling-video-20261019.yml','scripts/add-astra-cooling-video-20261019.py']
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m py_compile scripts/add-astra-cooling-video-20261019.py
+      - run: python3 -u scripts/add-astra-cooling-video-20261019.py
