@@ -1,0 +1,72 @@
+{
+  "date": "2026-10-20",
+  "rubric_maxima": {
+    "factual_accuracy_and_safety": 25,
+    "actionable_diagnostics": 25,
+    "search_intent_completion": 15,
+    "specificity_and_original_value": 10,
+    "structure_and_ux": 10,
+    "visual_explanation": 10,
+    "useful_verified_linking": 5
+  },
+  "editorial_interpretation": "Illustrative human/editorial judgments from reviewed live content, not a Google score. Do not let word count alone determine acceptance. Reopen any article if user reports specific inaccuracy.",
+  "quality_threshold": 80,
+  "before_review_ref": "data/quality-audits/egypt-editorial-manual-audit-20261020-01.json and -02.json",
+  "reviewed": [
+    {
+      "slug": "mg-6-electrical-screen-battery-problems",
+      "post_id": 80871,
+      "before": 73,
+      "words_verified": 1638,
+      "reason": "Brand-specific legacy InkaLink source, explicit CarPlay compatibility qualification, symptom-to-test cases, battery sleep parasitic draw, AC independent diagnostic, OEM link. Some intro overlap remains; stronger than threshold, not a perfect 100.",
+      "qa_run": 39330544626,
+      "after": 84,
+      "after_breakdown": {
+        "factual_accuracy_and_safety": 22,
+        "actionable_diagnostics": 19,
+        "search_intent_completion": 14,
+        "specificity_and_original_value": 8,
+        "structure_and_ux": 8,
+        "visual_explanation": 8,
+        "useful_verified_linking": 5
+      }
+    },
+    {
+      "slug": "opel-insignia-electrical-intellilux-screen-problems",
+      "post_id": 80814,
+      "before": 76,
+      "words_verified": 1502,
+      "reason": "Official 2018 IntelliLux variant sources, front-camera logic, lamp vs camera vs supply failures, condensation vs water ingress, recalibration after windshield work, safe test matrix. No claim that 2018 variant applies to all markets.",
+      "qa_run": 39330544626,
+      "after": 87,
+      "after_breakdown": {
+        "factual_accuracy_and_safety": 23,
+        "actionable_diagnostics": 21,
+        "search_intent_completion": 14,
+        "specificity_and_original_value": 8,
+        "structure_and_ux": 8,
+        "visual_explanation": 8,
+        "useful_verified_linking": 5
+      }
+    },
+    {
+      "slug": "opel-astra-j-14-turbo-engine-piston-failure-lspi",
+      "post_id": 80839,
+      "before": 49,
+      "words_verified": 1772,
+      "reason": "Corrects MPI vs GDI LSPI risk conflation, provides documented sources, PCV/Fuel Trim/boost/Compression and leak-down tests and buyer checklist; single original educational inline diagram verified. This is not a manufacturer workshop manual.",
+      "qa_run": 39331408635,
+      "image_run": 39331564266,
+      "after": 87,
+      "after_breakdown": {
+        "factual_accuracy_and_safety": 23,
+        "actionable_diagnostics": 22,
+        "search_intent_completion": 14,
+        "specificity_and_original_value": 8,
+        "structure_and_ux": 8,
+        "visual_explanation": 7,
+        "useful_verified_linking": 5
+      }
+    }
+  ]
+}
