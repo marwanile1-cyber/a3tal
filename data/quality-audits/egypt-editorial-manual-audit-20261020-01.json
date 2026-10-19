@@ -1,0 +1,81 @@
+{
+  "scope": "a3tal.com Egyptian WordPress post body, first manual pilot sample",
+  "assessed": "2026-10-20",
+  "threshold_repair_if_score_lte": 80,
+  "method": "Human qualitative editorial rubric from publicly rendered source, NOT an official Google rating; word count not directly scored. Only repair actual <=80 with documented deficiencies. Conduct targeted post-publish recheck; check WordPress GSC before altering well performing URLs.",
+  "max": {
+    "factual_accuracy_and_safety": 25,
+    "actionable_diagnostics": 25,
+    "search_intent_completion": 15,
+    "specificity_and_original_value": 10,
+    "structure_and_ux": 10,
+    "visual_explanation": 10,
+    "useful_verified_linking": 5
+  },
+  "reviewed": [
+    {
+      "pid": 80871,
+      "slug": "mg-6-electrical-screen-battery-problems",
+      "decision": "repair",
+      "findings": [
+        "Treats CarPlay as a common possible function without first establishing trim support. MG Egypt's published MG6 spec describes an 8-inch InkaLink unit; validate installed head unit and phone support instead of promising CarPlay.",
+        "Troubleshooting is useful but still generic for MG6, with no differentiated infotainment/USB/audio/battery/AC diagnostic scenarios.",
+        "Manufacturer-specific source is linked generically, not to the documentary evidence."
+      ],
+      "sources": [
+        "https://www.mgmotor.com.eg/wp-content/uploads/2023/06/MG6-Brochure.pdf",
+        "https://www.mgmotor.com.eg/faqs/?lang=ar"
+      ],
+      "score": 73
+    },
+    {
+      "pid": 80814,
+      "slug": "opel-insignia-electrical-intellilux-screen-problems",
+      "decision": "repair",
+      "findings": [
+        "Good safety cautions and matrix overview but lacks source-level detail differentiating IntelliLux equipped variants and failures caused by obstructed camera vs actual lamp hardware.",
+        "Needs fault isolation for one-sided light, beam distribution, levelling, headlamp water ingress and camera recalibration, plus official owner's manual pointers.",
+        "Overlaps general battery and screen advice with insufficient actionable IntelliLux-specific steps."
+      ],
+      "sources": [
+        "https://www.vauxhall.co.uk/owners/information-and-safety/owners-manuals.html",
+        "https://www.vauxhall.co.uk/content/dam/vauxhall/Home/PDFs/Cars/insignia/brochures/Insignia_2018_Ed2_GMAC-1521815487.pdf",
+        "https://www.vauxhall.co.uk/owners/information-and-safety/how-to-videos/insignia.html"
+      ],
+      "score": 76
+    },
+    {
+      "pid": 80842,
+      "slug": "opel-astra-j-cooling-system-leaks-thermostat",
+      "decision": "keep",
+      "findings": [
+        "Strong symptom-to-test tables, pressure-test safety caveats, leak localization, post-service steps and a clearly disclosed independent Astra J diagnosis video.",
+        "Word count below 1500 alone does not justify edit."
+      ],
+      "sources": [],
+      "score": 87
+    },
+    {
+      "pid": 80770,
+      "slug": "toyota-corolla-fault-codes-dtc-dictionary",
+      "decision": "keep",
+      "findings": [
+        "Separates CVT from hybrid, has useful DTC test matrix, explains Fuel Trim and freeze frame; no high-priority factual defect identified in initial review.",
+        "General official source not necessarily year-specific. Monitor during later refresh; do not pad text."
+      ],
+      "sources": [],
+      "score": 83
+    },
+    {
+      "pid": 80883,
+      "slug": "kia-sportage-tgdi-engine-turbo-carbon-buildup",
+      "decision": "keep",
+      "findings": [
+        "Meaningful differential diagnosis separating intake valve carbon, P0087 fuel rail and P0299 underboost; avoids unsupported periodic carbon-cleaning interval.",
+        "More context could be beneficial in the future but not necessary to pass 80%. No change for length alone."
+      ],
+      "sources": [],
+      "score": 83
+    }
+  ]
+}
