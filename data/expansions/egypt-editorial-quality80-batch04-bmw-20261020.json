@@ -1,6 +1,6 @@
 {
   "batch": "manual-quality80-2026-bmw-production-data",
-  "audit_path": "data/quality-audits/egypt-editorial-manual-audit-20261020-03.json",
+  "audit_path": "data/quality-audits/egypt-editorial-manual-audit-20261020-04-bmw.json",
   "minimum_after_repair": 1500,
   "articles": [
     {
