@@ -156,5 +156,5 @@ def main():
         verify_public(slug,filename)
         print("ORIGINAL_INLINE_IMAGE_VERIFIED",BASE+"/"+slug+"/","image_id",mid,flush=True)
         time.sleep(3)
-    print("EGYPT_ASTRAJ_Q80_FIVE_ORIGINAL_DIAGRAMS_VERIFIED",flush=True)
+    print("EGYPT_ASTRAJ_Q80_ONE_ORIGINAL_DIAGRAM_VERIFIED",flush=True)
 if __name__=="__main__":main()
