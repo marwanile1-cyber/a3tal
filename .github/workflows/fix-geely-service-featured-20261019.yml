@@ -1,0 +1,23 @@
+name: Fix Geely service page original featured image
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/fix-geely-service-featured-20261019.yml', 'scripts/fix-geely-service-featured-20261019.py']
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install image dependencies
+        run: python3 -m pip install -q pillow
+      - name: Create and attach original illustrated featured image if still missing
+        run: python3 -u scripts/fix-geely-service-featured-20261019.py
