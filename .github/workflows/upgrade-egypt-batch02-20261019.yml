@@ -1,0 +1,25 @@
+name: Egypt editorial depth repairs batch 02
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/upgrade-egypt-batch02-20261019.yml','scripts/upgrade-egypt-batch02-20261019.py']
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate editorial uploader
+        run: |
+          python3 -m py_compile scripts/upgrade-egypt-batch02-20261019.py
+          python3 -m json.tool data/expansions/egypt-20261019-batch02.json > /dev/null
+      - name: Publish approved improvements to the same original posts
+        run: python3 -u scripts/upgrade-egypt-batch02-20261019.py
