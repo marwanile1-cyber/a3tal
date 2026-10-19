@@ -1,0 +1,28 @@
+name: Egypt model encyclopedia 1500-word restoration batch 07
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/backfill-egypt-1500-batch07.yml'
+      - 'scripts/backfill-egypt-1500-batch07.py'
+      - 'data/expansions/egypt-1500-rebuild-batch07-20261020.json'
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate 1500-word compliance script and article manifest
+        run: |
+          python3 -m py_compile scripts/editorial_minimum_words.py scripts/backfill-egypt-1500-batch07.py
+          python3 -m json.tool data/expansions/egypt-1500-rebuild-batch07-20261020.json >/dev/null
+      - name: Update and verify three already published articles without permalink changes
+        run: python3 -u scripts/backfill-egypt-1500-batch07.py
