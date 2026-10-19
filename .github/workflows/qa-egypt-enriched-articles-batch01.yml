@@ -1,0 +1,65 @@
+name: Verify five enriched Egypt diagnostic guides in production
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/qa-egypt-enriched-articles-batch01.yml']
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Install content QA parser
+        run: python3 -m pip install -q requests beautifulsoup4
+      - name: Verify URLs, indexable metadata, body depth, table UX, sources and media
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import requests,re,json,time,html
+          from bs4 import BeautifulSoup
+          base="https://a3tal.com"
+          targets={
+            "kia-sportage-dct-gearbox-overheating-problems":"ما الذي يجب تحديده قبل تشخيص فتيس كيا سبورتاج؟",
+            "kia-sportage-fault-codes-dtc-full-list-guide":"كيف تقرأ كود عطل كيا سبورتاج دون الوقوع في تشخيص خاطئ؟",
+            "mg-5-electrical-screen-tpms-problems":"قبل فحص كهرباء MG5: حدد العَرَض والتجهيز",
+            "renault-megane-suspension-steering-problems":"خريطة تشخيص صوت الطقطقة في رينو ميجان",
+            "hyundai-tucson-nx4-fault-codes-dtc-dictionary":"كيف تحدد معنى كود توسان NX4 حسب المحرك والفتيس؟"
+          }
+          results=[]
+          for slug,headline in targets.items():
+            url=base+"/"+slug+"/"
+            for attempt in range(3):
+              try:
+                r=requests.get(url,params={"q":"a3tal-quality-20261019"},timeout=45,headers={"User-Agent":"Mozilla/5.0 (compatible; A3talSEOArticleQA/2.0)"})
+                if r.status_code in (429,500,502,503,504) and attempt<2:
+                  time.sleep(4);continue
+                r.raise_for_status();break
+              except Exception:
+                if attempt==2:raise
+                time.sleep(4)
+            soup=BeautifulSoup(r.text,"html.parser")
+            body=soup.select_one("main .g-entry") or soup.select_one("main article") or soup.find("main")
+            assert body, "No article body "+slug
+            text=" ".join(body.get_text(" ",strip=True).split())
+            count=len(re.findall(r"[\w\u0600-\u06ff]+",text))
+            h2=[x.get_text(" ",strip=True) for x in body.select("h2")]
+            assert headline in h2, "Missing promised new diagnostic heading "+slug
+            assert count>=900, "Article shorter than minimum quality baseline "+slug+" "+str(count)
+            assert body.select("div.g-table-wrap > table"), "No responsive comparison/diagnostic table "+slug
+            canon=soup.select_one("link[rel=canonical]")
+            assert canon and canon.get("href","").rstrip("/")==url.rstrip("/"),"Canonical mismatch "+slug
+            robots=soup.select_one('meta[name="robots"]')
+            assert "noindex" not in (robots.get("content","").lower() if robots else ""), "Unexpected noindex "+slug
+            featured=soup.select_one('meta[property="og:image"]')
+            assert featured and featured.get("content","").startswith("http"),"Missing OG image "+slug
+            links=[a.get("href","") for a in body.select("a[href]")]
+            internal=[x for x in links if x.startswith(base+"/") and x.rstrip("/")!=url.rstrip("/")]
+            external=[x for x in links if x.startswith("https://") and "a3tal.com" not in x]
+            assert internal and external, "No useful internal or official reference links "+slug
+            result=dict(url=url,words=count,internal=len(internal),external=len(external),tables=len(body.select("table")),image=featured.get("content"),h2=len(h2))
+            print("ARTICLE_VERIFIED",json.dumps(result,ensure_ascii=False),flush=True)
+            results.append(result)
+          print("EGYPT_BATCH01_ALL_FIVE_LIVE_PASS",len(results),flush=True)
+          PY
