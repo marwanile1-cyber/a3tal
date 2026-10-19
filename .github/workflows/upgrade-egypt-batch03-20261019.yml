@@ -1,0 +1,25 @@
+name: Egypt technical editorial depth batch 03
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/upgrade-egypt-batch03-20261019.yml','scripts/upgrade-egypt-batch03-20261019.py','data/expansions/egypt-editorial-batch03-20261019.json']
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate script and editorial manifest
+        run: |
+          python3 -m py_compile scripts/upgrade-egypt-batch03-20261019.py
+          python3 -m json.tool data/expansions/egypt-editorial-batch03-20261019.json > /dev/null
+      - name: Update and verify 5 existing Egypt vehicle guides
+        run: python3 -u scripts/upgrade-egypt-batch03-20261019.py
