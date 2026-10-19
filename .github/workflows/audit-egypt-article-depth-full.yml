@@ -50,7 +50,8 @@ jobs:
             'no_body_images':len(weak),'missing_featured_image':sum(not x['featured_image'] for x in result),
             'video_present':sum(x['has_video'] for x in result)}
           print('EGYPT_ARTICLE_INVENTORY',json.dumps(summary,ensure_ascii=False),flush=True)
-          print('SHORTEST_ARTICLES',json.dumps(result[:65],ensure_ascii=False),flush=True)
+          print('SHORTEST_ARTICLES',json.dumps(result[:25],ensure_ascii=False),flush=True)
+          print('MISSING_FEATURED',json.dumps([x for x in result if not x['featured_image']],ensure_ascii=False),flush=True)
           open('diagnostics/egypt-article-depth-inventory.json','w').write(json.dumps({'summary':summary,'articles':result},ensure_ascii=False,indent=2))
           PY
       - uses: actions/upload-artifact@v4
