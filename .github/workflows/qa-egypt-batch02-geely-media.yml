@@ -1,0 +1,65 @@
+name: QA five more repaired Egypt guides and Geely social image
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/qa-egypt-batch02-geely-media.yml']
+permissions:
+  contents: read
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - run: python3 -m pip install -q requests beautifulsoup4
+      - name: Verify indexability content mobile tables sources and picture metadata
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import requests,re,json
+          from bs4 import BeautifulSoup
+          base="https://a3tal.com/"
+          work={
+            "mg-6-electrical-screen-battery-problems":"كيف نفرق بين عطل شاشة MG6 وضعف التغذية الكهربائية؟",
+            "opel-insignia-electrical-intellilux-screen-problems":"كيف تتعامل مع أعطال IntelliLux في إنسيجنيا قبل شراء فانوس؟",
+            "toyota-corolla-fault-codes-dtc-dictionary":"كيف تفسر كود تويوتا كورولا حسب سنة الصنع وبيانات المحرك؟",
+            "kia-sportage-tgdi-engine-turbo-carbon-buildup":"ما الفرق بين أعراض كربون صمامات السحب وضعف التيربو في سبورتاج؟",
+            "opel-astra-j-cooling-system-leaks-thermostat":"كيف تحدد مصدر فقد مياه التبريد في أوبل أسترا J؟",
+          }
+          for slug,heading in work.items():
+            url=base+slug+"/"
+            r=requests.get(url,params={"recheck":"20261019-batch2"},headers={"User-Agent":"Mozilla/5.0 (A3talIndependentSEOQA/2.0)"},timeout=50)
+            r.raise_for_status();s=BeautifulSoup(r.text,"html.parser")
+            body=s.select_one("main .g-entry") or s.select_one("main article") or s.select_one("main")
+            assert body,"No body "+slug
+            text=" ".join(body.get_text(" ",strip=True).split())
+            words=len(re.findall(r"[\w\u0600-\u06ff]+",text))
+            assert words>=680,(slug,words)
+            assert heading in text,slug+" heading missing"
+            assert body.select("div.g-table-wrap > table"),slug+" table not responsive"
+            canonical=s.select_one('link[rel=canonical]')
+            assert canonical and canonical.get("href","").rstrip("/")==url.rstrip("/"),slug+" bad canonical"
+            robots=s.select_one('meta[name=robots]')
+            assert "noindex" not in (robots.get("content","") if robots else ""),slug+" accidentally noindex"
+            og=s.select_one('meta[property="og:image"]')
+            assert og and og.get("content","").startswith("https://"),slug+" missing OG"
+            links=[a.get("href","") for a in body.select("a[href]")]
+            assert any(u.startswith(base) and slug not in u for u in links),slug+" internal link missing"
+            assert any(u.startswith("https://") and "a3tal.com" not in u for u in links),slug+" external source missing"
+            print("REPAIRED_ARTICLE_VERIFIED",json.dumps({"slug":slug,"words":words,"tables":len(body.select("table")),"featured":og.get("content")},ensure_ascii=False),flush=True)
+          slug="geely-egypt-service-centers-hotline-ex2"
+          url=base+slug+"/"
+          r=requests.get(url,params={"recheck":"geely-og-20261019"},timeout=50,headers={"User-Agent":"Mozilla/5.0 (A3talGeelyOGQA/1.0)"})
+          r.raise_for_status();s=BeautifulSoup(r.text,"html.parser")
+          target="a3tal-geely-service-electrical-inspection-original-20261019.webp"
+          og=s.select_one('meta[property="og:image"]')
+          tw=s.select_one('meta[name="twitter:image"]')
+          mainimg=s.select_one('main img[src*="a3tal-geely-service-electrical-inspection-original-20261019"]')
+          assert og and target in og.get("content",""),"Geely OG not featured"
+          assert tw and target in tw.get("content",""),"Geely Twitter image not featured"
+          assert mainimg,"Geely featured not visible in article"
+          media=requests.get(base+"wp-json/wp/v2/posts/83426?_fields=id,slug,featured_media,status",timeout=30).json()
+          assert media.get("featured_media") and media.get("slug")==slug and media.get("status")=="publish"
+          print("GEELY_FEATURED_MAIN_OG_TWITTER_VERIFIED",media["featured_media"],flush=True)
+          print("EGYPT_BATCH02_ALL_FIVE_AND_GEELY_PASS",flush=True)
+          PY
