@@ -1,0 +1,30 @@
+name: Editorial repairs only for manually reviewed Egypt pages at or below 80
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/restore-egypt-editorial-only-below80-batch01.yml'
+      - 'scripts/backfill-egypt-quality80-reviewed-batch01.py'
+      - 'data/expansions/egypt-editorial-quality80-batch01-20261020.json'
+      - 'data/quality-audits/egypt-editorial-manual-audit-20261020-01.json'
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  selective-quality-repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate Python, two selected pages and review metadata
+        run: |
+          python3 -m py_compile scripts/editorial_minimum_words.py scripts/backfill-egypt-quality80-reviewed-batch01.py
+          python3 -m json.tool data/quality-audits/egypt-editorial-manual-audit-20261020-01.json >/dev/null
+          python3 -m json.tool data/expansions/egypt-editorial-quality80-batch01-20261020.json >/dev/null
+      - name: Repair only both underperforming posts, preserve other three
+        run: python3 -u scripts/backfill-egypt-quality80-reviewed-batch01.py
