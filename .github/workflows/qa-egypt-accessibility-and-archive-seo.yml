@@ -1,0 +1,51 @@
+name: QA Egypt accessibility and archive SEO after fixes
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/qa-egypt-accessibility-and-archive-seo.yml']
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Confirm live homepage controls and directory search snippets
+        shell: bash
+        run: |
+          python3 -m pip install -q requests beautifulsoup4
+          python3 - <<'PY'
+          import requests,json
+          from bs4 import BeautifulSoup
+          root='https://a3tal.com'
+          s=requests.Session();s.headers['User-Agent']='Mozilla/5.0 (compatible; A3talEgyptPostFixQA/1.0)'
+          def page(path):
+              r=s.get(root+path,timeout=35,params={'a3tal_qa':'20261019'})
+              r.raise_for_status()
+              return BeautifulSoup(r.text,'html.parser')
+          home=page('/')
+          button=home.select_one('form.g-hero-search button[type=submit]')
+          logo=home.select_one('a.g-brand-footer')
+          assert button is not None and (button.get('aria-label') or '').strip(), 'Homepage hero search lacks accessible label'
+          assert logo is not None and (logo.get('aria-label') or '').strip(), 'Footer home link lacks accessible label'
+          print('ACCESSIBILITY_CONTROLS_PASS',button['aria-label'],logo['aria-label'],flush=True)
+          expected={
+            '/service-centers/':'دليل مراكز خدمة السيارات في مصر',
+            '/maintenance-schedules/':'جداول صيانة السيارات',
+            '/parts-stores/':'أماكن بيع قطع الغيار في مصر',
+            '/parts/':'دليل قطع غيار السيارات',
+            '/cars-for-sale/':'سوق السيارات المستعملة',
+          }
+          results={}
+          for url,prefix in expected.items():
+              soup=page(url)
+              title=soup.title.get_text(' ',strip=True) if soup.title else ''
+              meta=soup.select_one('meta[name="description"]')
+              desc=meta.get('content','') if meta else ''
+              results[url]={'title':title,'description_length':len(desc)}
+              assert prefix in title, 'Unexpected archive title: '+url+' '+title
+              assert len(desc)>=70, 'Missing useful description: '+url
+          print('ARCHIVE_META_CHECK',json.dumps(results,ensure_ascii=False),flush=True)
+          print('EGYPT_ACCESSIBILITY_AND_ARCHIVE_SEO_PASS',flush=True)
+          PY
