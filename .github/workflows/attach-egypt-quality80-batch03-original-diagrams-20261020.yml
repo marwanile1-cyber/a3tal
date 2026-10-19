@@ -1,0 +1,25 @@
+name: Add three exclusive visual diagnostic flows to Egypt below-80 articles
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/attach-egypt-quality80-batch03-original-diagrams-20261020.yml'
+      - 'scripts/attach-egypt-quality80-batch03-original-diagrams-20261020.py'
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  attach:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install original Arabic diagram rendering dependencies
+        run: python3 -m pip install -q pillow arabic-reshaper python-bidi
+      - name: Validate complete 3-page media insertion after quality repair
+        run: python3 -u scripts/attach-egypt-quality80-batch03-original-diagrams-20261020.py
