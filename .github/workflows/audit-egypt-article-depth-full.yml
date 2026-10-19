@@ -1,0 +1,62 @@
+name: Audit all published Egypt articles for substantive coverage
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/audit-egypt-article-depth-full.yml']
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - run: python3 -m pip install -q requests beautifulsoup4
+      - name: Enumerate all published editorial articles and quality gaps
+        shell: bash
+        run: |
+          mkdir -p diagnostics
+          python3 - <<'PY'
+          import requests,re,html,json,collections
+          from bs4 import BeautifulSoup
+          s=requests.Session();s.headers.update({'User-Agent':'A3talEgyptEditorialInventory/1.0'})
+          result=[];page=1
+          while True:
+              r=s.get('https://a3tal.com/wp-json/wp/v2/posts',params={'per_page':100,'page':page,'_fields':'id,slug,link,status,date,modified,title,content,featured_media,categories'},timeout=50)
+              if r.status_code==400 and page>1:break
+              r.raise_for_status()
+              records=r.json()
+              if not records:break
+              for p in records:
+                  rendered=(p.get('content') or {}).get('rendered','')
+                  soup=BeautifulSoup(rendered,'html.parser')
+                  words=re.findall(r'[\u0600-\u06ffa-zA-Z0-9]+',soup.get_text(' ',strip=True))
+                  body_images=len(soup.select('img'))
+                  video=bool(soup.select('iframe[src*=youtube],video,iframe[src*=vimeo]'))
+                  tables=len(soup.select('table'))
+                  internal=sum('a3tal.com' in str(a.get('href','')) for a in soup.select('a[href]'))
+                  result.append({'id':p['id'],'slug':p['slug'],'url':p['link'],'words':len(words),
+                    'body_images':body_images,'has_video':video,'tables':tables,'internal_links':internal,
+                    'featured_image':bool(p.get('featured_media')),'last_modified':p['modified'],
+                    'title':BeautifulSoup((p.get('title') or {}).get('rendered',''),'html.parser').get_text(' ',strip=True)})
+              print('PAGE',page,'RECORDS',len(result),flush=True)
+              if len(records)<100:break
+              page+=1
+          result.sort(key=lambda x:x['words'])
+          under600=[x for x in result if x['words']<600]
+          under1000=[x for x in result if x['words']<1000]
+          weak=[x for x in result if not x['body_images']]
+          summary={'published_posts':len(result),'under_600':len(under600),'under_1000':len(under1000),
+            'no_body_images':len(weak),'missing_featured_image':sum(not x['featured_image'] for x in result),
+            'video_present':sum(x['has_video'] for x in result)}
+          print('EGYPT_ARTICLE_INVENTORY',json.dumps(summary,ensure_ascii=False),flush=True)
+          print('SHORTEST_ARTICLES',json.dumps(result[:65],ensure_ascii=False),flush=True)
+          open('diagnostics/egypt-article-depth-inventory.json','w').write(json.dumps({'summary':summary,'articles':result},ensure_ascii=False,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: egypt-article-depth-inventory-\${{ github.run_id }}
+          path: diagnostics/egypt-article-depth-inventory.json
+          if-no-files-found: warn
+          retention-days: 21
