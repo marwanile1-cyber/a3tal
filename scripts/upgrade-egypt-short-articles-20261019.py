@@ -111,7 +111,7 @@ def main():
         if wc(body)>900:raise RuntimeError("Original article expanded by someone else, stop: "+slug)
         combined=merge(body,extra)
         if wc(combined)<800:raise RuntimeError("Insufficient revised content "+slug)
-        if body[:150] not in combined or body[-150:] not in combined:
+        if combined.replace("\n"+extra+"\n","",1)!=body:
             raise RuntimeError("Preservation guard failed "+slug)
         plans.append((slug,pid,marker,row,combined,p["featured_media"]))
         print("PREPARED",slug,"original_words",wc(body),"revised_words",wc(combined),flush=True)
