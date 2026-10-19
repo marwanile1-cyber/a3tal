@@ -1,0 +1,28 @@
+name: Rebuild Corolla and Sportage guides above 1500 words
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/backfill-egypt-1500-batch04.yml'
+      - 'scripts/backfill-egypt-1500-batch04.py'
+      - 'data/expansions/egypt-1500-rebuild-batch04-20261019.json'
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate exact approved material
+        run: |
+          python3 -m py_compile scripts/editorial_minimum_words.py scripts/backfill-egypt-1500-batch04.py
+          python3 -m json.tool data/expansions/egypt-1500-rebuild-batch04-20261019.json >/dev/null
+      - name: Edit two posts only after enforcing minimum 1500 genuine words
+        run: python3 -u scripts/backfill-egypt-1500-batch04.py
