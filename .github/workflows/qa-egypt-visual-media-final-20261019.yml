@@ -42,7 +42,7 @@ jobs:
               assert s.select_one('meta[property="og:image"]'), 'Missing OG for '+slug
               print('ORIGINAL_IMAGE_PASS',pid,slug,'count',len(found),flush=True)
               if pid==80842:
-                  iframe=s.select('iframe[src*="youtube-nocookie.com/embed/iVyWj_yhyY0"]')
+                  iframe=[f for f in s.select('section[data-a3tal-video] iframe') if 'youtube-nocookie.com/embed/iVyWj_yhyY0' in str(f)]
                   print('VIDEO_DIAGNOSTIC',json.dumps({'iframe_count':len(iframe),'tag_count':response.text.count('youtube-nocookie.com'),'marker_count':response.text.count('a3tal-astra-j-coolant-diagnostic-video-20261019'),'source_excerpt':str(s.select_one('[data-a3tal-video]'))[:1000]},ensure_ascii=False),flush=True)
                   assert iframe,'Astra J video not embedded in page'
           print('EGYPT_MEDIA_ARTICLES_ALL_TEN_PLUS_VIDEO_PASS',flush=True)
