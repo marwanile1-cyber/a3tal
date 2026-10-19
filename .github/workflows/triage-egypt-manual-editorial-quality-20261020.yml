@@ -1,0 +1,28 @@
+name: Audit Egypt editorial review priorities without rewriting published posts
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/triage-egypt-manual-editorial-quality-20261020.yml'
+      - 'scripts/triage-egypt-editorial-quality-review-20261020.py'
+permissions:
+  contents: read
+jobs:
+  review-queue:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m pip install -q requests beautifulsoup4
+      - name: Read all published articles and prepare manual review queue only
+        run: python3 -u scripts/triage-egypt-editorial-quality-review-20261020.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: egypt-manual-editorial-review-candidates
+          path: |
+            diagnostics/a3tal-egypt-manual-quality-review-queue.json
+            diagnostics/a3tal-egypt-manual-quality-review-top100.md
+          if-no-files-found: warn
+          retention-days: 21
