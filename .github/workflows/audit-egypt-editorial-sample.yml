@@ -1,0 +1,71 @@
+name: Audit Egypt editorial quality sampled pages
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/audit-egypt-editorial-sample.yml']
+permissions:
+  contents: read
+jobs:
+  sample:
+    runs-on: ubuntu-latest
+    timeout-minutes: 11
+    steps:
+      - run: pip install -q requests beautifulsoup4
+      - name: Sample quality markers in 80 published articles and 24 code pages
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import requests,xml.etree.ElementTree as ET,random,concurrent.futures,json,collections,re,statistics,os
+          from bs4 import BeautifulSoup
+          root='https://a3tal.com';s=requests.Session();s.headers['User-Agent']='Mozilla/5.0 A3talEditorialReadOnlyAudit/1.0'
+          ns='{http://www.sitemaps.org/schemas/sitemap/0.9}'
+          def get_urls(path):
+            r=s.get(root+'/'+path,timeout=40);r.raise_for_status()
+            x=ET.fromstring(r.content)
+            return [i.text.strip() for i in x.findall('.//'+ns+'url/'+ns+'loc') if i.text]
+          posts=get_urls('post-sitemap.xml'); codes=[x for x in get_urls('a3_dtc-sitemap.xml') if re.search(r'/dtc/[bpuc][0-9a-f]{4}/$',x)]
+          random.seed(17012026)
+          post_sample=random.sample(posts,min(80,len(posts)))
+          code_sample=random.sample(codes,min(24,len(codes)))
+          def inspect(url):
+            try:
+              r=requests.get(url,timeout=30,headers={'User-Agent':'Mozilla/5.0 A3talEditorialReadOnlyAudit/1.0'})
+              soup=BeautifulSoup(r.text,'html.parser')
+              content=soup.select_one('.g-entry, .d-entry, .d-guide-body, .g-article-body') or soup.select_one('article') or soup.select_one('main')
+              if not content:return {'url':url,'status':r.status_code,'error':'no content node'}
+              txt=content.get_text(' ',strip=True)
+              words=len(re.findall(r'\S+',txt))
+              ilinks=[a.get('href','') for a in content.select('a[href]')]
+              external=[u for u in ilinks if u.startswith('http') and 'a3tal.com' not in u]
+              bodylinks=[u for u in ilinks if u.startswith(root) and '/ksa/' not in u]
+              imgs=content.select('img')
+              imgs_missing_alt=sum(1 for x in imgs if x.get('alt') is None)
+              h2=len(content.select('h2'))
+              return {'url':url,'status':r.status_code,'words':words,'body_images':len(imgs),'images_missing_alt':imgs_missing_alt,
+                      'body_h2':h2,'tables':len(content.select('table')),'videos':len(content.select('iframe,video')),
+                      'external_links':len(external),'internal_links':len(bodylinks),'external_domains':list(sorted(set(re.findall(r'https?://([^/]+)', ' '.join(external)))))[:8]}
+            except Exception as e:return {'url':url,'error':str(e)[:140]}
+          with concurrent.futures.ThreadPoolExecutor(max_workers=4) as ex: rows=list(ex.map(inspect,post_sample+code_sample))
+          for label,items in [('articles',rows[:len(post_sample)]),('codes',rows[len(post_sample):])]:
+            okay=[r for r in items if r.get('status')==200 and r.get('words') is not None]
+            print('EDITORIAL_QUALITY_SUMMARY',json.dumps({'type':label,'sample':len(items),'success':len(okay),
+              'words_median':statistics.median(r['words'] for r in okay) if okay else None,
+              'under_600':sum(r['words']<600 for r in okay),
+              'under_1000':sum(r['words']<1000 for r in okay),
+              'no_body_image':sum(r['body_images']==0 for r in okay),
+              'no_external_reference':sum(r['external_links']==0 for r in okay),
+              'no_internal_body_links':sum(r['internal_links']==0 for r in okay),
+              'no_h2':sum(r['body_h2']==0 for r in okay),
+              'one_or_more_tables':sum(r['tables']>=1 for r in okay),
+              'video_present':sum(r['videos']>=1 for r in okay)},ensure_ascii=False),flush=True)
+            weak=sorted([r for r in okay if r['words']<800 or r['body_images']==0],key=lambda r:r['words'])
+            print('EDITORIAL_WEAK_EXAMPLES',json.dumps({'type':label,'data':weak[:22]},ensure_ascii=False),flush=True)
+          os.makedirs('diagnostics',exist_ok=True)
+          open('diagnostics/egypt-editorial-sample.json','w').write(json.dumps(rows,ensure_ascii=False,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-egypt-editorial-sample-${{ github.run_id }}
+          path: diagnostics/egypt-editorial-sample.json
+          retention-days: 14
