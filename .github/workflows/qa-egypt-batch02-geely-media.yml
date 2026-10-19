@@ -54,10 +54,11 @@ jobs:
           target="a3tal-geely-service-electrical-inspection-original-20261019.webp"
           og=s.select_one('meta[property="og:image"]')
           tw=s.select_one('meta[name="twitter:image"]')
-          mainimg=s.select_one('main img[src*="a3tal-geely-service-electrical-inspection-original-20261019"]')
+          mainimg=s.select_one('main.g-article-card figure.g-featured img')
+          print("GEELY_IMAGE_DOM",json.dumps({"figure_count":len(s.select('figure.g-featured')),"main_images":[{"src":x.get("src"),"data_src":x.get("data-src"),"srcset":x.get("srcset","")[:180]} for x in s.select('main img')][:6],"featured_html":str(s.select_one('figure.g-featured'))[:500]},ensure_ascii=False),flush=True)
           assert og and target in og.get("content",""),"Geely OG not featured"
           assert tw and target in tw.get("content",""),"Geely Twitter image not featured"
-          assert mainimg,"Geely featured not visible in article"
+          assert mainimg and any(target in mainimg.get(k,"") for k in ("src","srcset","data-src")),"Geely featured not visible in article"
           media=requests.get(base+"wp-json/wp/v2/posts/83426?_fields=id,slug,featured_media,status",timeout=30).json()
           assert media.get("featured_media") and media.get("slug")==slug and media.get("status")=="publish"
           print("GEELY_FEATURED_MAIN_OG_TWITTER_VERIFIED",media["featured_media"],flush=True)
