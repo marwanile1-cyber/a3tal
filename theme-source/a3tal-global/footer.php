@@ -2,7 +2,7 @@
   <div class="g-wrap">
     <div class="g-footer-grid">
       <div class="g-footer-brand">
-        <a class="g-brand g-brand-footer" href="<?php echo esc_url(home_url('/')); ?>"><?php a3g_logo(); ?></a>
+        <a class="g-brand g-brand-footer" href="<?php echo esc_url(home_url('/')); ?>" aria-label="الانتقال إلى الصفحة الرئيسية لموقع أعطال.كوم"><?php a3g_logo(); ?></a>
         <p>وجهتك العربية لكل ما يخص السيارات: أسعار، مراجعات، أعطال، صيانة ومراكز خدمة.</p>
         
       </div>
