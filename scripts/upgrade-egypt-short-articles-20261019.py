@@ -79,7 +79,14 @@ def public_verify(slug,marker):
         if attempt:time.sleep(8)
         try:
             result=get(url+"?a3talc="+str(int(time.time())),auth=False,raw=True)
-            if marker not in result:raise RuntimeError("Updated article marker not visible")
+            headings={
+                "A3TAL-ENCYCLOPEDIA-WEAK-20261019-KIA-DCT":"ما الذي يجب تحديده قبل تشخيص فتيس كيا سبورتاج؟",
+                "A3TAL-ENCYCLOPEDIA-WEAK-20261019-KIA-DTC":"كيف تقرأ كود عطل كيا سبورتاج دون الوقوع في تشخيص خاطئ؟",
+                "A3TAL-ENCYCLOPEDIA-WEAK-20261019-MG5-ELECTRICAL":"قبل فحص كهرباء MG5: حدد العَرَض والتجهيز",
+            }
+            plain=re.sub(r"\\s+"," ",html.unescape(re.sub(r"<[^>]+>"," ",result)))
+            if headings[marker] not in plain:
+                raise RuntimeError("Updated editorial heading not visible")
             if "<meta property=\"og:image\"" not in result and 'property="og:image"' not in result:
                 raise RuntimeError("Open Graph image missing")
             if re.search(r'<meta[^>]+name=["\']robots["\'][^>]+noindex',result,re.I):
