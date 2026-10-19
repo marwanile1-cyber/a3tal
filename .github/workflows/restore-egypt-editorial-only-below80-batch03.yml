@@ -1,0 +1,34 @@
+name: Correct three manually graded Egypt articles below 80 quality
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/restore-egypt-editorial-only-below80-batch03.yml'
+      - 'scripts/backfill-egypt-quality80-reviewed-batch03.py'
+      - 'data/quality-audits/egypt-editorial-manual-audit-20261020-03.json'
+      - 'data/expansions/egypt-editorial-quality80-batch03-astra-20261020.json'
+      - 'data/expansions/egypt-editorial-quality80-batch03-insignia-20261020.json'
+      - 'data/expansions/egypt-editorial-quality80-batch03-matrix-20261020.json'
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  selective-improvement:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate source texts, manual scores and publisher syntax
+        run: |
+          python3 -m py_compile scripts/editorial_minimum_words.py scripts/backfill-egypt-quality80-reviewed-batch03.py
+          python3 -m json.tool data/quality-audits/egypt-editorial-manual-audit-20261020-03.json >/dev/null
+          python3 -m json.tool data/expansions/egypt-editorial-quality80-batch03-astra-20261020.json >/dev/null
+          python3 -m json.tool data/expansions/egypt-editorial-quality80-batch03-insignia-20261020.json >/dev/null
+          python3 -m json.tool data/expansions/egypt-editorial-quality80-batch03-matrix-20261020.json >/dev/null
+      - name: Correct exactly three original articles and verify live minimum and OEM links
+        run: python3 -u scripts/backfill-egypt-quality80-reviewed-batch03.py
