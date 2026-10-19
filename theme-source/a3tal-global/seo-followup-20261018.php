@@ -441,3 +441,24 @@ add_filter('the_content', static function($content) {
     .'<p style="margin:0 0 8px">استعرض المواصفات والمعلومات الفنية وروابط المراجعات والصيانة المتاحة لهذه السيارة.</p>'
     .'<a href="'.esc_url($url).'">'.esc_html(get_the_title($car)).' ←</a></aside>';
 }, 78);
+
+
+/**
+ * A3TAL_GEELY_SERVICE_FEATURED_OG_FIX_20261019
+ * Correct a previously missing hero on this one already-published service
+ * directory article. Do not override OG images of other articles.
+ */
+add_filter('wpseo_opengraph_image', static function($url) {
+  if (!is_singular('post') || (int)get_queried_object_id() !== 83426) return $url;
+  $id = (int)get_post_thumbnail_id(83426);
+  if (!$id) return $url;
+  $src = wp_get_attachment_image_url($id,'full');
+  return $src ? $src : $url;
+}, 99999);
+add_filter('wpseo_twitter_image', static function($url) {
+  if (!is_singular('post') || (int)get_queried_object_id() !== 83426) return $url;
+  $id = (int)get_post_thumbnail_id(83426);
+  if (!$id) return $url;
+  $src = wp_get_attachment_image_url($id,'full');
+  return $src ? $src : $url;
+}, 99999);
