@@ -1,0 +1,21 @@
+name: Correct Corolla Hybrid official brochure facts
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/fix-toyota-corolla-hybrid-factual-20261019.yml','scripts/fix-toyota-corolla-hybrid-factual-20261019.py']
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m py_compile scripts/fix-toyota-corolla-hybrid-factual-20261019.py
+      - run: python3 -u scripts/fix-toyota-corolla-hybrid-factual-20261019.py
