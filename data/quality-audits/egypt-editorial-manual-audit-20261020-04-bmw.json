@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-20",
+  "scope": "BMW Neue Klasse i3 as of September 30 2026 official BMW source update",
+  "max": {
+    "factual_accuracy_and_safety": 25,
+    "actionable_diagnostics": 25,
+    "search_intent_completion": 15,
+    "specificity_and_original_value": 10,
+    "structure_and_ux": 10,
+    "visual_explanation": 10,
+    "useful_verified_linking": 5
+  },
+  "threshold_repair_if_score_lte": 80,
+  "method": "Manual editorial source-and-intent review, not an automatic SEO/Google quality score. BMW press September 30, 2026 changed the substantiated trim, range and battery facts.",
+  "reviewed": [
+    {
+      "pid": 80904,
+      "slug": "bmw-2026-neue-klasse-i3-specs-problems",
+      "score": 59,
+      "components": {
+        "factual_accuracy_and_safety": 18,
+        "actionable_diagnostics": 12,
+        "search_intent_completion": 12,
+        "specificity_and_original_value": 4,
+        "structure_and_ux": 7,
+        "visual_explanation": 6,
+        "useful_verified_linking": 0
+      },
+      "decision": "repair",
+      "findings": [
+        "Thin launch-specific overview with no cited source or distinctions WLTP vs real-world vs availability; do not fabricate early failure rates; verify current BMW press release before changing.",
+        "Official BMW September 30, 2026 source now specifies 40 xDrive and 50 xDrive, batteries 82.8 and 108.7 kWh, 710 and 912 km WLTP respectively, while existing page mentions only the early 50 variant and 900 km approximation.",
+        "Official BMW announced serial production in Munich August 6 2026; avoid prospective or unverified claims about local Egypt availability and speculative failure frequencies."
+      ],
+      "sources": [
+        "https://www.press.bmwgroup.com/deutschland/article/detail/T0460993DE?language=de",
+        "https://www.press.bmwgroup.com/global/article/detail/T0459893EN/strong-demand-following-early-order-opening-bmw-plant-munich-launches-bmw-i3-series-production-with"
+      ]
+    }
+  ]
+}
