@@ -160,5 +160,5 @@ def main():
         verify_public(slug,filename)
         print("ORIGINAL_INLINE_IMAGE_VERIFIED",BASE+"/"+slug+"/","image_id",mid,flush=True)
         time.sleep(3)
-    print("EGYPT_EDITORIAL_Q80_BATCH03_ONE_ORIGINAL_DIAGRAM_VERIFIED",flush=True)
+    print("EGYPT_EDITORIAL_Q80_BATCH03_THREE_ORIGINAL_DIAGRAMS_VERIFIED",flush=True)
 if __name__=="__main__":main()
