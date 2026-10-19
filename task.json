@@ -1,6 +1,30 @@
 {
-  "deployment_tag": "egypt-dtc-link-repairs-20261019-p0",
+  "deployment_tag": "a3tal-egypt-a11y-reciprocal-links-20261019",
   "requests": [
+    {
+      "method": "POST",
+      "path": "/admin",
+      "body": {
+        "op": "file_write",
+        "path": "themes/a3tal-global/front-page.php",
+        "content_file": "theme-source/a3tal-global/front-page.php",
+        "confirm": true,
+        "dangerous": true,
+        "log_response": "sha_only"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/admin",
+      "body": {
+        "op": "file_write",
+        "path": "themes/a3tal-global/footer.php",
+        "content_file": "theme-source/a3tal-global/footer.php",
+        "confirm": true,
+        "dangerous": true,
+        "log_response": "sha_only"
+      }
+    },
     {
       "method": "POST",
       "path": "/admin",
@@ -22,6 +46,12 @@
     }
   ],
   "verify": [
+    {
+      "path": "/admin?op=file_read&path=themes/a3tal-global/front-page.php"
+    },
+    {
+      "path": "/admin?op=file_read&path=themes/a3tal-global/footer.php"
+    },
     {
       "path": "/admin?op=file_read&path=themes/a3tal-global/seo-followup-20261018.php"
     }
