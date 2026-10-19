@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ['.github/workflows/upgrade-egypt-batch02-20261019.yml','scripts/upgrade-egypt-batch02-20261019.py']
+    paths: ['.github/workflows/upgrade-egypt-batch02-20261019.yml','scripts/upgrade-egypt-batch02-20261019.py','data/expansions/egypt-20261019-batch02.json']
 permissions:
   contents: read
 concurrency:
