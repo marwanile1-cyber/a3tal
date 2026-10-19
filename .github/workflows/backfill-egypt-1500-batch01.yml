@@ -24,6 +24,15 @@ jobs:
       - name: Validate script and source before touching production
         run: |
           python3 -m py_compile scripts/editorial_minimum_words.py scripts/backfill-egypt-1500-batch01.py
-          python3 scripts/editorial_minimum_words.py data/expansions/egypt-1500-rebuild-batch01-20261019.json || echo "Supplement is assessed with preserved original text at runtime"
+          python3 - <<'PY'
+          import json,sys
+          sys.path.insert(0,'scripts')
+          from editorial_minimum_words import count_editorial_words
+          batch=json.load(open('data/expansions/egypt-1500-rebuild-batch01-20261019.json',encoding='utf-8'))
+          for a in batch['articles']:
+            n=count_editorial_words(a['html'])
+            assert n>=750, (a['slug'],n)
+            print('SUPPLEMENT_QUALITY_PREFLIGHT',a['slug'],n,flush=True)
+          PY
       - name: Enforce minimum 1500 actual body words on both original live pages
         run: python3 -u scripts/backfill-egypt-1500-batch01.py
