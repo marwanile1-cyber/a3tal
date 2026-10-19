@@ -1,0 +1,131 @@
+{
+  "reviewed_date": "2026-10-20",
+  "owner_threshold": "ONLY articles scoring 80 or below are edited; scores are editorial estimates, not Google Search Console metrics",
+  "meaning_of_score": "Editorial assessment of published on-page content and documented work, not an independent mechanical diagnostic or guarantee of rankings",
+  "rubric_max": {
+    "factual_accuracy_and_safety": 25,
+    "actionable_diagnostics": 25,
+    "search_intent_completion": 15,
+    "specificity_and_original_value": 10,
+    "structure_and_ux": 10,
+    "visual_explanation": 10,
+    "useful_verified_linking": 5
+  },
+  "note": "Rubric component weights match original review rubric 25/25/15/10/10/10/5; some revised evaluator scores remain a judgment not computed from length or backlinks.",
+  "completed_reviews_this_batch": 6,
+  "below_80_repaired_this_batch": 6,
+  "unreviewed_site_posts_do_not_assume_low_quality": true,
+  "reviewed": [
+    {
+      "pid": 80845,
+      "slug": "opel-astra-j-transmission-electrical-stabilitrak-problems",
+      "initial_editorial_score": 55,
+      "after_editorial_score": 87,
+      "after_rubric": {
+        "factual_accuracy_and_safety": 22,
+        "actionable_diagnostics": 22,
+        "search_intent_completion": 14,
+        "specificity_and_original_value": 8,
+        "structure_and_ux": 8,
+        "visual_explanation": 9,
+        "useful_verified_linking": 4
+      },
+      "live_words_verified_after_publish": 1846,
+      "editorial_reasoning": "6T family is identified conditionally; gearbox vs ESC vs power supply triage, DEXRON-VI appropriateness, leak and contamination checks, genuine OEM/manual references, original inline explanatory diagram"
+    },
+    {
+      "pid": 80808,
+      "slug": "opel-insignia-grand-sport-engine-lspi-problems",
+      "initial_editorial_score": 59,
+      "after_editorial_score": 87,
+      "after_rubric": {
+        "factual_accuracy_and_safety": 23,
+        "actionable_diagnostics": 22,
+        "search_intent_completion": 14,
+        "specificity_and_original_value": 8,
+        "structure_and_ux": 8,
+        "visual_explanation": 8,
+        "useful_verified_linking": 4
+      },
+      "live_words_verified_after_publish": 1827,
+      "editorial_reasoning": "Manufacturer-documented 140/165PS 1.5 direct injection; LSPI vs knock vs misfire, compression/leak-down, oil/boost diagnosis, original image; no unverified piston failure-rate claims"
+    },
+    {
+      "pid": 80824,
+      "slug": "hyundai-matrix-engine-gearbox-fuel-consumption",
+      "initial_editorial_score": 55,
+      "after_editorial_score": 87,
+      "after_rubric": {
+        "factual_accuracy_and_safety": 22,
+        "actionable_diagnostics": 22,
+        "search_intent_completion": 14,
+        "specificity_and_original_value": 8,
+        "structure_and_ux": 8,
+        "visual_explanation": 9,
+        "useful_verified_linking": 4
+      },
+      "live_words_verified_after_publish": 1723,
+      "editorial_reasoning": "Real refill-to-refill economy method, severe use contextualized, Hyundai manual belt and ATF SP-III by version, transmission vs motor diagnostics and original visual"
+    },
+    {
+      "pid": 80904,
+      "slug": "bmw-2026-neue-klasse-i3-specs-problems",
+      "initial_editorial_score": 59,
+      "after_editorial_score": 88,
+      "after_rubric": {
+        "factual_accuracy_and_safety": 24,
+        "actionable_diagnostics": 21,
+        "search_intent_completion": 15,
+        "specificity_and_original_value": 8,
+        "structure_and_ux": 9,
+        "visual_explanation": 7,
+        "useful_verified_linking": 4
+      },
+      "live_words_verified_after_publish": 1907,
+      "editorial_reasoning": "BMW September 30 2026 press: 40/50 xDrive, 82.8/108.7 kWh, up to 710/912 WLTP, August production official source, honest absence of field failure stats, original inline visual"
+    },
+    {
+      "pid": 80714,
+      "slug": "jetour-engine-problems-1-5t-vs-1-6t",
+      "initial_editorial_score": 56,
+      "after_editorial_score": 88,
+      "after_rubric": {
+        "factual_accuracy_and_safety": 23,
+        "actionable_diagnostics": 23,
+        "search_intent_completion": 14,
+        "specificity_and_original_value": 8,
+        "structure_and_ux": 8,
+        "visual_explanation": 8,
+        "useful_verified_linking": 4
+      },
+      "live_words_verified_after_publish": 1794,
+      "editorial_reasoning": "Manufacturer Egypt T1 184 hp, T2 1.5/2.0 and Dashing 1.5/1.6 distinction verified, relevant boost/misfire/TCM and fuel guidance, original diagram"
+    },
+    {
+      "pid": 80820,
+      "slug": "opel-insignia-fault-codes-dtc-dictionary",
+      "initial_editorial_score": 58,
+      "after_editorial_score": 85,
+      "after_rubric": {
+        "factual_accuracy_and_safety": 22,
+        "actionable_diagnostics": 21,
+        "search_intent_completion": 14,
+        "specificity_and_original_value": 8,
+        "structure_and_ux": 8,
+        "visual_explanation": 8,
+        "useful_verified_linking": 4
+      },
+      "live_words_verified_after_publish": 1874,
+      "editorial_reasoning": "Controller-specific DTC table, P0300 P0299 P0011 U0100 StabiliTrak, OEM model-year variance, Freeze Frame and safety; diagram release still verifying"
+    }
+  ],
+  "ci_runs": {
+    "three_repairs": "https://github.com/marwanile1-cyber/a3tal/actions/runs/39336300352",
+    "three_images": "https://github.com/marwanile1-cyber/a3tal/actions/runs/39336430365",
+    "bmw": "https://github.com/marwanile1-cyber/a3tal/actions/runs/39336930310",
+    "bmw_image": "https://github.com/marwanile1-cyber/a3tal/actions/runs/39337047533",
+    "jetour": "https://github.com/marwanile1-cyber/a3tal/actions/runs/39337347959",
+    "insignia_dtc": "https://github.com/marwanile1-cyber/a3tal/actions/runs/39337687452",
+    "last_diagrams": "https://github.com/marwanile1-cyber/a3tal/actions/runs/39337738830"
+  }
+}
