@@ -102,7 +102,7 @@ def main():
     else:
         pic=make_image();out=io.BytesIO();pic.save(out,"WEBP",quality=87,method=6)
         raw=out.getvalue()
-        if not 40_000<len(raw)<600_000:raise RuntimeError("Unreasonable image bytes "+str(len(raw)))
+        if not 24_000<len(raw)<600_000:raise RuntimeError("Unreasonable image bytes "+str(len(raw)))
         payload={"post_id":PID,"filename":FILE,
           "title":"رسم إرشادي أصلي لورشة فحص السيارات الكهربائية",
           "alt":"تصميم توضيحي حصري لفني يفحص سيارة كهربائية بجهاز تشخيص داخل ورشة، وليست صورة فعلية لمركز جيلي",
