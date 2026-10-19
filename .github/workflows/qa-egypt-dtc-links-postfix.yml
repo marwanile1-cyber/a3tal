@@ -1,0 +1,53 @@
+name: QA Egypt 17 dead DTC internal destinations after repair
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/qa-egypt-dtc-links-postfix.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 17
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: a3tal-live-seo-link-audit-39168012987
+          run-id: 39168012987
+          github-token: \${{ secrets.GITHUB_TOKEN }}
+          path: old-audit
+      - run: python3 -m pip install -q requests beautifulsoup4
+      - name: Validate formerly broken destinations are no longer visible clickable links
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,collections,concurrent.futures,requests
+          from bs4 import BeautifulSoup
+          from urllib.parse import urljoin,urlsplit,unquote
+          audit=json.load(open('old-audit/seo-audit-report.json'))
+          bad=set('p0562 u0100 p0455 p0300 p0700 p0299 p0301 p0011 p0016 p0128 p0010 p0507 c1010 p0087 p0171 p0304 p0442'.split())
+          urls={'https://a3tal.com/dtc/'+x+'/' for x in bad}
+          pages=[p for p in audit['pages'] if p.get('status')==200 and set(p.get('main_links',[]))&urls]
+          print('AFFECTED_SOURCE_PAGES',len(pages),flush=True)
+          def normalize(url):
+              x=urlsplit(urljoin('https://a3tal.com',url))
+              return 'https://a3tal.com/'+unquote(x.path).strip('/').lower()+'/' if x.hostname in ('a3tal.com','www.a3tal.com') else ''
+          def test(p):
+              r=requests.get(p['requested'],timeout=30,headers={'User-Agent':'Mozilla/5.0 (compatible; A3talPostFixQA/1.0)'})
+              r.raise_for_status()
+              soup=BeautifulSoup(r.text,'html.parser')
+              main=soup.find('main')
+              found=[normalize(a.get('href','')) for a in (main or soup).select('a[href]')]
+              leftovers=sorted(urls&set(found))
+              return {'url':p['url'],'remaining_404_anchors':leftovers,'html_status':r.status_code}
+          with concurrent.futures.ThreadPoolExecutor(max_workers=3) as ex:
+              outcomes=list(ex.map(test,pages))
+          broken=[p for p in outcomes if p['remaining_404_anchors']]
+          print('REMAINING_VISIBLE_BROKEN_LINKS',json.dumps(broken,ensure_ascii=False),flush=True)
+          print('QA_SUMMARY',json.dumps({'source_pages_checked':len(outcomes),'pages_still_broken':len(broken),'total_bad_destinations':len(bad)},ensure_ascii=False),flush=True)
+          if broken: raise SystemExit(1)
+          print('A3TAL_EGYPT_DTC_LINKS_RENDER_FIX_VERIFIED',flush=True)
+          PY
