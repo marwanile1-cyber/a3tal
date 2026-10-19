@@ -1,0 +1,30 @@
+name: Rebuild reviewed Jetour 1.5 vs 1.6 model guide with OEM Egypt data
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/restore-egypt-jetour-official-quality80-batch05.yml'
+      - 'scripts/backfill-egypt-quality80-reviewed-batch05-jetour.py'
+      - 'data/quality-audits/egypt-editorial-manual-audit-20261020-05-jetour.json'
+      - 'data/expansions/egypt-editorial-quality80-batch05-jetour-20261020.json'
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  exact-quality-repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate scored source and publisher
+        run: |
+          python3 -m py_compile scripts/editorial_minimum_words.py scripts/backfill-egypt-quality80-reviewed-batch05-jetour.py
+          python3 -m json.tool data/expansions/egypt-editorial-quality80-batch05-jetour-20261020.json > /dev/null
+          python3 -m json.tool data/quality-audits/egypt-editorial-manual-audit-20261020-05-jetour.json > /dev/null
+      - name: Update Jetour article ONLY and verify live 1500 words and 3 Egypt OEM sources
+        run: python3 -u scripts/backfill-egypt-quality80-reviewed-batch05-jetour.py
