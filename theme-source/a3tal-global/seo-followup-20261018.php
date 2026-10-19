@@ -462,3 +462,25 @@ add_filter('wpseo_twitter_image', static function($url) {
   $src = wp_get_attachment_image_url($id,'full');
   return $src ? $src : $url;
 }, 99999);
+
+
+/**
+ * A3TAL_AST_ASTRA_VIDEO_PRESENTATION_FIX_20261019
+ * WordPress strips third-party iframe HTML at post-save. Inject the single
+ * editorially verified YouTube-nocookie embed at render time for one article;
+ * do not permit arbitrary user-supplied embeds or affect other URLs.
+ */
+add_filter('the_content', static function($content) {
+  if (!is_singular('post') || (int)get_queried_object_id()!==80842 || !in_the_loop() || !is_main_query()) return $content;
+  $marker='a3tal-astra-j-coolant-diagnostic-video-20261019';
+  if (strpos($content,$marker)===false || strpos($content,'youtube-nocookie.com/embed/iVyWj_yhyY0')!==false) return $content;
+  $embed='<div class="a3tal-verified-video-embed" style="position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:12px;background:#142a39;margin:18px 0">'
+    .'<iframe src="https://www.youtube-nocookie.com/embed/iVyWj_yhyY0"'
+    .' title="شرح مستقل لتشخيص تسريب تبريد أوبل أسترا J بمحرك 1.4"'
+    .' loading="lazy" width="1280" height="720" allowfullscreen'
+    .' referrerpolicy="strict-origin-when-cross-origin"'
+    .' allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; web-share"'
+    .' style="width:100%;height:100%;border:0;display:block"></iframe></div>';
+  $pattern='~(<section\b[^>]*data-a3tal-video=["\x27]'.preg_quote($marker,'~').'["\x27][^>]*>.*?</p>)~isu';
+  return preg_replace($pattern, '$1'.$embed, $content, 1);
+}, 99);
