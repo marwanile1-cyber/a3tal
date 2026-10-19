@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Carefully enrich three existing Egypt articles, preserving IDs, slugs and Yoast.
+"""Carefully enrich five existing Egypt articles, preserving IDs, slugs and Yoast.
 Uses only A3tal Direct Bridge. A failed update is never blindly retried.
 """
 import json, os, re, time, html, urllib.parse, urllib.request
@@ -14,6 +14,8 @@ TARGETS=[
  ("kia-sportage-dct-gearbox-overheating-problems",80886,"data/expansions/egypt-20261019-kia-sportage-dct.html","A3TAL-ENCYCLOPEDIA-WEAK-20261019-KIA-DCT"),
  ("kia-sportage-fault-codes-dtc-full-list-guide",80898,"data/expansions/egypt-20261019-kia-sportage-dtc.html","A3TAL-ENCYCLOPEDIA-WEAK-20261019-KIA-DTC"),
  ("mg-5-electrical-screen-tpms-problems",80684,"data/expansions/egypt-20261019-mg5-electrical.html","A3TAL-ENCYCLOPEDIA-WEAK-20261019-MG5-ELECTRICAL"),
+ ("renault-megane-suspension-steering-problems",80705,"data/expansions/egypt-20261019-renault-megane-steering.html","A3TAL-ENCYCLOPEDIA-WEAK-20261019-MEGANE-STEERING"),
+ ("hyundai-tucson-nx4-fault-codes-dtc-dictionary",80752,"data/expansions/egypt-20261019-tucson-dtc.html","A3TAL-ENCYCLOPEDIA-WEAK-20261019-TUCSON-DTC"),
 ]
 
 def get(path, auth=True, raw=False, tries=3):
@@ -83,6 +85,8 @@ def public_verify(slug,marker):
                 "A3TAL-ENCYCLOPEDIA-WEAK-20261019-KIA-DCT":"ما الذي يجب تحديده قبل تشخيص فتيس كيا سبورتاج؟",
                 "A3TAL-ENCYCLOPEDIA-WEAK-20261019-KIA-DTC":"كيف تقرأ كود عطل كيا سبورتاج دون الوقوع في تشخيص خاطئ؟",
                 "A3TAL-ENCYCLOPEDIA-WEAK-20261019-MG5-ELECTRICAL":"قبل فحص كهرباء MG5: حدد العَرَض والتجهيز",
+                "A3TAL-ENCYCLOPEDIA-WEAK-20261019-MEGANE-STEERING":"خريطة تشخيص صوت الطقطقة في رينو ميجان",
+                "A3TAL-ENCYCLOPEDIA-WEAK-20261019-TUCSON-DTC":"كيف تحدد معنى كود توسان NX4 حسب المحرك والفتيس؟",
             }
             plain=re.sub(r"\s+"," ",html.unescape(re.sub(r"<[^>]+>"," ",result)))
             if headings[marker] not in plain:
@@ -122,7 +126,7 @@ def main():
             raise RuntimeError("Preservation guard failed "+slug)
         plans.append((slug,pid,marker,row,combined,p["featured_media"]))
         print("PREPARED",slug,"original_words",wc(body),"revised_words",wc(combined),flush=True)
-    print("ALL_THREE_PRECHECKS_PASSED",len(plans),flush=True)
+    print("ALL_FIVE_PRECHECKS_PASSED",len(plans),flush=True)
     for slug,pid,marker,row,combined,featured in plans:
         if combined is None:
             public_verify(slug,marker)
@@ -149,7 +153,7 @@ def main():
         public_verify(slug,marker)
         print("LIVE_ENCYCLOPEDIA_UPDATED",slug,"words",wc(after["content"]),SITE+"/"+slug+"/",flush=True)
         time.sleep(2)
-    print("EGYPT_SHORT_ARTICLES_BATCH01_COMPLETE",flush=True)
+    print("EGYPT_SHORT_ARTICLES_BATCH01_FIVE_COMPLETE",flush=True)
 
 if __name__=="__main__":
     main()
