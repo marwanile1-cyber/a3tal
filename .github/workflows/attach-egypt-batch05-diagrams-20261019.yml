@@ -1,0 +1,21 @@
+name: Add original visuals Egypt car guides batch 05
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/attach-egypt-batch05-diagrams-20261019.yml','scripts/attach-egypt-batch05-diagrams-20261019.py']
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  media:
+    runs-on: ubuntu-latest
+    timeout-minutes: 24
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m pip install -q pillow arabic-reshaper python-bidi
+      - run: python3 -u scripts/attach-egypt-batch05-diagrams-20261019.py
