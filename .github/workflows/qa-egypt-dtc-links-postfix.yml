@@ -17,7 +17,7 @@ jobs:
         with:
           name: a3tal-live-seo-link-audit-39168012987
           run-id: 39168012987
-          github-token: \${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           path: old-audit
       - run: python3 -m pip install -q requests beautifulsoup4
       - name: Validate formerly broken destinations are no longer visible clickable links
