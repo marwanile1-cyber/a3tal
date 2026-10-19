@@ -1,0 +1,58 @@
+name: Verify 10 repaired Egypt articles and original images batches 03 04
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/qa-egypt-batches03-04-final-20261019.yml']
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - run: python3 -m pip install -q requests beautifulsoup4
+      - name: Test live URLs SEO canonical media and accessible responsive tables
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import requests,json,re
+          from bs4 import BeautifulSoup
+          base='https://a3tal.com/'
+          links={
+           80791:'chery-tiggo-8-pro-fault-codes-dtc-dictionary',
+           80868:'mg-6-suspension-stability-tires-guide',
+           80836:'hyundai-matrix-fault-codes-dtc-dictionary',
+           80758:'toyota-corolla-suspension-steering-problems',
+           80889:'kia-sportage-suspension-brakes-wheels-problems',
+           80782:'chery-tiggo-8-pro-suspension-comfort-nvh',
+           80729:'jetour-fault-codes-dtc-dictionary',
+           80853:'opel-astra-j-fault-codes-dtc-dictionary',
+           80720:'jetour-suspension-steering-stability-problems',
+           80892:'kia-sportage-electrical-screens-adas-problems'
+          }
+          for pid,slug in links.items():
+            u=base+slug+'/'
+            r=requests.get(u,params={'qa':'batch34-20261019'},headers={'User-Agent':'Mozilla/5.0 (A3talIndependentArticleQA/1.0)'},timeout=45)
+            r.raise_for_status()
+            s=BeautifulSoup(r.text,'html.parser')
+            article=s.select_one('main .g-entry')
+            assert article,'Missing content '+slug
+            words=len(re.findall(r'[\w\u0600-\u06ff]+',article.get_text(' ',strip=True)))
+            assert words>=700,'Short article '+slug+' '+str(words)
+            assert article.select('div.g-table-wrap > table'),'Table not responsive '+slug
+            canonical=s.select_one('link[rel="canonical"]')
+            assert canonical and canonical.get('href','').rstrip('/')==u.rstrip('/'),'Wrong canonical '+slug
+            robots=s.select_one('meta[name="robots"]')
+            assert 'noindex' not in (robots.get('content','').lower() if robots else ''),'Unexpected noindex '+slug
+            og=s.select_one('meta[property="og:image"]')
+            assert og and og.get('content','').startswith('https://'),'No OG image '+slug
+            expected='a3tal-original-diagnostic-flow-'+('b3-' if pid in (80791,80868,80836,80758,80889) else 'b4-')+str(pid)+'-20261019.webp'
+            pics=article.select('img')
+            assert any(expected in str(x) for x in pics),'Original diagram missing '+slug
+            links=[a.get('href','') for a in article.select('a[href]')]
+            assert any(q.startswith(base) and slug not in q for q in links),'Missing related internal link '+slug
+            assert any(q.startswith('https://') and 'a3tal.com' not in q for q in links),'Missing external source '+slug
+            print('ARTICLE_IMAGE_LINKS_PASS',json.dumps({'id':pid,'slug':slug,'words':words,'pictures':len(pics)},ensure_ascii=False),flush=True)
+          print('BATCH03_04_TEN_LIVE_ARTICLES_PASS',flush=True)
+          PY
