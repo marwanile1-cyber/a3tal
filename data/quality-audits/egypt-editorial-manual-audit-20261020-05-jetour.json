@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-20",
+  "scope": "Jetour Egyptian models T1 T2 Dashing actual OEM catalogue, avoid misleading comparison of 1.5T and 1.6T by displacement alone",
+  "max": {
+    "factual_accuracy_and_safety": 25,
+    "actionable_diagnostics": 25,
+    "search_intent_completion": 15,
+    "specificity_and_original_value": 10,
+    "structure_and_ux": 10,
+    "visual_explanation": 10,
+    "useful_verified_linking": 5
+  },
+  "threshold_repair_if_score_lte": 80,
+  "method": "Manual editorial review against primary Egypt-market catalogue evidence, not official Google rating; facts and model-specific diagnostics determine changes, not word count.",
+  "reviewed": [
+    {
+      "pid": 80714,
+      "slug": "jetour-engine-problems-1-5t-vs-1-6t",
+      "score": 56,
+      "components": {
+        "factual_accuracy_and_safety": 17,
+        "actionable_diagnostics": 11,
+        "search_intent_completion": 11,
+        "specificity_and_original_value": 4,
+        "structure_and_ux": 7,
+        "visual_explanation": 6,
+        "useful_verified_linking": 0
+      },
+      "decision": "repair",
+      "findings": [
+        "Initial source lacks source-level differentiation of currently sold T1/T2/X70 powertrains and VIN-specific cases; requires manufacturer catalogue audit before changes.",
+        "Current Jetour Egypt official T1 page and PDF says 1.5T 184 hp/290 Nm; T2 lists 1.5T 184 hp and 2.0T 254 hp; Dashing Egypt PDF gives distinct 1.5T 156 PS and 1.6T 197 PS. Distinguish them rather than asserting a universal 1.5T spec.",
+        "Missing tests for underboost P0299, misfire, fuel trims, wet DCT by actual variant and voltage-diagnostic priority."
+      ],
+      "sources": [
+        "https://jetouregypt.com/models/T1/",
+        "https://jetouregypt.com/models/T2/",
+        "https://jetouregypt.com/uploads/models/brochures/Jetour-Dashing.pdf"
+      ]
+    }
+  ]
+}
