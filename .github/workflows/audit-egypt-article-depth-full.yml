@@ -47,12 +47,14 @@ jobs:
           result.sort(key=lambda x:x['words'])
           under600=[x for x in result if x['words']<600]
           under1000=[x for x in result if x['words']<1000]
+          under1500=[x for x in result if x['words']<1500]
           weak=[x for x in result if not x['body_images']]
-          summary={'published_posts':len(result),'under_600':len(under600),'under_1000':len(under1000),
+          summary={'published_posts':len(result),'under_600':len(under600),'under_1000':len(under1000),'under_1500':len(under1500),'at_least_1500':len(result)-len(under1500),
             'no_body_images':len(weak),'missing_featured_image':sum(not x['featured_image'] for x in result),
             'video_present':sum(x['has_video'] for x in result)}
           print('EGYPT_ARTICLE_INVENTORY',json.dumps(summary,ensure_ascii=False),flush=True)
           print('SHORTEST_ARTICLES',json.dumps(result[:25],ensure_ascii=False),flush=True)
+          print('UNDER_1500_FIRST_60',json.dumps(under1500[:60],ensure_ascii=False),flush=True)
           print('MISSING_FEATURED',json.dumps([x for x in result if not x['featured_image']],ensure_ascii=False),flush=True)
           open('diagnostics/egypt-article-depth-inventory.json','w').write(json.dumps({'summary':summary,'articles':result},ensure_ascii=False,indent=2))
           PY
