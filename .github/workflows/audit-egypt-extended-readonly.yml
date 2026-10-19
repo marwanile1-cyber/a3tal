@@ -1,0 +1,77 @@
+name: Audit Egypt off-sitemap links and real page signals
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/audit-egypt-extended-readonly.yml']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 17
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: a3tal-live-seo-link-audit-39168012987
+          run-id: 39168012987
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: audit-input
+      - name: Install audit dependencies
+        run: pip install -q requests beautifulsoup4
+      - name: Verify top off-sitemap destinations and canonical/index tags
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,requests,concurrent.futures,time,re,collections,os
+          from bs4 import BeautifulSoup
+          from urllib.parse import urlsplit
+          a=json.load(open('audit-input/seo-audit-report.json'))
+          raw=a['non_sitemap_link_destinations']
+          # Exclude ordinary pagination, KSA separate WP site, Cloudflare and fragment-only anchors.
+          candidates=[p for p in raw if p['url'].startswith('https://a3tal.com/') and
+               not p['url'].startswith('https://a3tal.com/ksa/') and
+               not any(z in p['url'] for z in ('/cdn-cgi/','/page/','/feed/'))]
+          urls=candidates[:140]
+          def inspect(x):
+            u=x['url']; response=None; err=None
+            for i in range(3):
+              try:
+                response=requests.get(u,headers={'User-Agent':'Mozilla/5.0 (compatible; A3talEgyptReadOnlyAudit/1.0)'},timeout=30,allow_redirects=True)
+                if response.status_code not in (429,500,502,503,504):break
+              except Exception as e:err=str(e)[:100]
+              if i<2:time.sleep((i+1)*2)
+            if response is None:return {'url':u,'sources':x['source_count'],'error':err}
+            r=response
+            doc=BeautifulSoup(r.text,'html.parser')
+            cl=doc.select_one('link[rel=canonical]')
+            robots=doc.select_one('meta[name=robots]')
+            title=doc.select_one('title')
+            h1=doc.select('h1')
+            schema=doc.select('script[type="application/ld+json"]')
+            return {'url':u,'sources':x['source_count'],'status':r.status_code,'final':r.url,'redirects':len(r.history),
+               'canonical':cl.get('href','') if cl else '', 'robots':robots.get('content','') if robots else '',
+               'title':title.get_text(' ',strip=True)[:140] if title else '',
+               'h1_count':len(h1),'ld_json':len(schema)}
+          with concurrent.futures.ThreadPoolExecutor(max_workers=3) as pool:
+            result=list(pool.map(inspect,urls))
+          bad=[x for x in result if x.get('status') not in (200,301,302)]
+          redirected=[x for x in result if x.get('redirects')]
+          nindex=[x for x in result if 'noindex' in x.get('robots','').lower()]
+          zero_h1=[x for x in result if x.get('status')==200 and x['h1_count']==0]
+          status=dict(collections.Counter(str(x.get('status','error')) for x in result))
+          print('EGYPT_EXTENDED_SUMMARY',json.dumps({'tested':len(result),'from':len(raw),'status':status,'dead_count':len(bad),'dead_source_total':sum(x['sources'] for x in bad),'redirected':len(redirected),'noindex_count':len(nindex),'zero_h1_count':len(zero_h1)},ensure_ascii=False),flush=True)
+          print('EGYPT_DEAD_TARGETS',json.dumps(bad[:100],ensure_ascii=False),flush=True)
+          print('EGYPT_REDIRECTED_TARGETS',json.dumps(redirected[:60],ensure_ascii=False),flush=True)
+          print('EGYPT_NOINDEX_TARGETS',json.dumps(nindex[:80],ensure_ascii=False),flush=True)
+          os.makedirs('diagnostics',exist_ok=True)
+          open('diagnostics/egypt-extended-readonly.json','w').write(json.dumps(result,ensure_ascii=False,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: a3tal-egypt-off-sitemap-diagnostic-${{ github.run_id }}
+          path: diagnostics/egypt-extended-readonly.json
+          if-no-files-found: warn
+          retention-days: 14
