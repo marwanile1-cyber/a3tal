@@ -1,0 +1,38 @@
+name: QA Egypt exact car model article journeys
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/qa-egypt-reciprocal-car-links.yml']
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - run: python3 -m pip install -q requests beautifulsoup4
+      - name: Verify exact related model links in live article pages
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import requests,json
+          from bs4 import BeautifulSoup
+          s=requests.Session();s.headers['User-Agent']='Mozilla/5.0 (compatible; A3talModelJourneyQA/1.0)'
+          pairs=[
+           ('kia-k4-2027-egypt-prices-engines','kia-k4-2027-egypt'),
+           ('skoda-octavia-2027-egypt-prices-trims','skoda-octavia-2027-egypt'),
+          ]
+          result=[]
+          for article,car in pairs:
+              url='https://a3tal.com/'+article+'/'
+              response=s.get(url,params={'qa':'20261019'},timeout=40);response.raise_for_status()
+              dom=BeautifulSoup(response.text,'html.parser')
+              needle='https://a3tal.com/cars/'+car+'/'
+              links=[a.get('href','').split('?')[0] for a in dom.select('main a[href]')]
+              found=needle in links
+              result.append({'article':url,'model_url':needle,'linked':found})
+              assert found, 'No bidirectional link from '+article+' to '+car
+          print('EXACT_MODEL_LINKS',json.dumps(result,ensure_ascii=False),flush=True)
+          print('EXACT_MODEL_JOURNEYS_PASS',flush=True)
+          PY
