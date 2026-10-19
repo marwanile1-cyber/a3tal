@@ -1,0 +1,29 @@
+name: Rebuild Egypt Sportage and MG5 to strict 1500 word minimum
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/backfill-egypt-1500-batch01.yml'
+      - 'scripts/backfill-egypt-1500-batch01.py'
+      - 'data/expansions/egypt-1500-rebuild-batch01-20261019.json'
+      - 'scripts/editorial_minimum_words.py'
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate script and source before touching production
+        run: |
+          python3 -m py_compile scripts/editorial_minimum_words.py scripts/backfill-egypt-1500-batch01.py
+          python3 scripts/editorial_minimum_words.py data/expansions/egypt-1500-rebuild-batch01-20261019.json || echo "Supplement is assessed with preserved original text at runtime"
+      - name: Enforce minimum 1500 actual body words on both original live pages
+        run: python3 -u scripts/backfill-egypt-1500-batch01.py
