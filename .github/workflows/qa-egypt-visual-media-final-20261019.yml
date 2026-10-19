@@ -1,0 +1,49 @@
+name: Final QA Egypt ten original inline images and Astra video embed
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/qa-egypt-visual-media-final-20261019.yml']
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - run: python3 -m pip install -q requests beautifulsoup4
+      - name: Check images inside article and video in raw HTML
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import requests,json
+          from bs4 import BeautifulSoup
+          root='https://a3tal.com'
+          paths={
+             80886:'kia-sportage-dct-gearbox-overheating-problems',
+             80898:'kia-sportage-fault-codes-dtc-full-list-guide',
+             80684:'mg-5-electrical-screen-tpms-problems',
+             80705:'renault-megane-suspension-steering-problems',
+             80752:'hyundai-tucson-nx4-fault-codes-dtc-dictionary',
+             80871:'mg-6-electrical-screen-battery-problems',
+             80814:'opel-insignia-electrical-intellilux-screen-problems',
+             80770:'toyota-corolla-fault-codes-dtc-dictionary',
+             80883:'kia-sportage-tgdi-engine-turbo-carbon-buildup',
+             80842:'opel-astra-j-cooling-system-leaks-thermostat'
+          }
+          for pid,slug in paths.items():
+              response=requests.get(root+'/'+slug+'/',params={'mediaqa':'20261019'},timeout=35)
+              response.raise_for_status()
+              s=BeautifulSoup(response.text,'html.parser')
+              images=s.select('main .g-entry img,main .a3tal-inline-diagnostic-original img')
+              token='a3tal-original-diagnostic-flow-'+str(pid)+'-20261019'
+              found=[im for im in images if token in str(im)]
+              assert found,'Missing inline original visual: '+slug
+              assert s.select_one('meta[property="og:image"]'), 'Missing OG for '+slug
+              print('ORIGINAL_IMAGE_PASS',pid,slug,'count',len(found),flush=True)
+              if pid==80842:
+                  iframe=s.select('iframe[src*="youtube-nocookie.com/embed/iVyWj_yhyY0"]')
+                  print('VIDEO_DIAGNOSTIC',json.dumps({'iframe_count':len(iframe),'tag_count':response.text.count('youtube-nocookie.com'),'marker_count':response.text.count('a3tal-astra-j-coolant-diagnostic-video-20261019'),'source_excerpt':str(s.select_one('[data-a3tal-video]'))[:1000]},ensure_ascii=False),flush=True)
+                  assert iframe,'Astra J video not embedded in page'
+          print('EGYPT_MEDIA_ARTICLES_ALL_TEN_PLUS_VIDEO_PASS',flush=True)
+          PY
