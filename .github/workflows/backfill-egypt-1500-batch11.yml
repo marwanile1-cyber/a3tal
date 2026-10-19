@@ -1,0 +1,28 @@
+name: Correct Tiggo engine Corolla Hybrid MG5 steering to 1500 words
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/backfill-egypt-1500-batch11.yml'
+      - 'scripts/backfill-egypt-1500-batch11.py'
+      - 'data/expansions/egypt-1500-rebuild-batch11-20261020.json'
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    timeout-minutes: 26
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify editorial manuscript and publisher
+        run: |
+          python3 -m py_compile scripts/editorial_minimum_words.py scripts/backfill-egypt-1500-batch11.py
+          python3 -m json.tool data/expansions/egypt-1500-rebuild-batch11-20261020.json >/dev/null
+      - name: Upgrade three existing model guides, require 1500 genuine words on live pages
+        run: python3 -u scripts/backfill-egypt-1500-batch11.py
