@@ -1,0 +1,55 @@
+name: Consolidated recovery ten Egypt guides 1500+ words
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/restore-egypt-ten-1500-minimum.yml'
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify all four pre-reviewed release manifests and scripts
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/editorial_minimum_words.py scripts/backfill-egypt-1500-batch03.py scripts/backfill-egypt-1500-batch04.py scripts/backfill-egypt-1500-batch05.py scripts/backfill-egypt-1500-batch06.py
+          python3 - <<'PY'
+          import json,sys
+          sys.path.insert(0,'scripts')
+          from editorial_minimum_words import count_editorial_words
+          slugs=set()
+          for index in (3,4,5,6):
+              path='data/expansions/egypt-1500-rebuild-batch%02d-20261019.json'%index
+              m=json.load(open(path,encoding='utf-8'))
+              assert m['minimum_words']==1500
+              for a in m['articles']:
+                  assert a['slug'] not in slugs, a['slug']
+                  slugs.add(a['slug'])
+                  assert a['html'].count(a['marker'])==1
+                  wc=count_editorial_words(a['html'])
+                  assert wc>=750,(a['slug'],wc)
+                  assert len(a['html'])>4000
+                  print('REBUILD_PRECHECK_PASS',a['slug'],wc,flush=True)
+          assert len(slugs)==10, len(slugs)
+          print('TEN_DISTINCT_ARTICLES_READY_FOR_LIVE_WORD_GATE',flush=True)
+          PY
+      - name: Restore three code and suspension guides, batch 03
+        run: python3 -u scripts/backfill-egypt-1500-batch03.py
+      - name: Restore Corolla and Sportage, batch 04
+        run: python3 -u scripts/backfill-egypt-1500-batch04.py
+      - name: Restore Tiggo Jetour Astra, batch 05
+        run: python3 -u scripts/backfill-egypt-1500-batch05.py
+      - name: Restore Jetour and Sportage ADAS, batch 06
+        run: python3 -u scripts/backfill-egypt-1500-batch06.py
+      - name: All ten passed live WordPress minimum
+        run: echo "TEN_ADDITIONAL_EGYPT_GUIDES_AT_LEAST_1500_WORDS_VERIFIED"
