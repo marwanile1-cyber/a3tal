@@ -1,4 +1,5 @@
 name: Audit Egypt homepage accessibility controls
+# Retest after fixes 20261019
 on:
   workflow_dispatch:
   push:
