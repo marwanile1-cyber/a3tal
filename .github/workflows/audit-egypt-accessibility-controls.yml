@@ -1,0 +1,32 @@
+name: Audit Egypt homepage accessibility controls
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/audit-egypt-accessibility-controls.yml']
+permissions:
+  contents: read
+jobs:
+  lighthouse-a11y:
+    runs-on: ubuntu-latest
+    timeout-minutes: 13
+    steps:
+      - name: Collect invalid controls and inaccessible images on mobile
+        shell: bash
+        run: |
+          npx --yes lighthouse@12.8.2 https://a3tal.com/ --chrome-path=/usr/bin/google-chrome --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" --only-categories=accessibility --form-factor=mobile --screenEmulation.mobile=true --throttling-method=simulate --output=json --output-path=/tmp/a3tal-a11y.json --quiet
+          node - <<'JS'
+          const audit=require('/tmp/a3tal-a11y.json');
+          console.log('A11Y_SCORE',Math.round(audit.categories.accessibility.score*100));
+          for(const [id,a] of Object.entries(audit.audits)){
+            if(a.score===0 && a.details && a.details.items && a.details.items.length){
+              console.log('A11Y_FAIL',id,JSON.stringify({title:a.title,description:a.description,items:a.details.items.slice(0,18).map(x=>({node:x.node?.snippet,selector:x.node?.selector,reason:x.node?.explanation,display:x.displayValue}))}).slice(0,13000));
+            }
+          }
+          JS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: a3tal-a11y-audit-${{ github.run_id }}
+          path: /tmp/a3tal-a11y.json
+          retention-days: 7
