@@ -1,15 +1,17 @@
 {
-  "deployment_tag": "read-only-theme-checksum-diagnosis-20261020",
+  "deployment_tag": "gsc-20261020-jetour-service-snippet-canary",
   "requests": [
     {
-      "method": "GET",
-      "path": "/admin?op=file_read&path=themes/a3tal-global/functions.php",
-      "log_response": "sha_only"
-    },
-    {
-      "method": "GET",
-      "path": "/admin?op=file_read&path=themes/a3tal-global/functions.php",
-      "log_response": "sha_only"
+      "method": "POST",
+      "path": "/update-post",
+      "body": {
+        "id": 80401,
+        "expected_modified_gmt": "2026-10-08T00:08:44+00:00",
+        "meta": {
+          "_yoast_wpseo_title": "مراكز صيانة جيتور المعتمدة في مصر | رقم 16263 والفروع",
+          "_yoast_wpseo_metadesc": "مراكز صيانة جيتور المعتمدة في مصر وفروع القصراوي، رقم توكيل جيتور 16263، العناوين والحجز وكيف تتأكد من المركز الرسمي قبل التحرك."
+        }
+      }
     }
   ],
   "network_diagnostics": {
