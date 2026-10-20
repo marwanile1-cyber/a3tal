@@ -1,0 +1,30 @@
+name: Guarded car social previews
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/deploy-car-social-fallback-20261020.py'
+      - '.github/workflows/deploy-car-social-fallback-20261020.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-theme
+  cancel-in-progress: false
+jobs:
+  deploy-verified:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate guarded deploy
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/deploy-car-social-fallback-20261020.py
+          php -l theme-source/a3tal-global/functions.php
+          grep -q 'CAR_SOCIAL_IMAGE_PATCH_VERIFIED' scripts/deploy-car-social-fallback-20261020.py
+      - name: Append reviewed social-preview fallback with live checksum verification
+        run: python3 -u scripts/deploy-car-social-fallback-20261020.py
