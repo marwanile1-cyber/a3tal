@@ -1,23 +1,6 @@
 {
-  "deployment_tag": "a3tal-global-assets-cache-bust-177-20261020",
+  "deployment_tag": "a3tal-global-css-version-safe-fix-20261020",
   "requests": [
-    {
-      "method": "POST",
-      "path": "/admin",
-      "body": {
-        "op": "file_write",
-        "path": "themes/a3tal-global/functions.php",
-        "patches": [
-          {
-            "from": "define('A3G_VERSION','1.7.6');",
-            "to": "define('A3G_VERSION','1.7.7');"
-          }
-        ],
-        "confirm": true,
-        "dangerous": true,
-        "log_response": "sha_only"
-      }
-    },
     {
       "method": "POST",
       "path": "/admin",
@@ -26,7 +9,7 @@
         "path": "themes/a3tal-global/style.css",
         "patches": [
           {
-            "from": "Version: 1.7.6",
+            "from": "Version: 1.7.5",
             "to": "Version: 1.7.7"
           }
         ],
@@ -45,10 +28,6 @@
   ],
   "verify": [
     {
-      "path": "/admin?op=file_read&path=themes/a3tal-global/functions.php",
-      "log_response": "sha_only"
-    },
-    {
       "path": "/admin?op=file_read&path=themes/a3tal-global/style.css",
       "log_response": "sha_only"
     }
@@ -57,7 +36,8 @@
     "enabled": true,
     "rounds": 1,
     "paths": [
-      "/choose-your-car/"
+      "/choose-your-car/",
+      "/cars/"
     ]
   },
   "public_verify": [
