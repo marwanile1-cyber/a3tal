@@ -1,0 +1,96 @@
+{
+  "date": "2026-10-20",
+  "scope": "Second quality pass for A3tal Egypt: Hyundai Elantra and MG6, with Tucson NX4 pass control",
+  "max": {
+    "factual_accuracy_and_safety": 25,
+    "actionable_diagnostics": 25,
+    "search_intent_completion": 15,
+    "specificity_and_original_value": 10,
+    "structure_and_ux": 10,
+    "visual_explanation": 10,
+    "useful_verified_linking": 5
+  },
+  "threshold_repair_if_score_lte": 80,
+  "method": "Manual evaluation from full live rendered article text; fact-specific checks versus factory Hyundai Egypt CN7 brochure and MG6 Egypt brochure. Quality percentages are editorial judgment, not Google scores, and length alone is not an editing trigger.",
+  "reviewed": [
+    {
+      "pid": 80572,
+      "slug": "hyundai-elantra-engine-problems-guide",
+      "decision": "repair",
+      "findings": [
+        "Page wisely distinguishes Elantra generations, but provides no VIN-to-engine Egyptian model illustration or model-specific official supporting source.",
+        "No symptom-to-test measurement table or detailed differentiation of oil loss, cooling, fuel trims, misfire or urgent stop cases.",
+        "No inline explainer or verified links for genuine associated gearbox/airbag diagnostics; current page would not answer a practical repair decision."
+      ],
+      "score": 58,
+      "components": {
+        "factual_accuracy_and_safety": 19,
+        "actionable_diagnostics": 12,
+        "search_intent_completion": 10,
+        "specificity_and_original_value": 5,
+        "structure_and_ux": 7,
+        "visual_explanation": 5,
+        "useful_verified_linking": 0
+      }
+    },
+    {
+      "pid": 80575,
+      "slug": "hyundai-elantra-transmission-problems-guide",
+      "decision": "repair",
+      "findings": [
+        "Correct in principle that 6AT and IVT differ, but fails to verify Egypt CN7 1.6 MPI 6-speed AT official Hyundai brochure and leaves confusion for shoppers.",
+        "No owner decision matrix for hot delayed engagement versus engine misfire, speed-dependent bearing whine, voltage and TCM events.",
+        "Does not specify which fluid and code checks prevent destructive IVT vs 6AT mistakes; no OEM source or inline diagram."
+      ],
+      "score": 57,
+      "components": {
+        "factual_accuracy_and_safety": 19,
+        "actionable_diagnostics": 11,
+        "search_intent_completion": 10,
+        "specificity_and_original_value": 5,
+        "structure_and_ux": 7,
+        "visual_explanation": 5,
+        "useful_verified_linking": 0
+      }
+    },
+    {
+      "pid": 80865,
+      "slug": "mg-6-gearbox-dct-problems-maintenance",
+      "decision": "repair",
+      "findings": [
+        "Useful caution not to assume wet/dry DCT, but no reference link to Egyptian 2023 MG6 brochure for seven-speed dual clutch and version applicability.",
+        "Needs separate actual DCT low-speed creep and clutch heat symptoms from engine misfire and voltage errors, with service-protocol safeguards.",
+        "No table, flow image or related model links to MG6 infotainment and engine guides."
+      ],
+      "score": 55,
+      "components": {
+        "factual_accuracy_and_safety": 18,
+        "actionable_diagnostics": 10,
+        "search_intent_completion": 10,
+        "specificity_and_original_value": 5,
+        "structure_and_ux": 7,
+        "visual_explanation": 5,
+        "useful_verified_linking": 0
+      }
+    },
+    {
+      "pid": 80752,
+      "slug": "hyundai-tucson-nx4-fault-codes-dtc-dictionary",
+      "decision": "keep",
+      "findings": [
+        "Already has approx 2166 words in rendered article, factory Hyundai owners manual citation, codes grouped with symptom-specific fault isolation, original image and diagnostic table.",
+        "No critical in-scope factual defect observed in initial manual sampling; leave unchanged despite previous short-source inventory."
+      ],
+      "score": 92,
+      "components": {
+        "factual_accuracy_and_safety": 23,
+        "actionable_diagnostics": 23,
+        "search_intent_completion": 15,
+        "specificity_and_original_value": 9,
+        "structure_and_ux": 9,
+        "visual_explanation": 9,
+        "useful_verified_linking": 4
+      }
+    }
+  ]
+}
