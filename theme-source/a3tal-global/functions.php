@@ -270,25 +270,49 @@ function a3g_content_type_label($id=0){
   return $labels[$type]??'محتوى';
 }
 function a3g_related_vehicle_entity($post_id=0){
-  $post_id=$post_id?:get_the_ID();
-  if(!$post_id||get_post_type($post_id)!=='post')return null;
+  $post_id=(int)($post_id?:get_the_ID());
+  if(!$post_id || get_post_type($post_id)!=='post') return null;
+  // A manually chosen entity always takes priority, when it is published.
   $explicit=(int)get_post_meta($post_id,'_a3_vehicle_entity_id',true);
   if($explicit>0){
     $entity=get_post($explicit);
-    if($entity instanceof WP_Post && in_array($entity->post_type,['a3_car','a3_motorcycle'],true) && $entity->post_status==='publish') return $entity;
+    if($entity instanceof WP_Post && in_array($entity->post_type,['a3_car','a3_motorcycle'],true)
+        && $entity->post_status==='publish') return $entity;
   }
+
+  // LIKE is only a candidate lookup. e.g. article 1234 must not match 91234.
+  // Check the complete tokenized post IDs and reject ambiguous multi-model
+  // comparisons rather than arbitrarily promoting one vehicle in the hero.
+  $matches=[];
   $q=new WP_Query([
     'post_type'=>['a3_car','a3_motorcycle'],
     'post_status'=>'publish',
-    'posts_per_page'=>1,
+    'posts_per_page'=>-1,
+    'fields'=>'ids',
     'meta_query'=>[[
       'key'=>'_a3_related_post_ids',
       'value'=>(string)$post_id,
       'compare'=>'LIKE'
     ]],
     'no_found_rows'=>true,
+    'suppress_filters'=>true,
   ]);
-  return $q->have_posts()?$q->posts[0]:null;
+  foreach ($q->posts as $vehicle_id) {
+    $vehicle_id=(int)$vehicle_id;
+    $raw=(string)get_post_meta($vehicle_id,'_a3_related_post_ids',true);
+    $ids=array_values(array_filter(array_map('absint',preg_split('/[^0-9]+/',$raw))));
+    if(in_array($post_id,$ids,true)) $matches[$vehicle_id]=$vehicle_id;
+  }
+
+  // Include verified ID-and-slug relationships maintained in the car catalog.
+  if(function_exists('a3g_verified_car_guide_catalog') && function_exists('a3g_verified_car_guide_ids')){
+    foreach(a3g_verified_car_guide_catalog() as $car_id=>$row){
+      if(in_array($post_id,a3g_verified_car_guide_ids($car_id),true)) $matches[$car_id]=(int)$car_id;
+    }
+  }
+  if(count($matches)!==1) return null;
+  $entity=get_post((int)reset($matches));
+  return $entity instanceof WP_Post && $entity->post_status==='publish' ? $entity : null;
 }
 
 function a3g_card($id=0,$class=''){
