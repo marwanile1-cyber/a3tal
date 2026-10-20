@@ -959,3 +959,35 @@ add_filter('the_content', static function($content) {
     .'<ul style="margin:0 0 0 8px;padding-right:18px">'.implode('',$links).'</ul>'
     .'</aside>';
 }, 88);
+
+
+/**
+ * A3TAL-TUCSON-DISTINCT-INTENT-20261020
+ * Keep the historical 2026-vs-2027 model comparison separate from the
+ * October 15, 2026 current-price article. Add freshness context without
+ * rewriting pricing tables, re-canonicalizing, or changing any permalink.
+ */
+add_filter('the_content', static function($html) {
+  if (!is_singular('post') || !in_the_loop() || !is_main_query()) return $html;
+  $post_id=(int)get_the_ID();
+  if (!in_array($post_id,[80567,84008],true)) return $html;
+  $is_old=$post_id===80567;
+  $related_id=$is_old?84008:80567;
+  $expected_slug=$is_old?'hyundai-tucson-2027-prices-egypt':'hyundai-tucson-2026-price-specs-review-egypt';
+  $related=get_post($related_id);
+  if (!($related instanceof WP_Post) || $related->post_type!=='post' ||
+      $related->post_status!=='publish' || $related->post_name!==$expected_slug) return $html;
+  $target=get_permalink($related);
+  if (!$target || strpos($html,'a3tal-tucson-intent-notice')!==false) return $html;
+  $title=$is_old?'تحديث مهم للأسعار بتاريخ 15 أكتوبر 2026':'تبحث عن الفرق بين موديل 2026 و2027؟';
+  $intro=$is_old
+    ? 'هذا الموضوع مخصص لمقارنة موديلَي توسان 2026 و2027، ويتضمن بيانات سعرية جرى تدقيقها يوم 1 أكتوبر 2026. لمراجعة قائمة أسعار 2027 بعد تحديث 15 أكتوبر، ارجع للمقال الأحدث قبل اتخاذ قرار الشراء.'
+    : 'هذا الموضوع يعرض أسعار توسان 2027 المراجعة بتاريخ 16 أكتوبر 2026. للمقارنة التاريخية بين فئات وأسعار 2026 و2027، راجع الدليل المنفصل ولا تتعامل مع أسعاره القديمة باعتبارها أحدث قائمة.';
+  $link=$is_old?'أسعار هيونداي توسان 2027 بعد تحديث أكتوبر ←':'مقارنة توسان 2026 و2027 ←';
+  $notice='<aside class="a3tal-tucson-intent-notice" role="note" aria-label="مسار توسان المكمل"'
+    .' style="margin:22px 0;padding:17px 19px;border:1px solid #cedfea;border-right:4px solid #18789b;border-radius:12px;background:#f5f9fc">'
+    .'<strong style="display:block;margin-bottom:7px;color:#123b63">'.esc_html($title).'</strong>'
+    .'<p style="margin:0 0 10px">'.esc_html($intro).'</p>'
+    .'<a href="'.esc_url($target).'">'.esc_html($link).'</a></aside>';
+  return $is_old ? $notice.$html : $html.$notice;
+}, 73);
