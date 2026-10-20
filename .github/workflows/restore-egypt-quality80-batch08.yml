@@ -1,0 +1,34 @@
+name: Correct three low-quality Egypt Skoda Corolla Nissan guides after manual review
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/restore-egypt-quality80-batch08.yml'
+      - 'scripts/backfill-egypt-quality80-reviewed-batch08.py'
+      - 'data/quality-audits/egypt-editorial-manual-audit-20261020-07.json'
+      - 'data/expansions/egypt-quality80-20261020-batch08-skoda.json'
+      - 'data/expansions/egypt-quality80-20261020-batch08-corolla.json'
+      - 'data/expansions/egypt-quality80-20261020-batch08-sunny.json'
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  repair-below80-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate approved source and Python publish guard
+        run: |
+          python3 -m py_compile scripts/editorial_minimum_words.py scripts/backfill-egypt-quality80-reviewed-batch08.py
+          python3 -m json.tool data/quality-audits/egypt-editorial-manual-audit-20261020-07.json >/dev/null
+          python3 -m json.tool data/expansions/egypt-quality80-20261020-batch08-skoda.json >/dev/null
+          python3 -m json.tool data/expansions/egypt-quality80-20261020-batch08-corolla.json >/dev/null
+          python3 -m json.tool data/expansions/egypt-quality80-20261020-batch08-sunny.json >/dev/null
+      - name: Exact approved repairs and live minimum word gate
+        run: python3 -u scripts/backfill-egypt-quality80-reviewed-batch08.py
