@@ -885,6 +885,24 @@ function a3g_verified_car_guide_catalog(): array {
     ]],
     83196 => ['slug'=>'opel-frontera-egypt','articles'=>[82603=>'opel-frontera-price-specs-egypt']],
     83384 => ['slug'=>'chery-arrizo-6-gt-egypt','articles'=>[82578=>'chery-arrizo-6-gt-price-specs-egypt']],
+    83193 => ['slug'=>'xpeng-p7-plus-super-reev-egypt','articles'=>[82612=>'xpeng-p7-plus-super-reev-price-specs-egypt']],
+    83194 => ['slug'=>'xpeng-g7-super-reev-egypt','articles'=>[82606=>'xpeng-g7-super-reev-price-specs-egypt']],
+    83302 => ['slug'=>'deepal-s07-2026-egypt','articles'=>[
+      83281=>'deepal-s07-price-egypt',83286=>'deepal-s07-vs-xpeng-g6-egypt']],
+    83304 => ['slug'=>'xpeng-g6-2026-egypt','articles'=>[83286=>'deepal-s07-vs-xpeng-g6-egypt']],
+    83198 => ['slug'=>'soueast-s05-2027-egypt','articles'=>[82554=>'soueast-s05-price-specs-egypt']],
+    83197 => ['slug'=>'haval-v7-egypt','articles'=>[
+      82550=>'haval-v7-price-specs-egypt',82590=>'haval-v7-vs-geely-monjaro-em-i-egypt']],
+    83303 => ['slug'=>'forthing-s7-2027-egypt','articles'=>[83284=>'forthing-s7-review-egypt']],
+    83187 => ['slug'=>'byd-sealion-6-ev-2027','articles'=>[83167=>'byd-sealion-6-ev-price-egypt']],
+    83538 => ['slug'=>'suzuki-alto-2027-egypt','articles'=>[
+      83533=>'suzuki-alto-2027-price-egypt-535000',
+      84042=>'suzuki-alto-vs-proton-saga-2027-egypt-city-car']],
+    83434 => ['slug'=>'kia-seltos-egypt-2026','articles'=>[83428=>'kia-seltos-price-specs-egypt-buying-guide']],
+    83425 => ['slug'=>'jac-js2-2027-egypt','articles'=>[83420=>'jac-js2-price-egypt']],
+    83195 => ['slug'=>'geely-monjaro-em-i-egypt','articles'=>[
+      82582=>'geely-monjaro-em-i-price-specs-egypt',
+      82590=>'haval-v7-vs-geely-monjaro-em-i-egypt']],
   ];
 }
 
@@ -906,26 +924,28 @@ function a3g_verified_car_guide_ids($car_id): array {
   return $cache[$car_id];
 }
 
-// Reverse link: exact editorial article -> its vehicle profile.
-// Never replace a deliberate existing body link with a duplicate.
+// Reverse link: one or more exact editorial subjects -> published vehicle pages.
+// Comparisons may cover two vehicles. Skip existing links rather than duplicating.
 add_filter('the_content', static function($content) {
   if (!is_singular('post') || !in_the_loop() || !is_main_query() ||
       strpos($content,'a3tal-reviewed-model-journey')!==false) return $content;
   $article_id=(int)get_the_ID();
+  $links=[];
   foreach (a3g_verified_car_guide_catalog() as $car_id=>$row) {
     if (!isset($row['articles'][$article_id]) ||
         !in_array($article_id,a3g_verified_car_guide_ids($car_id),true)) continue;
     $car=get_post($car_id);
     if (!$car) continue;
     $url=get_permalink($car);
-    if (!$url || strpos($content,$url)!==false) return $content;
-    return $content
-      .'<aside class="a3tal-reviewed-model-journey" aria-label="صفحة السيارة المرتبطة"'
-      .' style="margin:20px 0;padding:16px 18px;border-radius:12px;border:1px solid #d9e6f0;background:#f7fafc">'
-      .'<strong>ملف السيارة المرتبط بهذا المقال</strong>'
-      .'<p style="margin:6px 0 10px">المواصفات والأسعار وروابط المراجعات والأعطال المتاحة لهذه السيارة في دليل أعطال.</p>'
-      .'<a href="'.esc_url($url).'">'.esc_html(get_the_title($car)).' ←</a>'
-      .'</aside>';
+    if (!$url || strpos($content,$url)!==false) continue;
+    $links[$car_id]='<li><a href="'.esc_url($url).'">'.esc_html(get_the_title($car)).'</a></li>';
   }
-  return $content;
+  if (!$links) return $content;
+  return $content
+    .'<aside class="a3tal-reviewed-model-journey" aria-label="صفحات السيارات المرتبطة"'
+    .' style="margin:20px 0;padding:16px 18px;border-radius:12px;border:1px solid #d9e6f0;background:#f7fafc">'
+    .'<strong>ملفات السيارات المرتبطة بهذا المقال</strong>'
+    .'<p style="margin:6px 0 10px">المواصفات والأسعار والمراجعات والأعطال المتاحة، وفق كل موديل.</p>'
+    .'<ul style="margin:0 0 0 8px;padding-right:18px">'.implode('',$links).'</ul>'
+    .'</aside>';
 }, 88);
