@@ -1,46 +1,27 @@
 {
-  "deployment_tag": "a3tal-global-css-version-safe-fix-20261020",
+  "deployment_tag": "tucson-2026-2027-search-intent-20261020",
   "requests": [
     {
       "method": "POST",
       "path": "/admin",
       "body": {
         "op": "file_write",
-        "path": "themes/a3tal-global/style.css",
+        "path": "themes/a3tal-global/functions.php",
         "patches": [
           {
-            "from": "Version: 1.7.5",
-            "to": "Version: 1.7.7"
+            "append": "\n/**\n * A3TAL-TUCSON-DISTINCT-INTENT-20261020\n * Keep the historical 2026-vs-2027 model comparison separate from the\n * October 15, 2026 current-price article. Add freshness context without\n * rewriting pricing tables, re-canonicalizing, or changing any permalink.\n */\nadd_filter('the_content', static function($html) {\n  if (!is_singular('post') || !in_the_loop() || !is_main_query()) return $html;\n  $post_id=(int)get_the_ID();\n  if (!in_array($post_id,[80567,84008],true)) return $html;\n  $is_old=$post_id===80567;\n  $related_id=$is_old?84008:80567;\n  $expected_slug=$is_old?'hyundai-tucson-2027-prices-egypt':'hyundai-tucson-2026-price-specs-review-egypt';\n  $related=get_post($related_id);\n  if (!($related instanceof WP_Post) || $related->post_type!=='post' ||\n      $related->post_status!=='publish' || $related->post_name!==$expected_slug) return $html;\n  $target=get_permalink($related);\n  if (!$target || strpos($html,'a3tal-tucson-intent-notice')!==false) return $html;\n  $title=$is_old?'تحديث مهم للأسعار بتاريخ 15 أكتوبر 2026':'تبحث عن الفرق بين موديل 2026 و2027؟';\n  $intro=$is_old\n    ? 'هذا الموضوع مخصص لمقارنة موديلَي توسان 2026 و2027، ويتضمن بيانات سعرية جرى تدقيقها يوم 1 أكتوبر 2026. لمراجعة قائمة أسعار 2027 بعد تحديث 15 أكتوبر، ارجع للمقال الأحدث قبل اتخاذ قرار الشراء.'\n    : 'هذا الموضوع يعرض أسعار توسان 2027 المراجعة بتاريخ 16 أكتوبر 2026. للمقارنة التاريخية بين فئات وأسعار 2026 و2027، راجع الدليل المنفصل ولا تتعامل مع أسعاره القديمة باعتبارها أحدث قائمة.';\n  $link=$is_old?'أسعار هيونداي توسان 2027 بعد تحديث أكتوبر ←':'مقارنة توسان 2026 و2027 ←';\n  $notice='<aside class=\"a3tal-tucson-intent-notice\" role=\"note\" aria-label=\"مسار توسان المكمل\"'\n    .' style=\"margin:22px 0;padding:17px 19px;border:1px solid #cedfea;border-right:4px solid #18789b;border-radius:12px;background:#f5f9fc\">'\n    .'<strong style=\"display:block;margin-bottom:7px;color:#123b63\">'.esc_html($title).'</strong>'\n    .'<p style=\"margin:0 0 10px\">'.esc_html($intro).'</p>'\n    .'<a href=\"'.esc_url($target).'\">'.esc_html($link).'</a></aside>';\n  return $is_old ? $notice.$html : $html.$notice;\n}, 73);\n"
           }
         ],
         "confirm": true,
         "dangerous": true,
         "log_response": "sha_only"
       }
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "body": {
-        "op": "cache_flush"
-      }
     }
   ],
   "verify": [
     {
-      "path": "/admin?op=file_read&path=themes/a3tal-global/style.css",
+      "path": "/admin?op=file_read&path=themes/a3tal-global/functions.php",
       "log_response": "sha_only"
     }
-  ],
-  "network_diagnostics": {
-    "enabled": true,
-    "rounds": 1,
-    "paths": [
-      "/choose-your-car/",
-      "/cars/"
-    ]
-  },
-  "public_verify": [
-    "موسوعة أعطال السيارات وأكواد التشخيص والأسعار ومراكز الصيانة"
   ]
 }
