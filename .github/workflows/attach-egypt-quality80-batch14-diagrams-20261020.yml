@@ -1,0 +1,24 @@
+name: Publish 3 unique Corolla Sportage Astra diagnostic diagrams on repaired originals
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/attach-egypt-quality80-batch14-diagrams-20261020.yml'
+      - 'scripts/attach-egypt-quality80-batch14-diagrams-20261020.py'
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  educational-images:
+    runs-on: ubuntu-latest
+    timeout-minutes: 27
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m pip install -q pillow arabic-reshaper python-bidi
+      - name: Generate WebP illustrations upload to library attach inline verify live HTML
+        run: python3 -u scripts/attach-egypt-quality80-batch14-diagrams-20261020.py
