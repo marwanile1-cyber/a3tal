@@ -1,0 +1,53 @@
+name: Read-only audit every published A3tal Egypt article before any edits
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/audit-egypt-all-posts-quality-first-20261020.yml'
+      - 'scripts/audit-egypt-all-posts-quality-first-20261020.py'
+permissions:
+  contents: write
+concurrency:
+  group: a3tal-egypt-readonly-sitewide-audit
+  cancel-in-progress: false
+jobs:
+  inspect-every-post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install full-text screening and similarity tools
+        run: python3 -m pip install -q requests beautifulsoup4 numpy scikit-learn
+      - name: Validate audit script and explicitly forbid publish operations
+        run: |
+          python3 -m py_compile scripts/audit-egypt-all-posts-quality-first-20261020.py
+          if grep -Eq '(/update-post|/create-post|/delete-post|/publish|/admin|/upload-media)' scripts/audit-egypt-all-posts-quality-first-20261020.py; then
+            echo "Forbidden WordPress write endpoint in read-only audit"
+            exit 1
+          fi
+      - name: Read and screen ALL WordPress published posts (no writes)
+        run: python3 -u scripts/audit-egypt-all-posts-quality-first-20261020.py
+      - name: Archive detailed report and complete normalized article text for follow-up review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: egypt-all-posts-quality-audit-${{ github.run_id }}
+          path: diagnostics/egypt-sitewide-content-20261020/
+          retention-days: 60
+          if-no-files-found: warn
+      - name: Commit report only (no article or production theme modifications)
+        run: |
+          mkdir -p data/quality-audits/sitewide-20261020
+          cp diagnostics/egypt-sitewide-content-20261020/executive_summary.json data/quality-audits/sitewide-20261020/
+          cp diagnostics/egypt-sitewide-content-20261020/REPORT_AR.md data/quality-audits/sitewide-20261020/
+          cp diagnostics/egypt-sitewide-content-20261020/all_articles_screening.csv data/quality-audits/sitewide-20261020/
+          cp diagnostics/egypt-sitewide-content-20261020/all_articles_screening.json data/quality-audits/sitewide-20261020/
+          cp diagnostics/egypt-sitewide-content-20261020/near_duplicate_candidates.csv data/quality-audits/sitewide-20261020/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/quality-audits/sitewide-20261020/
+          if ! git diff --cached --quiet; then
+            git commit -m "report: read-only full Egypt published article quality inventory (not a Google score)"
+            git push origin HEAD:main
+          fi
