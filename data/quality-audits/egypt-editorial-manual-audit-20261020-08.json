@@ -1,0 +1,56 @@
+{
+  "date": "2026-10-20",
+  "threshold_repair_if_score_lte": 80,
+  "max": {
+    "factual_accuracy_and_safety": 25,
+    "actionable_diagnostics": 25,
+    "search_intent_completion": 15,
+    "specificity_and_original_value": 10,
+    "structure_and_ux": 10,
+    "visual_explanation": 10,
+    "useful_verified_linking": 5
+  },
+  "method": "Manual review of actual live text, judged on accuracy, safe and useful diagnostics, Egypt-market specificity and evidence. Word count alone never determines editing or grade.",
+  "reviewed": [
+    {
+      "pid": 80657,
+      "slug": "skoda-octavia-electrical-ac-problems",
+      "score": 61,
+      "components": {
+        "factual_accuracy_and_safety": 20,
+        "actionable_diagnostics": 12,
+        "search_intent_completion": 10,
+        "specificity_and_original_value": 6,
+        "structure_and_ux": 7,
+        "visual_explanation": 6,
+        "useful_verified_linking": 0
+      },
+      "decision": "repair",
+      "findings": [
+        "Current article correctly cautions against assuming pressure sensor G65 or compressor control valve is defective, but does not provide practical sequence for airflow vs refrigerant vs controller failure, and does not distinguish A7 from A8 climate control variants.",
+        "Factory Egypt A8 maintenance table lists air-conditioner cabin filter maintenance; original article omits service source and reader-accessible controlled measurements.",
+        "Leave Vehicle Only In Position P needs distinction between selector message and actual no-drive symptoms; source-specific advice and voltage/BEM test needed."
+      ]
+    },
+    {
+      "pid": 80614,
+      "slug": "nissan-sunny-brakes-suspension-guide",
+      "score": 60,
+      "components": {
+        "factual_accuracy_and_safety": 19,
+        "actionable_diagnostics": 12,
+        "search_intent_completion": 11,
+        "specificity_and_original_value": 5,
+        "structure_and_ux": 7,
+        "visual_explanation": 6,
+        "useful_verified_linking": 0
+      },
+      "decision": "repair",
+      "findings": [
+        "Basic brake-vibration and suspension-sound advice lacks a safety prioritization and measurement-based differential between rotor lateral runout, pad deposit, wheel balance, hub wear, steering joint looseness and ABS code.",
+        "Nissan Egypt official spec verifies ABS+EBD+BA and 185/65 R15 tires for selected Sunny editions, but published page has no verifiable factory source.",
+        "No actual brake/shock diagnostic table, no model-specific use-case checklists, no owner decision flow."
+      ]
+    }
+  ]
+}
