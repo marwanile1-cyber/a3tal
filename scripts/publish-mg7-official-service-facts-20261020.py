@@ -55,7 +55,7 @@ def main():
     content=CONTENT_PATH.read_text("utf-8").strip()
     if word_count(content)<1500:raise RuntimeError("Encyclopedic minimum absent")
     if "<h1" in content.lower():raise RuntimeError("Duplicate H1 forbidden")
-    markers=["7-speed Wet DCT","المصادر المرجعية","المواصفة","16424","المحرك بارد","خطوات"]
+    markers=["7-speed Wet DCT","المصادر المرجعية","المواصفة","16424","المحرك بارد","قائمة فحص"]
     for marker in markers:
         if marker not in content:raise RuntimeError("Required editorial component missing")
     for source in ("https://www.mgmotor.com.eg/model/mg7/",
