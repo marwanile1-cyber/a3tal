@@ -1,5 +1,5 @@
 {
-  "deployment_tag": "verified-model-links-batch03-20261020",
+  "deployment_tag": "a3tal-global-assets-cache-bust-177-20261020",
   "requests": [
     {
       "method": "POST",
@@ -9,12 +9,25 @@
         "path": "themes/a3tal-global/functions.php",
         "patches": [
           {
-            "from": "    83196 => ['slug'=>'opel-frontera-egypt','articles'=>[82603=>'opel-frontera-price-specs-egypt']],",
-            "to": "    83196 => ['slug'=>'opel-frontera-egypt','articles'=>[\n      82603=>'opel-frontera-price-specs-egypt',\n      84045=>'opel-frontera-egypt-family-review-third-row-2026']],"
-          },
+            "from": "define('A3G_VERSION','1.7.6');",
+            "to": "define('A3G_VERSION','1.7.7');"
+          }
+        ],
+        "confirm": true,
+        "dangerous": true,
+        "log_response": "sha_only"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/admin",
+      "body": {
+        "op": "file_write",
+        "path": "themes/a3tal-global/style.css",
+        "patches": [
           {
-            "from": "    83384 => ['slug'=>'chery-arrizo-6-gt-egypt','articles'=>[82578=>'chery-arrizo-6-gt-price-specs-egypt']],",
-            "to": "    83384 => ['slug'=>'chery-arrizo-6-gt-egypt','articles'=>[82578=>'chery-arrizo-6-gt-price-specs-egypt']],\n    83684 => ['slug'=>'kia-k4-2027-egypt','articles'=>[\n      83679=>'kia-k4-2027-egypt-prices-engines',\n      84036=>'kia-k4-vs-skoda-octavia-egypt-2027']],\n    83648 => ['slug'=>'skoda-octavia-2027-egypt','articles'=>[\n      83643=>'skoda-octavia-2027-egypt-prices-trims',\n      84036=>'kia-k4-vs-skoda-octavia-egypt-2027']],\n    84011 => ['slug'=>'hyundai-tucson-2027-egypt','articles'=>[84008=>'hyundai-tucson-2027-prices-egypt']],\n    83442 => ['slug'=>'geely-galaxy-ex2-egypt','articles'=>[83431=>'geely-ex2-price-specs-review-egypt']],"
+            "from": "Version: 1.7.6",
+            "to": "Version: 1.7.7"
           }
         ],
         "confirm": true,
@@ -34,15 +47,17 @@
     {
       "path": "/admin?op=file_read&path=themes/a3tal-global/functions.php",
       "log_response": "sha_only"
+    },
+    {
+      "path": "/admin?op=file_read&path=themes/a3tal-global/style.css",
+      "log_response": "sha_only"
     }
   ],
   "network_diagnostics": {
     "enabled": true,
     "rounds": 1,
     "paths": [
-      "/cars/kia-k4-2027-egypt/",
-      "/cars/skoda-octavia-2027-egypt/",
-      "/kia-k4-vs-skoda-octavia-egypt-2027/"
+      "/choose-your-car/"
     ]
   },
   "public_verify": [
