@@ -883,8 +883,18 @@ function a3g_verified_car_guide_catalog(): array {
       82844=>'chery-tiggo-8-pro-max-egypt-price-specs',
       82852=>'tiggo-8-pro-max-vs-jetour-t2-comparison',
     ]],
-    83196 => ['slug'=>'opel-frontera-egypt','articles'=>[82603=>'opel-frontera-price-specs-egypt']],
+    83196 => ['slug'=>'opel-frontera-egypt','articles'=>[
+      82603=>'opel-frontera-price-specs-egypt',
+      84045=>'opel-frontera-egypt-family-review-third-row-2026']],
     83384 => ['slug'=>'chery-arrizo-6-gt-egypt','articles'=>[82578=>'chery-arrizo-6-gt-price-specs-egypt']],
+    83684 => ['slug'=>'kia-k4-2027-egypt','articles'=>[
+      83679=>'kia-k4-2027-egypt-prices-engines',
+      84036=>'kia-k4-vs-skoda-octavia-egypt-2027']],
+    83648 => ['slug'=>'skoda-octavia-2027-egypt','articles'=>[
+      83643=>'skoda-octavia-2027-egypt-prices-trims',
+      84036=>'kia-k4-vs-skoda-octavia-egypt-2027']],
+    84011 => ['slug'=>'hyundai-tucson-2027-egypt','articles'=>[84008=>'hyundai-tucson-2027-prices-egypt']],
+    83442 => ['slug'=>'geely-galaxy-ex2-egypt','articles'=>[83431=>'geely-ex2-price-specs-review-egypt']],
     83193 => ['slug'=>'xpeng-p7-plus-super-reev-egypt','articles'=>[82612=>'xpeng-p7-plus-super-reev-price-specs-egypt']],
     83194 => ['slug'=>'xpeng-g7-super-reev-egypt','articles'=>[82606=>'xpeng-g7-super-reev-price-specs-egypt']],
     83302 => ['slug'=>'deepal-s07-2026-egypt','articles'=>[
