@@ -31,7 +31,8 @@
         "No reference to exact factory Egyptian 2021 A8 service maintenance chart or OEM Egypt launch information, although these facts are critical to stopping DSG repairs on an 8AT.",
         "No internal diagram, no diagnostic matrix, no safety-specific stop-driving thresholds."
       ],
-      "score": 60
+      "score": 60,
+      "pid": 80651
     },
     {
       "id": 80755,
@@ -51,7 +52,8 @@
         "Toyota Egypt 2026 brochure documents 1.6 120hp/154Nm and 1.8 HEV variants and CVT, but current live page does not link manufacturer primary document.",
         "No side-by-side symptom tests, table or owner workflow; users cannot decide what to test first."
       ],
-      "score": 62
+      "score": 62,
+      "pid": 80755
     },
     {
       "id": 80617,
@@ -71,7 +73,8 @@
         "Official Nissan Egypt specs show manual and automatic AC by trim with rear cooling fan vents: this material trim distinction and dual failure routes are absent.",
         "No substantive repair sequence/table, no primary source links or images embedded in body."
       ],
-      "score": 61
+      "score": 61,
+      "pid": 80617
     },
     {
       "id": 80886,
@@ -90,7 +93,8 @@
         "Already in-depth >2000-word published explanation with manufacturer specific 7DCT source, in-place original diagram, diagnosis table and safety protocol; word count is not reason for edits.",
         "No high-priority factual gap found in sampling; leave unchanged."
       ],
-      "score": 91
+      "score": 91,
+      "pid": 80886
     }
   ]
 }
