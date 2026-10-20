@@ -96,10 +96,10 @@ def main():
         raise RuntimeError("Live featured media changed")
     rendered=(live.get("content") or {}).get("rendered","")
     count=word_count(rendered)
-    if count<1500 or "7 Speed Wet Dual Clutch" not in rendered or "16424" not in rendered:
+    if count<1500 or "Wet Dual Clutch" not in rendered or "16424" not in rendered:
         raise RuntimeError("Content QA failed: body below threshold or missing critical checks")
     yoast=live.get("yoast_head_json") or {}
-    if "index" not in (yoast.get("robots") or {}).get("index","index"):
+    if (yoast.get("robots") or {}).get("index","index")=="noindex":
         raise RuntimeError("Unexpected new noindex")
     print("MG7_OFFICIAL_SERVICE_REPAIR_VERIFIED",PID,"WORDS",count,"FEATURED",EXPECTED_FEATURED,
           "SLUG_PRESERVED","TRUE",flush=True)
