@@ -1,0 +1,30 @@
+name: Repair MG7 Egypt official maintenance encyclopedia
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/publish-mg7-official-service-facts-20261020.py'
+      - 'data/repairs/egypt-mg7-service-official-facts-20261020.html'
+      - '.github/workflows/publish-mg7-official-service-facts-20261020.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-editorial-production-80480
+  cancel-in-progress: false
+jobs:
+  publish-guarded:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate guarded article source
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-mg7-official-service-facts-20261020.py
+          test -s data/repairs/egypt-mg7-service-official-facts-20261020.html
+      - name: Publish only approved and unchanged MG7 article
+        run: python3 -u scripts/publish-mg7-official-service-facts-20261020.py
