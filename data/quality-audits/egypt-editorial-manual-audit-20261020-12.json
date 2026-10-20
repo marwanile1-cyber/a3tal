@@ -1,0 +1,95 @@
+{
+  "date": "2026-10-20",
+  "threshold_repair_if_score_lte": 80,
+  "criteria_max": {
+    "factual_accuracy_and_safety": 25,
+    "actionable_diagnostics": 25,
+    "search_intent_completion": 15,
+    "specificity_and_original_value": 10,
+    "structure_and_ux": 10,
+    "visual_explanation": 10,
+    "useful_verified_linking": 5
+  },
+  "method": "Manual editorial review of rendered live contents, not Google quality score. Evaluate factual accuracy and Egyptian specifications, actual fault isolation, source support and safety; word count is only a contextual signal.",
+  "reviewed": [
+    {
+      "pid": 80648,
+      "slug": "skoda-octavia-a7-a8-engine-problems",
+      "decision": "repair",
+      "findings": [
+        "Current page correctly warns not to mix A7 1.4 and 1.6 MPI with A8 1.4 TSI Egypt, but offers no manufacturer sources for Egypt A8 150hp/250Nm 8-speed gearbox or factory oil/maintenance.",
+        "PCV, underboost, engine oil loss, cooling and EPC are each handled in a few sentences without step-by-step test order, stop-driving guidance and symptom decision tree.",
+        "No contextual links to already verified A8 DSG-vs-8AT, AC and suspension articles."
+      ],
+      "score": 58,
+      "components": {
+        "factual_accuracy_and_safety": 18,
+        "actionable_diagnostics": 11,
+        "search_intent_completion": 11,
+        "specificity_and_original_value": 5,
+        "structure_and_ux": 7,
+        "visual_explanation": 6,
+        "useful_verified_linking": 0
+      }
+    },
+    {
+      "pid": 80632,
+      "slug": "toyota-corolla-suspension-brakes-guide",
+      "decision": "repair",
+      "findings": [
+        "Factory-accurate framing about MacPherson / Double Wishbone and EPS, but no Egypt Toyota 2026 primary brochure reference, tire sizes by trim or ABS VSC differentiation.",
+        "No measured brake rotor disc thickness variation, hub runout, calliper binding, tie rod looseness, wheel alignment and hybrid regenerative-brake safety differentiation to guide actual service.",
+        "No repair decision table, original article-contained educational visual or links to existing Toyota Corolla engine and gearbox page."
+      ],
+      "score": 60,
+      "components": {
+        "factual_accuracy_and_safety": 20,
+        "actionable_diagnostics": 11,
+        "search_intent_completion": 11,
+        "specificity_and_original_value": 5,
+        "structure_and_ux": 7,
+        "visual_explanation": 6,
+        "useful_verified_linking": 0
+      }
+    },
+    {
+      "pid": 80862,
+      "slug": "mg-6-engine-turbo-problems-lspi-oil",
+      "decision": "repair",
+      "findings": [
+        "Warns appropriately against unproven LSPI and fuel/oil absolutes but never cites verified Egyptian MG6 1.5 turbo 169hp / 250Nm source and leaves GDI vs MPI unverified.",
+        "One-paragraph turbo, Misfire, LSPI and oil notes do not distinguish P0299 leaks, P0300 ignition, P0171 fuel trim, PCV oil loss and P0420 root causes by actual measurements.",
+        "No related links to already repaired MG6 7-speed gearbox or infotainment electrical guides, primary documents or illustrated decision tree."
+      ],
+      "score": 57,
+      "components": {
+        "factual_accuracy_and_safety": 18,
+        "actionable_diagnostics": 11,
+        "search_intent_completion": 10,
+        "specificity_and_original_value": 5,
+        "structure_and_ux": 7,
+        "visual_explanation": 6,
+        "useful_verified_linking": 0
+      }
+    },
+    {
+      "pid": 80868,
+      "slug": "mg-6-suspension-stability-tires-guide",
+      "decision": "keep",
+      "findings": [
+        "Already has an 1800+ word differential diagnosis, onsite diagram and original manufacturer source; no sufficiently supported critical gap in this review.",
+        "Score above 80, so do not edit."
+      ],
+      "score": 91,
+      "components": {
+        "factual_accuracy_and_safety": 23,
+        "actionable_diagnostics": 23,
+        "search_intent_completion": 14,
+        "specificity_and_original_value": 9,
+        "structure_and_ux": 9,
+        "visual_explanation": 9,
+        "useful_verified_linking": 4
+      }
+    }
+  ]
+}
