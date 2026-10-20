@@ -1,0 +1,72 @@
+{
+  "date": "2026-10-20",
+  "editorial_rubric_max": {
+    "factual_accuracy_and_safety": 25,
+    "actionable_diagnostics": 25,
+    "search_intent_completion": 15,
+    "specificity_and_original_value": 10,
+    "structure_and_ux": 10,
+    "visual_explanation": 10,
+    "useful_verified_linking": 5
+  },
+  "meaning_of_scores": "Editorial judgments, not Google ratings or ranking promises; independent spot checks verify presence of text, images, official sources and index/canonical, not on-site mechanical repairs.",
+  "threshold": "Only pre-reviewed <=80 posts are changed; already good MG6 suspension rated 91 remains unchanged.",
+  "scope": "Three original published Egypt automotive knowledgebase posts under their existing permalinks.",
+  "technical_details": "Preserved all original copy, featured media, Yoast metadata, canonical and post statuses. Existing cooling video kept. All three added unique 1600x900 original WebP explanatory flowcharts not genuine OEM diagrams.",
+  "original_content_words": "WordPress REST API editor-body word count accepted by guarded publisher",
+  "github_actions_publish": "https://github.com/marwanile1-cyber/a3tal/actions/runs/39420267215",
+  "github_actions_diagrams": "https://github.com/marwanile1-cyber/a3tal/actions/runs/39420372695",
+  "reviewed": [
+    {
+      "pid": 80635,
+      "slug": "toyota-corolla-electrical-ac-problems",
+      "before_editorial_rating": 58,
+      "after_editorial_rating": 90,
+      "rubric_after": {
+        "factual_accuracy_and_safety": 23,
+        "actionable_diagnostics": 23,
+        "search_intent_completion": 14,
+        "specificity_and_original_value": 9,
+        "structure_and_ux": 9,
+        "visual_explanation": 8,
+        "useful_verified_linking": 4
+      },
+      "published_body_words_verified": 2050,
+      "notes": "Toyota Egypt 2026 catalogue: manual/electronic and Dual Zone variants, SRS/clock-spring safety by trim, A/C leak and fan/variable compressor tests, HEV caution, reference-linked owner decision flow; unique explanatory WebP."
+    },
+    {
+      "pid": 80883,
+      "slug": "kia-sportage-tgdi-engine-turbo-carbon-buildup",
+      "before_editorial_rating": 74,
+      "after_editorial_rating": 89,
+      "rubric_after": {
+        "factual_accuracy_and_safety": 23,
+        "actionable_diagnostics": 22,
+        "search_intent_completion": 14,
+        "specificity_and_original_value": 9,
+        "structure_and_ux": 9,
+        "visual_explanation": 8,
+        "useful_verified_linking": 4
+      },
+      "published_body_words_verified": 2391,
+      "notes": "Factory Kia brochure sourced and clearly Saudi-spec, not proof of every Egyptian trim; refined P0087 P0299 misfire LSPI diagnosis, ECM versus 7DCT tests, engine oil and safety, original diagnostic WebP."
+    },
+    {
+      "pid": 80842,
+      "slug": "opel-astra-j-cooling-system-leaks-thermostat",
+      "before_editorial_rating": 77,
+      "after_editorial_rating": 91,
+      "rubric_after": {
+        "factual_accuracy_and_safety": 24,
+        "actionable_diagnostics": 23,
+        "search_intent_completion": 14,
+        "specificity_and_original_value": 9,
+        "structure_and_ux": 9,
+        "visual_explanation": 8,
+        "useful_verified_linking": 4
+      },
+      "published_body_words_verified": 2597,
+      "notes": "Official Opel Astra J 2010 owner manual and Vauxhall model-year manual index, warm/cold coolant measurement, P0128, thermostat versus fan, precise leak pressure test without fixed invented values, fluid contamination, original WebP; embedded prior YouTube link preserved."
+    }
+  ]
+}
