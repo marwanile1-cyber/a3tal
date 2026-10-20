@@ -1,0 +1,92 @@
+{
+  "date": "2026-10-20",
+  "criteria_max": {
+    "factual_accuracy_and_safety": 25,
+    "actionable_diagnostics": 25,
+    "search_intent_completion": 15,
+    "specificity_and_original_value": 10,
+    "structure_and_ux": 10,
+    "visual_explanation": 10,
+    "useful_verified_linking": 5
+  },
+  "threshold_repair_if_score_lte": 80,
+  "method": "Manual content review including usefulness/safety/primary sources, not length alone nor Google quality score. Posts above 80 remain unchanged.",
+  "reviewed": [
+    {
+      "pid": 80735,
+      "slug": "hyundai-tucson-nx4-engine-problems-smartstream",
+      "decision": "repair",
+      "findings": [
+        "Text warns properly about blindly repeating carbon cleaning but fails to cite Hyundai Egypt Smartstream 1.6 T-GDI 180 hp 265Nm 7DCT, nor clarify differences from globally sold NX4 hybrid/non-1.6 variants.",
+        "No actionable model-specific Misfire vs underboost vs DCT overheating vs coolant/PCV fault isolation, primary manufacturer manual, diagnostic matrix or original inline visual.",
+        "LSPI treated in three lines and no safe conditions/limits; missing validated internal links to Tucson other car guides."
+      ],
+      "score": 55,
+      "components": {
+        "factual_accuracy_and_safety": 18,
+        "actionable_diagnostics": 10,
+        "search_intent_completion": 10,
+        "specificity_and_original_value": 5,
+        "structure_and_ux": 7,
+        "visual_explanation": 5,
+        "useful_verified_linking": 0
+      }
+    },
+    {
+      "pid": 80770,
+      "slug": "toyota-corolla-fault-codes-dtc-dictionary",
+      "decision": "repair",
+      "findings": [
+        "Already has some symptom-to-test matrices and inline diagram, but 850-word text concentrates on P0171 P0300 P0420; does not adequately differentiate P0128, P013x, P0500, P07xx and U codes or Corolla 2026 Egypt ABS/HEV variants.",
+        "Toyota Egypt authoritative 2026 1.6/HEV brochure could be cited rather than only evergreen USA manual link; reader intent asks for real dictionary usable with scan tools.",
+        "No robust priority order for stop-driving vs continue to workshop, pending vs confirmed and freeze-frame examples, or source-backed integration with Corolla engine CVT and brakes pages."
+      ],
+      "score": 78,
+      "components": {
+        "factual_accuracy_and_safety": 23,
+        "actionable_diagnostics": 17,
+        "search_intent_completion": 13,
+        "specificity_and_original_value": 8,
+        "structure_and_ux": 8,
+        "visual_explanation": 6,
+        "useful_verified_linking": 3
+      }
+    },
+    {
+      "pid": 80868,
+      "slug": "mg-6-suspension-stability-tires-guide",
+      "decision": "keep",
+      "findings": [
+        "Above 80 manual assessment, useful original diagram, manufacturer link and long diagnosis; leave unchanged."
+      ],
+      "score": 91,
+      "components": {
+        "factual_accuracy_and_safety": 23,
+        "actionable_diagnostics": 23,
+        "search_intent_completion": 14,
+        "specificity_and_original_value": 9,
+        "structure_and_ux": 9,
+        "visual_explanation": 9,
+        "useful_verified_linking": 4
+      }
+    },
+    {
+      "pid": 80827,
+      "slug": "hyundai-matrix-suspension-stability-shocks",
+      "decision": "keep",
+      "findings": [
+        "Original detailed mechanic differential and tire pressure method already present; no critical gap justifying rewriting, leave untouched."
+      ],
+      "score": 90,
+      "components": {
+        "factual_accuracy_and_safety": 23,
+        "actionable_diagnostics": 22,
+        "search_intent_completion": 14,
+        "specificity_and_original_value": 9,
+        "structure_and_ux": 9,
+        "visual_explanation": 9,
+        "useful_verified_linking": 4
+      }
+    }
+  ]
+}
