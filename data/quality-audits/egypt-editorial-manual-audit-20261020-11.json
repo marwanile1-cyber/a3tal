@@ -1,0 +1,57 @@
+{
+  "date": "2026-10-20",
+  "scope": "Selective review of two new related low-quality Egypt automotive posts after Elantra/MG6 batch 10",
+  "max": {
+    "factual_accuracy_and_safety": 25,
+    "actionable_diagnostics": 25,
+    "search_intent_completion": 15,
+    "specificity_and_original_value": 10,
+    "structure_and_ux": 10,
+    "visual_explanation": 10,
+    "useful_verified_linking": 5
+  },
+  "threshold_repair_if_score_lte": 80,
+  "method": "Manual live rendered-page review of factual gaps and diagnostic usefulness; word count by itself is not a grade; no automated Google score.",
+  "reviewed": [
+    {
+      "pid": 80578,
+      "slug": "hyundai-elantra-electrical-sensor-problems",
+      "findings": [
+        "The original 280-word text usefully advises not to test SRS circuits with a lamp but lacks explicit distinctions between CN7 Egyptian manual AC and higher-trim dual-zone systems, as specified by Hyundai Egypt.",
+        "No safety-prioritized differentiation for airbag clock spring with steering wheel switches, CKP hot-no-start, O2 trims and weak cooling at idle.",
+        "No primary Egypt Hyundai manufacturer sources, no representative diagnostic comparison table, no in-article illustration or useful internal links to rebuilt engine and transmission guides."
+      ],
+      "score": 58,
+      "components": {
+        "factual_accuracy_and_safety": 18,
+        "actionable_diagnostics": 12,
+        "search_intent_completion": 11,
+        "specificity_and_original_value": 5,
+        "structure_and_ux": 7,
+        "visual_explanation": 5,
+        "useful_verified_linking": 0
+      },
+      "decision": "repair"
+    },
+    {
+      "pid": 80654,
+      "slug": "skoda-octavia-suspension-steering-guide",
+      "findings": [
+        "Intro correctly discourages equating all A7/A8 torsion beam/multilink layouts, but the current 200-word article gives no side-by-side VIN/axle identification, rear suspension wear, toe/camber checks or safety criteria.",
+        "Factory Škoda global Octavia suspension press info confirms configuration depends on engine/market; factory Egypt technical and brochure should be cited with explicit no-extrapolation guard.",
+        "No practical owner symptom-to-check table, no internal links to recent verified Octavia engine/gearbox/AC articles or original visual."
+      ],
+      "score": 58,
+      "components": {
+        "factual_accuracy_and_safety": 19,
+        "actionable_diagnostics": 12,
+        "search_intent_completion": 10,
+        "specificity_and_original_value": 5,
+        "structure_and_ux": 7,
+        "visual_explanation": 5,
+        "useful_verified_linking": 0
+      },
+      "decision": "repair"
+    }
+  ]
+}
