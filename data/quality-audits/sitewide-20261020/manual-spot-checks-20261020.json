@@ -1,0 +1,52 @@
+{
+  "date": "2026-10-20",
+  "scope": "Targeted manual reading of highest-risk and near-duplicate public pages after all-571 automated WordPress post scan",
+  "warning": "These specific judgments do NOT cover the remaining sitewide posts; automatic 0-100 priority is not factual/editorial grade. No WordPress posts edited.",
+  "reviewed": [
+    {
+      "url": "https://a3tal.com/bmw-x5-2026-hybrid-specs-problems-maintenance/",
+      "finding": "About 166 body words. Appropriate caution about not applying US PHEV numbers to Egypt, but lacking manufacturer source links, detailed battery/charging/safety testing and model-year context; title promises specs and maintenance well beyond what the page delivers.",
+      "recommendation": "Manually research BMW official 2026 X5 PHEV sources by market then repair if confirmed below editorial 80 threshold."
+    },
+    {
+      "url": "https://a3tal.com/جدول-صيانة-نيسان-صني-2026/",
+      "finding": "About 360 body words. Correctly rejects fabricated 5k/10k intervals and warns about 4AT vs CVT; nevertheless no linked Egyptian Nissan primary schedule or actual table-by-interval. Searcher looking for جدول صيانة will not receive one.",
+      "recommendation": "Verify exact Egypt Nissan model-year maintenance table and create real schedules with sources or update page title/intent."
+    },
+    {
+      "url": "https://a3tal.com/toyota-dtc-fault-codes-list/",
+      "finding": "About 271 body words. Generic P0171/P0300/P0420/VVT primer, factually cautious but not a comprehensive Toyota DTC dictionary; no manufacturer references or deep diagnostic pathways.",
+      "recommendation": "Compare against stronger existing Corolla/brand DTC content to avoid cannibalization before expansion or canonical changes."
+    },
+    {
+      "url": "https://a3tal.com/engine-operation-cycles-parts-guide/",
+      "finding": "About 559 body words despite a comprehensive engine guide title, relies heavily on metaphors, does not systematically cover 4 strokes and actual powertrain mechanisms or primary technical references.",
+      "recommendation": "Rebuild as a proper illustrated educational chapter rather than append generic filler."
+    },
+    {
+      "url": "https://a3tal.com/scooter-vs-motorcycle-egypt/",
+      "finding": "About 398 body words. Has useful comparison table and reasonable caveats, but lacks Egypt-specific ownership costs, practical legal/registration comparisons and manufacturer-based maintenance; no sources.",
+      "recommendation": "Recheck user shopping intent, validate local prices and legal claims before editing."
+    },
+    {
+      "url": "https://a3tal.com/radiator-internal-blockage-flow-temperature-test-2/",
+      "finding": "Text is identical to /radiator-internal-blockage-flow-temperature-test/; live canonical already points at the primary non--2 URL. Do not assume duplicate indexed, requires GSC/index check.",
+      "recommendation": "Avoid blind 301; compare GSC indexed/search performance and internal links first."
+    },
+    {
+      "url": "https://a3tal.com/p0342-camshaft-position-sensor-circuit-low/",
+      "finding": "Live same title/text as /dtc-p0342-chevrolet/ and canonical already targets /dtc-p0342-chevrolet/. Original contains meaningful electrical diagnostics and cited official-related TSBs. Similarity is duplication of URLs, not proof that article content is poor.",
+      "recommendation": "Inspect GSC and internal linking; no rewrite based on duplicate score."
+    },
+    {
+      "url": "https://a3tal.com/p0300-random-misfire/",
+      "finding": "Live canonical points to Arabic Chevrolet P0300 source; near-identical diagnostic text and real EPA reference. Do not automatically merge or rewrite; evaluate keyword intent and performance.",
+      "recommendation": "Check GSC and sitemap/canonical routes before redirects."
+    },
+    {
+      "url": "https://a3tal.com/hyundai-ksa-agents-comparison-wallan-naghi-almajdouie-2026/",
+      "finding": "Saudi Hyundai dealers article published on Egypt site, about 257 body words, official dealer names and phone claims not linked to cited Hyundai directory.",
+      "recommendation": "Editorial geography and primary-source review; Saudi audience does not necessarily imply invalid URL but needs clear site taxonomy."
+    }
+  ]
+}
