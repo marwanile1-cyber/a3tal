@@ -1,0 +1,36 @@
+name: Safely repair next20 individually rated below 80 on a3tal Egypt
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/repair-next20-below80-production-20261020.yml'
+      - 'scripts/repair-next20-below80-production-20261020.py'
+      - 'data/expansions/egypt-quality80-20261020-batch15-*.json'
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  manual-quality80:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate WordPress guarded editor and every manifest
+        run: |
+          python3 -m py_compile scripts/editorial_minimum_words.py scripts/repair-next20-below80-production-20261020.py
+          for f in data/expansions/egypt-quality80-20261020-batch15-*.json; do python3 -m json.tool "$f" >/dev/null; done
+      - name: Publish only audited <=80 pages and verify live SEO and word count
+        run: python3 -u scripts/repair-next20-below80-production-20261020.py
+      - name: Keep original WordPress bodies for protected rollback
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: egypt-quality80-before-backups-${{ github.run_id }}
+          path: diagnostics/quality80-next20-20261020-backup/
+          retention-days: 60
+          if-no-files-found: warn
