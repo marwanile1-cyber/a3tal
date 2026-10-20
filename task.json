@@ -1,13 +1,17 @@
 {
-  "deployment_tag": "astra-j-coolant-verified-video-render-20261019",
+  "deployment_tag": "car-chooser-ux-circular-search-fix-20261020",
   "requests": [
     {
       "method": "POST",
       "path": "/admin",
       "body": {
         "op": "file_write",
-        "path": "themes/a3tal-global/seo-followup-20261018.php",
-        "content_file": "theme-source/a3tal-global/seo-followup-20261018.php",
+        "path": "themes/a3tal-global/functions.php",
+        "patches": [
+          {
+            "append": "\n/**\n * A3TAL-CAR-CHOOSER-SEARCH-UX-20261020\n * Avoid circular search journeys: a model query must not recommend the\n * choose-your-car index itself as if it were a model-specific guide.\n * Preserve the index URL, existing posts and canonical rules.\n */\nadd_action('pre_get_posts', static function($query) {\n  if (is_admin() || !$query->is_main_query() || !$query->is_search()) return;\n  $phrase = trim((string)$query->get('s'));\n  if (preg_match('~(?:اختر\\s+سيارتك|choose[\\s-]+your[\\s-]+car)~iu', $phrase)) return;\n  $chooser = get_page_by_path('choose-your-car', OBJECT, 'page');\n  if (!$chooser instanceof WP_Post || $chooser->post_status !== 'publish') return;\n  $excluded = array_map('absint', (array)$query->get('post__not_in'));\n  $excluded[] = (int)$chooser->ID;\n  $query->set('post__not_in', array_values(array_unique($excluded)));\n}, 12);\n\n/**\n * Clarify what the model chooser links do without changing or inventing URLs.\n * The published page remains indexable; missing models get a truthful\n * no-results search state rather than a thin standalone page.\n */\nadd_filter('the_content', static function($html) {\n  if (!is_page('choose-your-car') || !in_the_loop() || !is_main_query()) return $html;\n  if (strpos($html, 'a3tal-chooser-coverage-hint') !== false) return $html;\n  $hint = '<aside class=\"a3tal-chooser-coverage-hint\" role=\"note\"'\n    . ' style=\"margin:16px 0 22px;padding:15px 18px;border:1px solid #ccdce9;border-radius:12px;background:#f5f9fc;color:#17334d\">'\n    . '<strong>توضيح مهم عن تغطية الموديلات</strong>'\n    . '<p style=\"margin:7px 0 0\">الموديل المكتوب بجانبه «ملف كامل» يفتح مركز معلومات خاصًا به.'\n    . ' باقي الموديلات تفتح نتائج البحث في المحتوى المنشور حاليًا؛ ظهور الموديل هنا لا يعني اكتمال'\n    . ' أعطاله وصيانته وقطع غياره. لو مفيش نتيجة مباشرة هنوضح ده بدل عرض صفحة الاختيار نفسها كإجابة.</p>'\n    . '</aside>';\n  $pattern = '~(<h2\\b[^>]*>\\s*اختر الماركة ثم الموديل\\s*</h2>)~iu';\n  if (preg_match($pattern, $html)) {\n    return preg_replace_callback($pattern, static function($m) use ($hint) { return $hint . $m[1]; }, $html, 1);\n  }\n  return $hint . $html;\n}, 75);\n"
+          }
+        ],
         "confirm": true,
         "dangerous": true,
         "log_response": "sha_only"
@@ -23,10 +27,18 @@
   ],
   "verify": [
     {
-      "path": "/admin?op=file_read&path=themes/a3tal-global/seo-followup-20261018.php"
+      "path": "/admin?op=file_read&path=themes/a3tal-global/functions.php"
     }
   ],
   "public_verify": [
     "موسوعة أعطال السيارات وأكواد التشخيص والأسعار ومراكز الصيانة"
-  ]
+  ],
+  "network_diagnostics": {
+    "enabled": true,
+    "rounds": 1,
+    "paths": [
+      "/choose-your-car/",
+      "/?s=%D9%83%D9%8A%D8%A7+%D9%83%D8%A7%D8%B1%D9%8A%D9%86%D8%B2"
+    ]
+  }
 }
