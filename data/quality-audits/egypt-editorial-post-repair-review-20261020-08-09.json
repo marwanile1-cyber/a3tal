@@ -1,0 +1,110 @@
+{
+  "date": "2026-10-20",
+  "manual_review_scale": 100,
+  "maximum_components": {
+    "factual_accuracy_and_safety": 25,
+    "actionable_diagnostics": 25,
+    "search_intent_completion": 15,
+    "specificity_and_original_value": 10,
+    "structure_and_ux": 10,
+    "visual_explanation": 10,
+    "useful_verified_linking": 5
+  },
+  "threshold_policy": "Repair only <=80. Scores are editorial judgments, not Google metrics and not driven by length alone.",
+  "scope": "Five original Egypt WordPress URLs selected by previous manual audits; already-passing Kia Sportage 7DCT remains unchanged.",
+  "qa_publish_runs": [
+    39410070062,
+    39410908545
+  ],
+  "qa_visual_runs": [
+    39410241268,
+    39411001846
+  ],
+  "reviewed": [
+    {
+      "pid": 80651,
+      "slug": "skoda-octavia-dsg-transmission-problems",
+      "before_editorial_score": 60,
+      "after_editorial_score": 89,
+      "after_components": {
+        "factual_accuracy_and_safety": 23,
+        "actionable_diagnostics": 22,
+        "search_intent_completion": 14,
+        "specificity_and_original_value": 9,
+        "structure_and_ux": 9,
+        "visual_explanation": 8,
+        "useful_verified_linking": 4
+      },
+      "verified_live_words": 1884,
+      "reason": "Fixed Egypt A8 1.4 eight-speed conventional automatic versus RS DSG, exact OEM links, clear TCM/ECM and D/R vs clutch vs oil decision paths, original visual and linked engine guide."
+    },
+    {
+      "pid": 80755,
+      "slug": "toyota-corolla-engine-gearbox-problems-cvt",
+      "before_editorial_score": 62,
+      "after_editorial_score": 88,
+      "after_components": {
+        "factual_accuracy_and_safety": 23,
+        "actionable_diagnostics": 22,
+        "search_intent_completion": 14,
+        "specificity_and_original_value": 8,
+        "structure_and_ux": 9,
+        "visual_explanation": 8,
+        "useful_verified_linking": 4
+      },
+      "verified_live_words": 1876,
+      "reason": "Toyota Egypt 2026 direct source 1.6 Dual VVT-i and 1.8 HEV, CVT fluid and diagnostic split, misfire/fuel trims/whining safety and original visual."
+    },
+    {
+      "pid": 80617,
+      "slug": "nissan-sunny-electrical-ac-problems",
+      "before_editorial_score": 61,
+      "after_editorial_score": 87,
+      "after_components": {
+        "factual_accuracy_and_safety": 22,
+        "actionable_diagnostics": 22,
+        "search_intent_completion": 14,
+        "specificity_and_original_value": 8,
+        "structure_and_ux": 9,
+        "visual_explanation": 8,
+        "useful_verified_linking": 4
+      },
+      "verified_live_words": 1871,
+      "reason": "OEM manual vs automatic AC by trim, leak test before evaporator replacement, CKP hot-no-start measured instead of guessing, fan/motor controls, original inline diagram."
+    },
+    {
+      "pid": 80657,
+      "slug": "skoda-octavia-electrical-ac-problems",
+      "before_editorial_score": 61,
+      "after_editorial_score": 86,
+      "after_components": {
+        "factual_accuracy_and_safety": 22,
+        "actionable_diagnostics": 21,
+        "search_intent_completion": 14,
+        "specificity_and_original_value": 8,
+        "structure_and_ux": 9,
+        "visual_explanation": 8,
+        "useful_verified_linking": 4
+      },
+      "verified_live_words": 1726,
+      "reason": "A7/A8 climate differences, OEM cabin filter maintenance, refrigerant vs cabin airflow and selector P differential tests, linked eight-speed gearbox guide and custom image."
+    },
+    {
+      "pid": 80614,
+      "slug": "nissan-sunny-brakes-suspension-guide",
+      "before_editorial_score": 60,
+      "after_editorial_score": 88,
+      "after_components": {
+        "factual_accuracy_and_safety": 23,
+        "actionable_diagnostics": 23,
+        "search_intent_completion": 14,
+        "specificity_and_original_value": 8,
+        "structure_and_ux": 8,
+        "visual_explanation": 8,
+        "useful_verified_linking": 4
+      },
+      "verified_live_words": 1882,
+      "reason": "Brake safety first, ABS/EBD/BA Nissan Egypt evidence, DTV runout vs wheel balance, suspension joints, tire pressure/size and documented final checks; original visual."
+    }
+  ]
+}
