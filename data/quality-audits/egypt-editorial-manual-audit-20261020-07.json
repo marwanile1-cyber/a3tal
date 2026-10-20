@@ -1,0 +1,96 @@
+{
+  "date": "2026-10-20",
+  "scope": "Manual second-round editorial review of 4 actual Egyptian automotive pages; content quality not word count",
+  "criteria_max": {
+    "factual_accuracy_and_safety": 25,
+    "actionable_diagnostics": 25,
+    "search_intent_completion": 15,
+    "specificity_and_original_value": 10,
+    "structure_and_ux": 10,
+    "visual_explanation": 10,
+    "useful_verified_linking": 5
+  },
+  "threshold_repair_if_score_lte": 80,
+  "method": "Reasoned editorial rubric, not Google rating. Scores reflect user intent coverage, verifiable Egyptian model facts, actionable diagnostics, documentation and visual UX; keep passing posts unchanged.",
+  "reviewed": [
+    {
+      "id": 80651,
+      "slug": "skoda-octavia-dsg-transmission-problems",
+      "components": {
+        "factual_accuracy_and_safety": 18,
+        "actionable_diagnostics": 11,
+        "search_intent_completion": 11,
+        "specificity_and_original_value": 6,
+        "structure_and_ux": 7,
+        "visual_explanation": 6,
+        "useful_verified_linking": 1
+      },
+      "decision": "repair",
+      "findings": [
+        "Correctly warns A8 1.4 TSI Egypt has conventional eight-speed AT, A8 RS may be DSG; however ~270 words do not supply actionable differential tests, 7-speed DSG controller data, model-year-specific fluid/coding workflow or actual owner troubleshooting.",
+        "No reference to exact factory Egyptian 2021 A8 service maintenance chart or OEM Egypt launch information, although these facts are critical to stopping DSG repairs on an 8AT.",
+        "No internal diagram, no diagnostic matrix, no safety-specific stop-driving thresholds."
+      ],
+      "score": 60
+    },
+    {
+      "id": 80755,
+      "slug": "toyota-corolla-engine-gearbox-problems-cvt",
+      "components": {
+        "factual_accuracy_and_safety": 20,
+        "actionable_diagnostics": 11,
+        "search_intent_completion": 11,
+        "specificity_and_original_value": 6,
+        "structure_and_ux": 7,
+        "visual_explanation": 6,
+        "useful_verified_linking": 1
+      },
+      "decision": "repair",
+      "findings": [
+        "Useful correction from old Valvematic confusion, but lacks detailed engine-vs-CVT fault isolation, fluid and level procedure guard, Hybrid HEV distinct configuration and differential diagnosis for whining vs wheel-bearing vs engine load.",
+        "Toyota Egypt 2026 brochure documents 1.6 120hp/154Nm and 1.8 HEV variants and CVT, but current live page does not link manufacturer primary document.",
+        "No side-by-side symptom tests, table or owner workflow; users cannot decide what to test first."
+      ],
+      "score": 62
+    },
+    {
+      "id": 80617,
+      "slug": "nissan-sunny-electrical-ac-problems",
+      "components": {
+        "factual_accuracy_and_safety": 19,
+        "actionable_diagnostics": 12,
+        "search_intent_completion": 11,
+        "specificity_and_original_value": 5,
+        "structure_and_ux": 7,
+        "visual_explanation": 6,
+        "useful_verified_linking": 1
+      },
+      "decision": "repair",
+      "findings": [
+        "Correct basic principles leak-test before replacing evaporator and hot-no-start requires CKP signal testing, yet 240 words do not distinguish cabin airflow loss, compressor control, radiator/condenser fan performance, refrigerant pressure safety and exact trim-dependent AC.",
+        "Official Nissan Egypt specs show manual and automatic AC by trim with rear cooling fan vents: this material trim distinction and dual failure routes are absent.",
+        "No substantive repair sequence/table, no primary source links or images embedded in body."
+      ],
+      "score": 61
+    },
+    {
+      "id": 80886,
+      "slug": "kia-sportage-dct-gearbox-overheating-problems",
+      "components": {
+        "factual_accuracy_and_safety": 23,
+        "actionable_diagnostics": 23,
+        "search_intent_completion": 14,
+        "specificity_and_original_value": 9,
+        "structure_and_ux": 9,
+        "visual_explanation": 9,
+        "useful_verified_linking": 4
+      },
+      "decision": "keep",
+      "findings": [
+        "Already in-depth >2000-word published explanation with manufacturer specific 7DCT source, in-place original diagram, diagnosis table and safety protocol; word count is not reason for edits.",
+        "No high-priority factual gap found in sampling; leave unchanged."
+      ],
+      "score": 91
+    }
+  ]
+}
