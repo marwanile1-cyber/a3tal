@@ -1,0 +1,125 @@
+{
+  "report_date": "2026-10-20",
+  "source": "Four user-exported Google Search Console Performance on Search Excel workbooks, search type Web (text-based).",
+  "windows": {
+    "ninety_two_days": {
+      "from": "2026-07-19",
+      "to": "2026-10-18",
+      "clicks": 15825,
+      "impressions": 1165666,
+      "ctr": 0.013575929983374311
+    },
+    "current_twenty_eight": {
+      "from": "2026-09-21",
+      "to": "2026-10-18",
+      "clicks": 6243,
+      "impressions": 431288,
+      "ctr": 0.01447524623917197,
+      "impression_weighted_avg_position_rounded_daily": 6.2429
+    },
+    "preceding_twenty_eight": {
+      "from": "2026-08-24",
+      "to": "2026-09-20",
+      "clicks": 4294,
+      "impressions": 342266,
+      "ctr": 0.012545797712889974,
+      "impression_weighted_avg_position_rounded_daily": 7.1244
+    },
+    "last_seven": {
+      "from": "2026-10-12",
+      "to": "2026-10-18",
+      "clicks": 1658,
+      "impressions": 120533,
+      "ctr": 0.01375556901429484
+    },
+    "previous_seven": {
+      "from": "2026-10-05",
+      "to": "2026-10-11",
+      "clicks": 1609,
+      "impressions": 112835,
+      "ctr": 0.014259759826295033
+    }
+  },
+  "caveats": [
+    "Queries export shows only the first 1000 queries (1428 represented clicks vs 6243 site clicks during 28d); do not infer full query coverage.",
+    "Pages export first 1000 rows includes 514 hash-fragment URLs. Do not treat them as separate canonical pages or add their impressions.",
+    "Cannot prove keyword cannibalization without query-by-page Search Console data; no 301, noindex, or canonical decision based on separate query and page views.",
+    "Most recently completed date is Oct18; 24h export Oct19-Oct20 contains partial late hours and is not additive.",
+    "CTR 2% modeled in the attached Excel is a hypothetical illustration, not a prediction or Google's benchmark."
+  ],
+  "prioritized_pages": [
+    {
+      "url": "https://a3tal.com/الدليل-الشامل-أرقام-مراكز-خدمة-المنصو/",
+      "clicks": 191,
+      "impressions": 20847,
+      "ctr": 0.0092,
+      "position": 7.02,
+      "action": "Review SERP/query intent of multi-brand Mansour service page; preserve distinct Chevrolet/MG/Opel intents."
+    },
+    {
+      "url": "https://a3tal.com/دليلك-الشامل-أفضل-مراكز-خدمة-غبور-أوتو/",
+      "clicks": 154,
+      "impressions": 15970,
+      "ctr": 0.0096,
+      "position": 7.73,
+      "action": "Keep geographic branches page distinct from phone and booking page, verify actual target queries before merging."
+    },
+    {
+      "url": "https://a3tal.com/مراكز-خدمة-جيتور-المعتمدة-في-مصر/",
+      "clicks": 72,
+      "impressions": 10069,
+      "ctr": 0.0072,
+      "position": 7.3,
+      "action": "Canary live SEO title/description updated to service-center-first language, post 80401 only."
+    },
+    {
+      "url": "https://a3tal.com/رجة-في-السيارة-على-سرعة-80-أو-100-أو-120/",
+      "clicks": 96,
+      "impressions": 10937,
+      "ctr": 0.0088,
+      "position": 6.03,
+      "action": "Technically strong existing diagnostic article; review queries and mobile snippet; avoid synthetic article rewrite."
+    },
+    {
+      "url": "https://a3tal.com/what-to-do-when-check-engine-light-is-on/",
+      "clicks": 27,
+      "impressions": 5370,
+      "ctr": 0.005,
+      "position": 5.97,
+      "action": "Good safety-focused existing encyclopedia; assess exact query intents and SERP before touching copy."
+    },
+    {
+      "url": "https://a3tal.com/bad-starter-motor-symptoms-repair-guide/",
+      "clicks": 37,
+      "impressions": 6519,
+      "ctr": 0.0057,
+      "position": 6.23,
+      "action": "Good existing Denso-sourced diagnostics; avoid replacing content based only on CTR."
+    },
+    {
+      "url": "https://a3tal.com/dtc-p0342-chevrolet/",
+      "clicks": 45,
+      "impressions": 5841,
+      "ctr": 0.0077,
+      "position": 3.58,
+      "action": "Code-answer queries could be zero-click; cannot infer benefit from stuffing extra keywords."
+    }
+  ],
+  "canary": {
+    "post_id": 80401,
+    "url": "https://a3tal.com/مراكز-خدمة-جيتور-المعتمدة-في-مصر/",
+    "seo_title_before": "رقم توكيل جيتور 16263 في مصر: القصراوي والحجز والفروع",
+    "seo_title_after": "مراكز صيانة جيتور المعتمدة في مصر | رقم 16263 والفروع",
+    "seo_description_after": "مراكز صيانة جيتور المعتمدة في مصر وفروع القصراوي، رقم توكيل جيتور 16263، العناوين والحجز وكيف تتأكد من المركز الرسمي قبل التحرك.",
+    "recent_7d": {
+      "clicks": 12,
+      "impressions": 2488,
+      "ctr": 0.00482315112540193
+    },
+    "published_github_run": "https://github.com/marwanile1-cyber/a3tal/actions/runs/39464568200",
+    "rest_yoast_title_and_description_verified": true,
+    "article_status_and_canonical_preserved": true,
+    "next_measurement": "After 14-21 settled days: compare exact URL GSC page clicks, impressions, position and CTR against prior matching period and seasonality; avoid causal certainty."
+  },
+  "recommendation": "Next content and technical edits should be backed by exact query × page report, manufacturer sources where needed, and individual URL live review."
+}
