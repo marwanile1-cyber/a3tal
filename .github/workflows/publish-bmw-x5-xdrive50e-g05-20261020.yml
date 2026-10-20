@@ -1,0 +1,30 @@
+name: Repair BMW X5 xDrive50e G05 Egyptian encyclopedia
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/publish-bmw-x5-xdrive50e-g05-20261020.py'
+      - 'data/repairs/egypt-bmw-x5-xdrive50e-g05-20261020.html'
+      - '.github/workflows/publish-bmw-x5-xdrive50e-g05-20261020.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-editorial-production-80907
+  cancel-in-progress: false
+jobs:
+  publish-guarded:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify editorial artifact and schema
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-bmw-x5-xdrive50e-g05-20261020.py
+          test -s data/repairs/egypt-bmw-x5-xdrive50e-g05-20261020.html
+      - name: Safely publish verified Egyptian BMW G05 guide
+        run: python3 -u scripts/publish-bmw-x5-xdrive50e-g05-20261020.py
