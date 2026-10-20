@@ -1,5 +1,5 @@
 {
-  "deployment_tag": "chooser-live-model-links-20261020",
+  "deployment_tag": "brand-service-model-links-20261020",
   "requests": [
     {
       "method": "POST",
@@ -9,23 +9,7 @@
         "path": "themes/a3tal-global/functions.php",
         "patches": [
           {
-            "append": "\n/**\n * A3TAL-CHOOSER-PUBLISHED-VEHICLES-20261020\n * Display actual published vehicle records within the existing model chooser.\n * No new SEO landing pages or inferred model-specific technical claims.\n * Year/brand and destination always come from the same WordPress vehicle.\n */\nadd_filter('the_content', static function($html) {\n  if (!is_page('choose-your-car') || !in_the_loop() || !is_main_query()) return $html;\n  if (strpos($html, 'a3tal-chooser-available-vehicles') !== false) return $html;\n  $cars = get_posts([\n    'post_type' => 'a3_car',\n    'post_status' => 'publish',\n    'posts_per_page' => 12,\n    'orderby' => 'modified',\n    'order' => 'DESC',\n    'ignore_sticky_posts' => true,\n    'no_found_rows' => true,\n    'suppress_filters' => false,\n  ]);\n  if (!$cars) return $html;\n  $items = '';\n  foreach ($cars as $car) {\n    if (!($car instanceof WP_Post) || $car->post_status !== 'publish') continue;\n    $url = get_permalink($car);\n    if (!$url) continue;\n    $name = get_the_title($car);\n    if (!$name) continue;\n    $brand = function_exists('a3g_first_term') ? a3g_first_term($car->ID, 'a3_brand') : '';\n    $year = trim((string)get_post_meta($car->ID, '_a3_year', true));\n    $image = has_post_thumbnail($car->ID)\n      ? get_the_post_thumbnail($car->ID, 'medium', [\n          'class' => 'a3tal-chooser-vehicle-image',\n          'loading' => 'lazy',\n          'decoding' => 'async',\n          'alt' => '',\n        ])\n      : '<span class=\"a3tal-chooser-vehicle-fallback\" aria-hidden=\"true\">A3TAL</span>';\n    $meta = [];\n    if ($brand) $meta[] = esc_html($brand);\n    if ($year && preg_match('/^20[0-9]{2}$/', $year)) $meta[] = esc_html($year);\n    $items .= '<a class=\"a3tal-chooser-vehicle-card\" href=\"'.esc_url($url).'\">'\n      .'<span class=\"a3tal-chooser-vehicle-media\">'.$image.'</span>'\n      .'<span class=\"a3tal-chooser-vehicle-info\">'\n      .($meta ? '<small>'.implode(' · ', $meta).'</small>' : '<small>صفحة سيارة منشورة</small>')\n      .'<strong>'.esc_html($name).'</strong>'\n      .'<em>عرض بيانات السيارة ←</em>'\n      .'</span></a>';\n  }\n  if ($items === '') return $html;\n  $archive = get_post_type_archive_link('a3_car') ?: home_url('/cars/');\n  $section = '<section class=\"a3tal-chooser-available-vehicles\" aria-labelledby=\"a3tal-chooser-vehicles-heading\">'\n    .'<div class=\"a3tal-chooser-catalog-head\"><div>'\n    .'<h2 id=\"a3tal-chooser-vehicles-heading\">موديلات لها صفحات منشورة بالفعل</h2>'\n    .'<p>ابدأ من بيانات السيارة المتاحة بروابط مباشرة، أو اختَر ماركة وموديلًا من القائمة التالية للبحث في المقالات. وجود صفحة سيارة لا يعني اكتمال كل شروحات أعطالها.</p>'\n    .'</div><a class=\"a3tal-chooser-all-cars\" href=\"'.esc_url($archive).'\">عرض دليل السيارات بالكامل ←</a></div>'\n    .'<div class=\"a3tal-chooser-vehicles-grid\">'.$items.'</div>'\n    .'</section>';\n  $pattern='~(<h2\\b[^>]*>\\s*اختر الماركة ثم الموديل\\s*</h2>)~iu';\n  if (preg_match($pattern, $html)) {\n    return preg_replace_callback($pattern, static function($match) use ($section) {\n      return $section.$match[1];\n    }, $html, 1);\n  }\n  return $section.$html;\n}, 76);\n"
-          }
-        ],
-        "confirm": true,
-        "dangerous": true,
-        "log_response": "sha_only"
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/admin",
-      "body": {
-        "op": "file_write",
-        "path": "themes/a3tal-global/style.css",
-        "patches": [
-          {
-            "append": "\n/* A3TAL-CHOOSER-PUBLISHED-VEHICLES-20261020: index-friendly vehicle navigation, no new virtual pages. */\n.a3tal-chooser-available-vehicles {\n  margin: 16px 0 28px;\n  padding: clamp(16px, 2.5vw, 26px);\n  background: #f7fbff;\n  border: 1px solid #dce6f2;\n  border-radius: 18px;\n  color: #163249;\n}\n.a3tal-chooser-catalog-head {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  gap: 16px;\n  flex-wrap: wrap;\n  margin-bottom: 16px;\n}\n.a3tal-chooser-catalog-head > div { flex: 1 1 360px; min-width: 0; }\n.a3tal-chooser-catalog-head h2 {\n  font-size: clamp(21px, 2.5vw, 28px);\n  line-height: 1.45;\n  margin: 0 0 6px;\n  color: #123b63;\n}\n.a3tal-chooser-catalog-head p {\n  font-size: 14px;\n  line-height: 1.8;\n  color: #4b6077;\n  margin: 0;\n}\n.a3tal-chooser-all-cars {\n  display: inline-flex;\n  align-items: center;\n  align-self: center;\n  border: 1px solid #d0e0ec;\n  padding: 9px 12px;\n  border-radius: 10px;\n  color: #0c5379;\n  background: white;\n  font-size: 13px;\n  font-weight: 700;\n  text-decoration: none;\n}\n.a3tal-chooser-vehicles-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(min(100%, 205px), 1fr));\n  gap: 12px;\n}\n.a3tal-chooser-vehicle-card {\n  display: block;\n  min-width: 0;\n  overflow: hidden;\n  border-radius: 14px;\n  border: 1px solid #e1e9f0;\n  background: white;\n  color: #182f43;\n  text-decoration: none;\n  box-shadow: 0 3px 14px rgba(12, 40, 69, .045);\n  transition: border-color .15s ease, transform .15s ease;\n}\n.a3tal-chooser-vehicle-card:hover,\n.a3tal-chooser-vehicle-card:focus-visible {\n  border-color: #4582a4;\n  transform: translateY(-2px);\n}\n.a3tal-chooser-vehicle-media { display: block; height: 110px; overflow: hidden; background: #eff5f8; }\n.a3tal-chooser-vehicle-image { display: block; width: 100%; height: 100%; object-fit: cover; }\n.a3tal-chooser-vehicle-fallback {\n  display: grid; place-items: center; height: 100%;\n  color: #8aa4b9; font-size: 16px; font-weight: 800;\n}\n.a3tal-chooser-vehicle-info { display: grid; gap: 5px; padding: 12px; }\n.a3tal-chooser-vehicle-info small { font-size: 11px; color: #547086; }\n.a3tal-chooser-vehicle-info strong { font-size: 14px; line-height: 1.5; color: #123b63; }\n.a3tal-chooser-vehicle-info em { font-size: 12px; font-style: normal; font-weight: 700; color: #17688b; }\n@media (max-width: 620px) {\n  .a3tal-chooser-vehicles-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }\n  .a3tal-chooser-vehicle-media { height: 82px; }\n  .a3tal-chooser-vehicle-info { padding: 10px; }\n  .a3tal-chooser-vehicle-info strong { font-size: 12.5px; }\n  .a3tal-chooser-all-cars { width: 100%; justify-content: center; }\n}\n@media (prefers-reduced-motion: reduce) {\n  .a3tal-chooser-vehicle-card { transition: none; }\n  .a3tal-chooser-vehicle-card:hover { transform: none; }\n}\n"
+            "append": "\n/**\n * A3TAL-VERIFIED-BRAND-SERVICE-JOURNEYS-20261020\n * Connect actual vehicle detail pages to existing, published booking guides.\n * Brand-level link only; never claim a specific branch or trim is supported.\n */\nadd_filter('the_content', static function($html) {\n  if (!is_singular('a3_car') || !in_the_loop() || !is_main_query()) return $html;\n  if (strpos($html, 'a3tal-brand-service-journey') !== false) return $html;\n  $id = (int)get_the_ID();\n  if (!$id) return $html;\n  $names = function_exists('a3g_term_names') ? a3g_term_names($id, 'a3_brand') : [];\n  if (!$names) return $html;\n  $key = '';\n  $aliases = [\n    'kia' => ['kia','كيا'],\n    'hyundai' => ['hyundai','هيونداي'],\n    'toyota' => ['toyota','تويوتا'],\n    'chevrolet' => ['chevrolet','شيفروليه'],\n    'opel' => ['opel','أوبل','اوبل'],\n    'renault' => ['renault','رينو'],\n    'geely' => ['geely','جيلي'],\n    'skoda' => ['skoda','سكودا'],\n  ];\n  foreach ($names as $name) {\n    $normal = function_exists('mb_strtolower') ? mb_strtolower(trim($name),'UTF-8') : strtolower(trim($name));\n    foreach ($aliases as $kind => $variants) {\n      if (in_array($normal, $variants, true)) { $key = $kind; break 2; }\n    }\n  }\n  if ($key === '') return $html;\n  // URLs verified against their published, brand-specific editorial guides.\n  $guide_slugs = [\n    'kia' => 'kia-egypt-service-centers-locations-booking',\n    'hyundai' => rawurldecode('%D8%AD%D8%AC%D8%B2-%D8%B5%D9%8A%D8%A7%D9%86%D8%A9-%D9%87%D9%8A%D9%88%D9%86%D8%AF%D8%A7%D9%8A-%D9%81%D9%8A-%D9%85%D8%B5%D8%B1-%D9%83%D9%84-%D8%A7%D9%84%D9%85%D8%B1%D8%A7%D9%83%D8%B2-%D9%88%D8%A3%D8%B1'),\n    'toyota' => 'toyota-egypt-maintenance-booking-guide',\n    'chevrolet' => 'mansour-chevrolet-maintenance-booking-numbers-branches',\n    'opel' => 'opel-egypt-service-centers-parts-guide',\n    'renault' => 'renault-egypt-maintenance-booking-centers-locations',\n    'geely' => 'geely-egypt-service-centers-hotline-ex2',\n    'skoda' => 'skoda-egypt-service-centers-locations',\n  ];\n  $guide = get_page_by_path($guide_slugs[$key], OBJECT, 'post');\n  if (!($guide instanceof WP_Post) || $guide->post_status !== 'publish') return $html;\n  $url = get_permalink($guide);\n  if (!$url || strpos($html, $url) !== false) return $html;\n  $name = trim((string)$names[0]);\n  $aside = '<aside class=\"a3tal-brand-service-journey\" aria-label=\"دليل الصيانة والحجز\"'\n    .' style=\"margin:22px 0;padding:18px;border:1px solid #d6e3ed;border-radius:13px;background:#f7fafc\">'\n    .'<h2 style=\"font-size:1.15em;margin:0 0 8px\">مراكز خدمة '.esc_html($name).' وحجز الصيانة</h2>'\n    .'<p style=\"margin:0 0 10px\">للتواصل والحجز، راجع الدليل المنشور الخاص بالعلامة في مصر. هذه معلومات عن شبكة الخدمة، ولا تعني أن كل فرع يستقبل هذا الموديل أو ينفذ كل أنواع الإصلاح.</p>'\n    .'<p style=\"margin:0\"><a href=\"'.esc_url($url).'\">'.esc_html(get_the_title($guide)).' ←</a></p>'\n    .'</aside>';\n  return $html.$aside;\n}, 82);\n"
           }
         ],
         "confirm": true,
@@ -45,21 +29,18 @@
     {
       "path": "/admin?op=file_read&path=themes/a3tal-global/functions.php",
       "log_response": "sha_only"
-    },
-    {
-      "path": "/admin?op=file_read&path=themes/a3tal-global/style.css",
-      "log_response": "sha_only"
     }
-  ],
-  "public_verify": [
-    "موسوعة أعطال السيارات وأكواد التشخيص والأسعار ومراكز الصيانة"
   ],
   "network_diagnostics": {
     "enabled": true,
     "rounds": 1,
     "paths": [
-      "/choose-your-car/",
-      "/cars/"
+      "/cars/kia-k4-2027-egypt/",
+      "/cars/hyundai-tucson-2027-egypt/",
+      "/cars/geely-galaxy-ex2-egypt/"
     ]
-  }
+  },
+  "public_verify": [
+    "موسوعة أعطال السيارات وأكواد التشخيص والأسعار ومراكز الصيانة"
+  ]
 }
