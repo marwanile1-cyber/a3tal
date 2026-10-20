@@ -1,0 +1,29 @@
+name: Connect Arrizo 5 to verified maintenance guide
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/link-arrizo5-maintenance-20261020.py'
+      - '.github/workflows/link-arrizo5-maintenance-20261020.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-theme
+  cancel-in-progress: false
+jobs:
+  verified-reciprocal-link:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Preflight readback-aware script
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/link-arrizo5-maintenance-20261020.py
+          grep -q 'ARRIZO5_RELATED_LINK_CONFIRMED' scripts/link-arrizo5-maintenance-20261020.py
+          test -n "$A3TAL_API_KEY"
+      - name: Connect exact car to already-published maintenance post
+        run: python3 -u scripts/link-arrizo5-maintenance-20261020.py
