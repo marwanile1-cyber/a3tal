@@ -1040,3 +1040,36 @@ function a3g_car_social_featured_fallback($url) {
 }
 add_filter('wpseo_opengraph_image','a3g_car_social_featured_fallback',90);
 add_filter('wpseo_twitter_image','a3g_car_social_featured_fallback',90);
+
+
+/**
+ * A3TAL-CAR-SOCIAL-OG-METADATA-20261020
+ * Yoast retains its generic 512x512 site-icon metadata if only og:image
+ * URL is overridden. Correct width, height and MIME for the four verified
+ * car profiles whose preview was replaced with their own featured image.
+ * Existing bespoke social-image metadata for other cars remains untouched.
+ */
+function a3g_car_featured_social_meta($original,$field) {
+  if (!is_singular('a3_car')) return $original;
+  $car_id=(int)get_queried_object_id();
+  if (!in_array($car_id,[84011,83684,83648,83538],true)) return $original;
+  $image_id=(int)get_post_thumbnail_id($car_id);
+  if (!$image_id) return $original;
+  if ($field==='type') {
+    $type=(string)get_post_mime_type($image_id);
+    return strpos($type,'image/')===0 ? $type : $original;
+  }
+  $meta=wp_get_attachment_metadata($image_id);
+  if (!is_array($meta)) return $original;
+  $size=(int)($meta[$field]??0);
+  return $size>0 ? $size : $original;
+}
+add_filter('wpseo_opengraph_image_width',static function($width){
+  return a3g_car_featured_social_meta($width,'width');
+},90);
+add_filter('wpseo_opengraph_image_height',static function($height){
+  return a3g_car_featured_social_meta($height,'height');
+},90);
+add_filter('wpseo_opengraph_image_type',static function($type){
+  return a3g_car_featured_social_meta($type,'type');
+},90);
