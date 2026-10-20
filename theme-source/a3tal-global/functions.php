@@ -737,3 +737,70 @@ add_filter('the_content', static function($html) {
   }
   return $hint . $html;
 }, 75);
+
+
+/**
+ * A3TAL-CHOOSER-PUBLISHED-VEHICLES-20261020
+ * Display actual published vehicle records within the existing model chooser.
+ * No new SEO landing pages or inferred model-specific technical claims.
+ * Year/brand and destination always come from the same WordPress vehicle.
+ */
+add_filter('the_content', static function($html) {
+  if (!is_page('choose-your-car') || !in_the_loop() || !is_main_query()) return $html;
+  if (strpos($html, 'a3tal-chooser-available-vehicles') !== false) return $html;
+  $cars = get_posts([
+    'post_type' => 'a3_car',
+    'post_status' => 'publish',
+    'posts_per_page' => 12,
+    'orderby' => 'modified',
+    'order' => 'DESC',
+    'ignore_sticky_posts' => true,
+    'no_found_rows' => true,
+    'suppress_filters' => false,
+  ]);
+  if (!$cars) return $html;
+  $items = '';
+  foreach ($cars as $car) {
+    if (!($car instanceof WP_Post) || $car->post_status !== 'publish') continue;
+    $url = get_permalink($car);
+    if (!$url) continue;
+    $name = get_the_title($car);
+    if (!$name) continue;
+    $brand = function_exists('a3g_first_term') ? a3g_first_term($car->ID, 'a3_brand') : '';
+    $year = trim((string)get_post_meta($car->ID, '_a3_year', true));
+    $image = has_post_thumbnail($car->ID)
+      ? get_the_post_thumbnail($car->ID, 'medium', [
+          'class' => 'a3tal-chooser-vehicle-image',
+          'loading' => 'lazy',
+          'decoding' => 'async',
+          'alt' => '',
+        ])
+      : '<span class="a3tal-chooser-vehicle-fallback" aria-hidden="true">A3TAL</span>';
+    $meta = [];
+    if ($brand) $meta[] = esc_html($brand);
+    if ($year && preg_match('/^20[0-9]{2}$/', $year)) $meta[] = esc_html($year);
+    $items .= '<a class="a3tal-chooser-vehicle-card" href="'.esc_url($url).'">'
+      .'<span class="a3tal-chooser-vehicle-media">'.$image.'</span>'
+      .'<span class="a3tal-chooser-vehicle-info">'
+      .($meta ? '<small>'.implode(' · ', $meta).'</small>' : '<small>صفحة سيارة منشورة</small>')
+      .'<strong>'.esc_html($name).'</strong>'
+      .'<em>عرض بيانات السيارة ←</em>'
+      .'</span></a>';
+  }
+  if ($items === '') return $html;
+  $archive = get_post_type_archive_link('a3_car') ?: home_url('/cars/');
+  $section = '<section class="a3tal-chooser-available-vehicles" aria-labelledby="a3tal-chooser-vehicles-heading">'
+    .'<div class="a3tal-chooser-catalog-head"><div>'
+    .'<h2 id="a3tal-chooser-vehicles-heading">موديلات لها صفحات منشورة بالفعل</h2>'
+    .'<p>ابدأ من بيانات السيارة المتاحة بروابط مباشرة، أو اختَر ماركة وموديلًا من القائمة التالية للبحث في المقالات. وجود صفحة سيارة لا يعني اكتمال كل شروحات أعطالها.</p>'
+    .'</div><a class="a3tal-chooser-all-cars" href="'.esc_url($archive).'">عرض دليل السيارات بالكامل ←</a></div>'
+    .'<div class="a3tal-chooser-vehicles-grid">'.$items.'</div>'
+    .'</section>';
+  $pattern='~(<h2\b[^>]*>\s*اختر الماركة ثم الموديل\s*</h2>)~iu';
+  if (preg_match($pattern, $html)) {
+    return preg_replace_callback($pattern, static function($match) use ($section) {
+      return $section.$match[1];
+    }, $html, 1);
+  }
+  return $section.$html;
+}, 76);
