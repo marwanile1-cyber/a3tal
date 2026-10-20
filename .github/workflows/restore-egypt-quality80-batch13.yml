@@ -1,0 +1,32 @@
+name: Fix approved Tucson engine and Corolla DTC articles after manual quality audit
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/restore-egypt-quality80-batch13.yml'
+      - 'scripts/backfill-egypt-quality80-reviewed-batch13.py'
+      - 'data/quality-audits/egypt-editorial-manual-audit-20261020-13.json'
+      - 'data/expansions/egypt-quality80-20261020-batch13-tucson-engine.json'
+      - 'data/expansions/egypt-quality80-20261020-batch13-corolla-dtc.json'
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  fix-only-scored:
+    runs-on: ubuntu-latest
+    timeout-minutes: 26
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate WordPress publisher and manual approvals
+        run: |
+          python3 -m py_compile scripts/editorial_minimum_words.py scripts/backfill-egypt-quality80-reviewed-batch13.py
+          python3 -m json.tool data/quality-audits/egypt-editorial-manual-audit-20261020-13.json >/dev/null
+          python3 -m json.tool data/expansions/egypt-quality80-20261020-batch13-tucson-engine.json >/dev/null
+          python3 -m json.tool data/expansions/egypt-quality80-20261020-batch13-corolla-dtc.json >/dev/null
+      - name: Publish and verify only 2 sub-80 articles with manufacturer citations
+        run: python3 -u scripts/backfill-egypt-quality80-reviewed-batch13.py
