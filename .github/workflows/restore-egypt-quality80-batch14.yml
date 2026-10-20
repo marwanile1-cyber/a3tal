@@ -1,0 +1,34 @@
+name: Repair Egypt Corolla SRS Sportage GDI and Astra J coolant below-80 pages
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/restore-egypt-quality80-batch14.yml'
+      - 'scripts/backfill-egypt-quality80-reviewed-batch14.py'
+      - 'data/quality-audits/egypt-editorial-manual-audit-20261020-14.json'
+      - 'data/expansions/egypt-quality80-20261020-batch14-corolla-electric.json'
+      - 'data/expansions/egypt-quality80-20261020-batch14-sportage-tgdi.json'
+      - 'data/expansions/egypt-quality80-20261020-batch14-astra-cooling.json'
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  three-review-approved:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate quality review manuscripts and 1500 word publisher
+        run: |
+          python3 -m py_compile scripts/editorial_minimum_words.py scripts/backfill-egypt-quality80-reviewed-batch14.py
+          python3 -m json.tool data/quality-audits/egypt-editorial-manual-audit-20261020-14.json >/dev/null
+          python3 -m json.tool data/expansions/egypt-quality80-20261020-batch14-corolla-electric.json >/dev/null
+          python3 -m json.tool data/expansions/egypt-quality80-20261020-batch14-sportage-tgdi.json >/dev/null
+          python3 -m json.tool data/expansions/egypt-quality80-20261020-batch14-astra-cooling.json >/dev/null
+      - name: Correct 3 original WordPress posts and check public pages SEO images and citations
+        run: python3 -u scripts/backfill-egypt-quality80-reviewed-batch14.py
