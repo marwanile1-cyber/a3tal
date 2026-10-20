@@ -1,0 +1,108 @@
+{
+  "date": "2026-10-20",
+  "criteria_max": {
+    "factual_accuracy_and_safety": 25,
+    "actionable_diagnostics": 25,
+    "search_intent_completion": 15,
+    "specificity_and_original_value": 10,
+    "structure_and_ux": 10,
+    "visual_explanation": 10,
+    "useful_verified_linking": 5
+  },
+  "policy": "Only <=80 may be changed; >80 including Tucson NX4 92/100 was preserved. Scores are editorial judgments, not Google metrics.",
+  "live_publish_runs": [
+    39413882796,
+    39414837895
+  ],
+  "image_runs": [
+    39413978027,
+    39414921541
+  ],
+  "reviewed": [
+    {
+      "pid": 80572,
+      "slug": "hyundai-elantra-engine-problems-guide",
+      "score_before": 58,
+      "score_after": 88,
+      "rubric_after": {
+        "factual_accuracy_and_safety": 23,
+        "actionable_diagnostics": 23,
+        "search_intent_completion": 14,
+        "specificity_and_original_value": 8,
+        "structure_and_ux": 8,
+        "visual_explanation": 8,
+        "useful_verified_linking": 4
+      },
+      "body_words_verified_on_site": 2175,
+      "reason": "Hyundai Egypt CN7 1.6 MPI/6AT primary spec; model-specific differential for oil loss, P0300, trims, PCV, CKP, temperature and safety, tables and illustration."
+    },
+    {
+      "pid": 80575,
+      "slug": "hyundai-elantra-transmission-problems-guide",
+      "score_before": 57,
+      "score_after": 88,
+      "rubric_after": {
+        "factual_accuracy_and_safety": 24,
+        "actionable_diagnostics": 22,
+        "search_intent_completion": 14,
+        "specificity_and_original_value": 8,
+        "structure_and_ux": 8,
+        "visual_explanation": 8,
+        "useful_verified_linking": 4
+      },
+      "body_words_verified_on_site": 1975,
+      "reason": "Manufacturer-sourced six-speed automatic Egypt vs global IVT model distinctions; safe D/R/TCM/ATF/whine diagnostics and image."
+    },
+    {
+      "pid": 80865,
+      "slug": "mg-6-gearbox-dct-problems-maintenance",
+      "score_before": 55,
+      "score_after": 89,
+      "rubric_after": {
+        "factual_accuracy_and_safety": 24,
+        "actionable_diagnostics": 23,
+        "search_intent_completion": 14,
+        "specificity_and_original_value": 8,
+        "structure_and_ux": 8,
+        "visual_explanation": 8,
+        "useful_verified_linking": 4
+      },
+      "body_words_verified_on_site": 2129,
+      "reason": "Explicitly cautious official 2023 MG6 source says 7 Speed Automatic, does not prove wet/dry DCT; transmission symptoms, voltage, cold/hot delay, gearbox fluid and independent engine tests."
+    },
+    {
+      "pid": 80578,
+      "slug": "hyundai-elantra-electrical-sensor-problems",
+      "score_before": 58,
+      "score_after": 88,
+      "rubric_after": {
+        "factual_accuracy_and_safety": 23,
+        "actionable_diagnostics": 22,
+        "search_intent_completion": 14,
+        "specificity_and_original_value": 8,
+        "structure_and_ux": 9,
+        "visual_explanation": 8,
+        "useful_verified_linking": 4
+      },
+      "body_words_verified_on_site": 2102,
+      "reason": "Verified Hyundai CN7 and AD Egyptian trim-specific manual vs dual-zone HVAC and airbag variants; accurate SRS safety, CKP/no-start and charging/TPMS; original image."
+    },
+    {
+      "pid": 80654,
+      "slug": "skoda-octavia-suspension-steering-guide",
+      "score_before": 58,
+      "score_after": 87,
+      "rubric_after": {
+        "factual_accuracy_and_safety": 22,
+        "actionable_diagnostics": 22,
+        "search_intent_completion": 14,
+        "specificity_and_original_value": 8,
+        "structure_and_ux": 9,
+        "visual_explanation": 8,
+        "useful_verified_linking": 4
+      },
+      "body_words_verified_on_site": 1950,
+      "reason": "Skoda official sources describe generation/engine-specific rear axle variations; measured steering, joint, braking and tire diagnosis with primary doc, original in-article visual pending final image QA."
+    }
+  ]
+}
