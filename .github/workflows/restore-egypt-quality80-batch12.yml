@@ -1,0 +1,34 @@
+name: Repair three reviewed Egypt Octavia Corolla MG6 articles below 80
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/restore-egypt-quality80-batch12.yml'
+      - 'scripts/backfill-egypt-quality80-reviewed-batch12.py'
+      - 'data/quality-audits/egypt-editorial-manual-audit-20261020-12.json'
+      - 'data/expansions/egypt-quality80-20261020-batch12-octavia-engine.json'
+      - 'data/expansions/egypt-quality80-20261020-batch12-corolla-brakes.json'
+      - 'data/expansions/egypt-quality80-20261020-batch12-mg6-engine.json'
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  approved-corrections:
+    runs-on: ubuntu-latest
+    timeout-minutes: 28
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate reviewed texts and deployment requirements
+        run: |
+          python3 -m py_compile scripts/editorial_minimum_words.py scripts/backfill-egypt-quality80-reviewed-batch12.py
+          python3 -m json.tool data/quality-audits/egypt-editorial-manual-audit-20261020-12.json > /dev/null
+          python3 -m json.tool data/expansions/egypt-quality80-20261020-batch12-octavia-engine.json > /dev/null
+          python3 -m json.tool data/expansions/egypt-quality80-20261020-batch12-corolla-brakes.json > /dev/null
+          python3 -m json.tool data/expansions/egypt-quality80-20261020-batch12-mg6-engine.json > /dev/null
+      - name: Publish only <=80 posts and verify real words images and canonical
+        run: python3 -u scripts/backfill-egypt-quality80-reviewed-batch12.py
