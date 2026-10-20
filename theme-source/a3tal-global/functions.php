@@ -414,7 +414,12 @@ function a3g_first_term($post_id,$taxonomy){
 function a3g_related_post_ids($post_id=0){
   $post_id=$post_id?:get_the_ID();
   $raw=(string)get_post_meta($post_id,'_a3_related_post_ids',true);
-  return array_values(array_filter(array_map('absint',preg_split('/[^0-9]+/',$raw))));
+  $related=array_values(array_filter(array_map('absint',preg_split('/[^0-9]+/',$raw))));
+  // Supplement existing manually curated relationships with exact, reviewed pairs.
+  if (get_post_type($post_id)==='a3_car' && function_exists('a3g_verified_car_guide_ids')) {
+    $related=array_values(array_unique(array_merge($related,a3g_verified_car_guide_ids($post_id))));
+  }
+  return $related;
 }
 function a3g_directory_status($post_id=0){
   $post_id=$post_id?:get_the_ID();
@@ -860,3 +865,67 @@ add_filter('the_content', static function($html) {
     .'</aside>';
   return $html.$aside;
 }, 82);
+
+
+/**
+ * A3TAL-MODEL-EDITORIAL-VERIFIED-BATCH-20261020
+ * Manually matched public car/article IDs & immutable slugs, not guessed from
+ * a brand, title substring or model year. Only published records count.
+ * Related IDs are additive to existing editorial metadata. No page creation.
+ */
+function a3g_verified_car_guide_catalog(): array {
+  return [
+    83532 => ['slug'=>'mazda-3-2027-egypt','articles'=>[83527=>'mazda-3-2027-egypt-price-specs']],
+    83280 => ['slug'=>'gac-empow-2027-egypt','articles'=>[83276=>'gac-empow-2027-price-egypt']],
+    83190 => ['slug'=>'chery-tiggo-9-egypt','articles'=>[83037=>'chery-tiggo-9-egypt-price-specs-review']],
+    83191 => ['slug'=>'chery-arrizo-8-egypt','articles'=>[82853=>'chery-arrizo-8-egypt-review-price-specs']],
+    83192 => ['slug'=>'chery-tiggo-8-pro-max-egypt','articles'=>[
+      82844=>'chery-tiggo-8-pro-max-egypt-price-specs',
+      82852=>'tiggo-8-pro-max-vs-jetour-t2-comparison',
+    ]],
+    83196 => ['slug'=>'opel-frontera-egypt','articles'=>[82603=>'opel-frontera-price-specs-egypt']],
+    83384 => ['slug'=>'chery-arrizo-6-gt-egypt','articles'=>[82578=>'chery-arrizo-6-gt-price-specs-egypt']],
+  ];
+}
+
+function a3g_verified_car_guide_ids($car_id): array {
+  static $cache = [];
+  $car_id = (int) $car_id;
+  if (array_key_exists($car_id,$cache)) return $cache[$car_id];
+  $cache[$car_id]=[];
+  $entry=a3g_verified_car_guide_catalog()[$car_id] ?? null;
+  if (!$entry) return [];
+  $car=get_post($car_id);
+  if (!$car || $car->post_type!=='a3_car' || $car->post_status!=='publish' || $car->post_name!==$entry['slug']) return [];
+  foreach ($entry['articles'] as $id=>$slug) {
+    $post=get_post((int)$id);
+    if ($post && $post->post_type==='post' && $post->post_status==='publish' && $post->post_name===$slug) {
+      $cache[$car_id][]=(int)$id;
+    }
+  }
+  return $cache[$car_id];
+}
+
+// Reverse link: exact editorial article -> its vehicle profile.
+// Never replace a deliberate existing body link with a duplicate.
+add_filter('the_content', static function($content) {
+  if (!is_singular('post') || !in_the_loop() || !is_main_query() ||
+      strpos($content,'a3tal-reviewed-model-journey')!==false) return $content;
+  $article_id=(int)get_the_ID();
+  foreach (a3g_verified_car_guide_catalog() as $car_id=>$row) {
+    if (!isset($row['articles'][$article_id]) ||
+        !in_array($article_id,a3g_verified_car_guide_ids($car_id),true)) continue;
+    $car=get_post($car_id);
+    if (!$car) continue;
+    $url=get_permalink($car);
+    if (!$url || strpos($content,$url)!==false) return $content;
+    return $content
+      .'<aside class="a3tal-reviewed-model-journey" aria-label="صفحة السيارة المرتبطة"'
+      .' style="margin:20px 0;padding:16px 18px;border-radius:12px;border:1px solid #d9e6f0;background:#f7fafc">'
+      .'<strong>ملف السيارة المرتبط بهذا المقال</strong>'
+      .'<p style="margin:6px 0 10px">المواصفات والأسعار وروابط المراجعات والأعطال المتاحة لهذه السيارة في دليل أعطال.</p>'
+      .'<a href="'.esc_url($url).'">'.esc_html(get_the_title($car)).' ←</a>'
+      .'</aside>';
+  }
+  return $content;
+}, 88);
