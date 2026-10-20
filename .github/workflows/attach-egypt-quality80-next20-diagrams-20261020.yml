@@ -1,0 +1,25 @@
+name: Attach ten original educational diagrams to ten repaired Egypt articles
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/attach-egypt-quality80-next20-diagrams-20261020.yml'
+      - 'scripts/attach-egypt-quality80-next20-diagrams-20261020.py'
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  ten-images:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install libraries for Arabic original WebP diagrams
+        run: python3 -m pip install -q pillow arabic-reshaper python-bidi
+      - name: Add ten distinct 1600x900 explanatory diagrams within approved repaired articles
+        run: python3 -u scripts/attach-egypt-quality80-next20-diagrams-20261020.py
