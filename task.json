@@ -1,45 +1,18 @@
 {
-  "deployment_tag": "car-social-featured-preview-fix-20261020",
+  "deployment_tag": "read-only-theme-checksum-diagnosis-20261020",
   "requests": [
     {
-      "method": "POST",
-      "path": "/admin",
-      "body": {
-        "op": "file_write",
-        "path": "themes/a3tal-global/functions.php",
-        "patches": [
-          {
-            "append": "\n/**\n * A3TAL-CAR-SOCIAL-FEATURED-FALLBACK-20261020\n * A shared, published vehicle should show its own featured image in OG/Twitter\n * previews, not the generic site icon. Preserve any bespoke social image.\n * No change to canonical/robots rules or image files.\n */\nfunction a3g_car_social_featured_fallback($url) {\n  if (!is_singular('a3_car')) return $url;\n  $id=(int)get_queried_object_id();\n  if (!$id || get_post_status($id)!=='publish') return $url;\n  $current=trim((string)$url);\n  $default_icon=(string)get_site_icon_url(512);\n  if ($current!=='' && $current!==$default_icon) {\n    $path=(string)wp_parse_url($current,PHP_URL_PATH);\n    if (basename($path)!=='icon.png') return $url;\n  }\n  $image_id=(int)get_post_thumbnail_id($id);\n  if (!$image_id) return $url;\n  $source=wp_get_attachment_image_url($image_id,'full');\n  return $source ?: $url;\n}\nadd_filter('wpseo_opengraph_image','a3g_car_social_featured_fallback',90);\nadd_filter('wpseo_twitter_image','a3g_car_social_featured_fallback',90);\n"
-          }
-        ],
-        "confirm": true,
-        "dangerous": true,
-        "log_response": "sha_only"
-      }
+      "method": "GET",
+      "path": "/admin?op=file_read&path=themes/a3tal-global/functions.php",
+      "log_response": "sha_only"
     },
     {
-      "method": "POST",
-      "path": "/admin",
-      "body": {
-        "op": "cache_flush"
-      }
-    }
-  ],
-  "verify": [
-    {
+      "method": "GET",
       "path": "/admin?op=file_read&path=themes/a3tal-global/functions.php",
       "log_response": "sha_only"
     }
   ],
   "network_diagnostics": {
-    "enabled": true,
-    "rounds": 1,
-    "paths": [
-      "/cars/hyundai-tucson-2027-egypt/",
-      "/cars/kia-k4-2027-egypt/"
-    ]
-  },
-  "public_verify": [
-    "موسوعة أعطال السيارات وأكواد التشخيص والأسعار ومراكز الصيانة"
-  ]
+    "enabled": false
+  }
 }
