@@ -1015,3 +1015,28 @@ add_filter('the_content', static function($html) {
     .'<a href="'.esc_url($target).'">'.esc_html($link).'</a></aside>';
   return $is_old ? $notice.$html : $html.$notice;
 }, 73);
+
+
+/**
+ * A3TAL-CAR-SOCIAL-FEATURED-FALLBACK-20261020
+ * A shared, published vehicle should show its own featured image in OG/Twitter
+ * previews, not the generic site icon. Preserve any bespoke social image.
+ * No change to canonical/robots rules or image files.
+ */
+function a3g_car_social_featured_fallback($url) {
+  if (!is_singular('a3_car')) return $url;
+  $id=(int)get_queried_object_id();
+  if (!$id || get_post_status($id)!=='publish') return $url;
+  $current=trim((string)$url);
+  $default_icon=(string)get_site_icon_url(512);
+  if ($current!=='' && $current!==$default_icon) {
+    $path=(string)wp_parse_url($current,PHP_URL_PATH);
+    if (basename($path)!=='icon.png') return $url;
+  }
+  $image_id=(int)get_post_thumbnail_id($id);
+  if (!$image_id) return $url;
+  $source=wp_get_attachment_image_url($image_id,'full');
+  return $source ?: $url;
+}
+add_filter('wpseo_opengraph_image','a3g_car_social_featured_fallback',90);
+add_filter('wpseo_twitter_image','a3g_car_social_featured_fallback',90);
