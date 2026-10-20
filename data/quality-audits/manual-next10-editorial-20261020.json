@@ -1,0 +1,269 @@
+{
+  "date": "2026-10-20",
+  "type": "manual_individual_content_quality_assessment",
+  "source_inventory": "data/quality-audits/sitewide-20261020/all_articles_screening.json",
+  "selection": "First 10 from exhaustive read-only quality audit sorted backlog, not the first 10 from physical WordPress ID order",
+  "policy": "This task is review only. Do not edit any article. Under or equal 80 needs repair, above 80 keep as-is. 1500-word threshold is an independent publication standard, not proof of correctness.",
+  "rubric_max": {
+    "accuracy_and_safety_25": 25,
+    "actionable_value_25": 25,
+    "search_intent_15": 15,
+    "topic_specificity_10": 10,
+    "structure_clarity_10": 10,
+    "visual_learning_10": 10,
+    "useful_context_links_5": 5
+  },
+  "rating_notice": "100-point reasoned editorial assessment of whole published body and relevant manufacturer checks; not Google content score or mechanical inspection.",
+  "reviewed_total": 10,
+  "below_or_equal_80": 8,
+  "above_80": 2,
+  "any_wordpress_changes": false,
+  "reviewed": [
+    {
+      "queue_rank": 1,
+      "pid": 80907,
+      "slug": "bmw-x5-2026-hybrid-specs-problems-maintenance",
+      "title": "BMW X5 xDrive50e",
+      "url": "https://a3tal.com/bmw-x5-2026-hybrid-specs-problems-maintenance/",
+      "wp_body_words_from_all571_readonly_audit": 166,
+      "score": 52,
+      "rubric": {
+        "accuracy_and_safety_25": 20,
+        "actionable_value_25": 6,
+        "search_intent_15": 8,
+        "topic_specificity_10": 7,
+        "structure_clarity_10": 7,
+        "visual_learning_10": 4,
+        "useful_context_links_5": 0
+      },
+      "decision": "repair",
+      "urgency": "high",
+      "assessment": "يفصل بشكل صحيح بين مواصفات السوق الأمريكي ومصر، لكن يغيب شرح أعطال الشحن والبطارية والحرارة وإجراءات الفحص والشراء؛ أرقام المدى تختلف بين صفحات BMW حسب سنة النسخة، والمقال لا يربط بسند أو سنة محددة.",
+      "editorial_action": "تحديد سنة/سوق xDrive50e بمصدر BMW رسمي؛ جدول AC charging وHV safety وقراءة أخطاء الوحدات وبيانات بطارية الجر، مع روابط موضوعية.",
+      "external_sources_verified_or_consulted": [
+        "https://www.bmwusa.com/vehicles/x-series/suv/bmw-x5.html",
+        "https://www.bmwusa.com/vehicles/x-series/x5/bmw-x5.html"
+      ]
+    },
+    {
+      "queue_rank": 2,
+      "pid": 80395,
+      "slug": "%d8%ac%d8%af%d9%88%d9%84-%d8%b5%d9%8a%d8%a7%d9%86%d8%a9-%d9%86%d9%8a%d8%b3%d8%a7%d9%86-%d8%b5%d9%86%d9%8a-2026",
+      "title": "جدول صيانة نيسان صني",
+      "url": "https://a3tal.com/%d8%ac%d8%af%d9%88%d9%84-%d8%b5%d9%8a%d8%a7%d9%86%d8%a9-%d9%86%d9%8a%d8%b3%d8%a7%d9%86-%d8%b5%d9%86%d9%8a-2026/",
+      "wp_body_words_from_all571_readonly_audit": 360,
+      "score": 54,
+      "rubric": {
+        "accuracy_and_safety_25": 23,
+        "actionable_value_25": 8,
+        "search_intent_15": 7,
+        "topic_specificity_10": 6,
+        "structure_clarity_10": 7,
+        "visual_learning_10": 3,
+        "useful_context_links_5": 0
+      },
+      "decision": "repair",
+      "urgency": "high",
+      "assessment": "صحيح في رفض فترات صيانة مخترعة، وصحيح أن فئات الأوتوماتيك المصرية تستخدم 4AT، لكن عنوان «جدول» بلا أي جدول صيانة معتمد أو فترات موثقة؛ معظم النص يقول ارجع للدليل دون إعطاء رابط الدليل أو إجابة عملية.",
+      "editorial_action": "العثور على جدول نيسان الموثق لنسخ مصر وسنواتها أو تغيير وعد العنوان بوضوح؛ فصل 4AT عن CVT وإضافة المصدر ورابط الحجوزات الرسمي.",
+      "external_sources_verified_or_consulted": [
+        "https://en.nissan.com.eg/vehicles/new/sunny/versions-and-specs.html"
+      ]
+    },
+    {
+      "queue_rank": 3,
+      "pid": 83148,
+      "slug": "scooter-vs-motorcycle-egypt",
+      "title": "السكوتر أم الموتوسيكل",
+      "url": "https://a3tal.com/scooter-vs-motorcycle-egypt/",
+      "wp_body_words_from_all571_readonly_audit": 398,
+      "score": 69,
+      "rubric": {
+        "accuracy_and_safety_25": 23,
+        "actionable_value_25": 17,
+        "search_intent_15": 12,
+        "topic_specificity_10": 7,
+        "structure_clarity_10": 7,
+        "visual_learning_10": 3,
+        "useful_context_links_5": 0
+      },
+      "decision": "repair",
+      "urgency": "medium",
+      "assessment": "الشرح العام متوازن، وبه جدول مقارن حقيقي ويرفض تعميم أن السكوتر أوفر، لكنه لا يقارن طرازات فعلية في مصر أو تكلفة الملكية/قطع CVT وإجراءات الترخيص/معدات السلامة؛ لا مراجع ولا روابط سياقية داخل المتن.",
+      "editorial_action": "مقارنة موديلات وميزانيات استخدام حقيقية مع بيانات قابلة للتحقق؛ الصيانة والحمولة وفرامل السفر والدليفري والتكلفة الإجمالية، وربط دليل شراء الدليفري.",
+      "external_sources_verified_or_consulted": []
+    },
+    {
+      "queue_rank": 4,
+      "pid": 80948,
+      "slug": "engine-operation-cycles-parts-guide",
+      "title": "أجزاء المحرك ودورة عمله",
+      "url": "https://a3tal.com/engine-operation-cycles-parts-guide/",
+      "wp_body_words_from_all571_readonly_audit": 559,
+      "score": 40,
+      "rubric": {
+        "accuracy_and_safety_25": 11,
+        "actionable_value_25": 6,
+        "search_intent_15": 8,
+        "topic_specificity_10": 5,
+        "structure_clarity_10": 7,
+        "visual_learning_10": 3,
+        "useful_context_links_5": 0
+      },
+      "decision": "repair",
+      "urgency": "critical",
+      "assessment": "عنوان شامل لكن المقال لم يشرح الأشواط الأربعة أو دورة التزييت والتبريد فعليًا؛ يعمم أن صمام السحب يدخل خليط البنزين والهواء رغم اختلاف الحقن المباشر والديزل، وأن انقطاع الكاتينة يصادم الصمامات دائمًا رغم اختلاف interference/non-interference؛ يظهر مقطع JSON AIContext في النص المستخرج.",
+      "editorial_action": "إعادة بناء فني بمخطط الدورة الرباعية ومسار القوة وأنظمة البنزين والديزل والحقن المباشر وتمييز سير/جنزير والمحركات غير التصادمية، مع إزالة النص التقني الظاهر وأمثلة صحيحة.",
+      "external_sources_verified_or_consulted": []
+    },
+    {
+      "queue_rank": 5,
+      "pid": 80913,
+      "slug": "bmw-m3-m4-2026-performance-specs-faults",
+      "title": "BMW M3 وM4 موديل 2026",
+      "url": "https://a3tal.com/bmw-m3-m4-2026-performance-specs-faults/",
+      "wp_body_words_from_all571_readonly_audit": 413,
+      "score": 46,
+      "rubric": {
+        "accuracy_and_safety_25": 15,
+        "actionable_value_25": 6,
+        "search_intent_15": 10,
+        "topic_specificity_10": 7,
+        "structure_clarity_10": 5,
+        "visual_learning_10": 3,
+        "useful_context_links_5": 0
+      },
+      "decision": "repair",
+      "urgency": "high",
+      "assessment": "توجد أرقام أصلية صحيحة لنسخ xDrive (523 حصان)، لكن «Competition» ليس كله 523؛ المصدر الرسمي يميز Competition 503 وCompetition xDrive 523، وتوجد ادعاءات بلا سند عن تحديثات التفاضل والصيانة المبكرة ودقيقتين خمول ثابتتين.",
+      "editorial_action": "جداول BMW الرسمية لكل نسخة/سوق وسنة؛ فصل المواصفات عن أعطال مثبتة، التحقق من مواعيد فحص M break-in وتجنب وصف القيادة الخطرة كإجراء.",
+      "external_sources_verified_or_consulted": [
+        "https://www.bmwusa.com/vehicles/bmw-m/models.html"
+      ]
+    },
+    {
+      "queue_rank": 6,
+      "pid": 80480,
+      "slug": "%d8%b5%d9%8a%d8%a7%d9%86%d8%a9-mg-7-%d9%81%d9%8a-%d9%85%d8%b5%d8%b1",
+      "title": "جدول صيانة MG7 في مصر",
+      "url": "https://a3tal.com/%d8%b5%d9%8a%d8%a7%d9%86%d8%a9-mg-7-%d9%81%d9%8a-%d9%85%d8%b5%d8%b1/",
+      "wp_body_words_from_all571_readonly_audit": 337,
+      "score": 38,
+      "rubric": {
+        "accuracy_and_safety_25": 9,
+        "actionable_value_25": 7,
+        "search_intent_15": 7,
+        "topic_specificity_10": 5,
+        "structure_clarity_10": 7,
+        "visual_learning_10": 3,
+        "useful_context_links_5": 0
+      },
+      "decision": "repair",
+      "urgency": "critical",
+      "assessment": "المقال يقدم جدول 10/20/40/60 ألف ومواصفات زيت 5W-30 وDOT4 ووقود 92 على أنه رسمي مناسب لـMG7 دون مرجع لصيانة MG7 بعينها. رقم الدعم 16616 بالمقال بينما موقع MG مصر الرسمي يعرض 16424. المصدر الرسمي الحالي يحدد 1.5 Turbo و7-speed Wet DCT، وهذه المعلومات غائبة عن دليل الصيانة.",
+      "editorial_action": "التحقق من دفتر صيانة MG7 المصري والمواصفات/السوائل/فترات الخدمة؛ تصحيح رقم الاتصال وإزالة القيم غير المثبتة إلى أن يتوافر جدول رسمي.",
+      "external_sources_verified_or_consulted": [
+        "https://www.mgmotor.com.eg/model/mg7/",
+        "https://www.mgmotor.com.eg/faqs/?lang=ar"
+      ]
+    },
+    {
+      "queue_rank": 7,
+      "pid": 80910,
+      "slug": "bmw-x7-xm-2026-specs-luxury-faults",
+      "title": "BMW X7 وXM موديل 2026",
+      "url": "https://a3tal.com/bmw-x7-xm-2026-specs-luxury-faults/",
+      "wp_body_words_from_all571_readonly_audit": 419,
+      "score": 42,
+      "rubric": {
+        "accuracy_and_safety_25": 13,
+        "actionable_value_25": 6,
+        "search_intent_15": 8,
+        "topic_specificity_10": 6,
+        "structure_clarity_10": 6,
+        "visual_learning_10": 3,
+        "useful_context_links_5": 0
+      },
+      "decision": "repair",
+      "urgency": "high",
+      "assessment": "الأرقام الخاصة بـXM Label 738 حصان صحيحة وفق BMW، لكن الموقع يذكر زمن AC 2:45 بينما بيانات BMW XM Label المعروضة تقول نحو 2:00 على Level 2، كما يسرد استدعاءات وتحذيرات كهربائية وعطل «عزل مزدوج» دون ربط برقم VIN أو حملات رسمية.",
+      "editorial_action": "فصل X7 عن XM PHEV، تثبيت نسخة الشحن/الزمن/المصدر، حذف تعميم الاستدعاءات غير الموثقة ومراجعة برمجيات BMW بالرقم والسوق.",
+      "external_sources_verified_or_consulted": [
+        "https://www.bmwusa.com/vehicles/m-series/xm/bmw-xm-technische-daten.html"
+      ]
+    },
+    {
+      "queue_rank": 8,
+      "pid": 80930,
+      "slug": "mitsubishi-xpander-electrical-ac-problems-smart-key",
+      "title": "تكييف وكهرباء ميتسوبيشي إكسباندر",
+      "url": "https://a3tal.com/mitsubishi-xpander-electrical-ac-problems-smart-key/",
+      "wp_body_words_from_all571_readonly_audit": 422,
+      "score": 35,
+      "rubric": {
+        "accuracy_and_safety_25": 9,
+        "actionable_value_25": 7,
+        "search_intent_15": 7,
+        "topic_specificity_10": 5,
+        "structure_clarity_10": 4,
+        "visual_learning_10": 3,
+        "useful_context_links_5": 0
+      },
+      "decision": "repair",
+      "urgency": "critical",
+      "assessment": "ينصح المقال بعدم تشغيل AC أثناء السير فوق 80 كم/س وكأنه يسبب «صدمة للكمبروسر» بلا سند فني وهو تعميم مضلل. ويحدد بطارية الريموت سنويًا وبطارية السيارة 18-24 شهرًا وصيانة الفلتر 20 ألف والشحن الدوري دون نسخة/دليل. لا يفرق بين انعدام الهواء ونقص التبريد ومشاكل Smart Key وقوة بطارية 12V.",
+      "editorial_action": "حذف نصيحة الـ80 كم/س، التحقق من دليل إكسباندر وفئات Smart Key ووحدة التكييف؛ تشخيص تدفق الهواء مقابل الحرارة وفحص تسريب AC والجهد دون أرقام صيانة عامة.",
+      "external_sources_verified_or_consulted": []
+    },
+    {
+      "queue_rank": 9,
+      "pid": 80317,
+      "slug": "%d8%b3%d8%b9%d8%b1-%d8%aa%d9%88%d9%8a%d9%88%d8%aa%d8%a7-%d9%8a%d8%a7%d8%b1%d9%8a%d8%b3-2026",
+      "title": "توافر وسعر تويوتا ياريس في مصر",
+      "url": "https://a3tal.com/%d8%b3%d8%b9%d8%b1-%d8%aa%d9%88%d9%8a%d9%88%d8%aa%d8%a7-%d9%8a%d8%a7%d8%b1%d9%8a%d8%b3-2026/",
+      "wp_body_words_from_all571_readonly_audit": 282,
+      "score": 82,
+      "rubric": {
+        "accuracy_and_safety_25": 25,
+        "actionable_value_25": 22,
+        "search_intent_15": 15,
+        "topic_specificity_10": 9,
+        "structure_clarity_10": 8,
+        "visual_learning_10": 3,
+        "useful_context_links_5": 0
+      },
+      "decision": "keep",
+      "urgency": "low",
+      "assessment": "رغم أنه قصير، يجيب عن السؤال الأساسي بدقة: ياريس غير مدرجة في تشكيلة تويوتا مصر المتاحة حاليًا، ويرفض اختراع سعر رسمي؛ أسعار كورولا 1.28 مليون وأوربان كروزر 1.43 مليون متطابقة مع صفحة تويوتا مصر. توجد فرصة لإضافة رابط الوكيل وتفصيل المستعمل، لكنها ليست عيبًا جوهريًا في نية الصفحة الحالية.",
+      "editorial_action": "لا تعديل في مرحلة تصحيح <=80؛ يمكن مراقبة تغيّر تشكيلة الوكيل وتحديث تاريخ التحقق وروابطه لاحقًا إذا استدعى.",
+      "external_sources_verified_or_consulted": [
+        "https://toyota.com.eg/en/finance/select/corolla"
+      ]
+    },
+    {
+      "queue_rank": 10,
+      "pid": 80177,
+      "slug": "hyundai-ksa-agents-comparison-wallan-naghi-almajdouie-2026",
+      "title": "وكلاء هيونداي في السعودية",
+      "url": "https://a3tal.com/hyundai-ksa-agents-comparison-wallan-naghi-almajdouie-2026/",
+      "wp_body_words_from_all571_readonly_audit": 257,
+      "score": 83,
+      "rubric": {
+        "accuracy_and_safety_25": 24,
+        "actionable_value_25": 23,
+        "search_intent_15": 15,
+        "topic_specificity_10": 9,
+        "structure_clarity_10": 9,
+        "visual_learning_10": 3,
+        "useful_context_links_5": 0
+      },
+      "decision": "keep",
+      "urgency": "low",
+      "assessment": "الجدول يجيب مباشرة عن أسماء الموزعين الثلاثة وأرقامهم ومواقعهم الرئيسية، وقد طابقت الأسماء وأرقام هواتفها في دليل Hyundai Worldwide الرسمي. قصر النص وحده لا يعني أنه سيئ؛ التحسين الاختياري روابط مواقع/خرائط الموزعين والتصنيف الجغرافي لأن المقال في موقع مصر.",
+      "editorial_action": "الإبقاء على المحتوى وتدقيق التصنيف الجغرافي للموقع فقط؛ لا إعادة كتابة لمجرد عدد الكلمات.",
+      "external_sources_verified_or_consulted": [
+        "https://www.hyundai.com/worldwide/en/company/hyundai-world-wide"
+      ]
+    }
+  ]
+}
