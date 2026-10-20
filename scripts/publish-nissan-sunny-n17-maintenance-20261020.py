@@ -32,7 +32,7 @@ def main():
     new=SOURCE.read_text("utf-8").strip()
     if count(new)<1500:raise RuntimeError("Minimum 1500 editorial words absent")
     if "<h1" in new.lower():raise RuntimeError("Post body cannot have extra H1")
-    for marker in ("ناقلًا أوتوماتيكيًا بأربع سرعات","نيسان صني N17","4AT","16244",
+    for marker in ("فتيسًا أوتوماتيكيًا بأربع سرعات","نيسان صني N17","4AT","16244",
                    "لا تفتح غطاء","nissan.com.eg/vehicles/new/sunny"):
         if marker not in new:raise RuntimeError("Critical technical or safety QA marker missing: "+marker)
     old=call("/post/"+str(PID))
