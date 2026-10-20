@@ -1,0 +1,30 @@
+name: Repair Nissan Sunny N17 Egypt maintenance encyclopedia
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/publish-nissan-sunny-n17-maintenance-20261020.py'
+      - 'data/repairs/egypt-nissan-sunny-n17-maintenance-20261020.html'
+      - '.github/workflows/publish-nissan-sunny-n17-maintenance-20261020.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-editorial-production-80395
+  cancel-in-progress: false
+jobs:
+  guarded-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate Nissan Egypt technical and original article files
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          test -s data/repairs/egypt-nissan-sunny-n17-maintenance-20261020.html
+          python3 -m py_compile scripts/publish-nissan-sunny-n17-maintenance-20261020.py
+      - name: Publish guarded official-source Nissan Sunny N17 repair
+        run: python3 -u scripts/publish-nissan-sunny-n17-maintenance-20261020.py
