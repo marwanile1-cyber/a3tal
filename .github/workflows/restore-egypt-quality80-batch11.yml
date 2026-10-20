@@ -1,0 +1,32 @@
+name: Fix two manually reviewed Elantra electrical and Octavia suspension pages
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/restore-egypt-quality80-batch11.yml'
+      - 'scripts/backfill-egypt-quality80-reviewed-batch11.py'
+      - 'data/quality-audits/egypt-editorial-manual-audit-20261020-11.json'
+      - 'data/expansions/egypt-quality80-20261020-batch11-elantra-electrical.json'
+      - 'data/expansions/egypt-quality80-20261020-batch11-skoda-suspension.json'
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  two-corrective-articles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 23
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate two manually approved articles and script
+        run: |
+          python3 -m py_compile scripts/editorial_minimum_words.py scripts/backfill-egypt-quality80-reviewed-batch11.py
+          python3 -m json.tool data/quality-audits/egypt-editorial-manual-audit-20261020-11.json > /dev/null
+          python3 -m json.tool data/expansions/egypt-quality80-20261020-batch11-elantra-electrical.json > /dev/null
+          python3 -m json.tool data/expansions/egypt-quality80-20261020-batch11-skoda-suspension.json > /dev/null
+      - name: Publish 2 original WordPress posts after concurrent safety check and verify official sources
+        run: python3 -u scripts/backfill-egypt-quality80-reviewed-batch11.py
