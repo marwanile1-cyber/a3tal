@@ -1,0 +1,95 @@
+{
+  "date": "2026-10-20",
+  "manual_editorial_scale": 100,
+  "rubric_max": {
+    "factual_accuracy_and_safety": 25,
+    "actionable_diagnostics": 25,
+    "search_intent_completion": 15,
+    "specificity_and_original_value": 10,
+    "structure_and_ux": 10,
+    "visual_explanation": 10,
+    "useful_verified_linking": 5
+  },
+  "threshold_repair_if_score_lte": 80,
+  "method": "Human-like manual editorial judgment based on live article relevance, OEM source correctness, safety and measurable diagnosis, not length alone, ranking or an official Google score.",
+  "reviewed": [
+    {
+      "pid": 80635,
+      "slug": "toyota-corolla-electrical-ac-problems",
+      "decision": "repair",
+      "observations": [
+        "Original page distinguishes SRS clock spring from other codes and A/C condenser cooling from variable-displacement control, but offers no actionable safety-first SRS, CAN/ABS, battery/charging, ECU voltage and A/C diagnostic table or trim differentiation.",
+        "Toyota Egypt official Corolla 2026 PDF confirms airbags vary by trim and dual-zone climate is equipped on upper trims; 1.6 petrol and 1.8 HEV are distinct. None documented in article.",
+        "No inline image, OEM link or context link to recently corrected Corolla brakes, engine/CVT or DTC encyclopedia."
+      ],
+      "score": 58,
+      "components": {
+        "factual_accuracy_and_safety": 19,
+        "actionable_diagnostics": 11,
+        "search_intent_completion": 11,
+        "specificity_and_original_value": 5,
+        "structure_and_ux": 7,
+        "visual_explanation": 5,
+        "useful_verified_linking": 0
+      }
+    },
+    {
+      "pid": 80883,
+      "slug": "kia-sportage-tgdi-engine-turbo-carbon-buildup",
+      "decision": "repair",
+      "observations": [
+        "Contains correct 180hp correction and warnings about fuel additives, but tests for P0087 and P0299 stop before safe high/low fuel pressure diagnosis, DCT vs engine fault differentiation and verified manufacturer source.",
+        "Kia manufacturer 2023 1.6 T-GDI 180hp/265Nm 7DCT catalogue corroborates engine configuration in a non-Egypt market, which must be clearly marked not proof of all Egypt trims.",
+        "Not enough practical distinction of P0300, LSPI, crankcase ventilation, cooling, engine vs gearbox, or original explanatory visual despite real owner search intent."
+      ],
+      "score": 74,
+      "components": {
+        "factual_accuracy_and_safety": 21,
+        "actionable_diagnostics": 16,
+        "search_intent_completion": 13,
+        "specificity_and_original_value": 7,
+        "structure_and_ux": 8,
+        "visual_explanation": 6,
+        "useful_verified_linking": 3
+      }
+    },
+    {
+      "pid": 80842,
+      "slug": "opel-astra-j-cooling-system-leaks-thermostat",
+      "decision": "repair",
+      "observations": [
+        "Already has a useful core cooling leak pressure test table and video, but no manufacturer Astra J year-specific manual source explaining coolant level inspection, cooling warning and caution for cap and correct approved antifreeze.",
+        "Fails to differentiate pressure-test leak, thermostat stuck open P0128, fan electrical control, heater matrix and coolant contamination from automatic gearbox cooler before costly repair.",
+        "Existing ~996-word piece needs practical post-repair air bleeding, diagnosis of hot idle versus highway and confirmation by thermal logs; maintain embedded genuine video and existing feature."
+      ],
+      "score": 77,
+      "components": {
+        "factual_accuracy_and_safety": 22,
+        "actionable_diagnostics": 18,
+        "search_intent_completion": 13,
+        "specificity_and_original_value": 7,
+        "structure_and_ux": 8,
+        "visual_explanation": 7,
+        "useful_verified_linking": 2
+      }
+    },
+    {
+      "pid": 80868,
+      "slug": "mg-6-suspension-stability-tires-guide",
+      "decision": "keep",
+      "observations": [
+        "Good model-specific separation of tire/wheel/suspension, video? User-relevant explanatory table and sources, original image; no evidence-based reason to modify."
+      ],
+      "score": 91,
+      "components": {
+        "factual_accuracy_and_safety": 23,
+        "actionable_diagnostics": 23,
+        "search_intent_completion": 14,
+        "specificity_and_original_value": 9,
+        "structure_and_ux": 9,
+        "visual_explanation": 9,
+        "useful_verified_linking": 4
+      }
+    }
+  ]
+}
