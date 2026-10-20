@@ -1,0 +1,95 @@
+{
+  "date": "2026-10-20",
+  "scope": "Three existing published WordPress standard articles, original permalinks, featured images, statuses and canonicals preserved.",
+  "method": "Manual editorial review and official manufacturer research, guarded WordPress revision write, GitHub Actions deploy logs, WordPress REST content count, independent live page inspection. No fabricated Google content quality score.",
+  "policy": "Word count minimum is separate from article quality. Correct unsafe generalizations, favor primary sources and actionable tests; do not automatically 'pass 80%' solely by length.",
+  "gscStatus": "GSC Wizard connector unavailable: subscription_required. No URL Inspection API, query-level traffic or Google-selected canonical claim was made; no redirects based on unobserved performance.",
+  "repairs": [
+    {
+      "post_id": 80480,
+      "title": "صيانة MG 7 في مصر: جدول الفحص وفتيس Wet DCT والزيوت والمراكز",
+      "url": "https://a3tal.com/%d8%b5%d9%8a%d8%a7%d9%86%d8%a9-mg-7-%d9%81%d9%8a-%d9%85%d8%b5%d8%b1/",
+      "before_source_automated_snapshot_words": 337,
+      "after_wordpress_editorial_body_words": 2438,
+      "cover_id_preserved": 80481,
+      "key_fixes": [
+        "Verified local MG7 1.5T 185hp 300Nm 7-speed wet DCT instead of generic drivetrain claims",
+        "Removed unsupported fixed 5W-30, DOT, fuel octane and 60k gearbox change assumptions",
+        "Distinguished general first-service FAQ from VIN-specific MG7 maintenance policy",
+        "Added tables for symptoms, safe checks, fluids, quotes, and manufacturer booking."
+      ],
+      "sources": [
+        "https://www.mgmotor.com.eg/model/mg7/",
+        "https://www.mgmotor.com.eg/mg-brochures/",
+        "https://www.mgmotor.com.eg/faqs/?lang=ar",
+        "https://www.mgmotor.com.eg/locations-showrooms/?lang=ar"
+      ],
+      "github_run": "https://github.com/marwanile1-cyber/a3tal/actions/runs/39460365998",
+      "after_live": {
+        "robots": "index, follow",
+        "canonical_preserved": true,
+        "cover_preserved": true,
+        "manufacturer_link_visible": true
+      }
+    },
+    {
+      "post_id": 80907,
+      "title": "BMW X5 xDrive50e في مصر: المواصفات والشحن وأعطال الهايبرد",
+      "url": "https://a3tal.com/bmw-x5-2026-hybrid-specs-problems-maintenance/",
+      "before_source_automated_snapshot_words": 166,
+      "after_wordpress_editorial_body_words": 2660,
+      "cover_id_preserved": 80908,
+      "key_fixes": [
+        "Separated BMW Egyptian G05 official 489hp / 700Nm from US-market 483hp spec and the next X5 generation",
+        "Sourced 25.7kWh battery, 11kW AC charging, and WLTP range with explicit test and market limits",
+        "Added structured high-voltage diagnostics and safety warnings, no dangerous do-it-yourself procedures",
+        "Added used-PHEV inspection, charging/low-voltage differentiation and owner decision tables."
+      ],
+      "sources": [
+        "https://www.bmw-egypt.com/en/all-models/x-series/x5/bmw-x5-technical-data.html",
+        "https://www.bmw-me.com/en/all-models/x-series/x5/bmw-x5.html",
+        "https://www.bmwgroup.com/en/news/general/2026/the-new-bmw-x5.html"
+      ],
+      "github_run": "https://github.com/marwanile1-cyber/a3tal/actions/runs/39461182024",
+      "after_live": {
+        "robots": "index, follow",
+        "canonical_preserved": true,
+        "cover_preserved": true,
+        "manufacturer_link_visible": true
+      }
+    },
+    {
+      "post_id": 80395,
+      "title": "صيانة نيسان صني N17 في مصر: جدول الفحص والفتيس 4AT والزيوت",
+      "url": "https://a3tal.com/%d8%ac%d8%af%d9%88%d9%84-%d8%b5%d9%8a%d8%a7%d9%86%d8%a9-%d9%86%d9%8a%d8%b3%d8%a7%d9%86-%d8%b5%d9%86%d9%8a-2026/",
+      "before_source_automated_snapshot_words": 360,
+      "after_wordpress_editorial_body_words": 2296,
+      "cover_id_preserved": 80396,
+      "key_fixes": [
+        "Grounded Egyptian Sunny N17 1.5L 108hp, 134Nm and 4-speed AT in Nissan Egypt specifications",
+        "Explicit 4AT versus CVT fluid and procedure separation, manual gearbox caveat",
+        "Replaced thin inspection list with brakes/tires/cooling/electrical/4AT symptom-and-next-test tables",
+        "Manufacturer warranty context and Nissan owner booking, 16244 support linked."
+      ],
+      "sources": [
+        "https://ar.nissan.com.eg/vehicles/new/sunny/versions-and-specs.html",
+        "https://ar.nissan.com.eg/owners/nissan-warranty.html",
+        "https://ar.nissan.com.eg/owners/owners-home.html",
+        "https://ar.nissan.com.eg/owners/mobile-app.html"
+      ],
+      "github_run": "https://github.com/marwanile1-cyber/a3tal/actions/runs/39461968713",
+      "after_live": {
+        "robots": "index, follow",
+        "canonical_preserved": true,
+        "cover_preserved": true,
+        "manufacturer_link_visible": true
+      }
+    }
+  ],
+  "needs_separate_review": [
+    "Document actual inline media authenticity and media rights; old featured images were preserved, not replaced or claimed photographic-original.",
+    "Obtain Search Console page and query performance before canonical changes, redirects or noindex decisions.",
+    "Manually review any next candidate's *current live revision*, not stale October 20 automated priority numbers.",
+    "Any sitewide policy threshold 80 is a human editorial judgment; the snapshot screening index must not be misrepresented as Google's rating."
+  ]
+}
