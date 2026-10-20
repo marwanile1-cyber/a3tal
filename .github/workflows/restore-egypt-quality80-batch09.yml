@@ -1,0 +1,32 @@
+name: Correct Skoda AC and Nissan Sunny brakes after manual under-80 review
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/restore-egypt-quality80-batch09.yml'
+      - 'scripts/backfill-egypt-quality80-reviewed-batch09.py'
+      - 'data/quality-audits/egypt-editorial-manual-audit-20261020-08.json'
+      - 'data/expansions/egypt-quality80-20261020-batch09-skoda-ac.json'
+      - 'data/expansions/egypt-quality80-20261020-batch09-sunny-brakes.json'
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  selective-corrections:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate exact two manuscripts and manual audit
+        run: |
+          python3 -m py_compile scripts/editorial_minimum_words.py scripts/backfill-egypt-quality80-reviewed-batch09.py
+          python3 -m json.tool data/quality-audits/egypt-editorial-manual-audit-20261020-08.json >/dev/null
+          python3 -m json.tool data/expansions/egypt-quality80-20261020-batch09-skoda-ac.json >/dev/null
+          python3 -m json.tool data/expansions/egypt-quality80-20261020-batch09-sunny-brakes.json >/dev/null
+      - name: Publish only 2 approved articles and verify real 1500 plus and sources
+        run: python3 -u scripts/backfill-egypt-quality80-reviewed-batch09.py
