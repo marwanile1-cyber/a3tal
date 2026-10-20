@@ -1,0 +1,34 @@
+name: Repair three manually reviewed Elantra and MG6 articles below 80 quality
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/restore-egypt-quality80-batch10.yml'
+      - 'scripts/backfill-egypt-quality80-reviewed-batch10.py'
+      - 'data/quality-audits/egypt-editorial-manual-audit-20261020-10.json'
+      - 'data/expansions/egypt-quality80-20261020-batch10-elantra-engine.json'
+      - 'data/expansions/egypt-quality80-20261020-batch10-elantra-transmission.json'
+      - 'data/expansions/egypt-quality80-20261020-batch10-mg6-gearbox.json'
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  manual-quality-repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify score selection, editorial source and Python syntax
+        run: |
+          python3 -m py_compile scripts/editorial_minimum_words.py scripts/backfill-egypt-quality80-reviewed-batch10.py
+          python3 -m json.tool data/quality-audits/egypt-editorial-manual-audit-20261020-10.json >/dev/null
+          python3 -m json.tool data/expansions/egypt-quality80-20261020-batch10-elantra-engine.json >/dev/null
+          python3 -m json.tool data/expansions/egypt-quality80-20261020-batch10-elantra-transmission.json >/dev/null
+          python3 -m json.tool data/expansions/egypt-quality80-20261020-batch10-mg6-gearbox.json >/dev/null
+      - name: Publish only three rated-below-80 originals and verify on public site
+        run: python3 -u scripts/backfill-egypt-quality80-reviewed-batch10.py
