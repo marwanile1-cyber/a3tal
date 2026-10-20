@@ -697,3 +697,43 @@ if (is_file(get_template_directory() . '/seo-integrity-20261018.php')) {
 if (is_file(get_template_directory().'/seo-followup-20261018.php')) {
   require_once get_template_directory().'/seo-followup-20261018.php';
 }
+
+
+/**
+ * A3TAL-CAR-CHOOSER-SEARCH-UX-20261020
+ * Avoid circular search journeys: a model query must not recommend the
+ * choose-your-car index itself as if it were a model-specific guide.
+ * Preserve the index URL, existing posts and canonical rules.
+ */
+add_action('pre_get_posts', static function($query) {
+  if (is_admin() || !$query->is_main_query() || !$query->is_search()) return;
+  $phrase = trim((string)$query->get('s'));
+  if (preg_match('~(?:اختر\s+سيارتك|choose[\s-]+your[\s-]+car)~iu', $phrase)) return;
+  $chooser = get_page_by_path('choose-your-car', OBJECT, 'page');
+  if (!$chooser instanceof WP_Post || $chooser->post_status !== 'publish') return;
+  $excluded = array_map('absint', (array)$query->get('post__not_in'));
+  $excluded[] = (int)$chooser->ID;
+  $query->set('post__not_in', array_values(array_unique($excluded)));
+}, 12);
+
+/**
+ * Clarify what the model chooser links do without changing or inventing URLs.
+ * The published page remains indexable; missing models get a truthful
+ * no-results search state rather than a thin standalone page.
+ */
+add_filter('the_content', static function($html) {
+  if (!is_page('choose-your-car') || !in_the_loop() || !is_main_query()) return $html;
+  if (strpos($html, 'a3tal-chooser-coverage-hint') !== false) return $html;
+  $hint = '<aside class="a3tal-chooser-coverage-hint" role="note"'
+    . ' style="margin:16px 0 22px;padding:15px 18px;border:1px solid #ccdce9;border-radius:12px;background:#f5f9fc;color:#17334d">'
+    . '<strong>توضيح مهم عن تغطية الموديلات</strong>'
+    . '<p style="margin:7px 0 0">الموديل المكتوب بجانبه «ملف كامل» يفتح مركز معلومات خاصًا به.'
+    . ' باقي الموديلات تفتح نتائج البحث في المحتوى المنشور حاليًا؛ ظهور الموديل هنا لا يعني اكتمال'
+    . ' أعطاله وصيانته وقطع غياره. لو مفيش نتيجة مباشرة هنوضح ده بدل عرض صفحة الاختيار نفسها كإجابة.</p>'
+    . '</aside>';
+  $pattern = '~(<h2\b[^>]*>\s*اختر الماركة ثم الموديل\s*</h2>)~iu';
+  if (preg_match($pattern, $html)) {
+    return preg_replace_callback($pattern, static function($m) use ($hint) { return $hint . $m[1]; }, $html, 1);
+  }
+  return $hint . $html;
+}, 75);
