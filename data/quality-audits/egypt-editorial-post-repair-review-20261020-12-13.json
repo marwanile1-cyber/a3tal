@@ -1,0 +1,109 @@
+{
+  "date": "2026-10-20",
+  "rubric_max": {
+    "factual_accuracy_and_safety": 25,
+    "actionable_diagnostics": 25,
+    "search_intent_completion": 15,
+    "specificity_and_original_value": 10,
+    "structure_and_ux": 10,
+    "visual_explanation": 10,
+    "useful_verified_linking": 5
+  },
+  "disclaimer": "Judgment-based editorial re-grading, NOT a Google quality score and not an independent mechanical inspection. More words alone do not increase score.",
+  "policy": "Only hand-rated <=80 original WordPress pages edited. 2 distinct passing pages untouched: MG6 suspension 91 and Hyundai Matrix suspension 90. MG6 passing page appeared in both shortlists but was not edited twice.",
+  "publish_runs": [
+    39416885720,
+    39417809131
+  ],
+  "media_runs": [
+    39416978526,
+    39417969243
+  ],
+  "reviewed": [
+    {
+      "pid": 80648,
+      "slug": "skoda-octavia-a7-a8-engine-problems",
+      "quality_before": 58,
+      "quality_after": 88,
+      "after_rubric": {
+        "factual_accuracy_and_safety": 23,
+        "actionable_diagnostics": 23,
+        "search_intent_completion": 14,
+        "specificity_and_original_value": 8,
+        "structure_and_ux": 8,
+        "visual_explanation": 8,
+        "useful_verified_linking": 4
+      },
+      "confirmed_wordpress_body_words": 2114,
+      "notes": "Skoda Egypt maintenance source DJKA engine 150 hp / 250 Nm 8AT, A7 MPI versus A8 TSI distinction, PCV, P0299, EPC, cooling and VIN-linked service flow, original media."
+    },
+    {
+      "pid": 80632,
+      "slug": "toyota-corolla-suspension-brakes-guide",
+      "quality_before": 60,
+      "quality_after": 90,
+      "after_rubric": {
+        "factual_accuracy_and_safety": 23,
+        "actionable_diagnostics": 23,
+        "search_intent_completion": 14,
+        "specificity_and_original_value": 9,
+        "structure_and_ux": 9,
+        "visual_explanation": 8,
+        "useful_verified_linking": 4
+      },
+      "confirmed_wordpress_body_words": 2124,
+      "notes": "Toyota Egypt Corolla 2026 15/16/17 wheel configurations, ABS EBD, double-wishbone rear suspension, brake safety, rotor runout/DTV and hybrid differentiation; original in-post image."
+    },
+    {
+      "pid": 80862,
+      "slug": "mg-6-engine-turbo-problems-lspi-oil",
+      "quality_before": 57,
+      "quality_after": 89,
+      "after_rubric": {
+        "factual_accuracy_and_safety": 23,
+        "actionable_diagnostics": 22,
+        "search_intent_completion": 14,
+        "specificity_and_original_value": 9,
+        "structure_and_ux": 9,
+        "visual_explanation": 8,
+        "useful_verified_linking": 4
+      },
+      "confirmed_wordpress_body_words": 2067,
+      "notes": "2023 Egypt MG6 169hp 250Nm source, no unsupported LSPI claims, measured underboost, misfire, trims, oil and cooling differentiation, links to MG6 transmission and infotainment, original illustration."
+    },
+    {
+      "pid": 80735,
+      "slug": "hyundai-tucson-nx4-engine-problems-smartstream",
+      "quality_before": 55,
+      "quality_after": 88,
+      "after_rubric": {
+        "factual_accuracy_and_safety": 23,
+        "actionable_diagnostics": 22,
+        "search_intent_completion": 14,
+        "specificity_and_original_value": 8,
+        "structure_and_ux": 9,
+        "visual_explanation": 8,
+        "useful_verified_linking": 4
+      },
+      "confirmed_wordpress_body_words": 1965,
+      "notes": "Hyundai Egypt 1.6 T-GDI 180hp/265Nm & 7DCT source, tests for P0300/P0299, direct injection carbon and LSPI with safety, relevant TCM link; original diagram verified."
+    },
+    {
+      "pid": 80770,
+      "slug": "toyota-corolla-fault-codes-dtc-dictionary",
+      "quality_before": 78,
+      "quality_after": 90,
+      "after_rubric": {
+        "factual_accuracy_and_safety": 23,
+        "actionable_diagnostics": 23,
+        "search_intent_completion": 14,
+        "specificity_and_original_value": 9,
+        "structure_and_ux": 9,
+        "visual_explanation": 8,
+        "useful_verified_linking": 4
+      },
+      "confirmed_wordpress_body_words": 2653,
+      "notes": "Toyota Egypt 2026 petrol and hybrid sources, controller-scoped code-by-code testing, P017x P030x P0420 P013x P0128 P0500 P0700 U0100, safety severity, CVT/ABS links and existing original illustration."
+    }
+  ]
+}
