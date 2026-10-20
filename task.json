@@ -1,23 +1,37 @@
 {
-  "deployment_tag": "tucson-2026-2027-comparison-seo-title-20261020",
+  "deployment_tag": "fix-exact-related-vehicle-ids-20261020",
   "requests": [
     {
       "method": "POST",
-      "path": "/update-post",
+      "path": "/admin",
       "body": {
-        "id": 80567,
-        "expected_modified_gmt": "2026-10-01T00:46:36+00:00",
-        "title": "هيونداي توسان 2026 مقابل 2027 في مصر: فرق الأسعار والفئات والفتيس",
-        "excerpt": "مقارنة هيونداي توسان 2026 و2027 في مصر: الفروق بين الفئات والأسعار والمحرك والفتيس، مع متابعة قائمة أسعار 2027 الأحدث بعد تحديث 15 أكتوبر 2026.",
-        "meta": {
-          "_yoast_wpseo_title": "توسان 2026 مقابل 2027: الفرق في الأسعار والفئات | أعطال.كوم",
-          "_yoast_wpseo_metadesc": "مقارنة توسان 2026 و2027 في مصر: فرق الأسعار والفئات والفتيس والمحرك، وروابط قائمة أسعار موديل 2027 الأحدث بعد تحديث أكتوبر 2026.",
-          "_yoast_wpseo_focuskw": "الفرق بين توسان 2026 و2027"
-        }
+        "op": "file_write",
+        "path": "themes/a3tal-global/functions.php",
+        "patches": [
+          {
+            "from": "function a3g_related_vehicle_entity($post_id=0){\n  $post_id=$post_id?:get_the_ID();\n  if(!$post_id||get_post_type($post_id)!=='post')return null;\n  $explicit=(int)get_post_meta($post_id,'_a3_vehicle_entity_id',true);\n  if($explicit>0){\n    $entity=get_post($explicit);\n    if($entity instanceof WP_Post && in_array($entity->post_type,['a3_car','a3_motorcycle'],true) && $entity->post_status==='publish') return $entity;\n  }\n  $q=new WP_Query([\n    'post_type'=>['a3_car','a3_motorcycle'],\n    'post_status'=>'publish',\n    'posts_per_page'=>1,\n    'meta_query'=>[[\n      'key'=>'_a3_related_post_ids',\n      'value'=>(string)$post_id,\n      'compare'=>'LIKE'\n    ]],\n    'no_found_rows'=>true,\n  ]);\n  return $q->have_posts()?$q->posts[0]:null;\n}",
+            "to": "function a3g_related_vehicle_entity($post_id=0){\n  $post_id=(int)($post_id?:get_the_ID());\n  if(!$post_id || get_post_type($post_id)!=='post') return null;\n  // A manually chosen entity always takes priority, when it is published.\n  $explicit=(int)get_post_meta($post_id,'_a3_vehicle_entity_id',true);\n  if($explicit>0){\n    $entity=get_post($explicit);\n    if($entity instanceof WP_Post && in_array($entity->post_type,['a3_car','a3_motorcycle'],true)\n        && $entity->post_status==='publish') return $entity;\n  }\n\n  // LIKE is only a candidate lookup. e.g. article 1234 must not match 91234.\n  // Check the complete tokenized post IDs and reject ambiguous multi-model\n  // comparisons rather than arbitrarily promoting one vehicle in the hero.\n  $matches=[];\n  $q=new WP_Query([\n    'post_type'=>['a3_car','a3_motorcycle'],\n    'post_status'=>'publish',\n    'posts_per_page'=>-1,\n    'fields'=>'ids',\n    'meta_query'=>[[\n      'key'=>'_a3_related_post_ids',\n      'value'=>(string)$post_id,\n      'compare'=>'LIKE'\n    ]],\n    'no_found_rows'=>true,\n    'suppress_filters'=>true,\n  ]);\n  foreach ($q->posts as $vehicle_id) {\n    $vehicle_id=(int)$vehicle_id;\n    $raw=(string)get_post_meta($vehicle_id,'_a3_related_post_ids',true);\n    $ids=array_values(array_filter(array_map('absint',preg_split('/[^0-9]+/',$raw))));\n    if(in_array($post_id,$ids,true)) $matches[$vehicle_id]=$vehicle_id;\n  }\n\n  // Include verified ID-and-slug relationships maintained in the car catalog.\n  if(function_exists('a3g_verified_car_guide_catalog') && function_exists('a3g_verified_car_guide_ids')){\n    foreach(a3g_verified_car_guide_catalog() as $car_id=>$row){\n      if(in_array($post_id,a3g_verified_car_guide_ids($car_id),true)) $matches[$car_id]=(int)$car_id;\n    }\n  }\n  if(count($matches)!==1) return null;\n  $entity=get_post((int)reset($matches));\n  return $entity instanceof WP_Post && $entity->post_status==='publish' ? $entity : null;\n}"
+          }
+        ],
+        "confirm": true,
+        "dangerous": true,
+        "log_response": "sha_only"
       }
     }
   ],
+  "verify": [
+    {
+      "path": "/admin?op=file_read&path=themes/a3tal-global/functions.php",
+      "log_response": "sha_only"
+    }
+  ],
   "network_diagnostics": {
-    "enabled": false
+    "enabled": true,
+    "rounds": 1,
+    "paths": [
+      "/mazda-3-2027-egypt-price-specs/",
+      "/deepal-s07-vs-xpeng-g6-egypt/",
+      "/cars/"
+    ]
   }
 }
