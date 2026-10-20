@@ -12,7 +12,7 @@ spec=importlib.util.spec_from_file_location("bridge","scripts/deploy-dtc-library
 bridge=importlib.util.module_from_spec(spec)
 spec.loader.exec_module(bridge)
 
-MARKER="A3TAL-CAR-SOCIAL-FEATURED-FALLBACK-20261020"
+MARKER="A3TAL-CAR-SOCIAL-OG-METADATA-20261020"
 NAME="functions.php"
 
 def main():
