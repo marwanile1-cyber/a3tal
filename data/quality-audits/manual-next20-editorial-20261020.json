@@ -1,0 +1,445 @@
+{
+  "date": "2026-10-20",
+  "type": "individual_live_post_editorial_audit",
+  "scope": "Priority rows 11-30 after previously finished rows 1-10; current live pages reread, no WordPress writes.",
+  "important_freshness_correction": "The 571-post audit snapshot counts for Hyundai GB service (ID169) and Jetour T2 (ID80325) were stale relative to the now published substantially improved live page; evaluate current page as-of audit.",
+  "rubric_max": {
+    "accuracy_safety": 25,
+    "reader_actionability": 25,
+    "search_intent": 15,
+    "model_topic_specificity": 10,
+    "clarity_structure": 10,
+    "visual_explanation": 10,
+    "source_context_linking": 5
+  },
+  "policy": "Only <=80 candidates for later changes; >=81 preserved. 1500 words is separate minimum for encyclopedia publication, not quality grade.",
+  "disclaimer": "Reasoned editorial grades, not Google scores. Source-backed where URLs available; unverified model-year specs or prices flagged for factual recheck before any publish.",
+  "reviewed": [
+    {
+      "priority_rank": 11,
+      "id": 80474,
+      "slug": "%d8%a7%d9%84%d9%81%d8%b1%d9%82-%d8%a8%d9%8a%d9%86-%d8%a7%d9%84%d8%a8%d9%88%d8%ac%d9%8a%d9%87%d8%a7%d8%aa-%d8%a7%d9%84%d8%b9%d8%a7%d8%af%d9%8a%d8%a9-%d9%88%d8%a7%d9%84%d9%84%d9%8a%d8%b2%d8%b1",
+      "title": "البوجيهات العادية والإيريديوم والبلاتين: الفرق الحقيقي واختيار النوع الصحيح",
+      "url": "https://a3tal.com/%d8%a7%d9%84%d9%81%d8%b1%d9%82-%d8%a8%d9%8a%d9%86-%d8%a7%d9%84%d8%a8%d9%88%d8%ac%d9%8a%d9%87%d8%a7%d8%aa-%d8%a7%d9%84%d8%b9%d8%a7%d8%af%d9%8a%d8%a9-%d9%88%d8%a7%d9%84%d9%84%d9%8a%d8%b2%d8%b1/",
+      "inventory_words_at_prior_scan": 287,
+      "score": 82,
+      "rubric": {
+        "accuracy_safety": 24,
+        "reader_actionability": 23,
+        "search_intent": 15,
+        "model_topic_specificity": 9,
+        "clarity_structure": 8,
+        "visual_explanation": 3,
+        "source_context_linking": 0
+      },
+      "decision": "keep",
+      "editorial_reason": "التمييز بين نيكل وإيريديوم وبلاتين واسم Laser والتأكيد على رقم البوجيه وHeat Range وGap صحيح ومفيد؛ لم يعد بزيادة قوة وهمية.",
+      "followup": "إضافة روابط كتالوج NGK أو Denso ومقارنة جدول حسب رمز محرك عند تحديث طبيعي؛ لا إصلاح إجباري."
+    },
+    {
+      "priority_rank": 12,
+      "id": 80462,
+      "slug": "%d8%b9%d9%8a%d9%88%d8%a8-%d9%86%d9%8a%d8%b3%d8%a7%d9%86-%d8%b5%d9%86%d9%8a-n17",
+      "title": "نيسان صني N17 في مصر: الأعطال التي تفحصها قبل شراء المستعمل",
+      "url": "https://a3tal.com/%d8%b9%d9%8a%d9%88%d8%a8-%d9%86%d9%8a%d8%b3%d8%a7%d9%86-%d8%b5%d9%86%d9%8a-n17/",
+      "inventory_words_at_prior_scan": 293,
+      "score": 72,
+      "rubric": {
+        "accuracy_safety": 22,
+        "reader_actionability": 17,
+        "search_intent": 13,
+        "model_topic_specificity": 9,
+        "clarity_structure": 8,
+        "visual_explanation": 3,
+        "source_context_linking": 0
+      },
+      "decision": "repair",
+      "editorial_reason": "صحح التباس 4AT/CVT في صني مصر وتضمن قائمة فحص قبل شراء المستعمل، لكن لا يقدم مؤشرات أعطال N17 المصرية التفصيلية مع فحص الزيت والهيكل بالأرقام/الأدلة ولا مصدر رسمي مرتبط.",
+      "followup": "فصل الفئات وسنوات N17، فحص تسريب الفتيس وABS والهيكل والقراءات مع توثيق نيسان مصر."
+    },
+    {
+      "priority_rank": 13,
+      "id": 80644,
+      "slug": "toyota-dtc-fault-codes-list",
+      "title": "أكواد أعطال تويوتا DTC: معنى الكود وكيف تشخصه بدون تغيير قطع عشوائي",
+      "url": "https://a3tal.com/toyota-dtc-fault-codes-list/",
+      "inventory_words_at_prior_scan": 271,
+      "score": 75,
+      "rubric": {
+        "accuracy_safety": 23,
+        "reader_actionability": 19,
+        "search_intent": 13,
+        "model_topic_specificity": 9,
+        "clarity_structure": 8,
+        "visual_explanation": 3,
+        "source_context_linking": 0
+      },
+      "decision": "repair",
+      "editorial_reason": "معاني P0011/P0016/P0171/P0300/P0420 وتجنب تبديل القطع عشوائيًا مفيدة، لكنها قاموس يختزل منظومات تويوتا والهايبرد في 271 كلمة تقريبًا، ولا يذكر اختلاف بنزين/هايبرد لكل موديل؛ غير مرتبط بقاموس كورولا الأكبر.",
+      "followup": "بناء فهرس حسب الوحدة والأكواد الفعلية مع روابط قواميس الموديلات، وتحديد تداخل النية مع قاموس كورولا قبل التوسيع."
+    },
+    {
+      "priority_rank": 14,
+      "id": 80456,
+      "slug": "%d9%86%d8%aa%d8%b4%d8%a9-%d8%a7%d9%84%d9%81%d8%aa%d9%8a%d8%b3-%d8%aa%d9%8a%d8%ac%d9%88-7",
+      "title": "نتشة فتيس تيجو 7: حدد نوع الناقل أولًا ثم ابدأ التشخيص",
+      "url": "https://a3tal.com/%d9%86%d8%aa%d8%b4%d8%a9-%d8%a7%d9%84%d9%81%d8%aa%d9%8a%d8%b3-%d8%aa%d9%8a%d8%ac%d9%88-7/",
+      "inventory_words_at_prior_scan": 291,
+      "score": 75,
+      "rubric": {
+        "accuracy_safety": 22,
+        "reader_actionability": 20,
+        "search_intent": 13,
+        "model_topic_specificity": 9,
+        "clarity_structure": 8,
+        "visual_explanation": 3,
+        "source_context_linking": 0
+      },
+      "decision": "repair",
+      "editorial_reason": "يفرق CVT عن DCT حسب فئة تيجو7، وهو تصحيح جوهري، ويمنع نقل سوائل وإجراءات ناقل لآخر؛ ما زال التشخيص يذكر قوائم عامة بلا بيانات حالات الحرارة أو رموز TCM أو دليل الوكيل.",
+      "followup": "مصدر شيري مصر لكل فئة، فروق اختبارات D/R وحرارة/زيت/TCM، جدول إجراءات وأولوية السلامة."
+    },
+    {
+      "priority_rank": 15,
+      "id": 80581,
+      "slug": "hyundai-elantra-suspension-maintenance-guide",
+      "title": "عفشة ودركسيون هيونداي إلنترا: تشخيص الطقطقة والخبط وثقل EPS",
+      "url": "https://a3tal.com/hyundai-elantra-suspension-maintenance-guide/",
+      "inventory_words_at_prior_scan": 255,
+      "score": 74,
+      "rubric": {
+        "accuracy_safety": 23,
+        "reader_actionability": 18,
+        "search_intent": 13,
+        "model_topic_specificity": 9,
+        "clarity_structure": 8,
+        "visual_explanation": 3,
+        "source_context_linking": 0
+      },
+      "decision": "repair",
+      "editorial_reason": "فصل Coupler MDPS عن Rack وTie Rod ومعالجة ثقل EPS جيدة، لكن شكاوى العفشة وEPS ما زالت ملخصات بلا خطوات فحص بترتيب سلامة أو تمييز أجيال إلنترا ومصادر الخدمة.",
+      "followup": "مرجع هيونداي لكل جيل، سيناريوهات كهرباء EPS واختبار وصلات/زوايا، وربط صفحات محرك وفتيس إلنترا."
+    },
+    {
+      "priority_rank": 16,
+      "id": 80313,
+      "slug": "overprice-2024-loss-december-2025",
+      "title": "الأوفر برايس وإعادة البيع: كيف تحسب خسارة السيارة قبل الشراء؟",
+      "url": "https://a3tal.com/overprice-2024-loss-december-2025/",
+      "inventory_words_at_prior_scan": 323,
+      "score": 74,
+      "rubric": {
+        "accuracy_safety": 22,
+        "reader_actionability": 18,
+        "search_intent": 14,
+        "model_topic_specificity": 9,
+        "clarity_structure": 8,
+        "visual_explanation": 3,
+        "source_context_linking": 0
+      },
+      "decision": "repair",
+      "editorial_reason": "أزال توقعات مالية قطعية غير موثقة وينبّه أن الأوفر برايس غير الإهلاك؛ لكنه لا يقدم معادلة خسارة فعلية رغم عنوان «كيف تحسب»، ويورد أسعار سبورتاج بتاريخ متغير دون رابط في النص.",
+      "followup": "أداة/معادلة وأمثلة مالية موثقة مستقلة عن سعر السوق الآني، ومصدر وتاريخ أسعار رسميين."
+    },
+    {
+      "priority_rank": 17,
+      "id": 169,
+      "slug": "%d9%85%d8%b1%d9%83%d8%b2-%d8%ae%d8%af%d9%85%d8%a9-hyundai-egypt-ghabbour-auto",
+      "title": "مراكز صيانة هيونداي في مصر: الحجز والخط الساخن وفروع GB",
+      "url": "https://a3tal.com/%d9%85%d8%b1%d9%83%d8%b2-%d8%ae%d8%af%d9%85%d8%a9-hyundai-egypt-ghabbour-auto/",
+      "inventory_words_at_prior_scan": 323,
+      "score": 95,
+      "rubric": {
+        "accuracy_safety": 24,
+        "reader_actionability": 24,
+        "search_intent": 15,
+        "model_topic_specificity": 10,
+        "clarity_structure": 9,
+        "visual_explanation": 8,
+        "source_context_linking": 5
+      },
+      "decision": "keep",
+      "editorial_reason": "المقال المنشور حاليًا يتجاوز 2000 كلمة، فيه دليل فروع وحجز وشكاوى وصيانة وفواتير ومصادر رسمية؛ رقم هيونداي 16661 والبريد ظاهرين رسميًا. بيانات الجرد القديمة (~323 كلمة) لم تعد تمثل الصفحة الحية.",
+      "followup": "لا تغيير. متابعة تحديث فروع هيونداي وأوقات العمل فقط عند تغير الموقع الرسمي."
+    },
+    {
+      "priority_rank": 18,
+      "id": 80278,
+      "slug": "suzuki-celerio-2026-fuel-economy-egypt",
+      "title": "سوزوكي سيليريو في مصر: الاستهلاك وهل ما زالت متاحة زيرو؟",
+      "url": "https://a3tal.com/suzuki-celerio-2026-fuel-economy-egypt/",
+      "inventory_words_at_prior_scan": 305,
+      "score": 82,
+      "rubric": {
+        "accuracy_safety": 24,
+        "reader_actionability": 22,
+        "search_intent": 15,
+        "model_topic_specificity": 9,
+        "clarity_structure": 9,
+        "visual_explanation": 3,
+        "source_context_linking": 0
+      },
+      "decision": "keep",
+      "editorial_reason": "يجيب صراحة عن عدم إثبات إتاحة سيليريو زيرو رسميًا ويتجنب اختراع سعر أو استهلاك فعلي؛ يقدم فحص مستعمل وحدود القوة والشراء، لذا قصره ليس ضعفًا بذاته.",
+      "followup": "لا إعادة كتابة الآن؛ يتحسن بإضافة رابط قائمة وكيل سوزوكي المصرية وتاريخ التحديث عند التغيير."
+    },
+    {
+      "priority_rank": 19,
+      "id": 80488,
+      "slug": "%d8%b1%d8%b9%d8%b4%d8%a9-%d9%81%d9%8a-%d8%a7%d9%84%d9%85%d9%88%d8%aa%d9%88%d8%b1-%d9%88%d9%87%d9%88-%d9%88%d8%a7%d9%82%d9%81",
+      "title": "رعشة المحرك على السلانسيه: كيف تفرق بين Misfire وقواعد المحرك وتسريب الهواء؟",
+      "url": "https://a3tal.com/%d8%b1%d8%b9%d8%b4%d8%a9-%d9%81%d9%8a-%d8%a7%d9%84%d9%85%d9%88%d8%aa%d9%88%d8%b1-%d9%88%d9%87%d9%88-%d9%88%d8%a7%d9%82%d9%81/",
+      "inventory_words_at_prior_scan": 318,
+      "score": 84,
+      "rubric": {
+        "accuracy_safety": 24,
+        "reader_actionability": 24,
+        "search_intent": 15,
+        "model_topic_specificity": 10,
+        "clarity_structure": 8,
+        "visual_explanation": 3,
+        "source_context_linking": 0
+      },
+      "decision": "keep",
+      "editorial_reason": "تمييز عملي واضح بين Misfire وعدم استقرار RPM وبين قواعد محرك/اهتزاز ينتقل للمقصورة، مع Fuel Trim وSmoke Test وCompression وتسلسل اختبار منضبط.",
+      "followup": "محتوى مناسب لنية تشخيص محددة؛ لا تعديل إجباري. إضافة رسم تشخيص/روابط مصادر اختيارية مستقبلًا."
+    },
+    {
+      "priority_rank": 20,
+      "id": 80404,
+      "slug": "%d8%aa%d8%ba%d9%8a%d9%8a%d8%b1-%d8%b2%d9%8a%d8%aa-%d8%a7%d9%84%d9%81%d8%b1%d8%a7%d9%85%d9%84-%d8%aa%d9%86%d8%b8%d9%8a%d9%81-%d8%a7%d9%84%d8%af%d9%88%d8%b1%d8%a9",
+      "title": "زيت الفرامل: متى يتغير وما الفرق بين DOT 3 وDOT 4 وDOT 5.1؟",
+      "url": "https://a3tal.com/%d8%aa%d8%ba%d9%8a%d9%8a%d8%b1-%d8%b2%d9%8a%d8%aa-%d8%a7%d9%84%d9%81%d8%b1%d8%a7%d9%85%d9%84-%d8%aa%d9%86%d8%b8%d9%8a%d9%81-%d8%a7%d9%84%d8%af%d9%88%d8%b1%d8%a9/",
+      "inventory_words_at_prior_scan": 334,
+      "score": 84,
+      "rubric": {
+        "accuracy_safety": 24,
+        "reader_actionability": 23,
+        "search_intent": 15,
+        "model_topic_specificity": 9,
+        "clarity_structure": 9,
+        "visual_explanation": 4,
+        "source_context_linking": 0
+      },
+      "decision": "keep",
+      "editorial_reason": "شرح كيمياء DOT3/4/5.1 مقابل DOT5 والسيولة والرطوبة صحيح، وحذر من اختراع «30% زيادة قوة»، ويوضح ABS bleeding والحدود حسب دليل السيارة.",
+      "followup": "احتفاظ. يمكن لاحقًا إثراؤه بمصادر FMVSS/DOT وصورة أداء سائل الفرامل بدل إعادة كتابة كاملة."
+    },
+    {
+      "priority_rank": 21,
+      "id": 80321,
+      "slug": "vw-id4-crozz-2026-price-egypt",
+      "title": "Volkswagen ID.4 Crozz في مصر: النسخة الصينية والشحن والضمان قبل الشراء",
+      "url": "https://a3tal.com/vw-id4-crozz-2026-price-egypt/",
+      "inventory_words_at_prior_scan": 378,
+      "score": 77,
+      "rubric": {
+        "accuracy_safety": 23,
+        "reader_actionability": 19,
+        "search_intent": 14,
+        "model_topic_specificity": 9,
+        "clarity_structure": 9,
+        "visual_explanation": 3,
+        "source_context_linking": 0
+      },
+      "decision": "repair",
+      "editorial_reason": "يوضح اختلاف ID.4 Crozz الصينية ذات GB/T عن نسخ CCS2 ويمنع اختراع سعر رسمي ومدى فعلي، لكن دليل الشراء لا يحدد توافق محولات الشحن والسلامة/الضمان المصري بخطوات قابلة للتنفيذ أو مصدر مصنع مرتبط.",
+      "followup": "جدول فئات FAW-VW الفعلية ومنفذ AC/DC واشتراطات المحولات والفحص العالي الجهد، مع توثيق مصادر المصنع المصري/الصيني."
+    },
+    {
+      "priority_rank": 22,
+      "id": 83152,
+      "slug": "motorcycle-genuine-vs-aftermarket-parts",
+      "title": "قطع غيار الموتوسيكل: أصلي ولا Aftermarket ولا تجاري؟",
+      "url": "https://a3tal.com/motorcycle-genuine-vs-aftermarket-parts/",
+      "inventory_words_at_prior_scan": 388,
+      "score": 83,
+      "rubric": {
+        "accuracy_safety": 24,
+        "reader_actionability": 23,
+        "search_intent": 15,
+        "model_topic_specificity": 9,
+        "clarity_structure": 9,
+        "visual_explanation": 3,
+        "source_context_linking": 0
+      },
+      "decision": "keep",
+      "editorial_reason": "تمييز حقيقي بين Genuine وOEM وAftermarket وعدم مساواة كل البدائل بالمغشوش، وجدول تحقق بأرقام القطع والأبعاد مع أولوية الفرامل والتوجيه.",
+      "followup": "يفي بنية شراء قطع الغيار، لا تعديل إجباري. إضافة أمثلة قطع موزعين معتمدين عند الحاجة."
+    },
+    {
+      "priority_rank": 23,
+      "id": 80936,
+      "slug": "mitsubishi-xpander-fault-codes-dtc-guide",
+      "title": "أكواد أعطال ميتسوبيشي إكسباندر (DTC): دليل ترجمة لمبة الموتور وحل مشاكل الحساسات (الجزء الخامس)",
+      "url": "https://a3tal.com/mitsubishi-xpander-fault-codes-dtc-guide/",
+      "inventory_words_at_prior_scan": 352,
+      "score": 44,
+      "rubric": {
+        "accuracy_safety": 9,
+        "reader_actionability": 9,
+        "search_intent": 10,
+        "model_topic_specificity": 6,
+        "clarity_structure": 7,
+        "visual_explanation": 3,
+        "source_context_linking": 0
+      },
+      "decision": "repair",
+      "editorial_reason": "خلط تقني خطير: اختزل P0420 في منظف وقود، وP0171 في تنظيف MAF، ونسب C1201 إلى اتساخ حساس ABS دون تحديد وحدة الشركة، مع Reset ثابت 10000 كم ومواعيد بوجيهات دون دليل إكسباندر.",
+      "followup": "مراجعة عاجلة للرموز حسب Mitsubishi Xpander/محركها ووحدة الإصدار وإزالة توصيات التنظيف والمسح العشوائي؛ أولوية سلامة."
+    },
+    {
+      "priority_rank": 24,
+      "id": 80494,
+      "slug": "%d8%b5%d9%81%d9%8a%d8%b1-%d8%b3%d9%8a%d8%b1-%d8%a7%d9%84%d8%af%d9%8a%d9%86%d8%a7%d9%85%d9%88",
+      "title": "سير الدينامو بيصفر: الأسباب وفحص السير والشداد والبكرات",
+      "url": "https://a3tal.com/%d8%b5%d9%81%d9%8a%d8%b1-%d8%b3%d9%8a%d8%b1-%d8%a7%d9%84%d8%af%d9%8a%d9%86%d8%a7%d9%85%d9%88/",
+      "inventory_words_at_prior_scan": 351,
+      "score": 68,
+      "rubric": {
+        "accuracy_safety": 20,
+        "reader_actionability": 16,
+        "search_intent": 13,
+        "model_topic_specificity": 8,
+        "clarity_structure": 8,
+        "visual_explanation": 3,
+        "source_context_linking": 0
+      },
+      "decision": "repair",
+      "editorial_reason": "يرفض رش زيوت على السير ويفرق الشداد والبكرات، لكن جدول «الصوت صباحًا=تغيير السير» و«مع التكييف=شداد» يقفز للاستبدال دون اختبار، وفترة تغيير 60–80 ألف تُعرض كقاعدة عامة.",
+      "followup": "تحديد اختبار البكرات والشداد والقابض والسير بحسب التصميم وإلغاء الفترة الثابتة غير المسندة وتوضيح مخاطر قطع سير يدير طلمبة المياه."
+    },
+    {
+      "priority_rank": 25,
+      "id": 80923,
+      "slug": "mitsubishi-xpander-engine-performance-fuel-pump-faults",
+      "title": "أعطال محرك ميتسوبيشي إكسباندر: لغز طلمبة البنزين وضعف الأداء العائلي (الجزء الأول)",
+      "url": "https://a3tal.com/mitsubishi-xpander-engine-performance-fuel-pump-faults/",
+      "inventory_words_at_prior_scan": 400,
+      "score": 44,
+      "rubric": {
+        "accuracy_safety": 10,
+        "reader_actionability": 9,
+        "search_intent": 10,
+        "model_topic_specificity": 6,
+        "clarity_structure": 6,
+        "visual_explanation": 3,
+        "source_context_linking": 0
+      },
+      "decision": "repair",
+      "editorial_reason": "يدّعي أن طلمبة وقود إكسباندر عيب شهير واستدعاء عام دون رقم حملة/VIN أو بلد، مع استهلاك 5 لترات ومواعيد صيانة 5–7.5/40/60 ألف غير موثقة بحسب نسخة المصنع.",
+      "followup": "تدقيق نشرة ميتسوبيشي والاستدعاءات حسب VIN والسوق، إزالة تعميم الطلمبة والجداول غير المسندة وبناء تفريق قياسات ضغط وقود عن البطارية وCKP."
+    },
+    {
+      "priority_rank": 26,
+      "id": 80471,
+      "slug": "%d9%85%d9%83%d8%a7%d9%86-%d8%ad%d8%b3%d8%a7%d8%b3-%d8%a7%d9%84%d8%a7%d9%8a%d8%af%d9%84-%d9%88%d8%aa%d9%86%d8%b8%d9%8a%d9%81%d9%87",
+      "title": "حساس الأيدل IAC: مكانه وأعراض تلفه وطريقة تنظيفه",
+      "url": "https://a3tal.com/%d9%85%d9%83%d8%a7%d9%86-%d8%ad%d8%b3%d8%a7%d8%b3-%d8%a7%d9%84%d8%a7%d9%8a%d8%af%d9%84-%d9%88%d8%aa%d9%86%d8%b8%d9%8a%d9%81%d9%87/",
+      "inventory_words_at_prior_scan": 384,
+      "score": 65,
+      "rubric": {
+        "accuracy_safety": 18,
+        "reader_actionability": 16,
+        "search_intent": 13,
+        "model_topic_specificity": 8,
+        "clarity_structure": 7,
+        "visual_explanation": 3,
+        "source_context_linking": 0
+      },
+      "decision": "repair",
+      "editorial_reason": "شرح IAC التقليدي وموضعه وآلية التنظيف جيد في المحركات القديمة، لكن يعتبره «حساسًا» يوصى بتنظيفه دوريًا 30–40 ألفًا ويقترح فكّه، دون فصل صارم بين صمام IAC مستقل والبوابة الإلكترونية التي قد لا تتضمن صمامًا قابلًا للفك.",
+      "followup": "تصحيح تسمية الصمام ووظيفة الثروتل الحديث حسب رقم المحرك، الحذر من الفك اليدوي والـRelearn وتجنب دورية غير موثقة."
+    },
+    {
+      "priority_rank": 27,
+      "id": 80325,
+      "slug": "jetour-t2-2026-price-egypt-review",
+      "title": "جيتور T2 في مصر: الأسعار الحالية والمواصفات وما يجب معرفته قبل الشراء",
+      "url": "https://a3tal.com/jetour-t2-2026-price-egypt-review/",
+      "inventory_words_at_prior_scan": 383,
+      "score": 95,
+      "rubric": {
+        "accuracy_safety": 24,
+        "reader_actionability": 24,
+        "search_intent": 15,
+        "model_topic_specificity": 10,
+        "clarity_structure": 9,
+        "visual_explanation": 8,
+        "source_context_linking": 5
+      },
+      "decision": "keep",
+      "editorial_reason": "النسخة الحية موسوعية بالفعل بنحو 2446 كلمة، تفصل T2 البنزين 1.5 و2.0 XWD وT2 i-DM وتراجع تناقضات مدى المصنع وبروشور الوكيل وتسعير 2027 ومصادر سوق فعلية. الجرد القديم سجّل 383 كلمة فقط.",
+      "followup": "لا تعديل. راقب تحديث التسعير وتوافر الفئات، ولا تخلط عدد الكلمات القديم بالجديد."
+    },
+    {
+      "priority_rank": 28,
+      "id": 83156,
+      "slug": "new-motorcycle-delivery-checklist",
+      "title": "Checklist استلام موتوسيكل زيرو من المعرض",
+      "url": "https://a3tal.com/new-motorcycle-delivery-checklist/",
+      "inventory_words_at_prior_scan": 416,
+      "score": 84,
+      "rubric": {
+        "accuracy_safety": 24,
+        "reader_actionability": 24,
+        "search_intent": 15,
+        "model_topic_specificity": 9,
+        "clarity_structure": 9,
+        "visual_explanation": 3,
+        "source_context_linking": 0
+      },
+      "decision": "keep",
+      "editorial_reason": "قائمة فحص استلام زيرو محددة عمليًا: شاسيه/محرك/مستندات وABS وفرامل وعداد وأوراق وضرر النقل، مع تعليمات عدم توقيع الاستلام عند الاختلاف.",
+      "followup": "احتفاظ. يمكن لاحقًا تقديم نسخة PDF للطباعة، لكن المحتوى الحالي يجيب عن الطلب."
+    },
+    {
+      "priority_rank": 29,
+      "id": 83153,
+      "slug": "delivery-motorcycle-buying-guide",
+      "title": "اختيار موتوسيكل للدليفري: احسب التشغيل قبل سعر الشراء",
+      "url": "https://a3tal.com/delivery-motorcycle-buying-guide/",
+      "inventory_words_at_prior_scan": 420,
+      "score": 83,
+      "rubric": {
+        "accuracy_safety": 24,
+        "reader_actionability": 23,
+        "search_intent": 15,
+        "model_topic_specificity": 9,
+        "clarity_structure": 9,
+        "visual_explanation": 3,
+        "source_context_linking": 0
+      },
+      "decision": "keep",
+      "editorial_reason": "يغطي تكلفة التشغيل الكلية للدليفري والحمولة والتثبيت والطرق والوقت الضائع والضمان ومقارنة السكوتر واليدوي؛ لا يسمي سعة موتور واحدة للجميع.",
+      "followup": "احتفاظ. تحسين اختياري بأمثلة أسعار فعلية عند توفر مصدر وتاريخ."
+    },
+    {
+      "priority_rank": 30,
+      "id": 79862,
+      "slug": "%d9%85%d8%b1%d8%a7%d8%ac%d8%b9%d8%a9-byd-seal-%d9%87%d9%84-%d9%82%d8%aa%d9%84%d8%aa-%d9%82%d8%a7%d8%aa%d9%84%d8%a9-%d8%aa%d8%b3%d9%84%d8%a7-%d9%87%d9%8a%d9%85%d9%86%d8%a9-%d9%85%d9%88%d8%af%d9%8a",
+      "title": "BYD Seal: المواصفات والمدى وهل تُباع رسميًا في مصر؟",
+      "url": "https://a3tal.com/%d9%85%d8%b1%d8%a7%d8%ac%d8%b9%d8%a9-byd-seal-%d9%87%d9%84-%d9%82%d8%aa%d9%84%d8%aa-%d9%82%d8%a7%d8%aa%d9%84%d8%a9-%d8%aa%d8%b3%d9%84%d8%a7-%d9%87%d9%8a%d9%85%d9%86%d8%a9-%d9%85%d9%88%d8%af%d9%8a/",
+      "inventory_words_at_prior_scan": 422,
+      "score": 82,
+      "rubric": {
+        "accuracy_safety": 23,
+        "reader_actionability": 23,
+        "search_intent": 15,
+        "model_topic_specificity": 9,
+        "clarity_structure": 9,
+        "visual_explanation": 3,
+        "source_context_linking": 0
+      },
+      "decision": "keep",
+      "editorial_reason": "يوضح أن إتاحة BYD Seal رسميًا في مصر تحتاج تحققًا، ويفرق WLTP عن CLTC وBlade Battery وCell-to-Body، ويتجنب لقب قاتلة تسلا كحكم موضوعي؛ نية السؤال الحالية مُجابة.",
+      "followup": "احتفاظ الآن. متابعة التشكيلة الرسمية ووثيقة BYD الخاصة بمصر إذا تغيرت إتاحة Seal."
+    }
+  ],
+  "counts": {
+    "reviewed": 20,
+    "needs_repair": 10,
+    "keep": 10
+  },
+  "wordPressEdits": false
+}
