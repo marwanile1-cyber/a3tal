@@ -804,3 +804,59 @@ add_filter('the_content', static function($html) {
   }
   return $section.$html;
 }, 76);
+
+
+/**
+ * A3TAL-VERIFIED-BRAND-SERVICE-JOURNEYS-20261020
+ * Connect actual vehicle detail pages to existing, published booking guides.
+ * Brand-level link only; never claim a specific branch or trim is supported.
+ */
+add_filter('the_content', static function($html) {
+  if (!is_singular('a3_car') || !in_the_loop() || !is_main_query()) return $html;
+  if (strpos($html, 'a3tal-brand-service-journey') !== false) return $html;
+  $id = (int)get_the_ID();
+  if (!$id) return $html;
+  $names = function_exists('a3g_term_names') ? a3g_term_names($id, 'a3_brand') : [];
+  if (!$names) return $html;
+  $key = '';
+  $aliases = [
+    'kia' => ['kia','كيا'],
+    'hyundai' => ['hyundai','هيونداي'],
+    'toyota' => ['toyota','تويوتا'],
+    'chevrolet' => ['chevrolet','شيفروليه'],
+    'opel' => ['opel','أوبل','اوبل'],
+    'renault' => ['renault','رينو'],
+    'geely' => ['geely','جيلي'],
+    'skoda' => ['skoda','سكودا'],
+  ];
+  foreach ($names as $name) {
+    $normal = function_exists('mb_strtolower') ? mb_strtolower(trim($name),'UTF-8') : strtolower(trim($name));
+    foreach ($aliases as $kind => $variants) {
+      if (in_array($normal, $variants, true)) { $key = $kind; break 2; }
+    }
+  }
+  if ($key === '') return $html;
+  // URLs verified against their published, brand-specific editorial guides.
+  $guide_slugs = [
+    'kia' => 'kia-egypt-service-centers-locations-booking',
+    'hyundai' => rawurldecode('%D8%AD%D8%AC%D8%B2-%D8%B5%D9%8A%D8%A7%D9%86%D8%A9-%D9%87%D9%8A%D9%88%D9%86%D8%AF%D8%A7%D9%8A-%D9%81%D9%8A-%D9%85%D8%B5%D8%B1-%D9%83%D9%84-%D8%A7%D9%84%D9%85%D8%B1%D8%A7%D9%83%D8%B2-%D9%88%D8%A3%D8%B1'),
+    'toyota' => 'toyota-egypt-maintenance-booking-guide',
+    'chevrolet' => 'mansour-chevrolet-maintenance-booking-numbers-branches',
+    'opel' => 'opel-egypt-service-centers-parts-guide',
+    'renault' => 'renault-egypt-maintenance-booking-centers-locations',
+    'geely' => 'geely-egypt-service-centers-hotline-ex2',
+    'skoda' => 'skoda-egypt-service-centers-locations',
+  ];
+  $guide = get_page_by_path($guide_slugs[$key], OBJECT, 'post');
+  if (!($guide instanceof WP_Post) || $guide->post_status !== 'publish') return $html;
+  $url = get_permalink($guide);
+  if (!$url || strpos($html, $url) !== false) return $html;
+  $name = trim((string)$names[0]);
+  $aside = '<aside class="a3tal-brand-service-journey" aria-label="دليل الصيانة والحجز"'
+    .' style="margin:22px 0;padding:18px;border:1px solid #d6e3ed;border-radius:13px;background:#f7fafc">'
+    .'<h2 style="font-size:1.15em;margin:0 0 8px">مراكز خدمة '.esc_html($name).' وحجز الصيانة</h2>'
+    .'<p style="margin:0 0 10px">للتواصل والحجز، راجع الدليل المنشور الخاص بالعلامة في مصر. هذه معلومات عن شبكة الخدمة، ولا تعني أن كل فرع يستقبل هذا الموديل أو ينفذ كل أنواع الإصلاح.</p>'
+    .'<p style="margin:0"><a href="'.esc_url($url).'">'.esc_html(get_the_title($guide)).' ←</a></p>'
+    .'</aside>';
+  return $html.$aside;
+}, 82);
