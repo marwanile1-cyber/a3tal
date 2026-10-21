@@ -1,0 +1,36 @@
+name: Publish verified Kia, independent electricians and Cairo showrooms Oct21
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/publish-service-dealers-batch-20261021.py'
+      - 'data/editorial/service-dealers-20261021/**'
+      - '.github/workflows/publish-service-dealers-batch-20261021.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-service-dealers-20261021
+  cancel-in-progress: false
+jobs:
+  publish-enriched:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install photo processing dependency
+        run: |
+          set -euo pipefail
+          python3 -m pip install --user --quiet Pillow
+      - name: Validate all three editorial articles
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-service-dealers-batch-20261021.py
+          test -s data/editorial/service-dealers-20261021/kia-authorized-new-cairo-katameya.html
+          test -s data/editorial/service-dealers-20261021/independent-car-electricians-nasr-city.html
+          test -s data/editorial/service-dealers-20261021/new-cairo-fifth-settlement-dealers.html
+      - name: Publish three unique articles, two real CC photos each, verify production
+        run: python3 -u scripts/publish-service-dealers-batch-20261021.py
