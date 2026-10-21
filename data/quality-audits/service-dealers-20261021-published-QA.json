@@ -1,0 +1,50 @@
+{
+  "date": "2026-10-21",
+  "scope": "Three NEW, nonduplicate published SEO articles in service centers and car showrooms, verified after publish and cache flush.",
+  "workflow": "https://github.com/marwanile1-cyber/a3tal/actions/runs/39676746462",
+  "cache_workflow": "https://github.com/marwanile1-cyber/a3tal/actions/runs/39677004027",
+  "note": "Authoritative branch locators vs independent listings: Kia official manufacturer, independent businesses local listings only, Fifth Settlement Yellow Pages business listings; no invented official accreditation.",
+  "articles": [
+    {
+      "id": 84447,
+      "url": "https://a3tal.com/kia-authorized-service-new-cairo-katameya-madinaty/",
+      "category_id": 33,
+      "word_count_live_WP": 1729,
+      "featured_media_id": 84448,
+      "featured_webp": "https://a3tal.com/wp-content/uploads/2026/10/a3tal-authorized_hero-real-photograph-20261020-1.webp",
+      "inline_webp": "https://a3tal.com/wp-content/uploads/2026/10/a3tal-authorized_detail-real-photograph-20261020-1.webp",
+      "official_sources": [
+        "https://www.kia.com.eg/ar/dealers"
+      ]
+    },
+    {
+      "id": 84451,
+      "url": "https://a3tal.com/independent-car-electrician-workshops-nasr-city-cairo/",
+      "category_id": 33,
+      "word_count_live_WP": 1905,
+      "featured_media_id": 84452,
+      "featured_webp": "https://a3tal.com/wp-content/uploads/2026/10/a3tal-independent_hero-real-photograph-20261020-1.webp",
+      "inline_webp": "https://a3tal.com/wp-content/uploads/2026/10/a3tal-independent_detail-real-photograph-20261020-1.webp",
+      "official_sources": [],
+      "business_sources": "Structured local place directory; no manufacturer accreditation claimed"
+    },
+    {
+      "id": 84455,
+      "url": "https://a3tal.com/fifth-settlement-new-cairo-car-showrooms-dealers-guide/",
+      "category_id": 2998,
+      "word_count_live_WP": 1783,
+      "featured_media_id": 84456,
+      "featured_webp": "https://a3tal.com/wp-content/uploads/2026/10/a3tal-showroom_hero-real-photograph-20261020-1.webp",
+      "inline_webp": "https://a3tal.com/wp-content/uploads/2026/10/a3tal-showroom_detail-real-photograph-20261020-1.webp",
+      "official_sources": [
+        "https://yellowpages.com.eg/ar/category/القاهرة-الجديدة-معارض-سيارات-جديدة/3258"
+      ]
+    }
+  ],
+  "QA": [
+    "All pages publish and have index/follow + self-referential canonical, not a claim of Google index inclusion.",
+    "Two genuine distinct Commons CC-BY-SA 4.0 photographs per page, self-hosted as WebP, in-post author and license credits; photographs are outside Egypt and NOT pictures of the named businesses.",
+    "Six photos successfully verified by GitHub deploy and live HTML review.",
+    "New links confirmed from both /service-centers/ and /car-showrooms/ after cache refresh."
+  ]
+}
