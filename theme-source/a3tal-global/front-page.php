@@ -11,10 +11,24 @@ $reviews=a3g_query(['category__in'=>[22,21],'posts_per_page'=>3]);
 $faults=a3g_query(['category__in'=>[8,13,2,18],'posts_per_page'=>4]);
 $news=a3g_query(['posts_per_page'=>4]);
 
+/* A3TAL-HOME-RECENT-VEHICLES-AND-ARTICLES-20261022
+ * Vehicle entities are NOT the same as editorial buying guides. Show both,
+ * label them separately, and sort actual car profiles by their last update.
+ * New category-374 prices and category-22 reviews appear automatically. */
 $cars=new WP_Query([
   'post_type'=>'a3_car',
   'post_status'=>'publish',
   'posts_per_page'=>6,
+  'orderby'=>'modified',
+  'order'=>'DESC',
+  'ignore_sticky_posts'=>true,
+  'no_found_rows'=>true,
+]);
+$car_editorials=new WP_Query([
+  'post_type'=>'post',
+  'post_status'=>'publish',
+  'category__in'=>[374,22,21],
+  'posts_per_page'=>4,
   'orderby'=>'date',
   'order'=>'DESC',
   'ignore_sticky_posts'=>true,
@@ -86,20 +100,47 @@ $showrooms=new WP_Query(['post_type'=>'a3_showroom','post_status'=>'publish','po
   </div>
 </section>
 
-<?php if($cars->have_posts()): ?>
-<section class="g-section g-home-cars-section">
+<?php if($cars->have_posts() || $car_editorials->have_posts()): ?>
+<section class="g-section g-home-cars-section" aria-labelledby="g-home-cars-heading">
   <div class="g-wrap">
     <div class="g-section-head">
       <div>
         <span>A3TAL CARS DATABASE</span>
-        <h2>سيارات مضافة حديثًا</h2>
-        <p>سعر ومواصفات أساسية موثقة لكل موديل، مع رابط للمراجعة الكاملة والتفاصيل قبل الشراء.</p>
+        <h2 id="g-home-cars-heading">جديد السيارات على أعطال</h2>
+        <p>أحدث مقالات الأسعار والمراجعات، وملفات الموديلات المضافة أو المحدثة في الموسوعة. كل نوع موضح بصورة مستقلة.</p>
       </div>
-      <a href="<?php echo esc_url(a3g_platform_link('a3_car','/cars/')); ?>">عرض كل السيارات</a>
+      <a href="<?php echo esc_url(a3g_platform_link('a3_car','/cars/')); ?>">عرض موسوعة السيارات</a>
     </div>
-    <div class="g-platform-grid g-home-car-grid">
-      <?php while($cars->have_posts()):$cars->the_post();a3g_platform_card();endwhile;wp_reset_postdata(); ?>
+
+    <?php if($car_editorials->have_posts()): ?>
+    <div class="g-home-cars-editorials" aria-labelledby="g-home-cars-editorials-heading">
+      <div class="g-home-cars-subhead">
+        <div>
+          <h3 id="g-home-cars-editorials-heading">أحدث الأسعار والمراجعات</h3>
+          <p>مقالات جديدة تنضاف تلقائيًا مع النشر، مش موديلات جديدة في قاعدة البيانات.</p>
+        </div>
+        <a href="<?php echo esc_url(a3g_cat_link(374)); ?>">كل أسعار السيارات</a>
+      </div>
+      <div class="g-news-grid g-home-car-editorial-grid">
+        <?php while($car_editorials->have_posts()):$car_editorials->the_post();a3g_card(get_the_ID(),'g-home-car-editorial-card');endwhile;wp_reset_postdata(); ?>
+      </div>
     </div>
+    <?php endif; ?>
+
+    <?php if($cars->have_posts()): ?>
+    <div class="g-home-cars-profiles" aria-labelledby="g-home-cars-profiles-heading">
+      <div class="g-home-cars-subhead">
+        <div>
+          <h3 id="g-home-cars-profiles-heading">سيارات مضافة أو محدثة حديثًا</h3>
+          <p>ملفات موديلات مستقلة ببيانات الأسعار والمواصفات والروابط الخاصة بكل سيارة.</p>
+        </div>
+        <a href="<?php echo esc_url(a3g_platform_link('a3_car','/cars/')); ?>">كل الموديلات</a>
+      </div>
+      <div class="g-platform-grid g-home-car-grid">
+        <?php while($cars->have_posts()):$cars->the_post();a3g_platform_card();endwhile;wp_reset_postdata(); ?>
+      </div>
+    </div>
+    <?php endif; ?>
   </div>
 </section>
 <?php endif; ?>
