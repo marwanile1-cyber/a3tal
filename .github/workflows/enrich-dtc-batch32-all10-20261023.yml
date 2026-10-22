@@ -1,0 +1,36 @@
+name: Publish encyclopedic quality updates on existing batch32 DTC pages
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/enrich-dtc-batch32-all10-20261023.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  in-place-editorial-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate ten DTC diagnostics before WordPress edits
+        run: |
+          python3 -m py_compile scripts/enrich-dtc-batch32-all10-20261023.py
+          python3 - <<'PY'
+          import json,re
+          roster='P0345 P0742 P0868 U0194 U0422 U0418 C0072 C0071 B1443 B1446'.split()
+          for code in roster:
+              p='data/dtc-batch32-enrichment-'+code.lower()+'-20261023.json'
+              j=json.load(open(p,encoding='utf-8'))
+              words=len(re.sub(r'<[^>]+>',' ',j['html']).split())
+              assert j['batch']==32 and j['code']==code and words>=800,(code,words)
+              assert 'data-a3tal-batch32="'+code+'"' in j['html']
+              print('CODE32_ORIGINAL_DIAGNOSTIC_QA',code,words)
+          PY
+      - name: Revision-guarded updates to ten existing posts only, confirm final >=1500 words
+        run: python3 -u scripts/enrich-dtc-batch32-all10-20261023.py
