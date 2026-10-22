@@ -1125,3 +1125,18 @@ html,body{max-width:100%;overflow-x:hidden}
   .a3tal-chooser-vehicle-card { transition: none; }
   .a3tal-chooser-vehicle-card:hover { transform: none; }
 }
+
+/* A3TAL-HOME-CAR-EDITORIAL-FEED-20261022 */
+.g-home-cars-section .g-home-cars-subhead{display:flex;align-items:end;justify-content:space-between;gap:16px;margin:23px 0 13px}
+.g-home-cars-section .g-home-cars-subhead h3{font-family:"Alexandria",sans-serif;font-size:18px;font-weight:800;line-height:1.5;color:#142739;margin:0}
+.g-home-cars-section .g-home-cars-subhead p{font-size:12px;color:#65758a;margin:5px 0 0;line-height:1.8}
+.g-home-cars-section .g-home-cars-subhead a{flex-shrink:0;color:var(--g-blue,#1466aa);font-size:12px;font-weight:800;text-decoration:none}
+.g-home-cars-section .g-home-cars-profiles{margin-top:25px;padding-top:4px;border-top:1px solid #e3eaf2}
+.g-home-cars-section .g-home-car-editorial-card .g-card-tag{display:inline-flex}
+@media(max-width:860px){
+ .g-home-cars-section .g-home-cars-subhead{align-items:start;gap:8px}
+ .g-home-cars-section .g-home-cars-subhead h3{font-size:15px}
+ .g-home-cars-section .g-home-cars-subhead p{font-size:11px}
+ .g-home-cars-section .g-home-cars-subhead a{font-size:10px;white-space:normal;text-align:start}
+ .g-home-cars-section .g-home-cars-profiles{margin-top:18px}
+}
