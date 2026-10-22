@@ -1,0 +1,33 @@
+name: Fix only Yoast meta descriptions on 10 existing DTC batch30 posts
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/finish-dtc-batch30-yoast-20261022.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  seo-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate SEO descriptions and guarded script
+        run: |
+          python3 -m py_compile scripts/finish-dtc-batch30-yoast-20261022.py
+          python3 - <<'PY'
+          import json
+          x=json.load(open('data/dtc-batch30-yoast-metadesc-20261022.json',encoding='utf8'))
+          assert x['batch']==30 and len(x['descriptions'])==10
+          for code,d in x['descriptions'].items():
+              assert code in d and 105<=len(d)<=160
+          print('TEN_UNIQUE_META_DESCRIPTIONS_VALIDATED')
+          PY
+      - name: Update descriptions only through revision-guarded A3tal Bridge
+        run: python3 -u scripts/finish-dtc-batch30-yoast-20261022.py
