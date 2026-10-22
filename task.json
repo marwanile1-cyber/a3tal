@@ -1,6 +1,32 @@
 {
-  "deployment_tag": "oct22-five-published-service-showroom-cache-refresh",
+  "deployment_tag": "evergreen-car-headlines-20261022-keep-original-urls",
   "requests": [
+    {
+      "method": "POST",
+      "path": "/update-post",
+      "body": {
+        "id": 84479,
+        "expected_modified_gmt": "2026-10-22T10:51:39+00:00",
+        "title": "سعر شانجان إيدو بلس في مصر: الفئات والفرق بين الأسعار",
+        "meta": {
+          "_yoast_wpseo_title": "سعر شانجان إيدو بلس في مصر | الفئات والفرق بين الأسعار",
+          "_yoast_wpseo_metadesc": "أسعار شانجان إيدو بلس في مصر وفروق Elite وPremium وFlagship، محرك 1.5 تيربو و7DCT، مع تاريخ قوائم الأسعار واختلاف السعر المعلن بين المصادر."
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/update-post",
+      "body": {
+        "id": 84483,
+        "expected_modified_gmt": "2026-10-22T10:51:48+00:00",
+        "title": "مراجعة سوزوكي ديزاير في مصر: المحرك والفتيس والمميزات والعيوب",
+        "meta": {
+          "_yoast_wpseo_title": "مراجعة سوزوكي ديزاير في مصر | المميزات والعيوب",
+          "_yoast_wpseo_metadesc": "مراجعة سوزوكي ديزاير الجديدة في مصر: محرك 1.2 ثلاثي الأسطوانات وناقل الحركة والأمان والتجهيزات والسعر، وأسئلة مهمة قبل الشراء."
+        }
+      }
+    },
     {
       "method": "POST",
       "path": "/admin",
@@ -11,17 +37,11 @@
       }
     }
   ],
-  "verify": [],
   "network_diagnostics": {
-    "enabled": true,
-    "rounds": 1,
-    "paths": [
-      "/",
-      "/service-centers/",
-      "/car-showrooms/"
-    ]
+    "enabled": false
   },
   "public_verify": [
-    "موسوعة أعطال السيارات وأكواد التشخيص والأسعار ومراكز الصيانة"
+    "سعر شانجان إيدو بلس في مصر: الفئات والفرق بين الأسعار",
+    "مراجعة سوزوكي ديزاير في مصر: المحرك والفتيس والمميزات والعيوب"
   ]
 }
