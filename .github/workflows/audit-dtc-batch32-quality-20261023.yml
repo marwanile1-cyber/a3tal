@@ -1,0 +1,24 @@
+name: Read only existing DTC batch32 live quality audit
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/audit-dtc-batch32-quality-20261023.yml
+      - scripts/audit-dtc-batch32-quality-20261023.py
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read ten existing public code pages without publication
+        run: python3 -u scripts/audit-dtc-batch32-quality-20261023.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: batch32-readonly-before-publishing
+          path: dtc-batch32-live-quality-report.json
+          if-no-files-found: warn
