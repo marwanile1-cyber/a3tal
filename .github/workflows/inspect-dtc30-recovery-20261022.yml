@@ -1,0 +1,19 @@
+name: Read only recovery inspection of existing batch30 post content
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/inspect-dtc30-recovery-20261022.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read exact seven private posts without mutations
+        run: python3 -u scripts/inspect-dtc30-recovery-20261022.py
