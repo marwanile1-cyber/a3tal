@@ -53,9 +53,10 @@ $showrooms=new WP_Query(['post_type'=>'a3_showroom','post_status'=>'publish','po
 ?>
 <main class="g-home g-home-platform">
 
-<section class="g-hero-section g-platform-home-hero">
+<!-- A3TAL-EXPERIENCE-V3-20261022: editorial-first, fast, accessible homepage hero -->
+<section class="g-hero-section g-platform-home-hero g-v3-intro" aria-labelledby="g-v3-main-title">
   <div class="g-wrap">
-    <div class="g-hero g-hero-platform">
+    <div class="g-hero g-hero-platform g-v3-hero">
       <?php if($hero_img_id): ?>
         <?php echo wp_get_attachment_image($hero_img_id,'large',false,[
           'class'=>'g-hero-bg',
@@ -66,36 +67,63 @@ $showrooms=new WP_Query(['post_type'=>'a3_showroom','post_status'=>'publish','po
           'sizes'=>'(max-width: 767px) 100vw, (max-width: 1280px) 92vw, 1240px',
         ]); ?>
       <?php endif; ?>
-      <div class="g-hero-content">
-        <span class="g-hero-eyebrow">A3TAL AUTOMOTIVE PLATFORM</span>
-        <h1>موسوعة أعطال السيارات وأكواد التشخيص والأسعار ومراكز الصيانة</h1>
-        <p>اكتشف كل ما تحتاج معرفته عن سيارتك في مكان واحد. تعرّف على أعطال السيارات وأسبابها وطرق إصلاحها، وافهم أكواد الأعطال OBD-II، واستكشف أسعار السيارات ومواصفاتها ومقارناتها، مع دليل مراكز الصيانة والخدمة لمساعدتك على التشخيص الصحيح واتخاذ القرار بثقة.</p>
-
-        <form class="g-hero-search g-universal-search" method="get" action="<?php echo esc_url(home_url('/')); ?>">
-          <div class="g-search-field"><?php echo a3g_icon('search'); ?><input type="search" name="s" placeholder="ابحث عن سيارة، سعر، عطل، كود P0420، قطعة غيار أو مركز خدمة..." aria-label="بحث شامل"></div>
-          <button type="submit" aria-label="البحث في موقع أعطال.كوم"><?php echo a3g_icon('search'); ?><span>بحث</span></button>
-        </form>
-
-        <div class="g-hero-action-row">
-          <a href="<?php echo esc_url(a3g_platform_link('a3_car','/cars/')); ?>"><?php echo a3g_icon('car'); ?><span><b>ابحث عن سيارة</b><small>أسعار ومواصفات ومراجعات</small></span></a>
-          <a href="<?php echo esc_url(a3g_platform_link('a3_motorcycle','/motorcycles/')); ?>"><?php echo a3g_icon('motorcycle'); ?><span><b>الموتوسيكلات</b><small>سكوتر وموتوسيكل ومقارنات</small></span></a>
-          <a href="<?php echo esc_url(a3g_platform_link('a3_dtc','/dtc/')); ?>"><?php echo a3g_icon('gear'); ?><span><b>فسّر كود عطل</b><small>مرجع DTC عربي</small></span></a>
-          <a href="<?php echo esc_url(home_url('/my-garage/')); ?>"><?php echo a3g_icon('car'); ?><span><b>سيارتي</b><small>الصيانة والعداد والسجل</small></span></a>
+      <div class="g-v3-hero-inner">
+        <div class="g-hero-content g-v3-hero-copy">
+          <span class="g-hero-eyebrow"><i aria-hidden="true"></i> A3TAL | موسوعة السيارات</span>
+          <h1 id="g-v3-main-title">كل ما تحتاجه عن <span>سيارتك، في مكان واحد.</span></h1>
+          <p class="g-v3-hero-lead">شخّص أعطال السيارات، افهم الأكواد، قارن الأسعار والمراجعات، ووصل لمراكز الخدمة وقطع الغيار. معلومات مترابطة بدل البحث من أول وجديد.</p>
+          <form class="g-hero-search g-universal-search g-v3-search" role="search" method="get" action="<?php echo esc_url(home_url('/')); ?>">
+            <label class="g-search-field" for="g-v3-site-search"><?php echo a3g_icon('search'); ?><input id="g-v3-site-search" type="search" name="s" autocomplete="off" placeholder="اكتب موديل سيارة، سعر، عطل، كود P0420..." aria-label="ابحث عن سيارة أو سعر أو عطل"></label>
+            <button type="submit"><?php echo a3g_icon('search'); ?><span>ابحث</span></button>
+          </form>
+          <div class="g-v3-search-examples" aria-label="عمليات بحث شائعة">
+            <span>ابدأ مثلًا بـ</span>
+            <a href="<?php echo esc_url(add_query_arg('s','P0420',home_url('/'))); ?>">P0420</a>
+            <a href="<?php echo esc_url(add_query_arg('s','بطارية السيارة',home_url('/'))); ?>">البطارية</a>
+            <a href="<?php echo esc_url(a3g_cat_link(374)); ?>">أسعار السيارات</a>
+          </div>
         </div>
+        <aside class="g-v3-hero-journeys" aria-label="اختر ما تبحث عنه">
+          <div class="g-v3-journeys-title"><span>اختر وجهتك</span><strong>ابدأ من هنا</strong></div>
+          <a class="g-v3-journey" href="<?php echo esc_url(a3g_cat_link(8)); ?>">
+            <span class="g-v3-journey-icon"><?php echo a3g_icon('wrench'); ?></span>
+            <span class="g-v3-journey-copy"><b>شخّص عطل العربية</b><small>الأعراض والأسباب وخطوات الفحص</small></span>
+            <span class="g-v3-journey-arrow" aria-hidden="true">←</span>
+          </a>
+          <a class="g-v3-journey" href="<?php echo esc_url(a3g_cat_link(374)); ?>">
+            <span class="g-v3-journey-icon"><?php echo a3g_icon('tag'); ?></span>
+            <span class="g-v3-journey-copy"><b>اعرف سعر عربية</b><small>الفئات والمواصفات والمقارنات</small></span>
+            <span class="g-v3-journey-arrow" aria-hidden="true">←</span>
+          </a>
+          <a class="g-v3-journey" href="<?php echo esc_url(a3g_platform_link('a3_car','/cars/')); ?>">
+            <span class="g-v3-journey-icon"><?php echo a3g_icon('car'); ?></span>
+            <span class="g-v3-journey-copy"><b>اختار سيارتك</b><small>كل ما يخص الموديل في ملف واحد</small></span>
+            <span class="g-v3-journey-arrow" aria-hidden="true">←</span>
+          </a>
+          <div class="g-v3-journeys-foot">
+            <a href="<?php echo esc_url(a3g_platform_link('a3_dtc','/dtc/')); ?>">مكتبة أكواد DTC <?php echo a3g_icon('gear'); ?></a>
+            <a href="<?php echo esc_url(home_url('/my-garage/')); ?>">جراجي <?php echo a3g_icon('car'); ?></a>
+          </div>
+        </aside>
       </div>
     </div>
-
-    <div class="g-platform-launcher">
-      <a href="<?php echo esc_url(a3g_platform_link('a3_car','/cars/')); ?>"><span class="g-launch-icon"><?php echo a3g_icon('car'); ?></span><b>السيارات</b><small>الموديلات والأسعار</small></a>
-      <a href="<?php echo esc_url(a3g_platform_link('a3_motorcycle','/motorcycles/')); ?>"><span class="g-launch-icon"><?php echo a3g_icon('motorcycle'); ?></span><b>الموتوسيكلات</b><small>السكوتر والموتوسيكل</small></a>
-      <a href="<?php echo esc_url(a3g_platform_link('a3_dtc','/dtc/')); ?>"><span class="g-launch-icon"><?php echo a3g_icon('warning'); ?></span><b>أكواد الأعطال</b><small>P / B / C / U</small></a>
-      <a href="<?php echo esc_url(a3g_cat_link(8)); ?>"><span class="g-launch-icon"><?php echo a3g_icon('brain'); ?></span><b>تشخيص الأعطال</b><small>الأعراض والحلول</small></a>
-      <a href="<?php echo esc_url(a3g_platform_link('a3_maintenance_plan','/maintenance-schedules/')); ?>"><span class="g-launch-icon"><?php echo a3g_icon('calendar'); ?></span><b>جداول الصيانة</b><small>حسب الموديل والعداد</small></a>
-      <a href="<?php echo esc_url(a3g_platform_link('a3_part','/parts/')); ?>"><span class="g-launch-icon"><?php echo a3g_icon('gear'); ?></span><b>قطع الغيار</b><small>OEM وAftermarket</small></a>
-      <a href="<?php echo esc_url(a3g_platform_link('a3_service_center','/service-centers/')); ?>"><span class="g-launch-icon"><?php echo a3g_icon('wrench'); ?></span><b>مراكز الخدمة</b><small>معتمد وموثّق ومستقل</small></a>
-      <a href="<?php echo esc_url(a3g_platform_link('a3_showroom','/car-showrooms/')); ?>"><span class="g-launch-icon"><?php echo a3g_icon('store'); ?></span><b>معارض السيارات</b><small>رسمي وموثّق وخاص</small></a>
-      <a href="<?php echo esc_url(a3g_platform_link('a3_listing','/cars-for-sale/')); ?>"><span class="g-launch-icon"><?php echo a3g_icon('tag'); ?></span><b>سوق السيارات</b><small>بيع وشراء المستعمل</small></a>
-      <a href="<?php echo esc_url(a3g_cat_link(21)); ?>"><span class="g-launch-icon"><?php echo a3g_icon('compare'); ?></span><b>المقارنات</b><small>مقارنات منشورة قبل الشراء</small></a>
+    <div class="g-v3-explorer" aria-label="استكشف أقسام أعطال">
+      <div class="g-v3-explorer-head">
+        <div><span>اكتشف المزيد</span><h2>كل خدمات السيارات بين إيديك</h2></div>
+        <span class="g-v3-explorer-note">من أول المعلومة لحد الصيانة والشراء</span>
+      </div>
+      <nav class="g-platform-launcher g-v3-launcher" aria-label="أقسام موسوعة أعطال">
+        <a href="<?php echo esc_url(a3g_platform_link('a3_car','/cars/')); ?>"><span class="g-launch-icon"><?php echo a3g_icon('car'); ?></span><b>موسوعة السيارات</b><small>الموديلات والمواصفات</small></a>
+        <a href="<?php echo esc_url(a3g_platform_link('a3_dtc','/dtc/')); ?>"><span class="g-launch-icon"><?php echo a3g_icon('warning'); ?></span><b>أكواد الأعطال</b><small>معنى الكود والتشخيص</small></a>
+        <a href="<?php echo esc_url(a3g_platform_link('a3_motorcycle','/motorcycles/')); ?>"><span class="g-launch-icon"><?php echo a3g_icon('motorcycle'); ?></span><b>الموتوسيكلات</b><small>الموديلات والأعطال</small></a>
+        <a href="<?php echo esc_url(a3g_platform_link('a3_service_center','/service-centers/')); ?>"><span class="g-launch-icon"><?php echo a3g_icon('wrench'); ?></span><b>مراكز الخدمة</b><small>المعتمد والمستقل</small></a>
+        <a href="<?php echo esc_url(a3g_platform_link('a3_showroom','/car-showrooms/')); ?>"><span class="g-launch-icon"><?php echo a3g_icon('store'); ?></span><b>معارض السيارات</b><small>أماكن بيع السيارات</small></a>
+        <a href="<?php echo esc_url(a3g_platform_link('a3_maintenance_plan','/maintenance-schedules/')); ?>"><span class="g-launch-icon"><?php echo a3g_icon('calendar'); ?></span><b>جداول الصيانة</b><small>حسب العداد والموديل</small></a>
+        <a href="<?php echo esc_url(a3g_platform_link('a3_part','/parts/')); ?>"><span class="g-launch-icon"><?php echo a3g_icon('gear'); ?></span><b>قطع الغيار</b><small>المقاسات والأكواد</small></a>
+        <a href="<?php echo esc_url(a3g_platform_link('a3_listing','/cars-for-sale/')); ?>"><span class="g-launch-icon"><?php echo a3g_icon('tag'); ?></span><b>سوق السيارات</b><small>مستعمل وبيع وشراء</small></a>
+        <a href="<?php echo esc_url(a3g_cat_link(21)); ?>"><span class="g-launch-icon"><?php echo a3g_icon('compare'); ?></span><b>مقارنات السيارات</b><small>قرار شراء أذكى</small></a>
+        <a href="<?php echo esc_url(home_url('/my-garage/')); ?>"><span class="g-launch-icon"><?php echo a3g_icon('car'); ?></span><b>جراجي</b><small>العداد وسجل الصيانة</small></a>
+      </nav>
     </div>
   </div>
 </section>
@@ -305,6 +333,14 @@ $showrooms=new WP_Query(['post_type'=>'a3_showroom','post_status'=>'publish','po
     </div>
   </div>
 </section>
+
+<nav class="g-v3-mobile-dock" aria-label="التنقل السريع على الجوال">
+  <a href="<?php echo esc_url(home_url('/')); ?>" aria-current="page"><?php echo a3g_icon('car'); ?><span>الرئيسية</span></a>
+  <a href="<?php echo esc_url(a3g_cat_link(8)); ?>"><?php echo a3g_icon('wrench'); ?><span>الأعطال</span></a>
+  <a href="<?php echo esc_url(a3g_platform_link('a3_car','/cars/')); ?>"><?php echo a3g_icon('car'); ?><span>السيارات</span></a>
+  <a href="<?php echo esc_url(a3g_cat_link(374)); ?>"><?php echo a3g_icon('tag'); ?><span>الأسعار</span></a>
+  <a href="<?php echo esc_url(a3g_platform_link('a3_service_center','/service-centers/')); ?>"><?php echo a3g_icon('pin'); ?><span>الخدمات</span></a>
+</nav>
 
 </main>
 <?php get_footer(); ?>
