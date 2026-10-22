@@ -1,0 +1,61 @@
+{
+  "date": "2026-10-22",
+  "scope": "Three newly published 1500+ word original automotive articles, not updates, duplicate topics checked before writing",
+  "totals": {
+    "new_articles": 3,
+    "word_count": 6309,
+    "original_real_licensed_images": 6
+  },
+  "items": [
+    {
+      "post_id": 84479,
+      "category_id": 374,
+      "category": "اسعار السيارات الجديدة",
+      "url": "https://a3tal.com/changan-eado-plus-2026-egypt-prices-trims-official/",
+      "word_count_wp": 2069,
+      "featured_image_id": 84480,
+      "photos": 2,
+      "quality_notes": "Official manufacturer specification and dated April 2026 list prices; manufacturer promotional starting price conflicts, explicitly disclosed; no claim of price guaranteed on October 22.",
+      "references": [
+        "https://changan.com.eg/ar/model/eado-plus-2/",
+        "https://changan.com.eg/wp-content/uploads/2025/06/Eado-Plus-Brochure01.pdf",
+        "https://elmasria-auto.com/ar/CarsSearch/66/0/1/0/1000/10000000"
+      ]
+    },
+    {
+      "post_id": 84483,
+      "category_id": 22,
+      "category": "مراجعات السيارات",
+      "url": "https://a3tal.com/suzuki-dzire-2026-egypt-review-real-specs-pros-cons/",
+      "word_count_wp": 2019,
+      "featured_image_id": 84484,
+      "photos": 2,
+      "quality_notes": "Clear editorial spec-based review, not fictitious road test; owner-photo sourced real 2026 Dzire GL from Saudi Arabia not used to assert Egypt GLX trim equipment.",
+      "references": [
+        "https://suzukiegypt.net/vehicles/dzire/",
+        "https://www.contactcars.com/ar/new-cars/suzuki-dzire/year-2026"
+      ]
+    },
+    {
+      "post_id": 84487,
+      "category_id": 13,
+      "category": "أعطال كهربائية",
+      "url": "https://a3tal.com/car-battery-drains-overnight-while-parked-parasitic-draw-diagnosis/",
+      "word_count_wp": 2221,
+      "featured_image_id": 84488,
+      "photos": 2,
+      "quality_notes": "Detailed, non-dangerous parasitic-drain diagnostics and distinguishing state of health / charge / current draw; fuses and module sleep interpreted according to car-specific manufacturer procedures.",
+      "references": [
+        "https://www.fluke.com/en-sg/learn/blog/digital-multimeters/how-to-find-parasitic-battery-drain-with-a-multimeter",
+        "https://www.picoauto.com/library/automotive-guided-tests/charging-starting/charging/AGT-783-parasitic-battery-drain-clamp-method/"
+      ]
+    }
+  ],
+  "verification": {
+    "github_action": "https://github.com/marwanile1-cyber/a3tal/actions/runs/39766218267",
+    "live_page_checks": "All pages 200, self canonicals, robots index follow, real self-hosted WebP featured and inline; present on homepage and their respective WP category archive pages.",
+    "google_indexing": "Not claimed; robots indexable only",
+    "photos": "Creative Commons Attribution-ShareAlike 4.0 original camera photos, creator credited inside article, not fabricated as photographed in Egypt.",
+    "quality": "Length and technical checks verified; no artificial 80-percent algorithm score claimed"
+  }
+}
