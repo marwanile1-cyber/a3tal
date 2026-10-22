@@ -71,6 +71,7 @@ def main():
     }
     Path("dtc-batch31-live-quality-report.json").write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print("BATCH31_QA_SUMMARY "+json.dumps({k:v for k,v in report.items() if k!="results"},ensure_ascii=False),flush=True)
-    if report["wrong_og_images"]:
+    if (report["below_1500"] or report["wrong_og_images"] or report["wrong_canonical"] or
+        report["missing_meta_description"] or report["missing_updated_diagnostic_chapter"]):
         raise RuntimeError("Batch31 published editorial/OG verification failed; see the artifact")
 if __name__=="__main__":main()
