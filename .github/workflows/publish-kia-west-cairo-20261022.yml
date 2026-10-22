@@ -1,0 +1,34 @@
+name: Publish verified Kia West Cairo Sheikh Zayed and Abu Rawash
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/publish-kia-west-cairo-20261022.py'
+      - 'data/editorial/service-dealers-20261022/kia-west-cairo-zayed-abu-rawash.html'
+      - '.github/workflows/publish-kia-west-cairo-20261022.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-kia-west-cairo-20261022
+  cancel-in-progress: false
+jobs:
+  publish-enriched:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install photo processing dependency
+        run: |
+          set -euo pipefail
+          python3 -m pip install --user --quiet Pillow
+      - name: Validate all three editorial articles
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-kia-west-cairo-20261022.py
+          test -s data/editorial/service-dealers-20261022/kia-west-cairo-zayed-abu-rawash.html
+      - name: Publish verified Kia West Cairo guide and two new Commons photos
+        run: python3 -u scripts/publish-kia-west-cairo-20261022.py
