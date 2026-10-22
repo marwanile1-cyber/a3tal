@@ -1316,3 +1316,27 @@ html,body{max-width:100%;overflow-x:hidden}
  .g-v3-journey:hover,.g-v3-explorer .g-v3-launcher>a:hover,.g-card:hover,.g-platform-card:hover{transform:none}
 }
 /* A3TAL-PREMIUM-UX-V3-20261022:END */
+
+/* A3TAL-HERO-RESTORE-ORIGINAL-COPY-20261022:START */
+/* Long original SEO headline, balanced for desktop and small mobile screens. */
+.g-v3-hero .g-v3-hero-copy h1{
+  max-width:740px;
+  font-size:clamp(29px,3vw,43px);
+  line-height:1.48;
+  letter-spacing:-.018em;
+  text-wrap:balance;
+  margin:16px 0 12px;
+}
+.g-v3-hero .g-v3-hero-lead{
+  max-width:720px;
+  font-size:clamp(14px,1.2vw,16px);
+  line-height:1.95;
+}
+@media(max-width:860px){
+  .g-v3-hero .g-v3-hero-copy h1{font-size:clamp(27px,5.1vw,35px);line-height:1.52;max-width:100%;margin:12px 0 10px}
+  .g-v3-hero .g-v3-hero-lead{font-size:14px;line-height:1.9;max-width:100%}
+}
+@media(max-width:420px){
+  .g-v3-hero .g-v3-hero-copy h1{font-size:26px;line-height:1.55}
+}
+/* A3TAL-HERO-RESTORE-ORIGINAL-COPY-20261022:END */
