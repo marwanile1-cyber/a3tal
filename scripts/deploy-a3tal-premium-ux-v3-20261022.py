@@ -50,7 +50,7 @@ def span_once(s,begin,end):
     return s[i:j]
 
 def patch_front(original,approved):
-    new_hero=span_once(approved,HERO_BEG,NEXT_CARS)
+    new_hero=span_once(approved,"<!-- "+HERO_MARKER,NEXT_CARS)
     dock=span_once(approved,DOCK_BEG,MAIN_END)
     if approved.count(HERO_MARKER)!=1 or approved.count(DOCK_BEG)!=1:
         raise RuntimeError("Approved hero/dock must be unique")
@@ -118,7 +118,7 @@ def main():
     # Prepare and lint both before making the first live mutation.
     php_lint(new_front)
     if new_front.count(HERO_MARKER)!=1 or new_style.count(CSS_START)!=1:
-        raise RuntimeError("Staging integrity failed")
+        raise RuntimeError("Staging integrity failed: hero marker count "+str(new_front.count(HERO_MARKER))+" css marker count "+str(new_style.count(CSS_START)))
 
     # First stage CSS ensures the new markup can never ship without its styles
     # unless the authenticated write itself fails and leaves the old homepage.
