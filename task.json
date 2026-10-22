@@ -1,5 +1,5 @@
 {
-  "deployment_tag": "index-new-service-dealer-guides-oct21-cache-refresh",
+  "deployment_tag": "oct22-five-published-service-showroom-cache-refresh",
   "requests": [
     {
       "method": "POST",
@@ -11,10 +11,12 @@
       }
     }
   ],
+  "verify": [],
   "network_diagnostics": {
     "enabled": true,
     "rounds": 1,
     "paths": [
+      "/",
       "/service-centers/",
       "/car-showrooms/"
     ]
