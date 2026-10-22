@@ -1,0 +1,36 @@
+name: Publish Egypt car prices faults and reviews October 22
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/publish-prices-faults-reviews-20261022.py'
+      - 'data/editorial/prices-faults-reviews-20261022/**'
+      - '.github/workflows/publish-prices-faults-reviews-20261022.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-price-fault-review-20261022
+  cancel-in-progress: false
+jobs:
+  publish-enriched:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install photo processing dependency
+        run: |
+          set -euo pipefail
+          python3 -m pip install --user --quiet Pillow
+      - name: Validate all three editorial articles
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-prices-faults-reviews-20261022.py
+          test -s data/editorial/prices-faults-reviews-20261022/changan-eado-plus-2026-prices.html
+          test -s data/editorial/prices-faults-reviews-20261022/car-battery-discharges-while-parked-diagnostic.html
+          test -s data/editorial/prices-faults-reviews-20261022/suzuki-dzire-2026-review.html
+      - name: Publish three researched price, review and repair guides with six authentic photos
+        run: python3 -u scripts/publish-prices-faults-reviews-20261022.py
