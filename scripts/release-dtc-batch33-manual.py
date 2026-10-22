@@ -73,7 +73,7 @@ def photos():
 def validate():
  data=json.loads(FILE.read_text(encoding="utf8"))
  rows=data.get("items",[])
- if data.get("batch")!=32 or [r.get("code") for r in rows]!=CODES:
+ if data.get("batch")!=33 or [r.get("code") for r in rows]!=CODES:
   raise RuntimeError("Batch33 roster/sequence differs from reviewed plan")
  if any(r.get("slug")!=r["code"].lower() or r.get("word_count",0)<1500 or
         not r.get("content","").startswith("<p>") or
