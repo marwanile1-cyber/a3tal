@@ -1,0 +1,69 @@
+{
+  "date": "2026-10-22",
+  "property": "https://a3tal.com/",
+  "articles": [
+    {
+      "id": 84459,
+      "title": "مراكز صيانة كيا الإسكندرية",
+      "url": "https://a3tal.com/kia-authorized-service-alexandria-smouha-amreya-gleem/",
+      "words": 1574,
+      "featured_media": 84460,
+      "category_id": 33,
+      "official": "https://kia.com.eg/ar/dealers?category=3"
+    },
+    {
+      "id": 84463,
+      "title": "مراكز صيانة السيارات المستقلة في الإسكندرية",
+      "url": "https://a3tal.com/independent-car-repair-centers-alexandria-sidi-gaber-smouha/",
+      "words": 1734,
+      "featured_media": 84464,
+      "category_id": 33,
+      "reference": "https://localegypt.net/business/check-sidi-gaber"
+    },
+    {
+      "id": 84467,
+      "title": "معارض سيارات الشيخ زايد",
+      "url": "https://a3tal.com/sheikh-zayed-car-showrooms-waslet-dahshur-guide/",
+      "words": 1576,
+      "featured_media": 84468,
+      "category_id": 2998
+    },
+    {
+      "id": 84471,
+      "title": "مراكز صيانة كيا الشيخ زايد وأبو رواش",
+      "url": "https://a3tal.com/kia-authorized-service-sheikh-zayed-abu-rawash-west-cairo/",
+      "words": 1736,
+      "featured_media": 84472,
+      "category_id": 33,
+      "official": "https://kia.com.eg/ar/dealers?category=3"
+    },
+    {
+      "id": 84475,
+      "title": "معارض السيارات الإسكندرية سموحة سبورتنج",
+      "url": "https://a3tal.com/alexandria-car-showrooms-smouha-sporting-egypt/",
+      "words": 1691,
+      "featured_media": 84476,
+      "category_id": 2998,
+      "official": "https://sm.mgmotor.com.eg/locations-showrooms/?lang=ar"
+    }
+  ],
+  "totals": {
+    "posts": 5,
+    "words": 8311,
+    "authentic_CC_BY_SA_WebP_photographs": 10
+  },
+  "assertions": [
+    "New genuine licensed Wikimedia Commons photographs converted to self-hosted WebP, 1 featured and 1 inline per post, photographer and license credit visible in source.",
+    "Articles are HTML-published, WordPress REST + action checks confirm 1500+ words, published status and a featured media asset.",
+    "Independent live checks confirmed each new URL's own canonical and index/follow robots meta, not Google indexing.",
+    "After cache flush, all five URLs were reachable from homepage and from /service-centers/ and /car-showrooms/ navigation.",
+    "All named physical local businesses originate from official manufacturer lists or business directory evidence. Listing a business does not imply personal quality endorsement or accreditation.",
+    "Geographical expansions are scoped to Alexandria and West Cairo/Sheikh Zayed, not entire Egypt; future articles require separate fresh validation and competitor/GSC queries before publication."
+  ],
+  "github_actions": [
+    "https://github.com/marwanile1-cyber/a3tal/actions/runs/39760745551",
+    "https://github.com/marwanile1-cyber/a3tal/actions/runs/39761335098",
+    "https://github.com/marwanile1-cyber/a3tal/actions/runs/39761838953",
+    "https://github.com/marwanile1-cyber/a3tal/actions/runs/39761948203"
+  ]
+}
