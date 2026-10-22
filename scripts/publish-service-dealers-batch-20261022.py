@@ -172,7 +172,7 @@ def fetch_image(key, size):
     return {
         "key":"hero" if key.endswith("_hero") else "detail",
         "role":"featured" if key.endswith("_hero") else "inline",
-        "filename":""a3tal-"+key+"-real-photograph-20261022.webp",
+        "filename":"a3tal-"+key+"-real-photograph-20261022.webp",
         "image_base64":base64.b64encode(photo).decode("ascii"),
         "convert_webp":False,
         "alt":item["alt"],
