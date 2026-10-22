@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/release-dtc-batch33-manual.yml'
+      - 'scripts/release-dtc-batch33-manual.py'
   workflow_dispatch:
 permissions:
   contents: read
