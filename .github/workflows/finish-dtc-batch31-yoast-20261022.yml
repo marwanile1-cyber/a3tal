@@ -1,0 +1,31 @@
+name: Save Yoast metadata on existing DTC batch31 pages
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/finish-dtc-batch31-yoast-20261022.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  metadesc:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate descriptions and script
+        run: |
+          python3 -m py_compile scripts/finish-dtc-batch31-yoast-20261022.py
+          python3 - <<'PY'
+          import json
+          j=json.load(open('data/dtc-batch31-yoast-metadesc-20261022.json',encoding='utf8'))
+          assert j['batch']==31 and len(j['descriptions'])==10
+          assert all(105<=len(d)<=160 and c in d for c,d in j['descriptions'].items())
+          PY
+      - name: Save 10 unique Yoast descriptions without title or permalink change
+        run: python3 -u scripts/finish-dtc-batch31-yoast-20261022.py
