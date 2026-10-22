@@ -96,12 +96,17 @@ def main():
                 print("RECOVERED_AFTER_AMBIGUOUS_UPDATE",code,flush=True)
                 continue
             raise RuntimeError("Stopped after uncertain write to "+code) from exc
-        if int(result.get("id") or 0)!=row["id"] or result.get("content")!=new_body:
-            raise RuntimeError("Bridge update response differs for "+code)
+        if int(result.get("id") or 0)!=row["id"]:
+            raise RuntimeError("Bridge updated unexpected record for "+code)
         confirmed=private_post(row["id"])
-        if confirmed.get("content")!=new_body or confirmed.get("status")!="publish":
-            raise RuntimeError("WordPress readback differs for "+code)
-        if words(confirmed["content"])<1500:raise RuntimeError("Post under 1500 words "+code)
+        actual=confirmed.get("content","")
+        marker=f'data-a3tal-batch30="{code}"'
+        if confirmed.get("status")!="publish" or confirmed.get("slug")!=code.lower() or marker not in actual:
+            raise RuntimeError("WordPress readback lost status, identity, or diagnostic addendum for "+code)
+        if words(actual)<1500:
+            raise RuntimeError("Post under 1500 words after write "+code)
+        if actual!=new_body:
+            print("WORDPRESS_NORMALIZED_EDITORIAL_HTML",code,"verified_words",words(actual),flush=True)
         pub=public_post(code)
         if pub.get("id")!=row["id"] or pub.get("status")!="publish" or int(pub.get("featured_media") or 0)<1:
             raise RuntimeError("Published slug/status/cover changed "+code)
