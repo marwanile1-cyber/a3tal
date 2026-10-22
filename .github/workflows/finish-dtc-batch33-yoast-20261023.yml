@@ -1,0 +1,33 @@
+name: Save Yoast descriptions on newly published DTC batch33
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/finish-dtc-batch33-yoast-20261023.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  metadata-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify description originality and length
+        run: |
+          python3 -m py_compile scripts/finish-dtc-batch33-yoast-20261023.py
+          python3 - <<'PY'
+          import json
+          j=json.load(open('data/dtc-batch33-yoast-metadesc-20261023.json',encoding='utf8'))
+          codes='P0346 P0743 P0871 U0195 U0200 U0428 C0031 C003A B1445 B1447'.split()
+          assert j['batch']==33 and list(j['descriptions'])==codes
+          assert all(105<=len(j['descriptions'][c])<=160 and c in j['descriptions'][c] for c in codes)
+          assert len(set(j['descriptions'].values()))==10
+          PY
+      - name: Verify all ten live pages and write ONLY Yoast descriptions via Direct Bridge
+        run: python3 -u scripts/finish-dtc-batch33-yoast-20261023.py
