@@ -70,8 +70,8 @@ $showrooms=new WP_Query(['post_type'=>'a3_showroom','post_status'=>'publish','po
       <div class="g-v3-hero-inner">
         <div class="g-hero-content g-v3-hero-copy">
           <span class="g-hero-eyebrow"><i aria-hidden="true"></i> A3TAL | موسوعة السيارات</span>
-          <h1 id="g-v3-main-title">كل ما تحتاجه عن <span>سيارتك، في مكان واحد.</span></h1>
-          <p class="g-v3-hero-lead">شخّص أعطال السيارات، افهم الأكواد، قارن الأسعار والمراجعات، ووصل لمراكز الخدمة وقطع الغيار. معلومات مترابطة بدل البحث من أول وجديد.</p>
+          <h1 id="g-v3-main-title">موسوعة أعطال السيارات وأكواد التشخيص والأسعار ومراكز الصيانة</h1>
+          <p class="g-v3-hero-lead">اكتشف كل ما تحتاج معرفته عن سيارتك في مكان واحد. تعرّف على أعطال السيارات وأسبابها وطرق إصلاحها، وافهم أكواد الأعطال OBD-II، واستكشف أسعار السيارات ومواصفاتها ومقارناتها، مع دليل مراكز الصيانة والخدمة لمساعدتك على التشخيص الصحيح واتخاذ القرار بثقة.</p>
           <form class="g-hero-search g-universal-search g-v3-search" role="search" method="get" action="<?php echo esc_url(home_url('/')); ?>">
             <label class="g-search-field" for="g-v3-site-search"><?php echo a3g_icon('search'); ?><input id="g-v3-site-search" type="search" name="s" autocomplete="off" placeholder="اكتب موديل سيارة، سعر، عطل، كود P0420..." aria-label="ابحث عن سيارة أو سعر أو عطل"></label>
             <button type="submit"><?php echo a3g_icon('search'); ?><span>ابحث</span></button>
