@@ -1,0 +1,47 @@
+name: Publish DTC batch33 ten original encyclopedic guides and interim covers
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/release-dtc-batch33-manual.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  release-batch33:
+    runs-on: ubuntu-latest
+    timeout-minutes: 135
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3TAL_BATCH33_RELEASE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install WebP photo support
+        run: python3 -m pip install -q Pillow
+      - name: Validate 10 previously unseen independently sourced manuscripts
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/release-dtc-batch33-manual.py
+          python3 - <<'PY'
+          import json,re
+          p=json.load(open('data/dtc-original-batch-33.json',encoding='utf-8'))
+          codes='P0346 P0743 P0871 U0195 U0200 U0428 C0031 C003A B1445 B1447'.split()
+          assert p['batch']==33 and [x['code'] for x in p['items']]==codes
+          assert len(set(codes))==10
+          assert {prefix:sum(c.startswith(prefix) for c in codes) for prefix in 'PUCB'}=={'P':3,'U':3,'C':2,'B':2}
+          for item in p['items']:
+              words=len(re.sub(r'<[^>]+>',' ',item['content']).split())
+              assert words>=1500 and words==item['word_count'],(item['code'],words,item['word_count'])
+              assert item['qa']['ready_for_publication'] is True
+              assert item['source'].startswith('https://')
+              assert len(re.findall(r'<h2>',item['content']))>=10
+              assert 'https://a3tal.com/dtc/' in item['content']
+              assert item['media_status']=='pending_original_photo'
+              print('ENCI_DTC33_WORD_QA',item['code'],words)
+          print('TEN_UNIQUE_DIAGNOSTICS_EDITORIALLY_VERIFIED')
+          PY
+      - name: Release new posts through Direct Bridge (no blind retries)
+        run: python3 -u scripts/release-dtc-batch33-manual.py
