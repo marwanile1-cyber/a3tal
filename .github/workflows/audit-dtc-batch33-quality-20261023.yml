@@ -1,0 +1,26 @@
+name: Final live QA for DTC batch33 ten encyclopedic articles
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/audit-dtc-batch33-quality-20261023.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify ten actual public URLs, 1500 words, canonical, SEO and share art
+        run: python3 -u scripts/audit-dtc-batch33-quality-20261023.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dtc-batch33-final-live-quality
+          path: dtc-batch33-live-quality-report.json
+          if-no-files-found: warn
