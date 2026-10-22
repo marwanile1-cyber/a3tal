@@ -1,0 +1,24 @@
+name: Audit already-live DTC batch 30 quality (read only)
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/audit-dtc-batch30-quality-20261022.yml
+      - scripts/audit-dtc-batch30-quality-20261022.py
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect ten existing DTC posts without WordPress mutation
+        run: python3 -u scripts/audit-dtc-batch30-quality-20261022.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: batch30-live-quality
+          path: dtc-batch30-live-quality-report.json
+          if-no-files-found: warn
