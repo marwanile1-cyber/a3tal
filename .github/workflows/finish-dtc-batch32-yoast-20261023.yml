@@ -1,0 +1,31 @@
+name: Save unique Yoast SEO meta on ten existing DTC batch32 posts
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/finish-dtc-batch32-yoast-20261023.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  existing-meta-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate ten owner-specific SEO descriptions
+        run: |
+          python3 -m py_compile scripts/finish-dtc-batch32-yoast-20261023.py
+          python3 - <<'PY'
+          import json
+          d=json.load(open('data/dtc-batch32-yoast-metadesc-20261023.json',encoding='utf-8'))
+          assert d['batch']==32 and len(d['descriptions'])==10
+          assert all(code in desc and 105<=len(desc)<=160 for code,desc in d['descriptions'].items())
+          PY
+      - name: Revision-guarded Yoast meta-only updates with WordPress readback
+        run: python3 -u scripts/finish-dtc-batch32-yoast-20261023.py
