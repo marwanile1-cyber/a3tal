@@ -46,8 +46,8 @@ def main():
           "webp":media.get("mime_type")=="image/webp",
           "temporary_photo":"batch30-temporary-photo" in image or "صورة توضيحية عامة مؤقتة" in body,
           "og_matches_featured":bool(image and image in og),
-          "video_embedded":bool(re.search(r"(youtube(?:-nocookie)?\\.com/(?:embed/|watch\\?v=)|youtu\\.be/)",body,re.I)),
-          "internal_dtc_links":len(re.findall(r"href=['\"]https?://a3tal\\.com/dtc/",body,re.I)),
+          "video_embedded":bool(re.search(r"(youtube(?:-nocookie)?\.com/(?:embed/|watch\?v=)|youtu\.be/)",body,re.I)),
+          "internal_dtc_links":len(re.findall(r"href=['\"]https?://a3tal\.com/dtc/",body,re.I)),
           "last_modified":post.get("modified")
         }
         results.append(status)
