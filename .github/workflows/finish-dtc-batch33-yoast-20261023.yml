@@ -31,3 +31,5 @@ jobs:
           PY
       - name: Verify all ten live pages and write ONLY Yoast descriptions via Direct Bridge
         run: python3 -u scripts/finish-dtc-batch33-yoast-20261023.py
+
+# Re-run after all ten pages confirmed published; shared production concurrency guard.
