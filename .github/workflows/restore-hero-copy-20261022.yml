@@ -1,0 +1,49 @@
+name: Restore exact original homepage hero title and description
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/restore-hero-copy-20261022.yml'
+      - 'scripts/restore-hero-copy-20261022.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-theme
+  cancel-in-progress: false
+jobs:
+  guarded-hero-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate approved text, responsive CSS, and PHP
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/restore-hero-copy-20261022.py
+          php -l theme-source/a3tal-global/front-page.php
+          grep -Fq 'موسوعة أعطال السيارات وأكواد التشخيص والأسعار ومراكز الصيانة' theme-source/a3tal-global/front-page.php
+          grep -Fq 'اكتشف كل ما تحتاج معرفته عن سيارتك في مكان واحد.' theme-source/a3tal-global/front-page.php
+      - name: Apply checksum-guarded text fix and flush cache
+        run: python3 -u scripts/restore-hero-copy-20261022.py
+      - name: Upload original files for rollback
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hero-copy-predeploy-originals
+          path: hero-restore-predeploy-backup/
+          retention-days: 30
+          if-no-files-found: ignore
+      - name: Verify public homepage SEO hero and existing journeys
+        run: |
+          set -euo pipefail
+          curl -fsSL --retry 3 --retry-delay 3 --max-time 60             "https://a3tal.com/?verify_original_hero=$(date +%s)" > /tmp/a3tal-hero.html
+          grep -Fq 'موسوعة أعطال السيارات وأكواد التشخيص والأسعار ومراكز الصيانة' /tmp/a3tal-hero.html
+          grep -Fq 'اكتشف كل ما تحتاج معرفته عن سيارتك في مكان واحد.' /tmp/a3tal-hero.html
+          grep -Fq 'g-v3-hero-inner' /tmp/a3tal-hero.html
+          grep -Fq 'g-v3-site-search' /tmp/a3tal-hero.html
+          grep -Fq 'g-home-car-editorial-grid' /tmp/a3tal-hero.html
+          echo 'ORIGINAL_ARABIC_H1_AND_DESCRIPTION_LIVE_VERIFIED'
