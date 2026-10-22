@@ -1,0 +1,40 @@
+name: Fix homepage latest cars and fresh articles
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/fix-homepage-latest-cars-20261022.py'
+      - '.github/workflows/fix-homepage-latest-cars-20261022.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-theme
+  cancel-in-progress: false
+jobs:
+  guarded-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate patch sources and PHP syntax
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/fix-homepage-latest-cars-20261022.py
+          php -l theme-source/a3tal-global/front-page.php
+      - name: Apply compare-and-swap homepage and CSS then flush cache
+        run: python3 -u scripts/fix-homepage-latest-cars-20261022.py
+      - name: Confirm homepage contains separate fresh articles and car models
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --retry 3 --retry-delay 3 \
+            --max-time 60 "https://a3tal.com/?latest_cars_qa=$(date +%s)" -o /tmp/home.html
+          grep -Fq 'أحدث الأسعار والمراجعات' /tmp/home.html
+          grep -Fq 'سيارات مضافة أو محدثة حديثًا' /tmp/home.html
+          grep -Fq 'changan-eado-plus-2026-egypt-prices-trims-official/' /tmp/home.html
+          grep -Fq 'suzuki-dzire-2026-egypt-review-real-specs-pros-cons/' /tmp/home.html
+          grep -Fq 'cars/hyundai-tucson-2027-egypt/' /tmp/home.html
+          echo 'HOMEPAGE_VEHICLES_AND_ARTICLES_VISIBLE_VERIFIED'
