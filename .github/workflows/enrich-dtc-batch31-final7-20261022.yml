@@ -1,0 +1,32 @@
+name: Upgrade remaining 7 existing DTC batch31 guides
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/enrich-dtc-batch31-final7-20261022.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  editor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify seven original diagnostic expansions
+        run: |
+          python3 -m py_compile scripts/enrich-dtc-batch31-final7-20261022.py
+          python3 - <<'PY'
+          import json,re
+          for code in ['U0183','U0185','U0190','C006A','C0069','B1441','B1442']:
+              d=json.load(open('data/dtc-batch31-enrichment-'+code.lower()+'-20261022.json',encoding='utf8'))
+              assert d['code']==code and d['batch']==31
+              assert len(re.sub('<[^>]+>',' ',d['html']).split()) >= 850
+          PY
+      - name: Rev-guarded Direct Bridge in-place update, 1500 minimum
+        run: python3 -u scripts/enrich-dtc-batch31-final7-20261022.py
