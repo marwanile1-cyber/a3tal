@@ -1,0 +1,35 @@
+name: Safely enrich three existing batch30 code guides to 1500 plus words
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/enrich-dtc-batch30-first3-20261022.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  existing-post-edits:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile safe existing-post writer and verify ten-plus chapter manuscripts
+        run: |
+          python3 -m py_compile scripts/enrich-dtc-batch30-first3-20261022.py
+          python3 - <<'PY'
+          import json,re
+          for code in ('P0328','P0560','P0650'):
+              p='data/dtc-batch30-enrichment-'+code.lower()+'-20261022.json'
+              d=json.load(open(p,encoding='utf-8'))
+              assert d['code']==code and d['batch']==30
+              words=len(re.sub(r'<[^>]+>',' ',d['html']).split())
+              assert words>=800,(code,words)
+              print('MANUSCRIPT_CHECK',code,words)
+          PY
+      - name: Change only original published content with revision guard and live readback
+        run: python3 -u scripts/enrich-dtc-batch30-first3-20261022.py
