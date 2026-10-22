@@ -59,7 +59,7 @@ def main():
         results.append(status)
         print("BATCH32_QA "+json.dumps(status,ensure_ascii=False),flush=True)
     report={
-     "batch":32,"checked":"2026-10-22","published":len(results),
+     "batch":32,"checked":"2026-10-23","published":len(results),
      "below_1500":sum(x["under_1500"] for x in results),
      "temporary_photos":sum(x["temporary_photo"] for x in results),
      "wrong_og_images":sum(not x["og_matches_featured"] for x in results),
@@ -71,6 +71,7 @@ def main():
     }
     Path("dtc-batch32-live-quality-report.json").write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print("BATCH32_QA_SUMMARY "+json.dumps({k:v for k,v in report.items() if k!="results"},ensure_ascii=False),flush=True)
-    if report["wrong_og_images"] or report["wrong_canonical"]:
+    if (report["below_1500"] or report["wrong_og_images"] or report["wrong_canonical"] or
+        report["missing_meta_description"] or report["missing_updated_diagnostic_chapter"]):
         raise RuntimeError("Batch32 published editorial/OG verification failed; see the artifact")
 if __name__=="__main__":main()
