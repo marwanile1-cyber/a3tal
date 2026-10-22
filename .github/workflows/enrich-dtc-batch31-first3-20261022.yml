@@ -1,0 +1,32 @@
+name: Upgrade existing DTC batch31 engine guides first three
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/enrich-dtc-batch31-first3-20261022.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  editor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check three manuscripts
+        run: |
+          python3 -m py_compile scripts/enrich-dtc-batch31-first3-20261022.py
+          python3 - <<'PY'
+          import json,re
+          for code in ['P0369','P0505','P0685']:
+              d=json.load(open('data/dtc-batch31-enrichment-'+code.lower()+'-20261022.json',encoding='utf8'))
+              assert d['batch']==31 and d['code']==code
+              assert len(re.sub('<[^>]+>',' ',d['html']).split()) >= 800
+          PY
+      - name: Apply guarded WordPress updates to original published posts only
+        run: python3 -u scripts/enrich-dtc-batch31-first3-20261022.py
