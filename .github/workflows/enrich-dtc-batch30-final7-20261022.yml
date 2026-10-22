@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - .github/workflows/enrich-dtc-batch30-final7-20261022.yml
+      - scripts/enrich-dtc-batch30-final7-20261022.py
   workflow_dispatch:
 permissions:
   contents: read
