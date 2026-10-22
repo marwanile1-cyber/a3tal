@@ -24,3 +24,5 @@ jobs:
           name: dtc-batch33-final-live-quality
           path: dtc-batch33-live-quality-report.json
           if-no-files-found: warn
+
+# Re-run final read-only validation after successful DTC33 publication and Yoast SEO.
