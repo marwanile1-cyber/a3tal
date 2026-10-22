@@ -1,0 +1,52 @@
+name: Deploy premium A3tal UX V3
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/deploy-a3tal-premium-ux-v3-20261022.yml'
+      - 'scripts/deploy-a3tal-premium-ux-v3-20261022.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-theme
+  cancel-in-progress: false
+jobs:
+  guarded-design-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check approved design components and PHP
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/deploy-a3tal-premium-ux-v3-20261022.py
+          php -l theme-source/a3tal-global/front-page.php
+          grep -q 'A3TAL-PREMIUM-UX-V3-20261022:END' theme-source/a3tal-global/style.css
+      - name: Publish safely and verify production source checksums
+        run: python3 -u scripts/deploy-a3tal-premium-ux-v3-20261022.py
+      - name: Store original live files for rollback
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-premium-v3-predeploy-originals
+          path: v3-qa-backup/
+          retention-days: 30
+          if-no-files-found: ignore
+      - name: Verify the user-facing homepage and its live journeys
+        run: |
+          set -euo pipefail
+          curl -fsSL --retry 3 --retry-delay 3 --max-time 60 \
+            "https://a3tal.com/?premium_ux=$(date +%s)" > /tmp/a3tal-v3.html
+          grep -q 'A3TAL-EXPERIENCE-V3-20261022' /tmp/a3tal-v3.html
+          grep -q 'g-v3-hero-inner' /tmp/a3tal-v3.html
+          grep -q 'g-v3-mobile-dock' /tmp/a3tal-v3.html
+          grep -q 'أحدث الأسعار والمراجعات' /tmp/a3tal-v3.html
+          grep -q 'سيارات مضافة أو محدثة حديثًا' /tmp/a3tal-v3.html
+          grep -q 'g-home-dtc-zone' /tmp/a3tal-v3.html
+          grep -q 'g-home-places-grid' /tmp/a3tal-v3.html
+          grep -q 'changan-eado-plus-2026-egypt-prices-trims-official/' /tmp/a3tal-v3.html
+          echo 'A3TAL_V3_LIVE_HOMEPAGE_CONTENT_AND_JOURNEYS_VERIFIED'
