@@ -1,0 +1,24 @@
+name: Final batch30 live editorial SEO and OG verification
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/audit-dtc-batch30-final-20261022.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check production live pages without changing any posts
+        run: python3 -u scripts/audit-dtc-batch30-quality-20261022.py
+      - name: Store quality record
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: batch30-final-live-qa
+          path: dtc-batch30-live-quality-report.json
+          if-no-files-found: warn
