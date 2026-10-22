@@ -1,0 +1,36 @@
+name: Publish Alexandria Kia and independent repair and Sheikh Zayed showrooms Oct22
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/publish-service-dealers-batch-20261022.py'
+      - 'data/editorial/service-dealers-20261022/**'
+      - '.github/workflows/publish-service-dealers-batch-20261022.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-service-dealers-20261022
+  cancel-in-progress: false
+jobs:
+  publish-enriched:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install photo processing dependency
+        run: |
+          set -euo pipefail
+          python3 -m pip install --user --quiet Pillow
+      - name: Validate all three editorial articles
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-service-dealers-batch-20261022.py
+          test -s data/editorial/service-dealers-20261022/kia-alexandria-branches.html
+          test -s data/editorial/service-dealers-20261022/alexandria-independent-repair.html
+          test -s data/editorial/service-dealers-20261022/sheikh-zayed-showrooms.html
+      - name: Publish three unique articles, two real CC photos each, verify production
+        run: python3 -u scripts/publish-service-dealers-batch-20261022.py
