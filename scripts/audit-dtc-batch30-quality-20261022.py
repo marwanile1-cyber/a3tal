@@ -39,11 +39,17 @@ def main():
         media=fetch(BASE+f"/wp-json/wp/v2/media/{mid}?_fields=id,source_url,mime_type") if mid else {}
         image=media.get("source_url","")
         og=[x.get("url","") for x in (post.get("yoast_head_json") or {}).get("og_image",[]) if isinstance(x,dict)]
+        seo=post.get("yoast_head_json") or {}
+        canonical=seo.get("canonical") or ""
         status={
           "code":code,"id":post["id"],"url":post.get("link"),
           "words":wc,"source_words":item.get("word_count"),"under_1500":wc<1500,
           "featured_media":mid,"image":image,
           "webp":media.get("mime_type")=="image/webp",
+          "canonical":canonical,
+          "canonical_matches_permalink":canonical.rstrip("/")==str(post.get("link") or "").rstrip("/"),
+          "meta_description_present":bool((seo.get("description") or "").strip()),
+          "code_marker_present":f'data-a3tal-batch30="{code}"' in body,
           "temporary_photo":"batch30-temporary-photo" in image or "صورة توضيحية عامة مؤقتة" in body,
           "og_matches_featured":bool(image and image in og),
           "video_embedded":bool(re.search(r"(youtube(?:-nocookie)?\.com/(?:embed/|watch\?v=)|youtu\.be/)",body,re.I)),
@@ -58,8 +64,13 @@ def main():
      "temporary_photos":sum(x["temporary_photo"] for x in results),
      "wrong_og_images":sum(not x["og_matches_featured"] for x in results),
      "without_embedded_video":sum(not x["video_embedded"] for x in results),
+     "wrong_canonical":sum(not x["canonical_matches_permalink"] for x in results),
+     "missing_meta_description":sum(not x["meta_description_present"] for x in results),
+     "missing_updated_diagnostic_chapter":sum(not x["code_marker_present"] for x in results),
      "results":results
     }
     Path("dtc-batch30-live-quality-report.json").write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print("BATCH30_QA_SUMMARY "+json.dumps({k:v for k,v in report.items() if k!="results"},ensure_ascii=False),flush=True)
+    if report["below_1500"] or report["wrong_og_images"] or report["missing_updated_diagnostic_chapter"]:
+        raise RuntimeError("Batch30 published editorial/OG verification failed; see the artifact")
 if __name__=="__main__":main()
