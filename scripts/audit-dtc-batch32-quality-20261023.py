@@ -22,7 +22,7 @@ def count_words(body):
     parser=TextReader();parser.feed(body)
     return len(re.findall(r"\S+",html.unescape(" ".join(parser.parts))))
 def main():
-    source=json.loads((ROOT/"data/dtc-original-batch-31.json").read_text(encoding="utf-8"))
+    source=json.loads((ROOT/"data/dtc-original-batch-32.json").read_text(encoding="utf-8"))
     if [x["code"] for x in source["items"]]!=CODES:raise RuntimeError("Batch roster mismatch")
     results=[]
     for item in source["items"]:
