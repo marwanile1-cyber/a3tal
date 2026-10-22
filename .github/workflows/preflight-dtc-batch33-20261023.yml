@@ -1,0 +1,17 @@
+name: DTC batch33 safe duplicate preflight
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/preflight-dtc-batch33-20261023.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect candidate code slugs on production (read only)
+        run: python3 -u scripts/preflight-dtc-batch33-20261023.py
