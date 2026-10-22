@@ -1,0 +1,33 @@
+name: Safely enrich remaining seven already-live DTC batch30 guides
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/enrich-dtc-batch30-final7-20261022.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  existing-post-edits:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate seven code manuscripts
+        run: |
+          python3 -m py_compile scripts/enrich-dtc-batch30-final7-20261022.py
+          python3 - <<'PY'
+          import json,re
+          for code in ('U0180','U0181','U0182','C0063','C0064','B1413','B1423'):
+              d=json.load(open('data/dtc-batch30-enrichment-'+code.lower()+'-20261022.json',encoding='utf-8'))
+              words=len(re.sub(r'<[^>]+>',' ',d['html']).split())
+              assert d['code']==code and d['batch']==30 and words>=800,(code,words)
+              print('MANUSCRIPT_CHECK',code,words)
+          PY
+      - name: Upgrade seven existing articles via revision guarded Direct Bridge
+        run: python3 -u scripts/enrich-dtc-batch30-final7-20261022.py
