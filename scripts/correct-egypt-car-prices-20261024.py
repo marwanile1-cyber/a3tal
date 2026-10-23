@@ -80,10 +80,15 @@ def correct_car(c):
     content,excerpt=revise_text(slug,item["content"],item["excerpt"],prices)
     save_content(item,content,excerpt)
     desired={"_a3_price_min":str(new_min),"_a3_price_max":str(new_max),"_a3_source_checked_at":"2026-10-24"}
-    if any(meta(pid,k)!=v for k,v in desired.items()):
-        api("/admin",{"op":"post_meta_set","post_id":pid,"meta":desired,"confirm":True,"dangerous":True})
+    before={k:meta(pid,k) for k in desired}
+    print("PRICE_META_BEFORE",slug,repr(before),flush=True)
+    if any(before[k]!=v for k,v in desired.items()):
+        ans=api("/admin",{"op":"post_meta_set","post_id":pid,"meta":desired,"confirm":True,"dangerous":True})
+        print("PRICE_META_WRITE_RESPONSE",str(ans)[:500],flush=True)
+    after={k:meta(pid,k) for k in desired}
+    print("PRICE_META_AFTER",slug,repr(after),flush=True)
     for k,v in desired.items():
-        if meta(pid,k)!=v:raise RuntimeError("Meta verification failed "+slug+" "+k)
+        if after[k]!=v:raise RuntimeError("Meta verification failed "+slug+" "+k+" actual="+repr(after[k])+" expected="+repr(v))
     print("LIVE_CORRECTED_CAR",slug,row["link"],flush=True)
 def correct_article():
     item=post(84008)
