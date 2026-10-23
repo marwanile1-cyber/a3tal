@@ -24,3 +24,5 @@ jobs:
           set -euo pipefail
           test -n "$A3TAL_API_KEY" || { echo "Bridge key missing"; exit 1; }
           python3 -u scripts/correct-egypt-car-prices-20261024.py
+
+# Re-run after readback diagnosis, 2026-10-24.
