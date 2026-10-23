@@ -87,6 +87,14 @@ def correct_car(c):
         print("PRICE_META_WRITE_RESPONSE",str(ans)[:500],flush=True)
     after={k:meta(pid,k) for k in desired}
     print("PRICE_META_AFTER",slug,repr(after),flush=True)
+    if any(after[k]!=v for k,v in desired.items()):
+        # Upsert uses the core-platform metadata writer; never alter content or media.
+        result=api("/admin",{"op":"platform_entity_upsert","id":pid,"type":"a3_car",
+                    "slug":slug,"title":item["title"],"status":"publish","meta":desired,
+                    "confirm":True,"dangerous":True})
+        print("CORE_ENTITY_META_WRITE_RESPONSE",str(result)[:450],flush=True)
+        after={k:meta(pid,k) for k in desired}
+        print("CORE_ENTITY_META_AFTER",slug,repr(after),flush=True)
     for k,v in desired.items():
         if after[k]!=v:raise RuntimeError("Meta verification failed "+slug+" "+k+" actual="+repr(after[k])+" expected="+repr(v))
     print("LIVE_CORRECTED_CAR",slug,row["link"],flush=True)
