@@ -26,3 +26,5 @@ jobs:
           python3 -u scripts/correct-egypt-car-prices-20261024.py
 
 # Re-run after readback diagnosis, 2026-10-24.
+
+# Core meta fallback verified on next run.
