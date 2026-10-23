@@ -1,0 +1,26 @@
+name: Correct October 2026 car prices (guarded)
+on:
+  push:
+    paths:
+      - '.github/workflows/correct-egypt-car-prices-20261024.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-theme
+  cancel-in-progress: false
+jobs:
+  correct-prices:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate Python source
+        run: python3 -m py_compile scripts/correct-egypt-car-prices-20261024.py
+      - name: Update three existing car cards and Tucson price article through Direct Bridge
+        env:
+          A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY" || { echo "Bridge key missing"; exit 1; }
+          python3 -u scripts/correct-egypt-car-prices-20261024.py
