@@ -60,9 +60,40 @@ def revise_text(slug,content,excerpt,prices,article=False):
         content=content.replace("وفق سجل التغييرات المؤرخ 15 أكتوبر 2026","وفق تحركات الأسعار المنشورة في 22 أكتوبر 2026")
         content=content.replace("<td>Night</td><td>2,240,000 جنيه</td><td>400,000 جنيه</td>","<td>Night</td><td>2,240,000 جنيه</td><td>390,000 جنيه</td>")
     return content,excerpt
+def tidy_text(slug,content,excerpt,article=False):
+    if slug.startswith("chery"):
+        changes=[
+            ("1.32 مليون","1.34 مليون"),
+            ("وفق قائمة شيري الرسمية أثناء مراجعة 9 أكتوبر 2026","وفق الأسعار المنشورة يوم 22 أكتوبر 2026"),
+            ("1,340,000 جنيه عند مراجعة 9 أكتوبر 2026","1,340,000 جنيه وفق قائمة 22 أكتوبر 2026"),
+            ("يعرض موقع شيري مصر سعرًا ابتدائيًا بقيمة","بحسب قائمة الأسعار المنشورة في 22 أكتوبر 2026، يبلغ السعر الابتدائي"),
+            ("**تاريخ مراجعة البيانات:** 9 أكتوبر 2026","**تاريخ مراجعة المواصفات:** 9 أكتوبر 2026، والأسعار: 24 أكتوبر 2026"),
+            ("<strong>تاريخ مراجعة البيانات:</strong> 9 أكتوبر 2026","<strong>تاريخ مراجعة المواصفات:</strong> 9 أكتوبر 2026، والأسعار: 24 أكتوبر 2026")
+        ]
+    elif article:
+        changes=[
+            ("حسب القائمة السارية من 15 أكتوبر 2026","حسب القائمة المنشورة في 22 أكتوبر 2026"),
+            ("آخر مراجعة تحريرية: 16 أكتوبر 2026","آخر مراجعة تحريرية: 24 أكتوبر 2026"),
+            ("سجل تغييرات أسعار هيونداي في هتلاقي بتاريخ 15 أكتوبر 2026","سجل تغييرات أسعار هيونداي في هتلاقي بتاريخ 22 أكتوبر 2026"),
+            ("تغطية قائمة جي بي أوتو اعتبارًا من 15 أكتوبر 2026","تغطية قائمة 15 أكتوبر السابقة وقائمة 22 أكتوبر الأحدث"),
+            ("نعم، أظهر تحديث 15 أكتوبر زيادة قدرها 25,000 جنيه في سعر كل فئة مقارنة بالقائمة السابقة.","نعم، أظهر تحديث 15 أكتوبر زيادة قدرها 25,000 جنيه لكل فئة، ثم جاءت قائمة 22 أكتوبر بزيادة جديدة بلغت 50,000 جنيه لمعظم الفئات و40,000 جنيه لفئة Night بحسب المصادر المنشورة.")
+        ]
+    else:changes=[]
+    for old,new in changes:
+        content=content.replace(old,new)
+        excerpt=excerpt.replace(old,new)
+    return content,excerpt
+def updated_seo_meta(old):
+    desc=(old.get("meta") or {}).get("_yoast_wpseo_metadesc","")
+    if not desc:return {}
+    new=desc.replace("1.32 مليون","1.34 مليون").replace("1.8 مليون","1.85 مليون").replace("2.4 مليون","2.45 مليون")
+    new=new.replace("1,320,000","1,340,000").replace("1,800,000","1,850,000").replace("2,400,000","2,450,000")
+    return {"_yoast_wpseo_metadesc":new} if new!=desc else {}
 def save_content(old,content,excerpt):
-    if old["content"]==content and old["excerpt"]==excerpt:return
+    seo=updated_seo_meta(old)
+    if old["content"]==content and old["excerpt"]==excerpt and not seo:return
     body={"id":old["id"],"expected_modified_gmt":old["modified_gmt"],"content":content,"excerpt":excerpt}
+    if seo:body["meta"]=seo
     # Do not retry an ambiguous write; verify afterward.
     api("/update-post",body)
     after=post(old["id"])
@@ -78,6 +109,7 @@ def correct_car(c):
     if current_min not in {str(old_min),str(new_min)} or current_max not in oldmax:
         raise RuntimeError("Price drift: "+slug+" min="+current_min+" max="+current_max)
     content,excerpt=revise_text(slug,item["content"],item["excerpt"],prices)
+    content,excerpt=tidy_text(slug,content,excerpt)
     save_content(item,content,excerpt)
     desired={"_a3_price_min":str(new_min),"_a3_price_max":str(new_max),"_a3_source_checked_at":"2026-10-24"}
     before={k:meta(pid,k) for k in desired}
@@ -104,6 +136,7 @@ def correct_article():
         raise RuntimeError("Tucson article mismatch")
     slug="hyundai-tucson-2027-egypt"
     content,excerpt=revise_text(slug,item["content"],item["excerpt"],CARS[0][-1],True)
+    content,excerpt=tidy_text(slug,content,excerpt,article=True)
     save_content(item,content,excerpt)
     result=post(84008)
     if not all(v in result["content"] for v in (MARK,"1,850,000","2,450,000")):raise RuntimeError("Tucson article verification failed")
