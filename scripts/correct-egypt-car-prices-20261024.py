@@ -15,7 +15,7 @@ SOURCES={
 "deepal-s07-2026-egypt":"https://www.masrawy.com/autos/autos_news/details/2026/10/22/3066800"}
 CARS=[
 ("hyundai-tucson-2027-egypt",1800000,2400000,1850000,2450000,{"1,800,000":"1,850,000","1,950,000":"2,000,000","2,050,000":"2,100,000","2,125,000":"2,175,000","2,200,000":"2,240,000","2,300,000":"2,350,000","2,400,000":"2,450,000"}),
-("chery-tiggo-7-pro-max-egypt",1320000,None,1340000,1440000,{"1,320,000":"1,340,000","1,420,000":"1,440,000"}),
+("chery-tiggo-7-pro-max-egypt",1320000,1420000,1340000,1440000,{"1,320,000":"1,340,000","1,420,000":"1,440,000"}),
 ("deepal-s07-2026-egypt",1925000,2015000,1975000,2065000,{"1,925,000":"1,975,000","2,015,000":"2,065,000"})]
 def req(url,body=None,secure=True):
     h=HEAD if secure else {"Accept":"application/json","User-Agent":"A3tal-Price-Correction-Read/1.0","Cache-Control":"no-cache"}
@@ -74,7 +74,7 @@ def correct_car(c):
     row=model(slug);pid=row["id"];item=post(pid)
     if item["slug"]!=slug or item["type"]!="a3_car" or item["featured_media"]!=row["featured_media"]:raise RuntimeError("Unexpected car record: "+slug)
     current_min=meta(pid,"_a3_price_min");current_max=meta(pid,"_a3_price_max")
-    oldmax={str(old_max),str(new_max)} if old_max is not None else {"0","",str(new_max),str(new_min)}
+    oldmax={str(old_max),str(new_max),"0",""} if old_max is not None else {"0","",str(new_max),str(new_min)}
     if current_min not in {str(old_min),str(new_min)} or current_max not in oldmax:
         raise RuntimeError("Price drift: "+slug+" min="+current_min+" max="+current_max)
     content,excerpt=revise_text(slug,item["content"],item["excerpt"],prices)
