@@ -30,3 +30,5 @@ jobs:
           test -s data/editorial/kia-authorized-service-benha-korean-center-20261025.html
       - name: Preflight duplicates then publish three independently sourced posts
         run: python3 -u scripts/publish-suspension-parts-authorized-center-20261025.py
+
+# Retrigger after licensed photo original size guard correction.
