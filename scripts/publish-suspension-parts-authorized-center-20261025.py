@@ -111,7 +111,7 @@ def photograph(d):
     filename=d["file"]
     url="https://commons.wikimedia.org/wiki/Special:Redirect/file/"+urllib.parse.quote(filename,safe="")
     req=urllib.request.Request(url,headers={"User-Agent":"A3tal Editorial/1.0 (credit in body: https://a3tal.com)","Accept":"image/jpeg,image/*"})
-    with urllib.request.urlopen(req,timeout=70) as resp: raw=resp.read(11_000_000)
+    with urllib.request.urlopen(req,timeout=70) as resp: raw=resp.read(22_000_000)
     with Image.open(io.BytesIO(raw)) as im:
         im=ImageOps.exif_transpose(im).convert("RGB")
         if min(im.width,im.height)<700:raise RuntimeError("Insufficient authentic photo resolution: "+filename)
