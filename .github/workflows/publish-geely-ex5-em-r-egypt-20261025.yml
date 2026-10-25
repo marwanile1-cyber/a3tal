@@ -28,3 +28,5 @@ jobs:
           test -s data/editorial/geely-ex5-em-r-price-egypt-20261025.html
       - name: Guarded publish to existing A3tal site through Direct Bridge
         run: python3 -u scripts/publish-geely-ex5-em-r-egypt-20261025.py
+
+# Retry after authenticated duplicate check adjustment.
