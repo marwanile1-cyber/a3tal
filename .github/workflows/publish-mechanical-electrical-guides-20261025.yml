@@ -1,0 +1,31 @@
+name: Publish A3tal mechanical and electrical diagnostic guides
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-mechanical-electrical-guides-20261025.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-two-diagnostic-guides-20261025
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 24
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install licensed photo processor
+        run: python3 -m pip install --quiet Pillow
+      - name: Preflight code and researched article files
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-mechanical-electrical-guides-20261025.py
+          test -s data/editorial/clutch-pedal-sinks-to-floor-hydraulic-diagnosis-20261025.html
+          test -s data/editorial/car-electrical-power-cuts-over-bumps-20261025.html
+      - name: Safeguarded publish and verify live post metadata through A3tal Direct Bridge
+        run: python3 -u scripts/publish-mechanical-electrical-guides-20261025.py
