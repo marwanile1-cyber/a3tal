@@ -1,0 +1,30 @@
+name: Publish Geely EX5 EM-R Egypt launch price guide
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-geely-ex5-em-r-egypt-20261025.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-editorial-geely-ex5-em-r-launch
+  cancel-in-progress: false
+jobs:
+  publish-one:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install real photo processor
+        run: python3 -m pip install --quiet Pillow
+      - name: Verify source and restricted deployment credentials
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-geely-ex5-em-r-egypt-20261025.py
+          test -s data/editorial/geely-ex5-em-r-price-egypt-20261025.html
+      - name: Guarded publish to existing A3tal site through Direct Bridge
+        run: python3 -u scripts/publish-geely-ex5-em-r-egypt-20261025.py
