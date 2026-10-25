@@ -62,17 +62,23 @@ def image(spec):
 def check_duplicate():
     # Exact slug check plus distinct content search across published posts, pages, cars.
     hits=[]
-    for tp in ("posts","pages","a3tal-cars"):
-        for token in ("EX5 EM-R","EX5 EMR","جيلي EX5"):
-            rows=wordpress_list(tp,search=token,per_page=100,_fields="id,slug,title,link,status")
-            if not isinstance(rows,list):raise RuntimeError("Bad WordPress REST search "+tp)
-            for r in rows:
-                t=(r.get("title") or {}).get("rendered","")
-                # Never confuse another EXISTING EX5 variant (EM-i, EV, EX2) with EM-R.
-                if ("em-r" in (t+" "+r.get("slug","")).lower()
-                    or "emr" in (t+" "+r.get("slug","")).lower()
-                    or "إي إم آر" in t):
-                    hits.append({"type":tp,"slug":r["slug"],"id":r["id"],"link":r["link"]})
+    # The production WAF blocks some public REST search query strings from Actions.
+    # Use the authenticated Direct Bridge post/page search, not an unverified skip.
+    for token in ("EX5 EM-R","EX5 EMR","جيلي EX5"):
+        result=jget("/search-posts?"+urllib.parse.urlencode({"search":token,"limit":100}),protected=True)
+        for r in result.get("items",[]):
+            title=r.get("title","")
+            if ("em-r" in (title+" "+r.get("slug","")).lower()
+                or "emr" in (title+" "+r.get("slug","")).lower()
+                or "إي إم آر" in title):
+                hits.append({"type":r.get("type","post"),"slug":r["slug"],"id":r["id"],"link":r["link"]})
+    rows=wordpress_list("a3tal-cars",per_page=100,_fields="id,slug,title,link,status")
+    if not isinstance(rows,list) or len(rows)<26:
+        raise RuntimeError("Car encyclopedia inventory cannot be verified")
+    for r in rows:
+        t=(r.get("title") or {}).get("rendered","")
+        if "em-r" in (t+" "+r.get("slug","")).lower() or "emr" in (t+" "+r.get("slug","")).lower():
+            hits.append({"type":"a3tal-cars","slug":r["slug"],"id":r["id"],"link":r["link"]})
     unique={(r["type"],r["id"]):r for r in hits}
     exact=wordpress_list("posts",slug=SLUG,per_page=5,_fields="id,slug,status,featured_media,content,link,yoast_head_json")
     if len(exact)>1:raise RuntimeError("Duplicate exact slug unexpectedly")
