@@ -1,0 +1,32 @@
+name: Publish suspension parts and authorized Kia Benha service
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-suspension-parts-authorized-center-20261025.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-suspension-parts-service-20261025
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 26
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install licensed real photo processor
+        run: python3 -m pip install --quiet Pillow
+      - name: Verify editorial files and publication script
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-suspension-parts-authorized-center-20261025.py
+          test -s data/editorial/suspension-clunk-after-new-shocks-struts-20261025.html
+          test -s data/editorial/buy-car-spare-parts-using-vin-oem-oes-aftermarket-egypt-20261025.html
+          test -s data/editorial/kia-authorized-service-benha-korean-center-20261025.html
+      - name: Preflight duplicates then publish three independently sourced posts
+        run: python3 -u scripts/publish-suspension-parts-authorized-center-20261025.py
