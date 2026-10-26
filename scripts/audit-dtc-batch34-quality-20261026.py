@@ -46,7 +46,7 @@ def main():
           "words":wc,"source_words":item.get("word_count"),"under_1500":wc<1500,
           "featured_media":mid,"image":image,
           "webp":media.get("mime_type")=="image/webp",
-          "robots_index_allowed":not any(x=="noindex" for x in ((seo.get("robots") or {}).get("index") or []) if isinstance(x,str)),
+          "robots_index_allowed":"noindex" not in str((seo.get("robots") or {}).get("index") or "index").lower(),
           "canonical":canonical,
           "canonical_matches_permalink":canonical.rstrip("/")==str(post.get("link") or "").rstrip("/"),
           "meta_description_present":bool((seo.get("description") or "").strip()),
