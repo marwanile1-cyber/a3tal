@@ -1,0 +1,32 @@
+name: Save unique Yoast descriptions on DTC batch35
+on:
+  workflow_run:
+    workflows: ['Publish ten new DTC batch35 encyclopedic guides']
+    types: [completed]
+  workflow_dispatch:
+permissions: {contents: read}
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  metadata:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate ten meta descriptions
+        run: |
+          python3 -m py_compile scripts/finish-dtc-batch35-yoast-20261026.py
+          python3 - <<'PY'
+          import json
+          d=json.load(open('data/dtc-batch35-yoast-metadesc-20261026.json',encoding='utf8'))
+          codes='P0356 P0483 P0751 P0753 P0872 P0880 U0202 U0203 U0214 U0430'.split()
+          assert d['batch']==35 and list(d['descriptions'])==codes
+          assert len(set(d['descriptions'].values()))==10
+          assert all(105<=len(d['descriptions'][c])<=160 and c in d['descriptions'][c] for c in codes)
+          PY
+      - name: Read live posts, save Yoast snippet only and verify canonical
+        run: python3 -u scripts/finish-dtc-batch35-yoast-20261026.py
