@@ -1,0 +1,27 @@
+name: Finalize Deepal S09 vehicle SEO and article links
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/finalize-deepal-s09-car-seo-links-20261026.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-deepal-s09-2027-car-seo-finalize
+  cancel-in-progress: false
+jobs:
+  verify-seo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check access and code
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/finalize-deepal-s09-car-seo-links-20261026.py
+      - name: Set Deepal brand and indexable car card, then verify live
+        run: python3 -u scripts/finalize-deepal-s09-car-seo-links-20261026.py
