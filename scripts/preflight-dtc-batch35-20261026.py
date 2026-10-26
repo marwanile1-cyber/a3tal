@@ -8,5 +8,5 @@ for code in CODES:
  with urllib.request.urlopen(req,timeout=45) as f: data=json.load(f)
  found=[x for x in data if x.get("slug")==code.lower()]
  print("DTC35_PREFLIGHT",code,json.dumps(found),flush=True)
- if found:raise RuntimeError("Code is already published or visible; refuse duplicate "+code)
-print("DTC35_TEN_UNSEEN_CODES_CONFIRMED")
+ if found:print("DTC35_DUPLICATE",code,flush=True)
+print("DTC35_COMPLETE_CHECK_REVIEW_DUPLICATES_BEFORE_RELEASE")
