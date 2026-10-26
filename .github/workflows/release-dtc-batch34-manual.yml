@@ -1,0 +1,40 @@
+name: Publish batch34 ten new original DTC guides
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/release-dtc-batch34-manual.yml']
+  workflow_dispatch:
+permissions: {contents: read}
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  release-batch34:
+    runs-on: ubuntu-latest
+    timeout-minutes: 125
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3TAL_BATCH34_RELEASE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m pip install -q Pillow
+      - name: Check all new articles are unique and over 1500 words
+        run: |
+          python3 -m py_compile scripts/release-dtc-batch34-manual.py
+          python3 - <<'PY'
+          import json,re
+          b=json.load(open('data/dtc-original-batch-34.json',encoding='utf8'))
+          codes='P0355 P0482 P0744 U0201 U0213 U0429 C0034 C0047 B1448 B1449'.split()
+          assert b['batch']==34 and len(b['items'])==10
+          assert [i['code'] for i in b['items']]==codes
+          assert len(set(codes))==10
+          assert {p:sum(c.startswith(p) for c in codes) for p in 'PUCB'}=={'P':3,'U':3,'C':2,'B':2}
+          for i in b['items']:
+              words=len(re.sub('<[^>]+>',' ',i['content']).split())
+              assert words>=1500 and words==i['word_count'] and i['qa']['ready_for_publication'] is True,(i['code'],words)
+              assert len(re.findall('<h2>',i['content']))>=12
+              assert i['source'].startswith('https://') and i['media_status']=='pending_original_photo'
+              print('BATCH34_EDITORIAL_OK',i['code'],words)
+          PY
+      - name: Publish new pages and upload labeled temporary WebP via bridge
+        run: python3 -u scripts/release-dtc-batch34-manual.py
