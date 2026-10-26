@@ -1,0 +1,67 @@
+{
+  "batch": 35,
+  "photos_current": "Interim reused photographic WebP covers explicitly labeled temporary",
+  "original_briefs": [
+    {
+      "code": "P0356",
+      "scene": "فني يفحص موصل كويل الإشعال F بأوسيلوسكوب بجوار محرك حقيقي، دون تحديد أسطوانة ثابتة لكل المركبات",
+      "format": "original 1200x675 photographic WebP",
+      "status": "pending technical and provenance QA"
+    },
+    {
+      "code": "P0483",
+      "scene": "ردياتير ومروحة كهربائية متوقفة وفني يقارن أمر PWM وحرارة سائل التبريد بأجهزة تشخيص",
+      "format": "original 1200x675 photographic WebP",
+      "status": "pending technical and provenance QA"
+    },
+    {
+      "code": "P0751",
+      "scene": "جسم بلوف ناقل أوتوماتيكي وShift Solenoid A مع شاشة نسب الغيارات المطلوبة والفعلية",
+      "format": "original 1200x675 photographic WebP",
+      "status": "pending technical and provenance QA"
+    },
+    {
+      "code": "P0753",
+      "scene": "فحص فيشة ناقل أوتوماتيكي ودائرة سولينويد A بالقياس الكهربائي دون أي توصيل بطارية مباشر",
+      "format": "original 1200x675 photographic WebP",
+      "status": "pending technical and provenance QA"
+    },
+    {
+      "code": "P0872",
+      "scene": "فني يراجع موصل حساس ضغط زيت الفتيس C وبيانات TCM مع عينة ATF",
+      "format": "original 1200x675 photographic WebP",
+      "status": "pending technical and provenance QA"
+    },
+    {
+      "code": "P0880",
+      "scene": "مسار تغذية TCM وفيوزات الناقل والضفيرة قرب حاملة البطارية حيث ينطبق OEM",
+      "format": "original 1200x675 photographic WebP",
+      "status": "pending technical and provenance QA"
+    },
+    {
+      "code": "U0202",
+      "scene": "ضفيرة باب في جراب مطاطي ووحدة Door D على جهاز الفحص دون الادعاء بجهة باب ثابتة",
+      "format": "original 1200x675 photographic WebP",
+      "status": "pending technical and provenance QA"
+    },
+    {
+      "code": "U0203",
+      "scene": "فني يختبر كمبيوتر Door E في الكسوة وإشارة الاتصال مع مقارنتها بمخطط الشركة",
+      "format": "original 1200x675 photographic WebP",
+      "status": "pending technical and provenance QA"
+    },
+    {
+      "code": "U0214",
+      "scene": "مفتاح ذكي ووحدة RFA وجهاز فحص شبكة المركبة دون إظهار بيانات أمان أو رموز تعريف",
+      "format": "original 1200x675 photographic WebP",
+      "status": "pending technical and provenance QA"
+    },
+    {
+      "code": "U0430",
+      "scene": "حساس TPMS مباشر وقياس ضغط إطار حقيقي وجهاز قراءة IDs في ورشة إطارات",
+      "format": "original 1200x675 photographic WebP",
+      "status": "pending technical and provenance QA"
+    }
+  ],
+  "videos": "none added without a verified relevant repair demonstration"
+}
