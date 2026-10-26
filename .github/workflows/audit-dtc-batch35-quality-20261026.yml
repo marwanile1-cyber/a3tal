@@ -1,0 +1,25 @@
+name: Final live quality audit for DTC batch35
+on:
+  workflow_run:
+    workflows: ['Save unique Yoast descriptions on DTC batch35']
+    types: [completed]
+  workflow_dispatch:
+permissions: {contents: read}
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  audit:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read live WordPress pages and fail if any editorial or SEO gate fails
+        run: python3 -u scripts/audit-dtc-batch35-quality-20261026.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dtc-batch35-quality-evidence
+          path: dtc-batch35-live-quality-report.json
+          if-no-files-found: warn
