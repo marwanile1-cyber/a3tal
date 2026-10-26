@@ -1,0 +1,40 @@
+name: Publish ten new DTC batch35 encyclopedic guides
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/release-dtc-batch35-manual.yml']
+  workflow_dispatch:
+permissions: {contents: read}
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 125
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3TAL_BATCH35_RELEASE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m pip install -q Pillow
+      - name: Enforce ten unique editorial articles over 1500 words
+        run: |
+          python3 -m py_compile scripts/release-dtc-batch35-manual.py
+          python3 - <<'PY'
+          import json,re
+          d=json.load(open('data/dtc-original-batch-35.json',encoding='utf8'))
+          codes='P0356 P0483 P0751 P0753 P0872 P0880 U0202 U0203 U0214 U0430'.split()
+          assert d['batch']==35 and [v['code'] for v in d['items']]==codes
+          assert len(set(codes))==10
+          for item in d['items']:
+              wc=len(re.sub('<[^>]+>',' ',item['content']).split())
+              assert wc>=1500 and item['word_count']==wc and item['qa']['ready_for_publication'],(item['code'],wc)
+              assert item['media_status']=='pending_original_photo'
+              assert item['source'].startswith('https://')
+              assert item['content'].count('<h2>')>=12
+              assert '/dtc/' in item['content']
+              print('DTC35_EDITORIAL_PASS',item['code'],wc)
+          PY
+      - name: Guarded one-time publication and labeled temporary image verification
+        run: python3 -u scripts/release-dtc-batch35-manual.py
