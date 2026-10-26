@@ -1,0 +1,31 @@
+name: Publish October 2026 verified Delta Kia centers and spare parts snapshot
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-authorized-delta-service-and-parts-market-20261026.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-verified-delta-centers-market-prices-20261026
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install licensed photographic WebP processor
+        run: python3 -m pip install --quiet Pillow
+      - name: Validate editorial source content and publishing guardrails
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-authorized-delta-service-and-parts-market-20261026.py
+          test -s data/editorial/kia-authorized-service-delta-mansoura-tanta-mahalla-20261026.html
+          test -s data/editorial/egypt-car-spare-parts-prices-october-2026-verified-market-update.html
+      - name: Verify duplicates and publish licensed photographed source-linked articles
+        run: python3 -u scripts/publish-authorized-delta-service-and-parts-market-20261026.py
