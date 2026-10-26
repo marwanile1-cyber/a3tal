@@ -1,0 +1,31 @@
+name: Add unique Yoast metadata on DTC batch34
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/finish-dtc-batch34-yoast-20261026.yml']
+  workflow_dispatch:
+permissions: {contents: read}
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  metadata-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Preflight ten exact code snippets
+        run: |
+          python3 -m py_compile scripts/finish-dtc-batch34-yoast-20261026.py
+          python3 - <<'PY'
+          import json
+          x=json.load(open('data/dtc-batch34-yoast-metadesc-20261026.json',encoding='utf8'))
+          expected='P0355 P0482 P0744 U0201 U0213 U0429 C0034 C0047 B1448 B1449'.split()
+          assert x['batch']==34 and list(x['descriptions'])==expected
+          assert len(set(x['descriptions'].values()))==10
+          assert all(105<=len(x['descriptions'][c])<=160 and c in x['descriptions'][c] for c in expected)
+          PY
+      - name: Save Yoast description only after post and photos exist
+        run: python3 -u scripts/finish-dtc-batch34-yoast-20261026.py
