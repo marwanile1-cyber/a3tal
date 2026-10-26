@@ -1,0 +1,30 @@
+name: Publish Deepal S09 2027 Egypt prices and car encyclopedia entry
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-deepal-s09-2027-egypt-prices-20261026.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-deepal-s09-2027-price-new-car
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 26
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install editorial WebP image processor
+        run: python3 -m pip install --quiet Pillow
+      - name: Verify research and script, fail closed without secret
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-deepal-s09-2027-egypt-prices-20261026.py
+          test -s data/editorial/deepal-s09-2027-egypt-price-trims-reev-20261026.html
+      - name: Safely publish Deepal S09 review with model-specific images and linked car record
+        run: python3 -u scripts/publish-deepal-s09-2027-egypt-prices-20261026.py
