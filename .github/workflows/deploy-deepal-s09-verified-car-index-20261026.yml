@@ -1,0 +1,50 @@
+name: Deploy scoped indexable Deepal S09 encyclopedia car
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/deploy-deepal-s09-verified-car-index-20261026.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-theme
+  cancel-in-progress: false
+jobs:
+  guarded-car-index:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify PHP and publisher source
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          php -l theme-source/a3tal-global/functions.php
+          python3 -m py_compile scripts/deploy-deepal-s09-verified-model-seo-20261026.py
+          test -s data/editorial/deepal-s09-2027-encyclopedia-vehicle-20261026.html
+      - name: Capture exact live production theme for rollback
+        run: python3 -u scripts/deploy-deepal-s09-verified-model-seo-20261026.py prepare --state-dir "$RUNNER_TEMP/s09-index"
+      - name: Encrypt production backup before modification
+        run: |
+          openssl enc -aes-256-cbc -salt -pbkdf2 -iter 200000 -pass env:A3TAL_API_KEY \
+            -in "$RUNNER_TEMP/s09-index/s09-live-theme-backup.json" \
+            -out "$RUNNER_TEMP/s09-index/rollback.enc"
+      - name: Store encrypted original theme snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-s09-car-seo-theme-rollback-${{ github.run_id }}
+          path: ${{ runner.temp }}/s09-index/rollback.enc
+          retention-days: 14
+          if-no-files-found: error
+      - name: Improve only the source-verified S09 model card content
+        run: python3 -u scripts/deploy-deepal-s09-verified-model-seo-20261026.py update-car --state-dir "$RUNNER_TEMP/s09-index"
+      - name: Deploy surgical gated S09 SEO exception without affecting other cars
+        run: python3 -u scripts/deploy-deepal-s09-verified-model-seo-20261026.py deploy --state-dir "$RUNNER_TEMP/s09-index"
+      - name: Verify public car robots canonical and direct editorial journey
+        run: python3 -u scripts/deploy-deepal-s09-verified-model-seo-20261026.py verify --state-dir "$RUNNER_TEMP/s09-index"
+      - name: Roll back live theme if any deployment verification fails
+        if: failure()
+        run: python3 -u scripts/deploy-deepal-s09-verified-model-seo-20261026.py rollback --state-dir "$RUNNER_TEMP/s09-index"
