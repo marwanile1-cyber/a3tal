@@ -1,0 +1,23 @@
+name: Final read only quality check DTC batch34
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/audit-dtc-batch34-quality-20261026.yml']
+  workflow_dispatch:
+permissions: {contents: read}
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -u scripts/audit-dtc-batch34-quality-20261026.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dtc-batch34-live-qa
+          path: dtc-batch34-live-quality-report.json
+          if-no-files-found: warn
