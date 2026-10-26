@@ -1073,3 +1073,50 @@ add_filter('wpseo_opengraph_image_height',static function($height){
 add_filter('wpseo_opengraph_image_type',static function($type){
   return a3g_car_featured_social_meta($type,'type');
 },90);
+
+
+/* A3TAL-DEEPAL-S09-VERIFIED-CAR-INDEX-20261026:START */
+ /**
+  * Keep verified, substantive Deepal S09 model page indexable alongside its
+  * separately useful full-price analysis. Does not unlock thin car records,
+  * override other cars' robots, or touch unrelated sitemap/canonical rules.
+  */
+function a3g_verified_deepal_s09_car_indexable_20261026(): bool {
+    if (!is_singular('a3_car')) return false;
+    $pid = (int) get_queried_object_id();
+    if ($pid !== 84627) return false;
+    if (get_post_meta($pid, '_a3_entity_stub', true)) return false;
+    if (get_post_meta($pid, '_a3_source_checked_at', true) !== '2026-10-26') return false;
+    if ((int) get_post_meta($pid, '_a3_price_min', true) <= 0) return false;
+    if ((string) get_post_meta($pid, '_a3_related_post_ids', true) !== '84623') return false;
+    if (!has_post_thumbnail($pid)) return false;
+    if (strlen((string) get_post_field('post_content', $pid)) < 6500) return false;
+    return true;
+}
+add_filter('wpseo_robots', static function ($directive) {
+    if (!a3g_verified_deepal_s09_car_indexable_20261026()) return $directive;
+    return 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1';
+}, 10011);
+add_filter('wpseo_robots_array', static function ($robots) {
+    if (!a3g_verified_deepal_s09_car_indexable_20261026()) return $robots;
+    if (!is_array($robots)) $robots = [];
+    unset($robots['noindex'], $robots['nofollow']);
+    $robots['index']='index';
+    $robots['follow']='follow';
+    $robots['max-snippet']='max-snippet:-1';
+    $robots['max-image-preview']='max-image-preview:large';
+    $robots['max-video-preview']='max-video-preview:-1';
+    return $robots;
+}, 10011);
+add_filter('wp_robots', static function ($robots) {
+    if (!a3g_verified_deepal_s09_car_indexable_20261026()) return $robots;
+    unset($robots['noindex'], $robots['nofollow']);
+    $robots['index']=true;
+    $robots['follow']=true;
+    return $robots;
+}, 10011);
+add_filter('wpseo_canonical', static function ($url) {
+    if (!a3g_verified_deepal_s09_car_indexable_20261026()) return $url;
+    return get_permalink(84627) ?: $url;
+}, 10011);
+/* A3TAL-DEEPAL-S09-VERIFIED-CAR-INDEX-20261026:END */
