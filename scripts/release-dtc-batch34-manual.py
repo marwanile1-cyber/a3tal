@@ -165,7 +165,7 @@ def main():
    "meta":{"_a3_dtc_code":code,"_a3_dtc_system":row["system"],
            "_a3_code_scope":row["scope"],"_a3_source_url":row["source"],
            "_a3_source_checked_at":"2026-10-18",
-           "_a3_dtc_batch":"A3TAL-DTC-2026-10-18-34"}}
+           "_a3_dtc_batch":"A3TAL-DTC-2026-10-26-34"}}
   log("PUBLISH_ATTEMPT",code)
   try:res=admin(**entity)
   except Exception as exc:
