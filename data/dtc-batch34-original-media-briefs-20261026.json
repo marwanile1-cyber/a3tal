@@ -1,0 +1,98 @@
+{
+  "batch": 34,
+  "media_status": "temporary stock-derived covers only, not original",
+  "video_status": "unverified/no embedding until corresponding OEM applicable instructional content exists",
+  "policy": "Do not close media QA until one independently produced technically appropriate cover for each code; do not mislabel temporary or recycled imagery as exclusive.",
+  "briefs": [
+    {
+      "code": "P0355",
+      "scene": "لقطة واقعية لمحرك 6 أو 8 أسطوانات، الفني يفحص فيشة كويل بمقياس فولت مناسب، مع إظهار الكويلات وفتحة البوجيه، دون إظهار رقم أسطوانة زائف",
+      "alt": "ملف الإشعال E، التوصيلات، اختبار آمن",
+      "output": "1600x900 original photorealistic WebP",
+      "status": "not_created",
+      "usage": "featured + inline if technically applicable",
+      "requires": "technical reviewer confirmation of component, OEM fit, provenance and reproduction rights"
+    },
+    {
+      "code": "P0482",
+      "scene": "صورة فنية حقيقية للردياتير ومروحة التبريد الكهربائية وريلايات لوحة الفيوز مع أدوات فحص وقاية، بدون عمل قرب ريش مروحة تدور",
+      "alt": "دائرة تحكم المروحة وعلبة الريلاي",
+      "output": "1600x900 original photorealistic WebP",
+      "status": "not_created",
+      "usage": "featured + inline if technically applicable",
+      "requires": "technical reviewer confirmation of component, OEM fit, provenance and reproduction rights"
+    },
+    {
+      "code": "P0744",
+      "scene": "لقطة ورشة لفيشة ناقل حركة أوتوماتيكي ومراقبة جهاز فحص أمامه بيانات TCC، مع تجنب ادعاء تصوير سولينويد داخل ناقل مغلق",
+      "alt": "الفيشة الخارجية للفتيس ومسار سولينويد TCC",
+      "output": "1600x900 original photorealistic WebP",
+      "status": "not_created",
+      "usage": "featured + inline if technically applicable",
+      "requires": "technical reviewer confirmation of component, OEM fit, provenance and reproduction rights"
+    },
+    {
+      "code": "U0201",
+      "scene": "صورة لقوس ضفيرة باب السيارة داخل جراب مطاطي عند المفصلة وفحص آثار قطع أسلاك داخلية بأمان",
+      "alt": "ضفيرة وحدة الباب C، وليس بابًا محددًا دون OEM",
+      "output": "1600x900 original photorealistic WebP",
+      "status": "not_created",
+      "usage": "featured + inline if technically applicable",
+      "requires": "technical reviewer confirmation of component, OEM fit, provenance and reproduction rights"
+    },
+    {
+      "code": "U0213",
+      "scene": "صورة واقعية لمرآة جانبية قابلة للطي وموصلها بعد فك كسوة الباب، أدوات تشخيص بعيدة عن الوسائد الهوائية",
+      "alt": "وحدة التحكم في المرايا ومسار تغذيتها",
+      "output": "1600x900 original photorealistic WebP",
+      "status": "not_created",
+      "usage": "featured + inline if technically applicable",
+      "requires": "technical reviewer confirmation of component, OEM fit, provenance and reproduction rights"
+    },
+    {
+      "code": "U0429",
+      "scene": "لقطة لجهاز فحص يعرض رسالة بيانات SCCM مع طارة سيارة حديثة، دون تفكيك أو لمس موصلات وسادة هوائية",
+      "alt": "وحدة عمود التوجيه والرسائل الرقمية",
+      "output": "1600x900 original photorealistic WebP",
+      "status": "not_created",
+      "usage": "featured + inline if technically applicable",
+      "requires": "technical reviewer confirmation of component, OEM fit, provenance and reproduction rights"
+    },
+    {
+      "code": "C0034",
+      "scene": "صورة فوتوغرافية مقربة لحساس سرعة العجلة الأمامية اليمنى بجوار الهَب وحلقة الاستشعار، السيارة مرفوعة على رافعة مؤمنة",
+      "alt": "حساس ABS الأمامي الأيمن وضفيرته",
+      "output": "1600x900 original photorealistic WebP",
+      "status": "not_created",
+      "usage": "featured + inline if technically applicable",
+      "requires": "technical reviewer confirmation of component, OEM fit, provenance and reproduction rights"
+    },
+    {
+      "code": "C0047",
+      "scene": "صورة واقعية لمعزز الفرامل في حجرة المحرك وخط الفراغ أو وحدة التعزيز الملائمة، بموضع وقاية دون فتح خطوط ضغط",
+      "alt": "حساس ضغط معزز الفرامل، دون تعميم نوع الباكم",
+      "output": "1600x900 original photorealistic WebP",
+      "status": "not_created",
+      "usage": "featured + inline if technically applicable",
+      "requires": "technical reviewer confirmation of component, OEM fit, provenance and reproduction rights"
+    },
+    {
+      "code": "B1448",
+      "scene": "لقطة توثيقية لسيرفو صغير متصل ببوابة توزيع فتحة وجه الراكب في صندوق HVAC تويوتا متعدد المناطق، مع القطعة الأصلية",
+      "alt": "سيرفو فتحات الوجه جهة الراكب في التجهيزات المدعومة",
+      "output": "1600x900 original photorealistic WebP",
+      "status": "not_created",
+      "usage": "featured + inline if technically applicable",
+      "requires": "technical reviewer confirmation of component, OEM fit, provenance and reproduction rights"
+    },
+    {
+      "code": "B1449",
+      "scene": "لقطة توثيقية لمجموعة تكييف خلفي في لاندكروزر أثناء الوصول الآمن إلى سيرفو بوابة التوزيع خلف الكسوة",
+      "alt": "بوابة توزيع هواء التكييف الخلفي تويوتا",
+      "output": "1600x900 original photorealistic WebP",
+      "status": "not_created",
+      "usage": "featured + inline if technically applicable",
+      "requires": "technical reviewer confirmation of component, OEM fit, provenance and reproduction rights"
+    }
+  ]
+}
