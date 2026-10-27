@@ -1,0 +1,58 @@
+{
+  "batch": 36,
+  "status": "temporary existing photographic WebP assets used on site and explicitly labeled; ten exclusive photographs not created",
+  "required": "one technically accurate 1200x675 or 1600x900 original WebP per article with no watermark and valid rights",
+  "briefs": [
+    {
+      "code": "P0357",
+      "scene": "صورة فوتوغرافية واقعية لمحرك بنزين متعدد الكويلات مع فني يفحص Coil G الحقيقي حسب مخطط VIN وأوسيلوسكوب، بدون رقم أسطوانة غير مثبت.",
+      "status": "pending"
+    },
+    {
+      "code": "P0358",
+      "scene": "لقطة مكبرة لكويل H في محرك V8 مطابقة لتجهيز تويوتا المناسب، اختبار فيشة الإشعال وأداة قياس بعيدة عن الجهد العالي.",
+      "status": "pending"
+    },
+    {
+      "code": "P0484",
+      "scene": "مروحة ردّياتير متوقفة مع فني يستخدم ملقط تيار كهربائي لفحص سحب الأمبير والفيوزات بعيدًا عن الريش المتحركة.",
+      "status": "pending"
+    },
+    {
+      "code": "P0758",
+      "scene": "فيشة خارجية لناقل أوتوماتيكي وملف سولينويد B مع مقياس كهرباء وفق مخطط ناقل مناسب، دون أسلاك موصولة مباشرة بالبطارية.",
+      "status": "pending"
+    },
+    {
+      "code": "P0759",
+      "scene": "ضفيرة ناقل أوتوماتيك قرب فيشة محكمة مع اختبار اتصال متقطع، وصف موضع الحركة قرب علبة الفتيس.",
+      "status": "pending"
+    },
+    {
+      "code": "P0761",
+      "scene": "جسم بلوف ناقل أوتوماتيكي مفتوح على طاولة صيانة نظيفة وصمام Shift Solenoid C مع مخطط ضغط/نسبة غيار، بدون تصوير ناقل غير مطابق.",
+      "status": "pending"
+    },
+    {
+      "code": "P0873",
+      "scene": "حساس/مفتاح TFP Switch 3 لناقل GM 6T70 مناسب، مع جهاز فحص يظهر حالة HIGH/LOW في موضع خدمة مأمون.",
+      "status": "pending"
+    },
+    {
+      "code": "U0204",
+      "scene": "ضفيرة مفصلة باب الراكب مع اختبار وحدة Door Module F في تطبيق دودج مناسب، مع عدم تعميم الجهة على كل السيارات.",
+      "status": "pending"
+    },
+    {
+      "code": "U0205",
+      "scene": "وحدة باب G في نظام أبواب متعددة لسيارة تجارية مجهزة فعليًا، مع ضفيرة مفصلة معزولة وجهاز تشخيص شبكة.",
+      "status": "pending"
+    },
+    {
+      "code": "U0212",
+      "scene": "وحدة Steering Column Control Module خلف غطاء التوجيه مع أداة مسح شبكة، وإبقاء كل موصلات الوسادة الهوائية دون لمس.",
+      "status": "pending"
+    }
+  ],
+  "videos": "No video embedded without source/model applicability check"
+}
