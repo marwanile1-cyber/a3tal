@@ -31,3 +31,5 @@ jobs:
           test -s data/editorial/jaecoo-j5-2027-egypt-encyclopedia-20261027.html
       - name: Publish original deep articles with true 1200x675 Discover covers and add J5 car model
         run: python3 -u scripts/publish-jaecoo-j5-review-comparison-service-20261027.py
+
+# Re-run after creating new Jaecoo brand taxonomy term (already published posts are idempotently reused).
