@@ -1,0 +1,38 @@
+name: Publish ten new DTC batch36 encyclopedic guides
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/release-dtc-batch36-manual.yml']
+  workflow_dispatch:
+permissions: {contents: read}
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 125
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3TAL_BATCH36_RELEASE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m pip install -q Pillow
+      - name: Verify ten unique, original 1500+ word code manuscripts
+        run: |
+          python3 -m py_compile scripts/release-dtc-batch36-manual.py
+          python3 - <<'PY'
+          import json,re
+          d=json.load(open('data/dtc-original-batch-36.json',encoding='utf8'))
+          codes='P0357 P0358 P0484 P0758 P0759 P0761 P0873 U0204 U0205 U0212'.split()
+          assert d['batch']==36 and [x['code'] for x in d['items']]==codes
+          assert len(set(codes))==10
+          for x in d['items']:
+              wc=len(re.sub(r'<[^>]+>',' ',x['content']).split())
+              assert wc>=1500 and x['word_count']==wc and x['qa']['ready_for_publication'],(x['code'],wc)
+              assert x['content'].count('<h2>')>=12
+              assert x['media_status']=='pending_original_photo' and '/dtc/' in x['content']
+              print('DTC36_SOURCE_ARTICLE_VERIFIED',x['code'],wc)
+          PY
+      - name: Publish all ten via Direct Bridge and verify live WebP share photos
+        run: python3 -u scripts/release-dtc-batch36-manual.py
