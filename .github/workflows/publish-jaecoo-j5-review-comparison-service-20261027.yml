@@ -1,0 +1,33 @@
+name: Publish Discover-ready Jaecoo J5 review comparison and verified agent guide
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-jaecoo-j5-review-comparison-service-20261027.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-discover-jaecoo-j5-egypt-2027
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare large WebP images and original photo verification
+        run: python3 -m pip install --quiet Pillow
+      - name: Check each editorial source and publication code
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-jaecoo-j5-review-comparison-service-20261027.py
+          test -s data/editorial/jaecoo-j5-2027-egypt-full-review-price-20261027.html
+          test -s data/editorial/jaecoo-j5-vs-kia-seltos-2027-comparison-20261027.html
+          test -s data/editorial/jaecoo-egypt-agent-service-maintenance-20261027.html
+          test -s data/editorial/jaecoo-j5-2027-egypt-encyclopedia-20261027.html
+      - name: Publish original deep articles with true 1200x675 Discover covers and add J5 car model
+        run: python3 -u scripts/publish-jaecoo-j5-review-comparison-service-20261027.py
