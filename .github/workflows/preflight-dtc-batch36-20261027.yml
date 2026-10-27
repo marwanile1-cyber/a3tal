@@ -1,0 +1,14 @@
+name: Preflight DTC batch36 for duplicate slugs
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/preflight-dtc-batch36-20261027.yml']
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -u scripts/preflight-dtc-batch36-20261027.py
