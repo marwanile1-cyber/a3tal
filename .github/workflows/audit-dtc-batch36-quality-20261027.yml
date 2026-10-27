@@ -1,0 +1,25 @@
+name: Final live quality audit DTC batch36
+on:
+  workflow_run:
+    workflows: ['Save Yoast SEO descriptions DTC batch36']
+    types: [completed]
+  workflow_dispatch:
+permissions: {contents: read}
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  audit:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect ten live articles, WebP, OG, index, links and metadata
+        run: python3 -u scripts/audit-dtc-batch36-quality-20261027.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dtc-batch36-final-readonly-report
+          path: dtc-batch36-live-quality-report.json
+          if-no-files-found: warn
