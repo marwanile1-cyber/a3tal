@@ -180,6 +180,16 @@ def main():
     for a in ARTICLES:
         data[a["slug"]]=publish(a)
         time.sleep(2)
+    # The Jaecoo brand debuted in Egypt on Oct 26 and doesn't yet exist in this car taxonomy.
+    # The bridge refuses assigning a nonexistent brand; safely create only the exact slug.
+    brands=request(SITE+"/wp-json/wp/v2/a3_brand?"+urllib.parse.urlencode({"slug":"jaecoo","_fields":"id,name,slug"}))
+    if not brands:
+        res=bridge("/admin",{"op":"term_upsert","taxonomy":"a3_brand","name":"JAECOO","slug":"jaecoo"})
+        if not (res.get("ok") and (res.get("result") or {}).get("term_id")):
+            raise RuntimeError("Jaecoo brand term creation not confirmed")
+        print("NEW_JAECOO_BRAND_TERM_VERIFIED",res["result"]["term_id"],flush=True)
+    else:
+        print("EXISTING_JAECOO_BRAND_TERM",brands[0]["id"],flush=True)
     car_record(data[ARTICLES[0]["slug"]],data[ARTICLES[1]["slug"]],data[ARTICLES[2]["slug"]],prior)
     print("JAECOO_J5_FULL_REVIEW_COMPARISON_AGENT_GUIDE_AND_CAR_CATALOG_RELEASE_COMPLETE",flush=True)
 if __name__=="__main__":main()
