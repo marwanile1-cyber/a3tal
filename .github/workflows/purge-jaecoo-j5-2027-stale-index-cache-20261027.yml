@@ -1,0 +1,27 @@
+name: Refresh cached JAECOO J5 2027 car index and canonical
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/purge-jaecoo-j5-2027-stale-index-cache-20261027.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-cache
+  cancel-in-progress: false
+jobs:
+  verify-cache:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile guarded cache QA
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/purge-jaecoo-j5-2027-index-cache-20261027.py
+      - name: Refresh cache after verified new J5 source SEO and QA public canonical
+        run: python3 -u scripts/purge-jaecoo-j5-2027-index-cache-20261027.py
