@@ -1,0 +1,38 @@
+name: Publish ten new DTC batch37 encyclopedic guides
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/release-dtc-batch37-manual.yml']
+  workflow_dispatch:
+permissions: {contents: read}
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 135
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3TAL_BATCH37_RELEASE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install WebP rendering
+        run: python3 -m pip install -q Pillow
+      - name: Validate ten unique articles and review flags
+        run: |
+          python3 -m py_compile scripts/release-dtc-batch37-manual.py
+          python3 - <<'PY'
+          import json,re
+          m=json.load(open('data/dtc-original-batch-37.json',encoding='utf8'))
+          codes='P0359 P0360 P0485 P0762 P0763 P0874 U0206 U0207 U0215 U0216'.split()
+          assert m['batch']==37 and [x['code'] for x in m['items']]==codes and len(set(codes))==10
+          for x in m['items']:
+              wc=len(re.sub(r'<[^>]+>',' ',x['content']).split())
+              assert wc>=1500 and x['word_count']==wc and x['qa']['ready_for_publication']
+              assert x['content'].count('<h2>')>=15 and x['media_status']=='pending_original_photo'
+              assert x['source'].startswith('https://') and '/dtc/' in x['content']
+              print('BATCH37_EDITORIAL_PASS',x['code'],wc)
+          PY
+      - name: Publish WordPress with duplicate and revision guard and verify all WebP OG
+        run: python3 -u scripts/release-dtc-batch37-manual.py
