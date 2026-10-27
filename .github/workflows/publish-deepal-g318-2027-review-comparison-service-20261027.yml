@@ -1,0 +1,33 @@
+name: Publish verified 2027 Deepal G318 review comparison service and car
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-deepal-g318-2027-review-comparison-service-20261027.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-new-2027-g318-car-reviews-comparison-centers
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install real photographic source WebP processor
+        run: python3 -m pip install --quiet Pillow
+      - name: Check source assets, words, release code and bridge secret
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-deepal-g318-review-comparison-service-20261027.py
+          test -s data/editorial/deepal-g318-2027-egypt-full-review-20261027.html
+          test -s data/editorial/deepal-g318-vs-s09-2027-egypt-comparison-20261027.html
+          test -s data/editorial/deepal-egypt-official-centers-service-booking-20261027.html
+          test -s data/editorial/deepal-g318-2027-egypt-encyclopedia-20261027.html
+      - name: Idempotent WordPress post bundle and deep-linked model publishing with live readback
+        run: python3 -u scripts/publish-deepal-g318-review-comparison-service-20261027.py
