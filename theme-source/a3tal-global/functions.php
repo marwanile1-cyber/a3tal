@@ -1169,3 +1169,50 @@ add_filter('wpseo_canonical',static function($canonical){
     return get_permalink(84672)?:$canonical;
 },10012);
 /* A3TAL-DEEPAL-G318-VERIFIED-CAR-INDEX-20261027:END */
+
+
+/* A3TAL-JAECOO-J5-VERIFIED-CAR-INDEX-20261027:START */
+/** Index only the substantive, fresh Jaecoo J5 car encyclopedia entry.
+ * Other new and thin records remain excluded until independently reviewed.
+ */
+function a3g_verified_jaecoo_j5_indexable_20261027(): bool {
+    if (!is_singular('a3_car')) return false;
+    $id=(int)get_queried_object_id();
+    if ($id!==84715) return false;
+    if ((string)get_post_field('post_name',$id)!=='jaecoo-j5-2027-egypt') return false;
+    if ((string)get_post_meta($id,'_a3_source_checked_at',true)!=='2026-10-27') return false;
+    if (get_post_meta($id,'_a3_entity_stub',true)) return false;
+    if ((int)get_post_meta($id,'_a3_price_min',true)!==1195000) return false;
+    if ((int)get_post_meta($id,'_a3_price_max',true)!==1325000) return false;
+    if ((string)get_post_meta($id,'_a3_related_post_ids',true)!=='84703,84707,84711') return false;
+    if (strlen((string)get_post_field('post_content',$id))<8500) return false;
+    if (!has_post_thumbnail($id)) return false;
+    return true;
+}
+add_filter('wpseo_robots', static function($robots){
+    if (!a3g_verified_jaecoo_j5_indexable_20261027()) return $robots;
+    return 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1';
+},10013);
+add_filter('wpseo_robots_array',static function($robots){
+    if (!a3g_verified_jaecoo_j5_indexable_20261027()) return $robots;
+    if (!is_array($robots)) $robots=[];
+    unset($robots['noindex'],$robots['nofollow']);
+    $robots['index']='index';
+    $robots['follow']='follow';
+    $robots['max-snippet']='max-snippet:-1';
+    $robots['max-image-preview']='max-image-preview:large';
+    $robots['max-video-preview']='max-video-preview:-1';
+    return $robots;
+},10013);
+add_filter('wp_robots',static function($robots){
+    if (!a3g_verified_jaecoo_j5_indexable_20261027()) return $robots;
+    unset($robots['noindex'],$robots['nofollow']);
+    $robots['index']=true;
+    $robots['follow']=true;
+    return $robots;
+},10013);
+add_filter('wpseo_canonical',static function($url){
+    if (!a3g_verified_jaecoo_j5_indexable_20261027()) return $url;
+    return get_permalink(84715)?:$url;
+},10013);
+/* A3TAL-JAECOO-J5-VERIFIED-CAR-INDEX-20261027:END */
