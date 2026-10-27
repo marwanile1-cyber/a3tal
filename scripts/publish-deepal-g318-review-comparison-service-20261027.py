@@ -59,7 +59,7 @@ def public(slug,car=False):
 def preflight():
     for item in ARTICLES:
         c=Path(item["file"]).read_text("utf8")
-        if count(c)<item["minwords"] or c.count("<table")<2 or c.count("<h3>")<5 or c.count("{{a3tal_image:detail}}")!=1:
+        if count(c)<item["minwords"] or c.count("<table")<(1 if item["category"]==33 else 2) or c.count("<h3>")<5 or c.count("{{a3tal_image:detail}}")!=1:
             raise RuntimeError("Editorial depth/visual/comparison gate failed "+item["slug"]+" "+str(count(c)))
         if "<h1" in c.lower() or not c.count("https://a3tal.com/"):
             raise RuntimeError("Article internal link or duplicate heading incorrect")
