@@ -1,0 +1,27 @@
+name: Flush stale G318 2027 car index page cache and verify canonical
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/purge-deepal-g318-2027-stale-index-cache-20261027.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-cache
+  cancel-in-progress: false
+jobs:
+  flush:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate cache QA and credentials
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/purge-deepal-g318-2027-cache-20261027.py
+      - name: Check current fresh robots then flush old page cache and verify canonical URL
+        run: python3 -u scripts/purge-deepal-g318-2027-cache-20261027.py
