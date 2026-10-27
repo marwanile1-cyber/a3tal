@@ -1,0 +1,47 @@
+name: Index only verified 2027 Jaecoo J5 model and retain prior car SEO
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/deploy-jaecoo-j5-2027-car-index-20261027.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-theme
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check PHP and exact verified model gate
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          php -l theme-source/a3tal-global/functions.php
+          python3 -m py_compile scripts/deploy-jaecoo-j5-2027-index-20261027.py
+      - name: Capture exact theme file before mutation
+        run: python3 -u scripts/deploy-jaecoo-j5-2027-index-20261027.py prepare --state-dir "$RUNNER_TEMP/jaecoo-j5-index"
+      - name: Encrypt production rollback snapshot
+        run: |
+          openssl enc -aes-256-cbc -salt -pbkdf2 -iter 200000 -pass env:A3TAL_API_KEY \
+            -in "$RUNNER_TEMP/jaecoo-j5-index/jaecoo-j5-original-theme.json" \
+            -out "$RUNNER_TEMP/jaecoo-j5-index/backup.enc"
+      - name: Retain recovery snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-jaecoo-j5-index-theme-rollback-${{ github.run_id }}
+          path: ${{ runner.temp }}/jaecoo-j5-index/backup.enc
+          retention-days: 14
+          if-no-files-found: error
+      - name: Deploy one-page Jaecoo J5 indexing only
+        run: python3 -u scripts/deploy-jaecoo-j5-2027-index-20261027.py deploy --state-dir "$RUNNER_TEMP/jaecoo-j5-index"
+      - name: Verify index follow canonical and article comparison service links publicly
+        run: python3 -u scripts/deploy-jaecoo-j5-2027-index-20261027.py verify --state-dir "$RUNNER_TEMP/jaecoo-j5-index"
+      - name: Restore original SEO policy if deployment QA fails
+        if: failure()
+        run: python3 -u scripts/deploy-jaecoo-j5-2027-index-20261027.py rollback --state-dir "$RUNNER_TEMP/jaecoo-j5-index"
