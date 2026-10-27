@@ -1120,3 +1120,52 @@ add_filter('wpseo_canonical', static function ($url) {
     return get_permalink(84627) ?: $url;
 }, 10011);
 /* A3TAL-DEEPAL-S09-VERIFIED-CAR-INDEX-20261026:END */
+
+
+/* A3TAL-DEEPAL-G318-VERIFIED-CAR-INDEX-20261027:START */
+/**
+ * Precise index exception: only substantial, documented 2027 G318 car record,
+ * preserving default noindex for thin or unverified cars. Verified model links
+ * to its own review, comparison and branch/service articles.
+ */
+function a3g_verified_deepal_g318_indexable_20261027(): bool {
+    if (!is_singular('a3_car')) return false;
+    $id=(int)get_queried_object_id();
+    if ($id !== 84672) return false;
+    if ((string)get_post_field('post_name',$id) !== 'deepal-g318-2027-egypt') return false;
+    if ((string)get_post_meta($id,'_a3_source_checked_at',true) !== '2026-10-27') return false;
+    if (get_post_meta($id,'_a3_entity_stub',true)) return false;
+    if ((int)get_post_meta($id,'_a3_price_min',true) !== 2135000) return false;
+    if ((int)get_post_meta($id,'_a3_price_max',true) !== 2285000) return false;
+    if ((string)get_post_meta($id,'_a3_related_post_ids',true) !== '84660,84664,84668') return false;
+    if (strlen((string)get_post_field('post_content',$id)) < 8000) return false;
+    if (!has_post_thumbnail($id)) return false;
+    return true;
+}
+add_filter('wpseo_robots',static function($robots){
+    if (!a3g_verified_deepal_g318_indexable_20261027()) return $robots;
+    return 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1';
+},10012);
+add_filter('wpseo_robots_array',static function($robots){
+    if (!a3g_verified_deepal_g318_indexable_20261027()) return $robots;
+    if (!is_array($robots)) $robots=[];
+    unset($robots['noindex'],$robots['nofollow']);
+    $robots['index']='index';
+    $robots['follow']='follow';
+    $robots['max-snippet']='max-snippet:-1';
+    $robots['max-image-preview']='max-image-preview:large';
+    $robots['max-video-preview']='max-video-preview:-1';
+    return $robots;
+},10012);
+add_filter('wp_robots',static function($robots){
+    if (!a3g_verified_deepal_g318_indexable_20261027()) return $robots;
+    unset($robots['noindex'],$robots['nofollow']);
+    $robots['index']=true;
+    $robots['follow']=true;
+    return $robots;
+},10012);
+add_filter('wpseo_canonical',static function($canonical){
+    if (!a3g_verified_deepal_g318_indexable_20261027()) return $canonical;
+    return get_permalink(84672)?:$canonical;
+},10012);
+/* A3TAL-DEEPAL-G318-VERIFIED-CAR-INDEX-20261027:END */
