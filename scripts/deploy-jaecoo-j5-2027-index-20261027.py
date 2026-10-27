@@ -57,7 +57,7 @@ def verify(root):
     if "noindex, follow" in low or 'name="robots" content="noindex' in low:
         raise RuntimeError("Public JAECOO_J5 model still noindex")
     for marker in ["index, follow","jaecoo-j5-2027-egypt/","jaecoo-j5-vs-kia-seltos-2027-egypt-price-comparison",
-                   "jaecoo-j5-2027-egypt-full-review-prices-ownership","jaecoo-egypt-agent-service-centers",
+                   "jaecoo-j5-2027-egypt-full-review-price-trims","jaecoo-egypt-agent-service-centers",
                    "a3tal-jaecoo-j5-2027-discover-review-exterior","1,195,000","1,325,000"]:
         if marker not in html:raise RuntimeError("Public JAECOO_J5 page missing "+marker)
     print("JAECOO_J5_INDEX_FOLLOW_SOURCE_CAR_AND_THREE_JOURNEYS_PUBLIC_VERIFIED",url,flush=True)
