@@ -1,0 +1,47 @@
+name: Safely index verified full Deepal G318 2027 car entity
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/deploy-deepal-g318-2027-car-index-20261027.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-theme
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Static validated gated indexing only
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          php -l theme-source/a3tal-global/functions.php
+          python3 -m py_compile scripts/deploy-deepal-g318-index-20261027.py
+      - name: Capture exact live theme before modification
+        run: python3 -u scripts/deploy-deepal-g318-index-20261027.py prepare --state-dir "$RUNNER_TEMP/g318-index"
+      - name: Encrypt rollback snapshot
+        run: |
+          openssl enc -aes-256-cbc -salt -pbkdf2 -iter 200000 -pass env:A3TAL_API_KEY \
+            -in "$RUNNER_TEMP/g318-index/g318-original-theme.json" \
+            -out "$RUNNER_TEMP/g318-index/backup.enc"
+      - name: Retain encrypted pre-deployment backup
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-g318-scoped-index-backup-${{ github.run_id }}
+          path: ${{ runner.temp }}/g318-index/backup.enc
+          retention-days: 14
+          if-no-files-found: error
+      - name: Surgically deploy G318-only SEO override
+        run: python3 -u scripts/deploy-deepal-g318-index-20261027.py deploy --state-dir "$RUNNER_TEMP/g318-index"
+      - name: Prove public G318 model is indexable, canonically self-referencing and linked
+        run: python3 -u scripts/deploy-deepal-g318-index-20261027.py verify --state-dir "$RUNNER_TEMP/g318-index"
+      - name: Restore exact previous theme if deployment QA fails
+        if: failure()
+        run: python3 -u scripts/deploy-deepal-g318-index-20261027.py rollback --state-dir "$RUNNER_TEMP/g318-index"
