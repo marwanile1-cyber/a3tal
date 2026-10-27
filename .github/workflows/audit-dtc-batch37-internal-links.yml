@@ -1,5 +1,8 @@
 name: Final crosslink integrity QA DTC batch37
 on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/audit-dtc-batch37-internal-links.yml']
   workflow_run:
     workflows: ['Repair unpublished DTC crosslinks in batch37']
     types: [completed]
