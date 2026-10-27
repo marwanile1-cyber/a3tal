@@ -1,0 +1,21 @@
+name: Repair unpublished DTC crosslinks in batch37
+on:
+  workflow_run:
+    workflows: ['Final live quality audit DTC batch37']
+    types: [completed]
+  workflow_dispatch:
+permissions: {contents: read}
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  repair-links:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Detect and remove only 404 DTC crosslinks on existing pages
+        run: python3 -u scripts/repair-dtc-batch37-links.py
