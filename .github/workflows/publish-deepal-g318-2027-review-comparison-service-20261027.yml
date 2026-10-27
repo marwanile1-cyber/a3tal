@@ -31,3 +31,5 @@ jobs:
           test -s data/editorial/deepal-g318-2027-egypt-encyclopedia-20261027.html
       - name: Idempotent WordPress post bundle and deep-linked model publishing with live readback
         run: python3 -u scripts/publish-deepal-g318-review-comparison-service-20261027.py
+
+# Retry editorial preflight with category-specific location-table requirement.
