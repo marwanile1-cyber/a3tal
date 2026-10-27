@@ -1,0 +1,32 @@
+name: Save Yoast SEO descriptions DTC batch37
+on:
+  workflow_run:
+    workflows: ['Publish ten new DTC batch37 encyclopedic guides']
+    types: [completed]
+  workflow_dispatch:
+permissions: {contents: read}
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  metadata:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify the ten unique SEO snippets before writing
+        run: |
+          python3 -m py_compile scripts/finish-dtc-batch37-yoast-20261027.py
+          python3 - <<'PY'
+          import json
+          d=json.load(open('data/dtc-batch37-yoast-metadesc-20261027.json',encoding='utf8'))
+          codes='P0359 P0360 P0485 P0762 P0763 P0874 U0206 U0207 U0215 U0216'.split()
+          assert d['batch']==37 and list(d['descriptions'])==codes
+          assert len(set(d['descriptions'].values()))==10
+          assert all(105<=len(d['descriptions'][c])<=160 and c in d['descriptions'][c] for c in codes)
+          PY
+      - name: Write and verify existing post Yoast descriptions (no new pages)
+        run: python3 -u scripts/finish-dtc-batch37-yoast-20261027.py
