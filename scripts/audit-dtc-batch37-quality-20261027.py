@@ -60,7 +60,7 @@ def main():
         results.append(status)
         print("BATCH37_QA "+json.dumps(status,ensure_ascii=False),flush=True)
     report={
-     "batch":36,"checked":"2026-10-27","published":len(results),
+     "batch":37,"checked":"2026-10-27","published":len(results),
      "below_1500":sum(x["under_1500"] for x in results),
      "temporary_photos":sum(x["temporary_photo"] for x in results),
      "wrong_og_images":sum(not x["og_matches_featured"] for x in results),
