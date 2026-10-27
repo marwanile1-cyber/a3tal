@@ -1,0 +1,77 @@
+{
+  "batch": 37,
+  "media_status": "10 interim photos from prior licensed photographic archive used for publishing; not exclusive and clearly labeled",
+  "original_media_required": [
+    {
+      "code": "P0359",
+      "scene": "فني كهرباء سيارات يفحص كويل I في محرك بنزين متعدد الأسطوانات، إظهار أوسيلوسكوب وموصل القيادة بدون ادعاء أن I يعني الأسطوانة 9",
+      "required_format": "Original technically verified photorealistic 1200x675 WebP",
+      "status": "not_produced",
+      "usage": "Featured image and OG after review of code-OEM match and image rights"
+    },
+    {
+      "code": "P0360",
+      "scene": "كويل J مع فيشة وتصوير واضح في محرك كبير متعدد البنوك وبروتوكول أمان للجهد العالي",
+      "required_format": "Original technically verified photorealistic 1200x675 WebP",
+      "status": "not_produced",
+      "usage": "Featured image and OG after review of code-OEM match and image rights"
+    },
+    {
+      "code": "P0485",
+      "scene": "حاضن مروحة الردياتير وموصل التغذية والأرضي مع جهاز قياس هبوط جهد وفيوز، المروحة متوقفة أثناء الفحص",
+      "required_format": "Original technically verified photorealistic 1200x675 WebP",
+      "status": "not_produced",
+      "usage": "Featured image and OG after review of code-OEM match and image rights"
+    },
+    {
+      "code": "P0762",
+      "scene": "جسم بلوف ناقل حركة تظهر فيه صمامات النقل ومسارات التحكم الهيدروليكي مع فني يفحص SSC Stuck On",
+      "required_format": "Original technically verified photorealistic 1200x675 WebP",
+      "status": "not_produced",
+      "usage": "Featured image and OG after review of code-OEM match and image rights"
+    },
+    {
+      "code": "P0763",
+      "scene": "فني يفحص فيشة سولينويد C في الفتيس بالقياس الكهربائي على رافعة مأمونة",
+      "required_format": "Original technically verified photorealistic 1200x675 WebP",
+      "status": "not_produced",
+      "usage": "Featured image and OG after review of code-OEM match and image rights"
+    },
+    {
+      "code": "P0874",
+      "scene": "حساس أو مفتاح ضغط زيت الناقل C وموصله مع جهاز يسجل التقطع في القراءات بعد التسخين",
+      "required_format": "Original technically verified photorealistic 1200x675 WebP",
+      "status": "not_produced",
+      "usage": "Featured image and OG after review of code-OEM match and image rights"
+    },
+    {
+      "code": "U0206",
+      "scene": "وحدة PTCM لمركبة مكشوفة وسقف قابل للطي داخل ورشة، تصوير للمفصلات والكمبيوتر وحساسات القفل دون تشغيلها",
+      "required_format": "Original technically verified photorealistic 1200x675 WebP",
+      "status": "not_produced",
+      "usage": "Featured image and OG after review of code-OEM match and image rights"
+    },
+    {
+      "code": "U0207",
+      "scene": "وحدة فتحة سقف متحركة أو بانوراما مع مسار توصيلات التحكم، إظهار الزجاج المفتوح جزئيًا بصورة مأمونة",
+      "required_format": "Original technically verified photorealistic 1200x675 WebP",
+      "status": "not_produced",
+      "usage": "Featured image and OG after review of code-OEM match and image rights"
+    },
+    {
+      "code": "U0215",
+      "scene": "لوحة مفاتيح باب A وضفيرة مفصلة الباب وخط LIN حسب تجهيز المركبة، منظور من الداخل دون تخمين مكان الباب",
+      "required_format": "Original technically verified photorealistic 1200x675 WebP",
+      "status": "not_produced",
+      "usage": "Featured image and OG after review of code-OEM match and image rights"
+    },
+    {
+      "code": "U0216",
+      "scene": "لوحة مفاتيح باب B وموصل وحدة التحكم على جهاز قراءة شبكة أبواب سيارة حقيقية",
+      "required_format": "Original technically verified photorealistic 1200x675 WebP",
+      "status": "not_produced",
+      "usage": "Featured image and OG after review of code-OEM match and image rights"
+    }
+  ],
+  "video_status": "No embedded video without exact technical-match verification"
+}
