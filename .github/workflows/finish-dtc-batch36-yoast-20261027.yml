@@ -1,0 +1,32 @@
+name: Save Yoast SEO descriptions DTC batch36
+on:
+  workflow_run:
+    workflows: ['Publish ten new DTC batch36 encyclopedic guides']
+    types: [completed]
+  workflow_dispatch:
+permissions: {contents: read}
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  metadata:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Preflight ten unique human-friendly SEO descriptions
+        run: |
+          python3 -m py_compile scripts/finish-dtc-batch36-yoast-20261027.py
+          python3 - <<'PY'
+          import json
+          d=json.load(open('data/dtc-batch36-yoast-metadesc-20261027.json',encoding='utf-8'))
+          codes='P0357 P0358 P0484 P0758 P0759 P0761 P0873 U0204 U0205 U0212'.split()
+          assert d['batch']==36 and list(d['descriptions'])==codes
+          assert len(set(d['descriptions'].values()))==10
+          assert all(105<=len(d['descriptions'][x])<=160 and x in d['descriptions'][x] for x in codes)
+          PY
+      - name: Update only Yoast metadata via Direct Bridge with private revision readback
+        run: python3 -u scripts/finish-dtc-batch36-yoast-20261027.py
