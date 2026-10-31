@@ -1,0 +1,31 @@
+name: DTC batch39 read-only duplicate inventory
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/audit-dtc39-existing.yml']
+permissions: {contents: read}
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Public WordPress exact slug check, no edits
+        shell: python
+        run: |
+          import json,urllib.parse,urllib.request,time
+          codes=["P0135","P0335","P0420","P0171","P0301","P0442","P0141","P0340","P0128","P0455","P0400","P0011","P0302","P0136","P0155","P0507","P0457","P0172","P2187","P0344","P0016","P0230","P0440","P0303","P0462","P0342","P0490","P0030","P0036","P0101","P0110","P0112","P0125","P0161","P0137","P2195","P0087","P0088","P0304"]
+          available=[];already=[]
+          for code in codes:
+              q=urllib.parse.urlencode({"slug":code.lower(),"per_page":3,"_fields":"id,slug,status,link"})
+              url="https://a3tal.com/wp-json/wp/v2/a3tal-dtc?"+q
+              req=urllib.request.Request(url,headers={"User-Agent":"A3tal-Editorial-DTC39/1.0","Accept":"application/json","Cache-Control":"no-cache"})
+              with urllib.request.urlopen(req,timeout=45) as f:r=json.load(f)
+              if not isinstance(r,list): raise ValueError("API response invalid")
+              found=[x for x in r if x.get("slug")==code.lower()]
+              if found: already.append({"code":code,"records":found})
+              else: available.append(code)
+              print("DTC39_AUDIT",code,"EXISTS" if found else "FREE",flush=True)
+              time.sleep(.2)
+          print("DTC39_AVAILABLE",json.dumps(available),flush=True)
+          print("DTC39_ALREADY_EXISTS",json.dumps(already),flush=True)
