@@ -1,0 +1,36 @@
+name: Publish reviewed DTC batch38 phase4 P0361
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/release-dtc-batch38-phase4.yml']
+permissions: {contents: read}
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3TAL_BATCH38_RELEASE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Pillow WebP image support
+        run: python3 -m pip install -q Pillow
+      - name: Validate unique P0361 1500 plus words with approved editorial
+        run: |
+          python3 -m py_compile scripts/release-dtc-batch38-phase4.py
+          python3 - <<'PY'
+          import json,re
+          a=json.load(open('data/dtc-batch38-phase4-p0361.json',encoding='utf8'))
+          assert a['batch']==38 and a['phase']==4 and len(a['items'])==1
+          r=a['items'][0]
+          wc=len(re.sub(r'<[^>]+>',' ',r['content']).split())
+          assert r['code']=='P0361' and r['slug']=='p0361' and r['qa']['ready_for_publication']
+          assert wc>=1500 and wc==r['word_count'] and r['content'].count('<h2>')>=16
+          print('DTC38_PHASE4_VALIDATED',r['code'],wc)
+          PY
+      - name: Publish and verify photo/og image, no duplicate creation
+        run: python3 -u scripts/release-dtc-batch38-phase4.py
