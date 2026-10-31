@@ -24,6 +24,8 @@ jobs:
           test -n "$A3TAL_API_KEY"
           python3 -m py_compile scripts/deploy-dtc39-cover-visible-20261031.py
           php -l theme-source/a3tal-global/dtc-library-single.php
-          php -l theme-patches/backup-dtc-library-single-before-batch39-cover-visible-20261031.php
+          php -l theme-patches/backup-dtc-library-single-before-filename-cover-guard-20261031.php
       - name: Atomic SHA-guarded live repair and public article-image verification
         run: python3 -u scripts/deploy-dtc39-cover-visible-20261031.py
+
+# Verify cover filename guard renders original image on DTC39 articles.
