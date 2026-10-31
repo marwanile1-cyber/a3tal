@@ -1,0 +1,36 @@
+name: Publish reviewed DTC batch38 phase6 P0488
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/release-dtc-batch38-phase6.yml']
+permissions: {contents: read}
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3TAL_BATCH38_RELEASE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Pillow
+        run: python3 -m pip install -q Pillow
+      - name: Verify original article content quality
+        run: |
+          python3 -m py_compile scripts/release-dtc-batch38-phase6.py
+          python3 - <<'PY'
+          import json,re
+          a=json.load(open('data/dtc-batch38-phase6-p0488.json',encoding='utf8'))
+          assert a['batch']==38 and a['phase']==6 and len(a['items'])==1
+          row=a['items'][0]
+          wc=len(re.sub(r'<[^>]+>',' ',row['content']).split())
+          assert row['code']=='P0488' and row['slug']=='p0488' and row['qa']['ready_for_publication']
+          assert wc>=1500 and wc==row['word_count'] and row['content'].count('<h2>')>=16
+          print('DTC38_PHASE6_VALIDATED',row['code'],wc)
+          PY
+      - name: Publish P0488 through bridge and verify featured OG image
+        run: python3 -u scripts/release-dtc-batch38-phase6.py
