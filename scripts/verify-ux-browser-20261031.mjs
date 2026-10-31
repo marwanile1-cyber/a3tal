@@ -10,10 +10,19 @@ try {
     const context=await browser.newContext({viewport:{width,height:width<768?900:1000},deviceScaleFactor:1,userAgent:'A3tal-UX-Layout-QA/20261031'});
     // Keep variable third-party advertising creatives out of layout screenshots.
     await context.route(/googlesyndication|doubleclick|adservice|googleads|admaster/,route=>route.abort());
-    const page=await context.newPage();
     const cases=[['home','/'],['p0420','/p0420-catalyst-efficiency-bank-1/'],['directory','/service-centers/']];
     for (const [name,path] of cases) {
-      const response=await page.goto('https://a3tal.com'+path+'?a3tal_ux_browser='+Date.now(),{waitUntil:'domcontentloaded',timeout:90000});
+      // Isolate pages from delayed third-party navigations left by the prior page.
+      const page=await context.newPage();
+      let response;
+      try {
+        response=await page.goto('https://a3tal.com'+path,{waitUntil:'domcontentloaded',timeout:90000});
+      } catch (error) {
+        const state={page:name,viewport:width,url:page.url(),error:String(error),body:(await page.locator('body').innerText().catch(()=>''))?.slice(0,800)};
+        await fs.writeFile(`${out}/navigation-error-${name}-${width}.json`,JSON.stringify(state,null,2));
+        await page.screenshot({path:`${out}/navigation-error-${name}-${width}.png`}).catch(()=>{});
+        throw error;
+      }
       if (response.status()!==200) throw new Error(`${name} HTTP ${response.status()}`);
       await page.locator('h1').waitFor();
       await page.evaluate(()=>document.fonts.ready);
@@ -33,9 +42,11 @@ try {
       await page.screenshot({path:`${out}/${name}-${width}.png`,fullPage:false});
       results.push({page:name,viewport:width,...metrics});
       console.log('BROWSER_LAYOUT_PASS',name,width,JSON.stringify(metrics));
+      await page.close();
     }
     if (width===390) {
-      await page.goto('https://a3tal.com/?a3tal_ux_search='+Date.now(),{waitUntil:'domcontentloaded'});
+      const page=await context.newPage();
+      await page.goto('https://a3tal.com/',{waitUntil:'domcontentloaded'});
       await page.locator('#g-v3-site-search').fill('P0420');
       await Promise.all([page.waitForURL(url=>url.searchParams.get('s')==='P0420'),page.locator('.g-v3-search button').click()]);
       const first=page.locator('.si-primary-grid .g-card-media').first();
@@ -43,6 +54,7 @@ try {
       if (await page.locator('#si-results a[href="https://a3tal.com/dtc/p0420/"]').count()) throw new Error('Mirrored result remains');
       await page.screenshot({path:`${out}/search-390.png`,fullPage:false});
       console.log('BROWSER_SEARCH_FORM_PASS');
+      await page.close();
     }
     await context.close();
   }
