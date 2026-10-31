@@ -1,0 +1,27 @@
+name: Update verified BYD F3 and SOUEAST S07 October 2026 price pages
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/update-byd-f3-soueast-s07-price-opportunities-20261031.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-existing-f3-s07-price-accuracy-20261031
+  cancel-in-progress: false
+jobs:
+  price-corrections:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check bridge key and static syntax
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY" || { echo "A3tal Direct Bridge secret unavailable"; exit 1; }
+          python3 -m py_compile scripts/update-byd-f3-soueast-s07-price-opportunities-20261031.py
+      - name: Validate all 3 existing WordPress originals and publish in-place changes through Bridge
+        run: python3 -u scripts/update-byd-f3-soueast-s07-price-opportunities-20261031.py
