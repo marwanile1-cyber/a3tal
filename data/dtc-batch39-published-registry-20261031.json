@@ -1,0 +1,103 @@
+{
+  "batch": 39,
+  "final_review_date": "2026-10-31",
+  "status": "10_of_10_published_and_live_verified",
+  "source_site": "https://a3tal.com",
+  "last_successful_audit": "https://github.com/marwanile1-cyber/a3tal/actions/runs/41211045704",
+  "yoast_audit": "https://github.com/marwanile1-cyber/a3tal/actions/runs/41210994931",
+  "featured_image_policy": "distinct original component-specific Arabic illustration",
+  "items": [
+    {
+      "code": "P0135",
+      "title": "كود P0135: خلل سخان حساس الأكسجين الأمامي والأعراض وطريقة الفحص",
+      "words": 1931,
+      "url": "https://a3tal.com/dtc/p0135/",
+      "image_style": "unique Arabic technical illustrated WebP with code, fault name and associated component",
+      "live_published": true,
+      "canonical_og_meta_verified": true
+    },
+    {
+      "code": "P0128",
+      "title": "كود P0128: عطل ثرموستات السيارة وأسباب برودة المحرك وطريقة الفحص",
+      "words": 1753,
+      "url": "https://a3tal.com/dtc/p0128/",
+      "image_style": "unique Arabic technical illustrated WebP with code, fault name and associated component",
+      "live_published": true,
+      "canonical_og_meta_verified": true
+    },
+    {
+      "code": "P0171",
+      "title": "كود P0171: خليط وقود فقير في البنك الأول وأسباب التفتفة وضعف السحب",
+      "words": 1761,
+      "url": "https://a3tal.com/dtc/p0171/",
+      "image_style": "unique Arabic technical illustrated WebP with code, fault name and associated component",
+      "live_published": true,
+      "canonical_og_meta_verified": true
+    },
+    {
+      "code": "P0301",
+      "title": "كود P0301: اختلال احتراق الأسطوانة الأولى وأسباب الرعشة والتقطيع",
+      "words": 1682,
+      "url": "https://a3tal.com/dtc/p0301/",
+      "image_style": "unique Arabic technical illustrated WebP with code, fault name and associated component",
+      "live_published": true,
+      "canonical_og_meta_verified": true
+    },
+    {
+      "code": "P0442",
+      "title": "كود P0442: تسريب صغير في نظام EVAP وأسباب لمبة المحرك والفحص",
+      "words": 1780,
+      "url": "https://a3tal.com/dtc/p0442/",
+      "image_style": "unique Arabic technical illustrated WebP with code, fault name and associated component",
+      "live_published": true,
+      "canonical_og_meta_verified": true
+    },
+    {
+      "code": "P0455",
+      "title": "كود P0455: تسريب كبير في نظام EVAP وأسباب رائحة البنزين والفحص",
+      "words": 1680,
+      "url": "https://a3tal.com/dtc/p0455/",
+      "image_style": "unique Arabic technical illustrated WebP with code, fault name and associated component",
+      "live_published": true,
+      "canonical_og_meta_verified": true
+    },
+    {
+      "code": "P0400",
+      "title": "كود P0400: خلل تدفق نظام EGR وأسباب ضعف العزم والتشخيص",
+      "words": 1679,
+      "url": "https://a3tal.com/dtc/p0400/",
+      "image_style": "unique Arabic technical illustrated WebP with code, fault name and associated component",
+      "live_published": true,
+      "canonical_og_meta_verified": true
+    },
+    {
+      "code": "P0136",
+      "title": "كود P0136: عطل دائرة حساس الأكسجين الخلفي Bank 1 Sensor 2",
+      "words": 1736,
+      "url": "https://a3tal.com/dtc/p0136/",
+      "image_style": "unique Arabic technical illustrated WebP with code, fault name and associated component",
+      "live_published": true,
+      "canonical_og_meta_verified": true
+    },
+    {
+      "code": "P0101",
+      "title": "كود P0101: خلل أداء حساس MAF وأسباب ضعف السحب والفحص",
+      "words": 1767,
+      "url": "https://a3tal.com/dtc/p0101/",
+      "image_style": "unique Arabic technical illustrated WebP with code, fault name and associated component",
+      "live_published": true,
+      "canonical_og_meta_verified": true
+    },
+    {
+      "code": "P0016",
+      "title": "كود P0016: عدم توافق توقيت الكرنك والكامة وأسباب التقطيع",
+      "words": 1882,
+      "url": "https://a3tal.com/dtc/p0016/",
+      "image_style": "unique Arabic technical illustrated WebP with code, fault name and associated component",
+      "live_published": true,
+      "canonical_og_meta_verified": true
+    }
+  ],
+  "total_words": 17651,
+  "next_batch": 40
+}
