@@ -10,7 +10,7 @@ API=SITE+"/wp-json/a3tal-direct/v1"
 KEY=os.environ["A3TAL_API_KEY"]
 TARGET="themes/a3tal-global/dtc-library-single.php"
 SRC=ROOT/"theme-source/a3tal-global/dtc-library-single.php"
-BAK=ROOT/"theme-patches/backup-dtc-library-single-before-batch39-cover-visible-20261031.php"
+BAK=ROOT/"theme-patches/backup-dtc-library-single-before-filename-cover-guard-20261031.php"
 MARK="A3TAL-DTC39-FEATURED-VISIBLE-20261031"
 def call(url,payload=None,auth=True):
   headers={"User-Agent":"A3tal-DTC-39-Feature-Visibility-20261031","Accept":"application/json","Cache-Control":"no-cache,no-store"}
@@ -26,8 +26,8 @@ def read_live():
   if not r.get("ok") or not isinstance(r.get("result"),dict):raise RuntimeError("Cannot audit current live theme file")
   return r["result"]
 old=BAK.read_text("utf8");new=SRC.read_text("utf8")
-if MARK in old or new.count(MARK)!=1:raise RuntimeError("Unexpected original/new image patch marker")
-if old.count("(?:5|10)")!=1 or new.count("(?:5|10|39)")!=1:raise RuntimeError("Unexpected batch filter")
+if old.count(MARK)!=1 or new.count(MARK)!=1:raise RuntimeError("Unexpected original/new image patch marker")
+if old.count("(?:5|10|39)")!=1 or new.count("$dtc_is_code_specific_art")<2:raise RuntimeError("Filename based cover guard missing")
 if "get_the_post_thumbnail($dtc_id, 'full'" not in new:raise RuntimeError("Full-resolution featured art missing")
 if not (100<len(new)-len(old)<800):raise RuntimeError("Unreviewed template changes")
 subprocess.run(["php","-l",str(SRC)],check=True)
