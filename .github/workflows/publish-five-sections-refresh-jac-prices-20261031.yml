@@ -33,3 +33,5 @@ jobs:
           test -s data/editorial/jac-js2-price-egypt-update-20261031.html
       - name: Publish five unique indexed articles and improve original JS2 price in place
         run: python3 -u scripts/publish-five-categories-and-refresh-jac-20261031.py
+
+# Rerun licensed photo CDN delivery after Wikimedia Special Redirect rate limit.
