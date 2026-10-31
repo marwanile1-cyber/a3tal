@@ -1,0 +1,29 @@
+name: Deploy verified brand shortcuts to service center directory 2026-10-31
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/deploy-service-center-directory-brand-hubs-20261031.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-live-service-center-archive-brand-hubs-20261031
+  cancel-in-progress: false
+jobs:
+  safe-directory-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Syntax check and authentication presence
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/deploy-service-center-directory-brand-hubs-20261031.py
+          php -l theme-source/a3tal-global/platform-archive-directory.php
+          php -l theme-patches/backup-platform-archive-directory-before-brand-hubs-20261031.php
+      - name: Compare live baseline SHA, deploy template, verify HTML
+        run: python3 -u scripts/deploy-service-center-directory-brand-hubs-20261031.py
