@@ -35,6 +35,7 @@ function get_posts($args){global $posts,$guides;return ($args['post_type']??'')=
 function is_admin(){global $is_admin;return $is_admin;}
 function absint($n){return abs((int)$n);}
 function get_term_by($field,$value,$tax){global $terms;return $terms[$value]??false;}
+function is_wp_error($value){return false;}
 function a3g_dtc_catalog(){return [['code'=>'P0420','id'=>1],['code'=>'P0136','id'=>3]];}
 class Query {
   public $vars=['s'=>'P0420','post__not_in'=>[99]];

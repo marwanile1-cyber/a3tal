@@ -1,4 +1,5 @@
 name: Deploy tested A3tal search, article and directory UX
+# Re-run after completing the isolated WordPress test stubs.
 on:
   push:
     branches: [main]
