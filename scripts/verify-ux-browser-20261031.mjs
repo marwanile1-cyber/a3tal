@@ -17,9 +17,13 @@ try {
       if (response.status()!==200) throw new Error(`${name} HTTP ${response.status()}`);
       await page.locator('h1').waitFor();
       await page.evaluate(()=>document.fonts.ready);
-      const metrics=await page.evaluate(()=>({width:innerWidth,documentWidth:document.documentElement.scrollWidth,h1Count:document.querySelectorAll('h1').length,css:!!document.querySelector('link[href*="ux-improvements-20261031.css"]')}));
+      const metrics=await page.evaluate(()=>({width:innerWidth,documentWidth:document.documentElement.scrollWidth,h1Count:document.querySelectorAll('h1').length,release:document.body.classList.contains('a3tal-ux-20261031')}));
       if (metrics.documentWidth>metrics.width+1) throw new Error(`Horizontal overflow ${name} ${width}: ${metrics.documentWidth}`);
-      if (metrics.h1Count!==1 || !metrics.css) throw new Error(`Missing semantic heading or stylesheet: ${name}`);
+      if (metrics.h1Count!==1 || !metrics.release) throw new Error(`Missing semantic heading or release marker: ${name}`);
+      if (name==='home' && width===1440) {
+        const size=await page.locator('#g-v3-main-title').evaluate(el=>parseFloat(getComputedStyle(el).fontSize));
+        if (size>43) throw new Error('New homepage typography not applied');
+      }
       if (name==='p0420') {
         if (!await page.locator('.d-quick-answer').isVisible()) throw new Error('Quick answer not visible');
         if (!await page.locator('.d-guide .d-dtc-featured img').count()) throw new Error('Assigned cover missing from article');

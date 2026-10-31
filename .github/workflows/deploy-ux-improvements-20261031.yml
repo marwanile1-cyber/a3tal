@@ -1,5 +1,5 @@
 name: Deploy tested A3tal search, article and directory UX
-# Re-run after completing the isolated WordPress test stubs.
+# Verify combined LiteSpeed assets by public bytes and computed styles.
 on:
   push:
     branches: [main]

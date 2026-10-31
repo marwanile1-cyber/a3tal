@@ -1,6 +1,10 @@
 <?php
 /** Shared A3tal navigation, diagnostic summaries and search improvements. */
 if (!defined('ABSPATH')) exit;
+add_filter('body_class', static function($classes) {
+    $classes[] = 'a3tal-ux-20261031';
+    return $classes;
+});
 
 function a3g_ux_original_guide_id($post_id) {
     $post_id = (int) $post_id;

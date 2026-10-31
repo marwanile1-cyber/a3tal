@@ -52,8 +52,17 @@ def robots(html):
     return match.group(1) if match else ''
 def check_public():
     evidence=[]
-    home=public('/')
-    assert 'ux-improvements-20261031.css' in home and 'ux-improvements-20261031.js' in home,'Assets not visible'
+    for attempt in range(6):
+        home=public('/')
+        if 'a3tal-ux-20261031' in home and 'home-dtc-code' in home:break
+        time.sleep(3)
+    (OUT/'homepage-after.html').write_text(home,encoding='utf8')
+    assert 'a3tal-ux-20261031' in home and 'home-dtc-code' in home,'New render not visible after cache purge'
+    # LiteSpeed may combine assets into hashed URLs. Verify actual public file
+    # bytes here and computed browser styles below, rather than their URL names.
+    for name,marker in [('ux-improvements-20261031.css','A3TAL UX 2026-10-31'),('assets/js/ux-improvements-20261031.js','a3tal_contact_click')]:
+        asset=public('/wp-content/themes/a3tal-global/'+name)
+        assert marker in asset,'Public UX asset unavailable: '+name
     assert home.find('g-home-dtc-zone')<home.find('g-home-cars-section'),'Code search not promoted'
     assert 'مقالات جديدة تنضاف تلقائيًا' not in home,'Internal editorial copy remains'
     assert canonical(home)==SITE+'/','Homepage canonical changed'
@@ -104,7 +113,9 @@ for name in EXISTING:
 for name in NEW:
     live=read_file(name,optional=True)
     desired=(SOURCE/name).read_text('utf8')
-    if live and live['content']!=desired:raise RuntimeError('New path already contains other code: '+name)
+    previous=BACKUP/name
+    approved_previous=previous.read_text('utf8') if previous.exists() else None
+    if live and live['content'] not in [desired,approved_previous]:raise RuntimeError('New path already contains other code: '+name)
     before[name]=live
 for name in NEW+EXISTING:
     if name.endswith('.php'):subprocess.run(['php','-l',str(SOURCE/name)],check=True)
