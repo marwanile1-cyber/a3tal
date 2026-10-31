@@ -1,0 +1,27 @@
+name: Finalize Yoast titles for BYD F3 and Soueast S07 2026-10-31
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/finish-byd-f3-soueast-s07-yoast-20261031.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-price-yoast-final-20261031
+  cancel-in-progress: false
+jobs:
+  finish-yoast:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ensure Bridge access and Python validity
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/finish-byd-f3-soueast-s07-yoast-20261031.py
+      - name: Save Yoast title and meta, verify canonical and OG image intact
+        run: python3 -u scripts/finish-byd-f3-soueast-s07-yoast-20261031.py
