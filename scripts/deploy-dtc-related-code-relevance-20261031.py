@@ -54,8 +54,11 @@ else:
     print("DTC_RELATED_THEME_HASH_VERIFIED",flush=True)
 pages=[
   ("P0420",BASE+"/p0420-catalyst-efficiency-bank-1/",["P0430"]),
-  ("P0171",BASE+"/p0171-system-too-lean-bank-1-diagnosis/",["P0172","P0174"]),
-  ("P0300",BASE+"/p0300-random-misfire/",["P0301","P0302","P0303"]),
+  ("P0342",BASE+"/dtc-p0342-chevrolet/",["P0340","P0341"]),
+  ("P0011",BASE+"/كود-p0011-سيارات-هيونداي/",["P0014","P0016"]),
+  # The old generic /p0300-random-misfire/ URL redirects and drops the QA
+  # query string, which can return a stale cached HTML response.
+  ("P0300",BASE+"/فك-لغز-كود-العطل-p0300-في-شيفروليه-دليل-التش/",["P0301","P0302","P0303"]),
 ]
 for code,url,expected in pages:
     matched=False
