@@ -1,0 +1,27 @@
+name: Fix Jetour mobile tables and post-markup 2026-10-31
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-jetour-table-mobile-and-markup-20261031.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-jetour-live-mobile-fix
+  cancel-in-progress: false
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate input
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/fix-jetour-table-mobile-and-markup-20261031.py
+      - name: Repair markup and responsive wrappers; verify live
+        run: python3 -u scripts/fix-jetour-table-mobile-and-markup-20261031.py
