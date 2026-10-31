@@ -147,10 +147,11 @@ while (have_posts()): the_post();
     <div class="d-detail-copy"><p class="d-eyebrow">افهم الكود. رتّب الفحص.</p><h1><?php echo esc_html($dtc_title); ?></h1><?php if ($dtc_excerpt): ?><p class="d-detail-excerpt"><?php echo esc_html($dtc_excerpt); ?></p><?php endif; ?><div class="d-detail-meta"><?php if ($dtc_system): ?><span><?php echo esc_html($dtc_system); ?></span><?php endif; ?><?php if (isset($dtc_scope_labels[$dtc_scope])): ?><span><?php echo esc_html($dtc_scope_labels[$dtc_scope]); ?></span><?php endif; ?><?php if ($dtc_manufacturer): ?><span><?php echo esc_html($dtc_manufacturer); ?></span><?php endif; ?><a href="#dtc-discussion">الأسئلة والتجارب <span aria-hidden="true">↓</span></a></div></div>
     <?php if ($dtc_code): ?><b class="d-detail-code" dir="ltr"><?php echo esc_html($dtc_code); ?></b><?php endif; ?>
   </header>
-  <?php if (has_post_thumbnail($dtc_id) && (bool)preg_match('/^A3TAL-DTC-[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{2}-(?:5|10)$/', (string)get_post_meta($dtc_id, '_a3_dtc_batch', true))): ?>
-  <figure class="d-dtc-featured" aria-label="رسم توضيحي لمكونات النظام">
-    <?php echo get_the_post_thumbnail($dtc_id, 'large', ['loading'=>'eager','decoding'=>'async','fetchpriority'=>'high']); ?>
-    <figcaption>صورة تشخيصية توضيحية من تصميم أعطال.كوم، وليست مخطط توصيلات خاصًا بموديل معين.</figcaption>
+  <?php // A3TAL-DTC39-FEATURED-VISIBLE-20261031: ensure original component art displays in the article, not only og:image. ?>
+  <?php if (has_post_thumbnail($dtc_id) && (bool)preg_match('/^A3TAL-DTC-[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{2}-(?:5|10|39)$/', (string)get_post_meta($dtc_id, '_a3_dtc_batch', true))): ?>
+  <figure class="d-dtc-featured" style="max-width:1180px;margin:20px auto 24px;padding:0 2px;" aria-label="رسم توضيحي لمكونات النظام">
+    <?php echo get_the_post_thumbnail($dtc_id, 'full', ['loading'=>'eager','decoding'=>'async','fetchpriority'=>'high','style'=>'display:block;width:100%;height:auto;max-height:665px;object-fit:contain;border-radius:16px;']); ?>
+    <figcaption style="color:#64748b;font-size:13px;line-height:1.8;padding:10px 4px;">صورة تشخيصية توضيحية من تصميم أعطال.كوم، وليست مخطط توصيلات خاصًا بموديل معين.</figcaption>
   </figure>
   <?php endif; ?>
   <section class="d-share" aria-label="مشاركة دليل الكود">
