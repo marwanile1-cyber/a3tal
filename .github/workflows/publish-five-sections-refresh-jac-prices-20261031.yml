@@ -1,0 +1,35 @@
+name: Publish six A3tal section updates (five original and one existing price correction)
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-five-sections-refresh-jac-prices-20261031.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-october-31-six-diverse-editorial-sections
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install WebP image processor
+        run: python3 -m pip install --quiet Pillow
+      - name: Validate all editorial sources and bridge authorization
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-five-categories-and-refresh-jac-20261031.py
+          test -s data/editorial/chevrolet-optra-2027-egypt-complete-review-ls-lt-after-october-price-rise.html
+          test -s data/editorial/car-overheats-in-traffic-cools-when-driving-fan-thermostat-diagnosis.html
+          test -s data/editorial/motorcycle-engine-stalls-when-hot-restarts-cold-diagnosis.html
+          test -s data/editorial/adas-camera-radar-calibration-after-windshield-bumper-repair-car-guide.html
+          test -s data/editorial/geyou-shi-authorized-chevrolet-service-center-nasr-city-booking.html
+          test -s data/editorial/jac-js2-price-egypt-update-20261031.html
+      - name: Publish five unique indexed articles and improve original JS2 price in place
+        run: python3 -u scripts/publish-five-categories-and-refresh-jac-20261031.py
