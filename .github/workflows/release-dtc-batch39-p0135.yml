@@ -1,0 +1,40 @@
+name: Publish new illustrated DTC39 P0135 guide
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/release-dtc-batch39-p0135.yml']
+  workflow_dispatch:
+permissions: {contents: read}
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3TAL_BATCH39_RELEASE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install image support and Arabic fonts
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y fonts-dejavu-core
+          python3 -m pip install -q Pillow
+      - name: Validate editorial P0135 and render exclusive Arabic sensor image
+        run: |
+          python3 -m py_compile scripts/render-dtc-batch39-p0135-infographic.py scripts/release-dtc-batch39-p0135.py
+          python3 - <<'PY'
+          import json,re
+          data=json.load(open('data/dtc-batch39-p0135-20261031.json',encoding='utf8'))
+          assert data['batch']==39 and len(data['items'])==1
+          r=data['items'][0]
+          wc=len(re.sub(r'<[^>]+>',' ',r['content']).split())
+          assert r['code']=='P0135' and r['qa']['ready_for_publication'] and wc>=1500 and wc==r['word_count']
+          assert r['source'].startswith('https://mitsubishitechinfo.com/')
+          print('DTC39_P0135_ARTICLE_VALID',wc,flush=True)
+          PY
+          python3 scripts/render-dtc-batch39-p0135-infographic.py
+      - name: Publish with A3tal Direct Bridge; confirm unique WebP, Open Graph and canonical
+        run: python3 -u scripts/release-dtc-batch39-p0135.py
