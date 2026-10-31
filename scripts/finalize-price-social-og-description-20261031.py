@@ -23,7 +23,7 @@ for id,slug,cover,expected,desc in ROWS:
  old=post["yoast_head_json"]
  if old.get("description")!=desc:raise RuntimeError("Yoast standard description diverged "+str(id))
  existing_og=old.get("og_description")
- if existing_og==desc and old.get("twitter_misc",{})==desc:print("SOCIAL_META_ALREADY_DONE",id,flush=True);continue
+ if existing_og==desc:print("SOCIAL_META_ALREADY_DONE",id,flush=True);continue
  before_img=old.get("og_image",[{}])[0].get("url");before_can=old.get("canonical")
  ret=req(BASE+"/update-post",{"id":id,"slug":slug,"meta":{
   "_yoast_wpseo_opengraph-description":desc,
