@@ -148,7 +148,16 @@ while (have_posts()): the_post();
     <?php if ($dtc_code): ?><b class="d-detail-code" dir="ltr"><?php echo esc_html($dtc_code); ?></b><?php endif; ?>
   </header>
   <?php // A3TAL-DTC39-FEATURED-VISIBLE-20261031: ensure original component art displays in the article, not only og:image. ?>
-  <?php if (has_post_thumbnail($dtc_id) && (bool)preg_match('/^A3TAL-DTC-[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{2}-(?:5|10|39)$/', (string)get_post_meta($dtc_id, '_a3_dtc_batch', true))): ?>
+  <?php
+    // Include the original component image based on its actual attachment name.
+    // The batch identifier has had multiple formats; relying only on meta hid the art.
+    $dtc_featured_art_url = has_post_thumbnail($dtc_id) ? wp_get_attachment_url(get_post_thumbnail_id($dtc_id)) : '';
+    $dtc_is_code_specific_art = $dtc_featured_art_url && $dtc_code
+      && strpos($dtc_featured_art_url, '/a3tal-dtc-' . strtolower((string)$dtc_code) . '-exclusive-ar.webp') !== false;
+    $dtc_is_previous_art = (bool) preg_match('/^A3TAL-DTC-[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{2}-(?:5|10)$/',
+      (string)get_post_meta($dtc_id, '_a3_dtc_batch', true));
+  ?>
+  <?php if (has_post_thumbnail($dtc_id) && ($dtc_is_code_specific_art || $dtc_is_previous_art)): ?>
   <figure class="d-dtc-featured" style="max-width:1180px;margin:20px auto 24px;padding:0 2px;" aria-label="رسم توضيحي لمكونات النظام">
     <?php echo get_the_post_thumbnail($dtc_id, 'full', ['loading'=>'eager','decoding'=>'async','fetchpriority'=>'high','style'=>'display:block;width:100%;height:auto;max-height:665px;object-fit:contain;border-radius:16px;']); ?>
     <figcaption style="color:#64748b;font-size:13px;line-height:1.8;padding:10px 4px;">صورة تشخيصية توضيحية من تصميم أعطال.كوم، وليست مخطط توصيلات خاصًا بموديل معين.</figcaption>
