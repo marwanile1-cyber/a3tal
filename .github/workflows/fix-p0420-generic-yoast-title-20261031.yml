@@ -1,0 +1,27 @@
+name: Fix P0420 generic Yoast title without changing article URL
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-p0420-generic-yoast-title-20261031.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-p0420-descriptive-yoast-title-20261031
+  cancel-in-progress: false
+jobs:
+  fix-title:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check key and syntax
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/fix-p0420-generic-yoast-title-20261031.py
+      - name: Repair SEO title and verify canonical media description and index state
+        run: python3 -u scripts/fix-p0420-generic-yoast-title-20261031.py
