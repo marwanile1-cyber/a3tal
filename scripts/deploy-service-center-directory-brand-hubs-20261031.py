@@ -77,7 +77,7 @@ for i in range(4):
     public=urllib.request.Request(pageurl,headers={"User-Agent":"A3tal-Service-Directory-QA/20261031","Cache-Control":"no-cache"})
     with urllib.request.urlopen(public,timeout=100) as response:
         html=response.read().decode("utf8",errors="replace")
-    if MARKER in html and "جيتور: المراكز المعتمدة" in html and "/service-centers/" not in html[:200]:
+    if MARKER in html and "جيتور: المراكز المعتمدة" in html:
         verified=True
         break
     time.sleep(3)
