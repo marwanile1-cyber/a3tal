@@ -50,7 +50,7 @@ def validate_original(pid, record, allow_already=False):
     if record["modified_gmt"]!=TARGETS[pid]["modified_gmt"]:
         raise RuntimeError("Concurrent edit detected; abort instead of overwriting: "+str(pid)+": "+str(record["modified_gmt"]))
     seo=record.get("yoast_head_json") or {}
-    if seo.get("canonical") and seo["canonical"].rstrip("/")!=record["link"].rstrip("/"):
+    if seo.get("canonical") and urllib.parse.unquote(seo["canonical"]).rstrip("/")!=urllib.parse.unquote(record["link"]).rstrip("/"):
         raise RuntimeError("Unexpected canonical before update: "+str(pid))
     if not seo.get("og_image"):
         raise RuntimeError("Original post has no social featured image: "+str(pid))
