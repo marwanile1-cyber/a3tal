@@ -1,0 +1,43 @@
+name: Publish final four DTC batch38 technical guides
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/release-dtc-batch38-final4.yml']
+permissions: {contents: read}
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 140
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3TAL_BATCH38_RELEASE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install WebP rendering
+        run: python3 -m pip install -q Pillow
+      - name: Validate four complete distinct researched guides and canonical batch of ten
+        run: |
+          python3 -m py_compile scripts/release-dtc-batch38-final4.py
+          python3 - <<'PY'
+          import json,re
+          data=json.load(open('data/dtc-batch38-final4.json',encoding='utf8'))
+          all10=json.load(open('data/dtc-original-batch-38.json',encoding='utf8'))
+          codes='P0362 P0766 P0767 P0768'.split()
+          assert data['batch']==38 and data['phase']=='final4'
+          assert [x['code'] for x in data['items']]==codes
+          assert all10['batch']==38 and len(all10['items'])==10
+          assert len(set(x['code'] for x in all10['items']))==10
+          for x in data['items']:
+              assert x['slug']==x['code'].lower() and x['qa']['ready_for_publication']
+              wc=len(re.sub(r'<[^>]+>',' ',x['content']).split())
+              assert wc>=1500 and x['word_count']==wc and x['content'].count('<h2>')>=16
+              assert x['source'].startswith('https://')
+              assert any(y['code']==x['code'] and y['content']==x['content'] for y in all10['items'])
+              print('BATCH38_FINAL4_EDITORIAL_PASS',x['code'],wc,flush=True)
+          PY
+      - name: Publish only absent posts via A3tal Direct Bridge and verify WebP and OpenGraph images
+        run: python3 -u scripts/release-dtc-batch38-final4.py
