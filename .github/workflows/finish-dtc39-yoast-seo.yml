@@ -1,0 +1,33 @@
+name: Save verified Yoast descriptions for DTC39 ten codes
+on:
+  workflow_run:
+    workflows: ['Publish illustrated DTC39 P0136 original guide']
+    types: [completed]
+  workflow_dispatch:
+permissions: {contents: read}
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  metadata:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate all ten Yoast descriptions
+        run: |
+          python3 -m py_compile scripts/finish-dtc-batch39-yoast-20261031.py
+          python3 - <<'PY'
+          import json
+          d=json.load(open('data/dtc-batch39-yoast-metadesc-20261031.json',encoding='utf8'))
+          codes="P0135 P0128 P0171 P0301 P0442 P0455 P0400 P0136 P0101 P0016".split()
+          assert d['batch']==39 and list(d['descriptions'])==codes
+          assert len(set(d['descriptions'].values()))==10
+          assert all(105<=len(d['descriptions'][c])<=160 and c in d['descriptions'][c] for c in codes)
+          print('DTC39_TEN_YOAST_DESCRIPTIONS_VALIDATED')
+          PY
+      - name: Save descriptions through guarded bridge and verify canonical OG
+        run: python3 -u scripts/finish-dtc-batch39-yoast-20261031.py
