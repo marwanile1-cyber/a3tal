@@ -1,0 +1,29 @@
+name: Improve related codes across the entire A3tal DTC library
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/deploy-dtc-related-code-relevance-20261031.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-dtc-library-related-code-quality-20261031
+  cancel-in-progress: false
+jobs:
+  guarded-live-template:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: PHP lint, Python syntax and bridge access checks
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          php -l theme-source/a3tal-global/dtc-library-single.php
+          php -l theme-patches/backup-dtc-library-single-before-related-code-relevance-20261031.php
+          python3 -m py_compile scripts/deploy-dtc-related-code-relevance-20261031.py
+      - name: SHA-guarded deploy and verify recommendations on P0420 P0171 and P0300
+        run: python3 -u scripts/deploy-dtc-related-code-relevance-20261031.py
