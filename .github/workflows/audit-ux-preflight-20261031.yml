@@ -1,0 +1,49 @@
+name: Audit UX deployment baseline and ad integration
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/audit-ux-preflight-20261031.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-theme
+  cancel-in-progress: false
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compare current live files and identify active ad plugin
+        shell: python
+        run: |
+          import os,json,urllib.request,urllib.parse,hashlib,time,re
+          from pathlib import Path
+          base='https://a3tal.com/wp-json/a3tal-direct/v1/admin?'
+          key=os.environ['A3TAL_API_KEY']
+          def admin(**params):
+            req=urllib.request.Request(base+urllib.parse.urlencode(params),headers={'X-A3tal-Key':key,'Authorization':'Bearer '+key,'Cache-Control':'no-cache'})
+            with urllib.request.urlopen(req,timeout=90) as r: body=json.load(r)
+            if not body.get('ok'): raise RuntimeError('Read-only bridge audit failed')
+            return body['result']
+          files=['functions.php','dtc-library-single.php','front-page.php','search.php','style.css','platform-archive-directory.php','header-dtc.php','footer-dtc.php','header.php']
+          for name in files:
+            live=admin(op='file_read',path='themes/a3tal-global/'+name)
+            local=Path('theme-source/a3tal-global/'+name).read_bytes()
+            print('BASELINE',name,'MATCH' if hashlib.sha256(local).hexdigest()==live['sha256'] else 'DIFF',live['sha256'],flush=True)
+            time.sleep(1)
+          plugins=admin(op='plugins')
+          print('ACTIVE_PLUGINS',json.dumps([{k:p.get(k) for k in ['file','name','version']} for p in plugins if p.get('active')],ensure_ascii=False),flush=True)
+          for path in ['mu-plugins']:
+            try:
+              result=admin(op='file_list',path=path)
+              print('FILE_LIST',path,json.dumps(result,ensure_ascii=False)[:6000],flush=True)
+            except Exception as e: print('OPTIONAL_LIST_UNAVAILABLE',type(e).__name__,flush=True)
+          req=urllib.request.Request('https://a3tal.com/p0420-catalyst-efficiency-bank-1/?ux-audit=20261031',headers={'Cache-Control':'no-cache'})
+          with urllib.request.urlopen(req,timeout=90) as r: html=r.read().decode('utf8','replace')
+          sources=re.findall(r'<script\b[^>]*\bsrc=[\"\x27]([^\"\x27]+)',html,re.I)
+          print('PUBLIC_AD_SCRIPTS',json.dumps([s for s in sources if re.search('ads|google|insert',s,re.I)]),flush=True)
+          for m in list(re.finditer(r'adsbygoogle|ad-inserter|ai-insert|google_ad_client',html,re.I))[:6]: print('PUBLIC_AD_CONTEXT',re.sub(r'\s+',' ',html[max(0,m.start()-120):m.end()+180]),flush=True)
