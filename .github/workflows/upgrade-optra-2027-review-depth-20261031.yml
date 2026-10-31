@@ -1,0 +1,28 @@
+name: Upgrade complete Chevrolet Optra 2027 review with image retention
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/upgrade-optra-2027-review-depth-20261031.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-optra-2027-editorial-expansion
+  cancel-in-progress: false
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate article sources and bridge access
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          test -s data/editorial/chevrolet-optra-2027-egypt-complete-review-ls-lt-after-october-price-rise.html
+          python3 -m py_compile scripts/upgrade-optra-2027-full-review-depth-20261031.py
+      - name: Expand live full review in place with original hero and cabin photos
+        run: python3 -u scripts/upgrade-optra-2027-full-review-depth-20261031.py
