@@ -27,3 +27,5 @@ jobs:
           php -l theme-patches/backup-platform-archive-directory-before-brand-hubs-20261031.php
       - name: Compare live baseline SHA, deploy template, verify HTML
         run: python3 -u scripts/deploy-service-center-directory-brand-hubs-20261031.py
+
+# Correct preflight: existing showroom conditional isn't a duplicate shortcut.
