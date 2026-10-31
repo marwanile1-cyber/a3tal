@@ -1,0 +1,27 @@
+name: Correct Mansour live hotline and branch classification 2026-10-31
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/repair-mansour-hotline-sources-20261031.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-mansour-hub-live-source-qa-20261031
+  cancel-in-progress: false
+jobs:
+  guarded-mansour-patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate production bridge authentication and patch syntax
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/repair-mansour-hotline-sources-20261031.py
+      - name: Apply revision checked Mansour editorial corrections and verify production
+        run: python3 -u scripts/repair-mansour-hotline-sources-20261031.py
