@@ -19,6 +19,28 @@ get_header(); ?>
 
 <main class="g-wrap g-platform-archive">
 <div class="g-platform-archive-head"><div><span>A3TAL DIRECTORY</span><h2><?php echo $is_showroom?'اكتشف المعارض':'اختر مركز الخدمة'; ?></h2></div><b><?php global $wp_query; echo esc_html(number_format_i18n((int)$wp_query->found_posts)); ?> نتيجة</b></div>
+<?php if(!$is_showroom): ?>
+<section class="g-service-brand-hubs" aria-label="اختصارات أدلة التوكيلات ومراكز الصيانة" style="margin:20px 0 26px;padding:18px;border:1px solid #cbd5e1;border-radius:14px;background:#f8fafc">
+<h2 style="margin:0 0 8px;color:#0b1220;font-size:21px">ابحث عن مركز الخدمة حسب ماركة السيارة</h2>
+<p style="margin:0 0 14px;color:#475569">النتائج المنظمة أدناه تخص سجلات مراكز محددة داخل الدليل، وليست كل فروع التوكيلات في مصر. لعرض المزيد من الفروع ووسائل الحجز، افتح دليل العلامة ثم تأكد من الاعتماد والخدمة من الوكيل قبل الذهاب.</p>
+<nav aria-label="أدلة الخدمة حسب العلامة" style="display:flex;flex-wrap:wrap;gap:10px">
+<?php
+$quick_hubs=[
+  [81102,'غبور: الخط الساخن والحجز'],
+  [79964,'منصور: الفروع والتواصل'],
+  [80401,'جيتور: المراكز المعتمدة'],
+  [81239,'كيا: الصيانة المعتمدة'],
+  [79958,'هيونداي: التوكيل والصيانة'],
+  [79924,'دليل مراكز الصيانة في مصر']
+];
+foreach($quick_hubs as $quick_hub):
+  if(get_post_status((int)$quick_hub[0])!=='publish') continue;
+?>
+<a href="<?php echo esc_url(get_permalink((int)$quick_hub[0])); ?>" style="display:inline-flex;align-items:center;justify-content:center;flex:1 1 170px;min-height:44px;padding:10px 12px;background:white;border:1px solid #cbd5e1;border-radius:9px;text-decoration:none;color:#0b1220;font-weight:700"><?php echo esc_html($quick_hub[1]); ?></a>
+<?php endforeach; ?>
+</nav>
+</section>
+<?php endif; ?>
 <?php if(have_posts()): ?><div class="g-directory-grid">
 <?php while(have_posts()):the_post();$status=a3g_directory_status();$phone=a3cp_field('_a3_phone');$address=a3cp_field('_a3_address');$checked=a3cp_field('_a3_source_checked_at');$map_query=$is_showroom?(a3cp_field('_a3_maps_query')?:$address):$address;$map_url=$map_query?'https://www.google.com/maps/search/?api=1&query='.rawurlencode($map_query):''; ?>
 <article class="g-directory-card">
