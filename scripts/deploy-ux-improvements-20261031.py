@@ -12,6 +12,13 @@ API=SITE+'/wp-json/a3tal-direct/v1'
 KEY=os.environ['A3TAL_API_KEY']
 NEW=['ux-improvements-20261031.php','ux-improvements-20261031.css','assets/js/ux-improvements-20261031.js']
 EXISTING=['functions.php','header.php','header-dtc.php','footer-dtc.php','search.php','front-page.php','platform-archive-directory.php','dtc-library-single.php']
+# Exact files from the verified first release, before the mobile visual fixes.
+# Preserve the original pre-release backups and reject any unreviewed live edit.
+APPROVED_PREVIOUS_SHA={
+    'functions.php':'31dcd2a17542d63603007b04e41f5f27b236a9a1bc599e26079a62d2b8e28e7c',
+    'ux-improvements-20261031.css':'8817d3a8380de9060a67fe9628cba5416666440ac5de1dd8bd54e18d3af96b8d',
+    'platform-archive-directory.php':'665cbbf748b7e1eaac06983862bb3fe10e5a2eb1ebea0f41c50e720d9199bbf6',
+}
 def digest(text):return hashlib.sha256(text.encode('utf8')).hexdigest()
 def request(url,payload=None,auth=True,optional=False):
     headers={'User-Agent':'A3tal-Guarded-UX/20261031','Cache-Control':'no-cache,no-store','Accept':'application/json' if auth else 'text/html'}
@@ -108,14 +115,14 @@ for name in EXISTING:
     live=read_file(name)
     baseline=(BACKUP/name).read_text('utf8')
     desired=(SOURCE/name).read_text('utf8')
-    if live['content'] not in [baseline,desired]:raise RuntimeError('Concurrent live change; no writes: '+name)
+    if live['content'] not in [baseline,desired] and live['sha256']!=APPROVED_PREVIOUS_SHA.get(name):raise RuntimeError('Concurrent live change; no writes: '+name)
     before[name]=live
 for name in NEW:
     live=read_file(name,optional=True)
     desired=(SOURCE/name).read_text('utf8')
     previous=BACKUP/name
     approved_previous=previous.read_text('utf8') if previous.exists() else None
-    if live and live['content'] not in [desired,approved_previous]:raise RuntimeError('New path already contains other code: '+name)
+    if live and live['content'] not in [desired,approved_previous] and live['sha256']!=APPROVED_PREVIOUS_SHA.get(name):raise RuntimeError('New path already contains other code: '+name)
     before[name]=live
 for name in NEW+EXISTING:
     if name.endswith('.php'):subprocess.run(['php','-l',str(SOURCE/name)],check=True)

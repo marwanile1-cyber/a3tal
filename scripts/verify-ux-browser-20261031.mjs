@@ -5,6 +5,30 @@ if (!out) throw new Error('QA output directory required');
 await fs.mkdir(out, { recursive: true });
 const browser = await chromium.launch({headless:true, executablePath:process.env.A3TAL_QA_CHROME || undefined});
 const results=[];
+async function openSettled(page,url) {
+  // LiteSpeed Guest Mode deliberately reloads the first document after its
+  // vary request. Observe that navigation before testing forms or layout.
+  const hasVary=(await page.context().cookies(url)).some(cookie=>cookie.name==='_lscache_vary' && cookie.value);
+  let navigations=0,resolveReload;
+  const reloaded=new Promise(resolve=>{resolveReload=resolve;});
+  const observe=frame=>{if(frame===page.mainFrame() && ++navigations>1)resolveReload();};
+  page.on('framenavigated',observe);
+  const guest=hasVary?null:page.waitForResponse(response=>response.url().includes('/litespeed-cache/guest.vary.php'),{timeout:8000}).catch(()=>null);
+  try {
+    const response=await page.goto(url,{waitUntil:'domcontentloaded',timeout:90000});
+    const vary=guest?await guest:null;
+    const settings=vary?await vary.json().catch(()=>null):null;
+    if(settings?.reload==='yes') {
+      let timer;
+      try { await Promise.race([reloaded,new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('Expected LiteSpeed reload did not settle')),20000);})]); }
+      finally { clearTimeout(timer); }
+      await page.waitForLoadState('domcontentloaded');
+      console.log('LITESPEED_GUEST_RELOAD_SETTLED',url);
+    }
+    await page.locator('body.a3tal-ux-20261031').waitFor();
+    return response;
+  } finally { page.off('framenavigated',observe); }
+}
 try {
   for (const width of [320,390,1440]) {
     const context=await browser.newContext({viewport:{width,height:width<768?900:1000},deviceScaleFactor:1,userAgent:'A3tal-UX-Layout-QA/20261031'});
@@ -16,7 +40,7 @@ try {
       const page=await context.newPage();
       let response;
       try {
-        response=await page.goto('https://a3tal.com'+path,{waitUntil:'domcontentloaded',timeout:90000});
+        response=await openSettled(page,'https://a3tal.com'+path);
       } catch (error) {
         const state={page:name,viewport:width,url:page.url(),error:String(error),body:(await page.locator('body').innerText().catch(()=>''))?.slice(0,800)};
         await fs.writeFile(`${out}/navigation-error-${name}-${width}.json`,JSON.stringify(state,null,2));
@@ -26,12 +50,16 @@ try {
       if (response.status()!==200) throw new Error(`${name} HTTP ${response.status()}`);
       await page.locator('h1').waitFor();
       await page.evaluate(()=>document.fonts.ready);
+      await page.waitForFunction(()=>[...document.querySelectorAll('.g-header img.custom-logo,.d-header img.custom-logo')].every(img=>img.complete && img.naturalWidth>0 && !img.currentSrc.startsWith('data:')));
       const metrics=await page.evaluate(()=>({width:innerWidth,documentWidth:document.documentElement.scrollWidth,h1Count:document.querySelectorAll('h1').length,release:document.body.classList.contains('a3tal-ux-20261031')}));
       if (metrics.documentWidth>metrics.width+1) throw new Error(`Horizontal overflow ${name} ${width}: ${metrics.documentWidth}`);
       if (metrics.h1Count!==1 || !metrics.release) throw new Error(`Missing semantic heading or release marker: ${name}`);
       if (name==='home' && width===1440) {
         const size=await page.locator('#g-v3-main-title').evaluate(el=>parseFloat(getComputedStyle(el).fontSize));
         if (size>43) throw new Error('New homepage typography not applied');
+      }
+      if(name==='home' && width<768) {
+        if(!await page.locator('.g-v3-search button>span:not(.g-icon)').isVisible()) throw new Error('Mobile search button has no visible label');
       }
       if (name==='p0420') {
         if (!await page.locator('.d-quick-answer').isVisible()) throw new Error('Quick answer not visible');
@@ -46,7 +74,7 @@ try {
     }
     if (width===390) {
       const page=await context.newPage();
-      await page.goto('https://a3tal.com/',{waitUntil:'domcontentloaded'});
+      await openSettled(page,'https://a3tal.com/');
       const navigations=[];
       page.on('framenavigated',frame=>{if(frame===page.mainFrame())navigations.push(frame.url());});
       // Tap the field as a mobile visitor does before typing; LiteSpeed starts

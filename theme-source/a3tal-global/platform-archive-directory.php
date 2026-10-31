@@ -29,7 +29,7 @@ get_header(); ?>
 <label><small>المحافظة أو المدينة</small><input type="search" name="location" value="<?php echo esc_attr((string)get_query_var('location')); ?>" placeholder="مثال: القاهرة أو الإسكندرية"></label>
 <button type="submit"><?php echo a3g_icon('search'); ?><span>بحث</span></button>
 </form>
-<?php if($guide_brand || $guide_location || get_query_var('market') || get_query_var('directory_status')): ?><a data-google-vignette="false" class="g-directory-reset" data-google-vignette="false" href="<?php echo esc_url(get_post_type_archive_link($type)); ?>">مسح الفلاتر وعرض كل النتائج</a><?php endif; ?>
+<?php if($guide_brand || $guide_location || get_query_var('market') || get_query_var('directory_status')): ?><a data-google-vignette="false" class="g-directory-reset" href="<?php echo esc_url(get_post_type_archive_link($type)); ?>">مسح الفلاتر وعرض كل النتائج</a><?php endif; ?>
 </div></section>
 
 <main class="g-wrap g-platform-archive">

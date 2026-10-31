@@ -1,5 +1,5 @@
 name: Deploy tested A3tal search, article and directory UX
-# Verify public URLs, responsive layouts and actual pointer/keyboard search.
+# Settle LiteSpeed guest reloads; verify visible controls, logos and search.
 on:
   push:
     branches: [main]

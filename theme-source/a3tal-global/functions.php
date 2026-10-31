@@ -231,7 +231,7 @@ function a3g_is_diagnostic($id=0){$id=$id?:get_the_ID();return has_category([2,8
 
 function a3g_logo(){
   if(has_custom_logo()){
-    echo wp_get_attachment_image((int)get_theme_mod('custom_logo'), 'full', false, ['class'=>'custom-logo','alt'=>get_bloginfo('name'),'loading'=>'eager']);
+    echo wp_get_attachment_image((int)get_theme_mod('custom_logo'), 'full', false, ['class'=>'custom-logo','alt'=>get_bloginfo('name'),'loading'=>'eager','data-no-lazy'=>'1']);
     return;
   }
   echo '<span class="g-logo-mark" aria-hidden="true"><span></span></span><span class="g-logo-copy"><strong>أعطال</strong><small>A3tal.com</small></span>';

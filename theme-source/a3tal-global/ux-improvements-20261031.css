@@ -48,6 +48,9 @@
  .g-v3-hero-inner{min-height:0;padding:22px 17px;gap:16px}
  .g-v3-hero .g-v3-hero-copy h1{font-size:26px;line-height:1.55}
  .g-v3-hero .g-v3-hero-lead{font-size:15px;line-height:1.8}
+ .g-v3-hero .g-v3-search .g-search-field input{font-size:16px}
+ .g-v3-hero .g-v3-search button{min-width:78px;width:auto;flex-shrink:0}
+ .g-v3-hero .g-v3-search button>span{display:inline-flex}
  .g-v3-explorer{margin-top:16px}
  .g-home-dtc-zone{padding-block:18px}
  .g-dtc-command form input,.g-platform-filter input,.g-platform-filter select{font-size:16px;min-height:46px;max-width:100%}
