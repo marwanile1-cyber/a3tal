@@ -1,5 +1,5 @@
 name: Deploy tested A3tal search, article and directory UX
-# Verify public URLs in isolated pages, including LiteSpeed combined assets.
+# Verify public URLs, responsive layouts and actual pointer/keyboard search.
 on:
   push:
     branches: [main]

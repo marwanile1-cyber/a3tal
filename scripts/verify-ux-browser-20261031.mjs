@@ -47,8 +47,20 @@ try {
     if (width===390) {
       const page=await context.newPage();
       await page.goto('https://a3tal.com/',{waitUntil:'domcontentloaded'});
-      await page.locator('#g-v3-site-search').fill('P0420');
-      await Promise.all([page.waitForURL(url=>url.searchParams.get('s')==='P0420'),page.locator('.g-v3-search button').click()]);
+      const navigations=[];
+      page.on('framenavigated',frame=>{if(frame===page.mainFrame())navigations.push(frame.url());});
+      // Tap the field as a mobile visitor does before typing; LiteSpeed starts
+      // deferred interactive scripts on the first pointer or keyboard event.
+      await page.locator('#g-v3-site-search').click();
+      await page.locator('#g-v3-site-search').pressSequentially('P0420');
+      try {
+        await Promise.all([page.waitForURL(url=>url.searchParams.get('s')==='P0420',{waitUntil:'domcontentloaded',timeout:30000}),page.locator('.g-v3-search button').click()]);
+      } catch (error) {
+        const state=await page.evaluate(()=>({url:location.href,forms:[...document.querySelectorAll('form')].map(form=>({action:form.action,method:form.method,fields:[...form.querySelectorAll('input')].map(input=>({name:input.name,value:input.value}))}))}));
+        await fs.writeFile(`${out}/search-error.json`,JSON.stringify({error:String(error),navigations,...state},null,2));
+        await page.screenshot({path:`${out}/search-error.png`,fullPage:false});
+        throw error;
+      }
       const first=page.locator('.si-primary-grid .g-card-media').first();
       if ((await first.getAttribute('href'))!=='https://a3tal.com/p0420-catalyst-efficiency-bank-1/') throw new Error('Wrong primary code search result');
       if (await page.locator('#si-results a[href="https://a3tal.com/dtc/p0420/"]').count()) throw new Error('Mirrored result remains');
