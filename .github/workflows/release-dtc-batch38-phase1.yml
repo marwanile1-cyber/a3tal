@@ -1,0 +1,37 @@
+name: Publish reviewed DTC batch38 phase1 P0363
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/release-dtc-batch38-phase1.yml']
+permissions: {contents: read}
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3TAL_BATCH38_RELEASE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install WebP encoder
+        run: python3 -m pip install -q Pillow
+      - name: Validate reviewed editorial and unique code identity
+        run: |
+          python3 -m py_compile scripts/release-dtc-batch38-phase1.py
+          python3 - <<'PY'
+          import json,re
+          data=json.load(open('data/dtc-batch38-phase1-p0363.json',encoding='utf8'))
+          assert data['batch']==38 and data['phase']==1 and len(data['items'])==1
+          row=data['items'][0]
+          assert row['code']=='P0363' and row['slug']=='p0363' and row['qa']['ready_for_publication']
+          wc=len(re.sub(r'<[^>]+>',' ',row['content']).split())
+          assert wc>=1500 and wc==row['word_count'] and row['content'].count('<h2>')>=16
+          assert row['source'].startswith('https://')
+          print('DTC38_PHASE1_VALIDATED',row['code'],wc,'words',flush=True)
+          PY
+      - name: Publish one verified article and ensure featured WebP and og:image
+        run: python3 -u scripts/release-dtc-batch38-phase1.py
