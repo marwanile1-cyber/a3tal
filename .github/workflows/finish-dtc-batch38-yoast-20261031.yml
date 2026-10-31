@@ -1,0 +1,32 @@
+name: Save Yoast SEO descriptions DTC batch38
+on:
+  workflow_run:
+    workflows: ['Publish final four DTC batch38 technical guides']
+    types: [completed]
+  workflow_dispatch:
+permissions: {contents: read}
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  metadata:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate descriptions and canonical identity roster
+        run: |
+          python3 -m py_compile scripts/finish-dtc-batch38-yoast-20261031.py
+          python3 - <<'PY'
+          import json
+          d=json.load(open('data/dtc-batch38-yoast-metadesc-20261031.json',encoding='utf8'))
+          codes='P0361 P0362 P0363 P0486 P0487 P0488 P0764 P0766 P0767 P0768'.split()
+          assert d['batch']==38 and list(d['descriptions'])==codes
+          assert len(set(d['descriptions'].values()))==10
+          assert all(105<=len(d['descriptions'][c])<=160 and c in d['descriptions'][c] for c in codes)
+          PY
+      - name: Save description-only meta with revision guards and confirm canonical OG
+        run: python3 -u scripts/finish-dtc-batch38-yoast-20261031.py
