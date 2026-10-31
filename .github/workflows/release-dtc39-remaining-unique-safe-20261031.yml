@@ -1,0 +1,67 @@
+name: Publish only unique DTC39 P0400 and P0136 with original images
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/release-dtc39-remaining-unique-safe-20261031.yml'
+  workflow_dispatch:
+permissions: {contents: read}
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  release-unique-dtc39:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3TAL_BATCH39_RELEASE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install drawing and RTL text support
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y fonts-dejavu-core
+          python3 -m pip install -q Pillow
+      - name: Validate script and reviewed source articles
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/release-dtc-batch39-component.py scripts/render-dtc-batch39-component-images.py
+          python3 - <<'PY'
+          import json,re
+          for c in ['P0400','P0136']:
+              r=json.load(open('data/dtc-batch39-'+c.lower()+'-20261031.json',encoding='utf8'))
+              assert r['batch']==39 and len(r['items'])==1
+              item=r['items'][0]
+              assert item['code']==c and item['qa']['ready_for_publication']
+              assert len(re.sub(r'<[^>]+>',' ',item['content']).split())>=1500
+              assert item['source'].startswith('https://mitsubishitechinfo.com/')
+              print('DTC39_SOURCE_VERIFIED_AND_UNIQUE_INTENT',c,flush=True)
+          PY
+      - name: P0400 EGR flow fault, only if no existing same-intent generic article
+        env:
+          A3TAL_DTC39_CODE: P0400
+        run: python3 -u scripts/release-dtc-batch39-component.py
+      - name: P0136 rear oxygen sensor signal, only if no existing same-intent article
+        env:
+          A3TAL_DTC39_CODE: P0136
+        run: python3 -u scripts/release-dtc-batch39-component.py
+      - name: Final public WordPress media and social metadata verification
+        run: |
+          python3 - <<'PY'
+          import json,urllib.request
+          b='https://a3tal.com'
+          for c in ['p0400','p0136']:
+              q=b+'/wp-json/wp/v2/a3tal-dtc?slug='+c+'&_fields=id,slug,status,featured_media,yoast_head_json,link'
+              with urllib.request.urlopen(q,timeout=60) as r:arr=json.load(r)
+              assert len(arr)==1 and arr[0]['slug']==c
+              p=arr[0]
+              assert p['status']=='publish' and int(p['featured_media'])>0
+              seo=p['yoast_head_json']
+              assert seo['canonical']==b+'/dtc/'+c+'/'
+              assert seo.get('robots',{}).get('index')!='noindex'
+              assert seo['og_image'] and c in seo['og_image'][0]['url']
+              print('UNIQUE_DTC39_IMAGE_OG_AND_CANONICAL_VERIFIED',c,p['link'],flush=True)
+          PY
