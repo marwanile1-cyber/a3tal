@@ -40,3 +40,5 @@ jobs:
           python3 scripts/render-dtc-batch39-component-images.py P0400
       - name: Publish with live duplicate guard and verify WebP/OG
         run: python3 -u scripts/release-dtc-batch39-component.py
+
+# Serialized rerun after the other DTC39 jobs due GitHub concurrency queue constraints.
