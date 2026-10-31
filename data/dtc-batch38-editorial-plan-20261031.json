@@ -1,0 +1,133 @@
+{
+  "batch": 38,
+  "created_at": "2026-10-31",
+  "source_definitions": [
+    "https://www.snapon.com/EN/US/Diagnostics/OffNav/Diagnostic-Trouble-Codes",
+    "https://alloemmanuals.com/manual/Ford/2018/Escape%20SE%2C%201.5L%20Eng%20VIN%20D%2C%20AWD/Repair%20and%20Diagnosis%20%28Single%20Page%29/General%20Information/DTC%20Index/DTC%20Index%20%28Anti-Lock%20Brake%20System%20And%20Stability%20Control%20-%20Electronic%20Engine%20Controls%29/Automatic%20Transaxle%2FTransmission%20DTCS/2.0L%20ECOBOOST%20%28177KW%2F240PS%29%20-%20Mi4"
+  ],
+  "duplicate_excluded": "P0765",
+  "intended_codes": [
+    "P0361",
+    "P0362",
+    "P0363",
+    "P0486",
+    "P0487",
+    "P0488",
+    "P0764",
+    "P0766",
+    "P0767",
+    "P0768"
+  ],
+  "items": [
+    {
+      "code": "P0361",
+      "title": "كود P0361: دائرة كويل الإشعال K وأسباب التقطيع واختبار الأسلاك",
+      "diagnostic_focus": "دائرة قيادة كويل الإشعال K",
+      "related_code_for_verified_link_check": "P0362",
+      "wordpress_slug": "p0361",
+      "live_duplicate_check": "not_found_on_2026-10-31",
+      "editorial_status": "planned_requires_original_1500_word_manuscript",
+      "media_status": "original_featured_webp_required",
+      "publish_permission": "blocked_until_technical_and_media_review"
+    },
+    {
+      "code": "P0362",
+      "title": "كود P0362: خلل كويل الإشعال L وفحص الدائرة الأولية",
+      "diagnostic_focus": "دائرة قيادة كويل الإشعال L",
+      "related_code_for_verified_link_check": "P0361",
+      "wordpress_slug": "p0362",
+      "live_duplicate_check": "not_found_on_2026-10-31",
+      "editorial_status": "planned_requires_original_1500_word_manuscript",
+      "media_status": "original_featured_webp_required",
+      "publish_permission": "blocked_until_technical_and_media_review"
+    },
+    {
+      "code": "P0363",
+      "title": "كود P0363: سبب إيقاف حقن الوقود بسبب التقطيع وطريقة التشخيص",
+      "diagnostic_focus": "تعطيل حقن الوقود بعد اختلال الاحتراق",
+      "related_code_for_verified_link_check": "P0300",
+      "wordpress_slug": "p0363",
+      "live_duplicate_check": "not_found_on_2026-10-31",
+      "editorial_status": "full_manuscript_authored_1791_words_release_running",
+      "media_status": "temporary_cover_release_running",
+      "publish_permission": "allowed_after_all_checks_pass"
+    },
+    {
+      "code": "P0486",
+      "title": "كود P0486: عطل حساس EGR B وتشخيص الدائرة الكهربائية",
+      "diagnostic_focus": "مراقبة إشارة حساس EGR B",
+      "related_code_for_verified_link_check": "P0487",
+      "wordpress_slug": "p0486",
+      "live_duplicate_check": "not_found_on_2026-10-31",
+      "editorial_status": "planned_requires_original_1500_word_manuscript",
+      "media_status": "original_featured_webp_required",
+      "publish_permission": "blocked_until_technical_and_media_review"
+    },
+    {
+      "code": "P0487",
+      "title": "كود P0487: دائرة التحكم في بوابة EGR مفتوحة وأسباب ضعف العزم",
+      "diagnostic_focus": "دائرة تحكم بوابة EGR A مفتوحة",
+      "related_code_for_verified_link_check": "P0488",
+      "wordpress_slug": "p0487",
+      "live_duplicate_check": "not_found_on_2026-10-31",
+      "editorial_status": "planned_requires_original_1500_word_manuscript",
+      "media_status": "original_featured_webp_required",
+      "publish_permission": "blocked_until_technical_and_media_review"
+    },
+    {
+      "code": "P0488",
+      "title": "كود P0488: خلل أداء بوابة EGR وفحص الحركة والإشارة",
+      "diagnostic_focus": "أداء بوابة EGR A خارج النطاق",
+      "related_code_for_verified_link_check": "P0487",
+      "wordpress_slug": "p0488",
+      "live_duplicate_check": "not_found_on_2026-10-31",
+      "editorial_status": "planned_requires_original_1500_word_manuscript",
+      "media_status": "original_featured_webp_required",
+      "publish_permission": "blocked_until_technical_and_media_review"
+    },
+    {
+      "code": "P0764",
+      "title": "كود P0764: انقطاع متقطع في سولينويد النقل C والفتيس",
+      "diagnostic_focus": "عطل كهربائي متقطع بسولينويد النقل C",
+      "related_code_for_verified_link_check": "P0763",
+      "wordpress_slug": "p0764",
+      "live_duplicate_check": "not_found_on_2026-10-31",
+      "editorial_status": "planned_requires_original_1500_word_manuscript",
+      "media_status": "original_featured_webp_required",
+      "publish_permission": "blocked_until_technical_and_media_review"
+    },
+    {
+      "code": "P0766",
+      "title": "كود P0766: سولينويد النقل D عالق في وضع الإيقاف",
+      "diagnostic_focus": "أداء سولينويد النقل D أو تعليقه في وضع الإيقاف",
+      "related_code_for_verified_link_check": "P0767",
+      "wordpress_slug": "p0766",
+      "live_duplicate_check": "not_found_on_2026-10-31",
+      "editorial_status": "planned_requires_original_1500_word_manuscript",
+      "media_status": "original_featured_webp_required",
+      "publish_permission": "blocked_until_technical_and_media_review"
+    },
+    {
+      "code": "P0767",
+      "title": "كود P0767: سولينويد النقل D عالق في وضع التشغيل",
+      "diagnostic_focus": "أداء سولينويد النقل D أو تعليقه في وضع التشغيل",
+      "related_code_for_verified_link_check": "P0766",
+      "wordpress_slug": "p0767",
+      "live_duplicate_check": "not_found_on_2026-10-31",
+      "editorial_status": "planned_requires_original_1500_word_manuscript",
+      "media_status": "original_featured_webp_required",
+      "publish_permission": "blocked_until_technical_and_media_review"
+    },
+    {
+      "code": "P0768",
+      "title": "كود P0768: دائرة سولينويد النقل D الكهربائية في الفتيس",
+      "diagnostic_focus": "الدائرة الكهربائية لسولينويد النقل D",
+      "related_code_for_verified_link_check": "P0769",
+      "wordpress_slug": "p0768",
+      "live_duplicate_check": "not_found_on_2026-10-31",
+      "editorial_status": "planned_requires_original_1500_word_manuscript",
+      "media_status": "original_featured_webp_required",
+      "publish_permission": "blocked_until_technical_and_media_review"
+    }
+  ]
+}
