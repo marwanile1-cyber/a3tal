@@ -40,3 +40,5 @@ jobs:
           python3 scripts/render-dtc-batch39-component-images.py P0136
       - name: Publish with live duplicate guard and verify WebP/OG
         run: python3 -u scripts/release-dtc-batch39-component.py
+
+# Serialized rerun after completion of the P0400 production release.
