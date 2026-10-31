@@ -1,0 +1,27 @@
+name: Connect A3tal P0172 P0430 and P0301-P0304 diagnostics
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/connect-rich-bank2-single-misfire-20261031.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-p0172-p0430-singlemisfire-20261031
+  cancel-in-progress: false
+jobs:
+  update-existing-guides:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ensure guarded script syntax and live bridge credentials
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY" || { echo "A3tal Direct Bridge credential unavailable"; exit 1; }
+          python3 -m py_compile scripts/connect-rich-bank2-single-misfire-20261031.py
+      - name: Preflight original content then publish and verify all 3 original posts
+        run: python3 -u scripts/connect-rich-bank2-single-misfire-20261031.py
