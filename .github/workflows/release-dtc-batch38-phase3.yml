@@ -1,0 +1,37 @@
+name: Publish reviewed DTC batch38 phase3 P0764
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/release-dtc-batch38-phase3.yml']
+permissions: {contents: read}
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3TAL_BATCH38_RELEASE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install WebP image encoder
+        run: python3 -m pip install -q Pillow
+      - name: Check editorial quality before WordPress writes
+        run: |
+          python3 -m py_compile scripts/release-dtc-batch38-phase3.py
+          python3 - <<'PY'
+          import json,re
+          data=json.load(open('data/dtc-batch38-phase3-p0764.json',encoding='utf8'))
+          assert data['batch']==38 and data['phase']==3 and len(data['items'])==1
+          row=data['items'][0]
+          assert row['code']=='P0764' and row['slug']=='p0764' and row['qa']['ready_for_publication']
+          wc=len(re.sub(r'<[^>]+>',' ',row['content']).split())
+          assert wc>=1500 and wc==row['word_count'] and row['content'].count('<h2>')>=16
+          assert row['source'].startswith('https://')
+          print('DTC38_PHASE3_VALIDATED',row['code'],wc,'words')
+          PY
+      - name: Publish P0764 and verify WebP featured image and og:image
+        run: python3 -u scripts/release-dtc-batch38-phase3.py
