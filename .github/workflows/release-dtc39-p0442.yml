@@ -1,0 +1,39 @@
+name: Publish illustrated DTC39 P0442 EVAP small-leak guide
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/release-dtc39-p0442.yml']
+  workflow_dispatch:
+permissions: {contents: read}
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3TAL_BATCH39_RELEASE: '1'
+      A3TAL_DTC39_CODE: P0442
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Arabic fonts and Pillow
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y fonts-dejavu-core
+          python3 -m pip install -q Pillow
+      - name: Validate independent 1500 plus word EVAP guide and original image
+        run: |
+          python3 -m py_compile scripts/release-dtc-batch39-component.py scripts/render-dtc-batch39-component-images.py
+          python3 - <<'PY'
+          import json,re
+          d=json.load(open('data/dtc-batch39-p0442-20261031.json',encoding='utf8'))
+          assert d['batch']==39 and len(d['items'])==1
+          r=d['items'][0];w=len(re.sub(r'<[^>]+>',' ',r['content']).split())
+          assert r['code']=='P0442' and w>=1500 and r['word_count']==w and r['qa']['ready_for_publication']
+          print('DTC39_P0442_EDITORIAL_PASS',w)
+          PY
+          python3 scripts/render-dtc-batch39-component-images.py P0442
+      - name: Publish and verify original visual featured and Open Graph
+        run: python3 -u scripts/release-dtc-batch39-component.py
