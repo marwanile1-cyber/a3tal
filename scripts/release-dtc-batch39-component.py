@@ -137,6 +137,24 @@ def verify_previous_release():
    raise RuntimeError("Previous batch37 og:image mismatch: "+code)
  log("PREVIOUS_BATCH36_ALL_TEN_FEATURED_OG_CONFIRMED")
 
+def existing_full_code_guide(code):
+ # Fail closed against creating a second indexable page for exactly the same
+ # generic DTC search intent. A separate generic post already covers codes
+ # such as P0101, P0016 and P0455; a brand-specific mention does not count.
+ q=urllib.parse.urlencode({"search":code,"per_page":100,
+                          "_fields":"id,slug,status,title,link"})
+ rows=read(SITE+"/wp-json/wp/v2/posts?"+q)
+ if not isinstance(rows,list):raise RuntimeError("Duplicate-intent query failed "+code)
+ import re
+ strict_title=re.compile(r"^\s*(?:كود\s+(?:العطل\s+)?|DTC\s+|(?:شرح|تشخيص)\s+كود\s+)"+re.escape(code)+r"(?![0-9A-F])",re.I)
+ found=[]
+ for p in rows:
+  title=html.unescape(re.sub(r"<[^>]*>"," ",p.get("title",{}).get("rendered",""))).strip()
+  slug=urllib.parse.unquote(p.get("slug","")).lower()
+  if strict_title.match(title) or slug.startswith(code.lower()+"-"):
+   if p.get("status")=="publish":found.append((p.get("id"),p.get("link"),title))
+ return found
+
 def main():
  if os.getenv("A3TAL_BATCH39_RELEASE")!="1":raise RuntimeError("Batch37 explicit manual release flag missing")
  if not KEY:raise RuntimeError("Bridge secret missing")
@@ -155,6 +173,9 @@ def main():
   # Recheck immediately before each mutation. A lost write must NEVER be retried blindly.
   current=post(code)
   if current:raise RuntimeError("Preexisting page appeared during publication: "+code)
+  competing=existing_full_code_guide(code)
+  if competing:
+   raise RuntimeError("Search-intent conflict: a published generic article already targets "+code+" "+str(competing[:3]))
   content=row["content"]+"\n<p><em>الصورة البارزة رسم توضيحي أصلي للمنظومة المرتبطة بالكود، ولا تثبت تلف الجزء وحده.</em></p>"
   entity={"op":"platform_entity_upsert","type":"a3_dtc","slug":code.lower(),"title":row["title"],
    "status":"publish","excerpt":row["excerpt"],"content":content,
