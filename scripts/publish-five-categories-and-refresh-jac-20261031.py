@@ -3,7 +3,7 @@
 Authoritative source photography credited and cropped to WebP. Idempotent by exact slug;
 check post SEO, taxonomy, internal image and encyclopedia price meta before declaring success.
 """
-import os,json,re,io,time,base64,urllib.request,urllib.parse,urllib.error
+import os,json,re,io,time,base64,hashlib,urllib.request,urllib.parse,urllib.error
 from pathlib import Path
 from PIL import Image,ImageOps
 SITE="https://a3tal.com"
@@ -171,9 +171,12 @@ def preflight():
     print("FIVE_CATEGORY_INTENTS_AND_SOURCES_VALIDATED",[(x["slug"],count(x["body"]),bool(x["prior"])) for x in ARTICLES],flush=True)
 def photograph(f):
     if "commons" in f:
-        url="https://commons.wikimedia.org/wiki/Special:Redirect/file/"+urllib.parse.quote(f["commons"],safe="")
+        filename=f["commons"].replace(" ","_")
+        h=hashlib.md5(filename.encode("utf8")).hexdigest()
+        quoted=urllib.parse.quote(filename,safe="()")
+        url="https://thumb.wikimedia.org/wikipedia/commons/thumb/"+h[0]+"/"+h[:2]+"/"+quoted+"/1280px-"+quoted
     else:url=f["url"]
-    if not (url.startswith("https://www.chevroletarabia.com/content/dam/") or url.startswith("https://commons.wikimedia.org/")):
+    if not (url.startswith("https://www.chevroletarabia.com/content/dam/") or url.startswith("https://thumb.wikimedia.org/")):
         raise RuntimeError("Unexpected image host")
     with urllib.request.urlopen(urllib.request.Request(url,headers={"User-Agent":"A3tal model photo editorial/20261027","Accept":"image/*"}),timeout=90) as r:
         raw=r.read(23_000_000)
