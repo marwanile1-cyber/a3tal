@@ -64,7 +64,7 @@ for code,url,expected in pages:
     matched=False
     results=[]
     for attempt in range(5):
-        u=url+("?a3tal_related_qa=20261031-"+str(attempt))
+        u=urllib.parse.quote(url,safe="/:?&=%-._~")+("?a3tal_related_qa=20261031-"+str(attempt))
         html=request(u,auth=False)
         match=re.search(r'aria-labelledby="dtc-related-title"[^>]*>(.*?)</section>',html,re.S)
         if not match:
