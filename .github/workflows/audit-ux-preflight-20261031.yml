@@ -20,13 +20,22 @@ jobs:
       - name: Compare current live files and identify active ad plugin
         shell: python
         run: |
-          import os,json,urllib.request,urllib.parse,hashlib,time,re
+          import os,json,urllib.request,urllib.parse,urllib.error,hashlib,time,re
           from pathlib import Path
           base='https://a3tal.com/wp-json/a3tal-direct/v1/admin?'
           key=os.environ['A3TAL_API_KEY']
           def admin(**params):
-            req=urllib.request.Request(base+urllib.parse.urlencode(params),headers={'X-A3tal-Key':key,'Authorization':'Bearer '+key,'Cache-Control':'no-cache'})
-            with urllib.request.urlopen(req,timeout=90) as r: body=json.load(r)
+            params['ux_nonce']=str(time.time_ns())
+            req=urllib.request.Request(base+urllib.parse.urlencode(params),headers={'X-A3tal-Key':key,'Authorization':'Bearer '+key,'Cache-Control':'no-cache,no-store','Accept':'application/json','User-Agent':'A3tal-Guarded-UX-Audit/20261031'})
+            try:
+              with urllib.request.urlopen(req,timeout=90) as r: body=json.load(r)
+            except urllib.error.HTTPError as e:
+              raw=e.read().decode('utf8','replace')
+              try:
+                err=json.loads(raw)
+                print('BRIDGE_READ_ERROR',e.code,{k:err.get(k) for k in ['code','message']},flush=True)
+              except Exception: print('BRIDGE_READ_ERROR',e.code,re.sub('<[^>]+>',' ',raw)[:500],flush=True)
+              raise RuntimeError('Bridge read failed; no write attempted') from None
             if not body.get('ok'): raise RuntimeError('Read-only bridge audit failed')
             return body['result']
           files=['functions.php','dtc-library-single.php','front-page.php','search.php','style.css','platform-archive-directory.php','header-dtc.php','footer-dtc.php','header.php']
