@@ -25,3 +25,5 @@ jobs:
           python3 -m py_compile scripts/fix-p0420-generic-yoast-title-20261031.py
       - name: Repair SEO title and verify canonical media description and index state
         run: python3 -u scripts/fix-p0420-generic-yoast-title-20261031.py
+
+# Use Direct Bridge ISO-8601 revision token, not public REST datetime.
