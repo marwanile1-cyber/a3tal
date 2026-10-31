@@ -25,7 +25,13 @@ if p["modified_gmt"]!=LAST or s.get("title")!=OLD:raise RuntimeError("Concurrent
 if s.get("robots",{}).get("index")=="noindex" or not s.get("og_image"):raise RuntimeError("Original SEO integrity bad")
 seo_before={"canonical":s["canonical"],"og_image":s["og_image"][0]["url"],
             "description":s.get("description"),"og_description":s.get("og_description")}
-r=request(API+"/update-post",{"id":PID,"slug":SLUG,"expected_modified_gmt":LAST,
+bridge_before=request(API+"/post/"+str(PID))
+if (bridge_before["id"],bridge_before["slug"],bridge_before["status"],bridge_before["featured_media"])!=(PID,SLUG,"publish",FEATURED):
+ raise RuntimeError("Bridge post identity changed since public audit")
+bridge_token=bridge_before.get("modified_gmt","")
+if not bridge_token.startswith(LAST):
+ raise RuntimeError("Bridge revision differs from audited WP version; refusing update")
+r=request(API+"/update-post",{"id":PID,"slug":SLUG,"expected_modified_gmt":bridge_token,
  "meta":{"_yoast_wpseo_title":NEW,"_yoast_wpseo_opengraph-title":NEW,
          "_yoast_wpseo_twitter-title":NEW}})
 if r.get("ok") is False or r.get("error"):raise RuntimeError("Bridge title update refused "+str(r)[:200])
