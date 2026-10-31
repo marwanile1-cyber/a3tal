@@ -76,10 +76,61 @@ while (have_posts()): the_post();
   }, $dtc_body);
   $dtc_sidebar_toc = array_values(array_filter($dtc_toc, static function ($heading) { return $heading['level'] === 2; }));
   if (!$dtc_sidebar_toc) $dtc_sidebar_toc = $dtc_toc;
-  $dtc_related_entries = array_values(array_filter(a3g_dtc_catalog(), static function ($entry) use ($dtc_code, $dtc_id, $dtc_content_id) {
-    return (int) $entry['id'] !== $dtc_id && (int) $entry['id'] !== $dtc_content_id && $entry['code'] !== $dtc_code && substr($entry['code'], 0, 1) === substr($dtc_code, 0, 1);
+  // Relevance fix 2026-10-31: choose code-family neighbours, not the first
+  // three alphabetic P-codes (P0000/P0010/P0011 for unrelated DTCs).
+  // Links remain drawn only from actual published items in a3g_dtc_catalog().
+  $dtc_related_candidates = array_values(array_filter(a3g_dtc_catalog(), static function ($entry) use ($dtc_code, $dtc_id, $dtc_content_id) {
+    $candidate_code = strtoupper((string) ($entry['code'] ?? ''));
+    return (int) ($entry['id'] ?? 0) !== $dtc_id
+      && (int) ($entry['id'] ?? 0) !== $dtc_content_id
+      && $candidate_code !== strtoupper((string) $dtc_code)
+      && substr($candidate_code, 0, 1) === substr(strtoupper((string) $dtc_code), 0, 1);
   }));
-  $dtc_related_entries = array_slice($dtc_related_entries, 0, 3);
+  // Technical neighbour lists are intentional: a misfire, fuel-trim or
+  // catalyst diagnostic should link to its related test, not random codes.
+  $dtc_neighbour_map = [
+    'P0300' => ['P0301', 'P0302', 'P0303', 'P0304'],
+    'P0171' => ['P0174', 'P0172', 'P0300'],
+    'P0172' => ['P0175', 'P0171', 'P0300'],
+    'P0420' => ['P0430', 'P0171', 'P0300'],
+    'P0430' => ['P0420', 'P0174', 'P0300'],
+    'P0342' => ['P0340', 'P0341', 'P0343', 'P0016'],
+    'P0011' => ['P0014', 'P0016', 'P0010'],
+  ];
+  $dtc_current_code_for_related = strtoupper((string) $dtc_code);
+  $dtc_relevance_score = static function ($entry) use ($dtc_current_code_for_related, $dtc_neighbour_map) {
+    $candidate = strtoupper((string) ($entry['code'] ?? ''));
+    $priority_list = $dtc_neighbour_map[$dtc_current_code_for_related] ?? [];
+    $preferred_index = array_search($candidate, $priority_list, true);
+    if ($preferred_index !== false) return 10000 - 100 * $preferred_index;
+    $distance = abs(hexdec(substr($candidate, 1)) - hexdec(substr($dtc_current_code_for_related, 1)));
+    if (substr($candidate, 0, 4) === substr($dtc_current_code_for_related, 0, 4)) {
+      return 4000 - min(500, $distance);
+    }
+    if (substr($candidate, 0, 3) === substr($dtc_current_code_for_related, 0, 3)) {
+      return 2000 - min(500, $distance);
+    }
+    // Related recommendations should be meaningful; other P-codes are not
+    // automatically part of the same diagnosis just because they start P.
+    return 0;
+  };
+  usort($dtc_related_candidates, static function ($a, $b) use ($dtc_relevance_score) {
+    $by_score = $dtc_relevance_score($b) <=> $dtc_relevance_score($a);
+    return $by_score ?: strcmp((string) ($a['code'] ?? ''), (string) ($b['code'] ?? ''));
+  });
+  $dtc_related_entries = [];
+  $dtc_seen_related_ids = [];
+  $dtc_seen_related_urls = [];
+  foreach ($dtc_related_candidates as $dtc_candidate) {
+    if ($dtc_relevance_score($dtc_candidate) <= 0) break;
+    $related_id = (int) ($dtc_candidate['id'] ?? 0);
+    $related_url = untrailingslashit(strtolower((string) ($dtc_candidate['url'] ?? '')));
+    if (!$related_id || !$related_url || isset($dtc_seen_related_ids[$related_id]) || isset($dtc_seen_related_urls[$related_url])) continue;
+    $dtc_related_entries[] = $dtc_candidate;
+    $dtc_seen_related_ids[$related_id] = true;
+    $dtc_seen_related_urls[$related_url] = true;
+    if (count($dtc_related_entries) >= 3) break;
+  }
   $dtc_share_url = get_permalink($dtc_id);
   $dtc_share_title = $dtc_code ? 'دليل تشخيص كود ' . $dtc_code . ' بالعربي | أعطال.كوم' : get_the_title($dtc_id);
   $dtc_video_links = preg_split('/[\\r\\n,]+/', (string) get_post_meta($dtc_content_id, '_a3_dtc_video_urls', true), -1, PREG_SPLIT_NO_EMPTY);
