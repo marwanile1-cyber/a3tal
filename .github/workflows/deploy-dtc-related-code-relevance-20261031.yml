@@ -29,3 +29,5 @@ jobs:
         run: python3 -u scripts/deploy-dtc-related-code-relevance-20261031.py
 
 # QA checks only true DTC library templates and the canonical P0300 destination.
+
+# Arabic slugs are encoded before querying public DTC pages.
