@@ -8,7 +8,7 @@
       "title": "كود P0301: اختلال احتراق الأسطوانة الأولى وأسباب الرعشة والتقطيع",
       "scope": "SAE generic cylinder 1 misfire with OEM cylinder-order and diagnostics",
       "system": "اختلال احتراق الأسطوانة رقم واحد",
-      "source": "https://mitsubishitechinfo.com/data/P45/2004/M2221304/HTML/M13155220395.htm",
+      "source": "https://mitsubishitechinfo.com/data/DG/2022/02/HTML/N5020401U000XD00USA.htm",
       "related_codes": [
         "P0300",
         "P0351"
