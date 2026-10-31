@@ -1,0 +1,48 @@
+name: Final DTC39 live image and canonical audit
+on:
+  workflow_run:
+    workflows: ['Save verified Yoast descriptions for DTC39 ten codes']
+    types: [completed]
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  audit:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate ten live pages, unique original WebP covers, Yoast, canonical
+        shell: python
+        run: |
+          import urllib.request,urllib.parse,json,time
+          codes="P0135 P0128 P0171 P0301 P0442 P0455 P0400 P0136 P0101 P0016".split()
+          seen_media=set()
+          def read(url):
+              request=urllib.request.Request(url,headers={"User-Agent":"A3tal-DTC39-FinalAudit/20261031","Cache-Control":"no-cache","Accept":"application/json"})
+              with urllib.request.urlopen(request,timeout=60) as r:return json.load(r)
+          for code in codes:
+              q=urllib.parse.urlencode({"slug":code.lower(),"per_page":5,"_fields":"id,slug,status,featured_media,yoast_head_json,link"})
+              records=read("https://a3tal.com/wp-json/wp/v2/a3tal-dtc?"+q)
+              exact=[x for x in records if x.get("slug")==code.lower()]
+              assert len(exact)==1,(code,"duplicate or missing")
+              p=exact[0]
+              expected="https://a3tal.com/dtc/"+code.lower()+"/"
+              assert p.get("status")=="publish" and p.get("link")==expected,(code,"not published")
+              mid=int(p.get("featured_media") or 0)
+              assert mid>0 and mid not in seen_media,(code,"missing or duplicated featured media")
+              seen_media.add(mid)
+              media=read("https://a3tal.com/wp-json/wp/v2/media/"+str(mid)+"?_fields=id,source_url,mime_type")
+              assert media.get("mime_type")=="image/webp",(code,"not WebP")
+              url=media.get("source_url") or ""
+              assert "/a3tal-dtc-"+code.lower()+"-" in url and url.endswith(".webp"),(code,"wrong illustration")
+              seo=p.get("yoast_head_json") or {}
+              assert (seo.get("canonical") or "").rstrip("/")==expected.rstrip("/"),(code,"canonical mismatch")
+              assert url in [v.get("url") for v in seo.get("og_image",[]) if isinstance(v,dict)],(code,"OG mismatch")
+              assert "noindex" not in json.dumps(seo.get("robots") or {}).lower(),(code,"noindex")
+              desc=seo.get("description") or ""
+              assert code in desc and len(desc)>=100,(code,"Yoast snippet missing")
+              print("DTC39_LIVE_QA_PASS",code,expected,"MEDIA",url,"METADESCRIPTION",len(desc),flush=True)
+              time.sleep(.25)
+          assert len(seen_media)==10
+          print("DTC39_ALL_TEN_PUBLISHED_UNIQUE_WEBP_OG_CANONICAL_YOAST_VERIFIED",flush=True)
