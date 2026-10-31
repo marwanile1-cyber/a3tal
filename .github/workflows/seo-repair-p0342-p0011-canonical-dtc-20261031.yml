@@ -1,0 +1,27 @@
+name: Improve canonical P0342 and P0011 diagnostics without redirect changes
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/seo-repair-p0342-p0011-canonical-dtc-20261031.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-p0342-p0011-canonical-intent-safe-20261031
+  cancel-in-progress: false
+jobs:
+  safe-dtc-revisions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify secret and Python syntax
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY" || { echo "Direct Bridge secret missing"; exit 1; }
+          python3 -m py_compile scripts/seo-repair-p0342-p0011-canonical-dtc-20261031.py
+      - name: Apply revision-protected technical improvements to canonical DTC articles
+        run: python3 -u scripts/seo-repair-p0342-p0011-canonical-dtc-20261031.py
