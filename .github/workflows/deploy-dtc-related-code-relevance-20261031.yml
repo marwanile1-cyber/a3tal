@@ -27,3 +27,5 @@ jobs:
           python3 -m py_compile scripts/deploy-dtc-related-code-relevance-20261031.py
       - name: SHA-guarded deploy and verify recommendations on P0420 P0171 and P0300
         run: python3 -u scripts/deploy-dtc-related-code-relevance-20261031.py
+
+# QA checks only true DTC library templates and the canonical P0300 destination.
