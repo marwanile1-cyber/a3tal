@@ -1,0 +1,27 @@
+name: Connect P0171 Fuel Trim P0300 and P0420 diagnostics
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/connect-fuel-trim-misfire-catalyst-guides-20261031.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-fuel-trim-misfire-catalyst-20261031
+  cancel-in-progress: false
+jobs:
+  update-in-place:
+    runs-on: ubuntu-latest
+    timeout-minutes: 17
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Python syntax and Direct Bridge secret
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/connect-fuel-trim-misfire-catalyst-guides-20261031.py
+      - name: Guard originals, insert code decision sections and verify published pages
+        run: python3 -u scripts/connect-fuel-trim-misfire-catalyst-guides-20261031.py
