@@ -1,0 +1,27 @@
+name: Improve A3tal high-impression vibration, starter and Check Engine articles 2026-10-31
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/seo-refresh-vibration-starter-checkengine-20261031.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-high-impression-diagnostics-update-20261031
+  cancel-in-progress: false
+jobs:
+  update-existing-diagnostics:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check A3tal Bridge secret and syntax
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY" || { echo "Bridge secret not configured"; exit 1; }
+          python3 -m py_compile scripts/seo-refresh-vibration-starter-checkengine-20261031.py
+      - name: Preflight all original posts, publish changes through Bridge and verify live
+        run: python3 -u scripts/seo-refresh-vibration-starter-checkengine-20261031.py
