@@ -1,0 +1,30 @@
+name: Preflight DTC batch38 live duplicate checks
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/preflight-dtc-batch38-20261031.yml']
+permissions: {contents: read}
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Check exact new slugs using public WordPress REST before any writes
+        shell: python
+        run: |
+          import urllib.request,urllib.parse,json,time
+          codes="P0361 P0362 P0363 P0486 P0487 P0488 P0764 P0765 P0766 P0767".split()
+          for code in codes:
+              params=urllib.parse.urlencode({"slug":code.lower(),"per_page":4,"_fields":"id,slug,status,link"})
+              req=urllib.request.Request("https://a3tal.com/wp-json/wp/v2/a3tal-dtc?"+params,headers={"User-Agent":"A3tal-Github-DTC38-Preflight","Cache-Control":"no-cache","Accept":"application/json"})
+              with urllib.request.urlopen(req,timeout=45) as res:
+                  rows=json.load(res)
+              if not isinstance(rows,list):
+                  raise RuntimeError("Unexpected API shape")
+              exact=[v for v in rows if v.get("slug")==code.lower()]
+              print("BATCH38_LIVE_CHECK",code,json.dumps(exact),flush=True)
+              if exact:
+                  raise RuntimeError("DUPLICATE_CODE "+code)
+              time.sleep(0.4)
+          print("BATCH38_NO_DUPLICATE_SLUGS")
