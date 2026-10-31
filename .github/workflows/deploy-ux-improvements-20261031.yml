@@ -1,0 +1,56 @@
+name: Deploy tested A3tal search, article and directory UX
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/deploy-ux-improvements-20261031.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-theme
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Syntax and focused regression checks before production
+        run: |
+          set -euo pipefail
+          for file in ux-improvements-20261031.php functions.php header.php header-dtc.php footer-dtc.php search.php front-page.php platform-archive-directory.php dtc-library-single.php; do
+            php -l "theme-source/a3tal-global/$file"
+          done
+          php tests/ux-20261031.php
+          node --check theme-source/a3tal-global/assets/js/ux-improvements-20261031.js
+          node --check scripts/verify-ux-browser-20261031.mjs
+          python3 -m py_compile scripts/deploy-ux-improvements-20261031.py
+      - name: Install browser verification tools
+        run: |
+          npm install --prefix /tmp/a3tal-ux-qa --no-audit --no-fund playwright@1.56.1
+          if command -v google-chrome >/dev/null 2>&1; then
+            echo "A3TAL_QA_CHROME=$(command -v google-chrome)" >> "$GITHUB_ENV"
+          else
+            /tmp/a3tal-ux-qa/node_modules/.bin/playwright install chromium
+          fi
+      - name: Backup-checked deployment, cache purge and live HTML assertions
+        run: python3 -u scripts/deploy-ux-improvements-20261031.py
+      - name: Verify 320px, 390px and desktop layouts and search submission
+        run: |
+          cp scripts/verify-ux-browser-20261031.mjs /tmp/a3tal-ux-qa/verify.mjs
+          A3TAL_QA_OUTPUT="$GITHUB_WORKSPACE/reports/ux-20261031" node /tmp/a3tal-ux-qa/verify.mjs
+      - name: Measure mobile lab performance of home and article
+        continue-on-error: true
+        run: |
+          npm install --prefix /tmp/a3tal-ux-qa --no-audit --no-fund lighthouse@13.0.1
+          /tmp/a3tal-ux-qa/node_modules/.bin/lighthouse https://a3tal.com/ --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,seo --output=json --output-path=reports/ux-20261031/lighthouse-home-mobile.json --quiet
+          /tmp/a3tal-ux-qa/node_modules/.bin/lighthouse https://a3tal.com/p0420-catalyst-efficiency-bank-1/ --chrome-flags="--headless --no-sandbox" --only-categories=performance,accessibility,seo --output=json --output-path=reports/ux-20261031/lighthouse-article-mobile.json --quiet
+      - name: Preserve public verification and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-ux-verified-20261031
+          path: reports/ux-20261031/
+          retention-days: 30

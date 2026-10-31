@@ -230,7 +230,10 @@ function a3g_read_time($id=0){$id=$id?:get_the_ID();$t=wp_strip_all_tags((string
 function a3g_is_diagnostic($id=0){$id=$id?:get_the_ID();return has_category([2,8,9,10,11,12,13,14,15,18,298],$id);}
 
 function a3g_logo(){
-  if(has_custom_logo()){ echo get_custom_logo(); return; }
+  if(has_custom_logo()){
+    echo wp_get_attachment_image((int)get_theme_mod('custom_logo'), 'full', false, ['class'=>'custom-logo','alt'=>get_bloginfo('name'),'loading'=>'eager']);
+    return;
+  }
   echo '<span class="g-logo-mark" aria-hidden="true"><span></span></span><span class="g-logo-copy"><strong>أعطال</strong><small>A3tal.com</small></span>';
 }
 
@@ -318,13 +321,13 @@ function a3g_related_vehicle_entity($post_id=0){
 function a3g_card($id=0,$class=''){
   $id=$id?:get_the_ID();$cat=a3g_primary_cat($id);?>
   <article class="g-card <?php echo esc_attr($class); ?>">
-    <a class="g-card-media" href="<?php echo esc_url(get_permalink($id)); ?>">
+    <a class="g-card-media" data-google-vignette="false" href="<?php echo esc_url(get_permalink($id)); ?>">
       <?php if(has_post_thumbnail($id)){echo get_the_post_thumbnail($id,'large',['loading'=>'lazy']);}else{echo '<span class="g-fallback">A3TAL</span>';} ?>
     </a>
     <div class="g-card-body">
       <?php if(is_search()): ?><span class="g-result-type"><?php echo esc_html(a3g_content_type_label($id)); ?></span><?php endif; ?>
       <?php if($cat): ?><a class="g-card-tag" href="<?php echo esc_url(get_category_link($cat)); ?>"><?php echo esc_html($cat->name); ?></a><?php endif; ?>
-      <h3><a href="<?php echo esc_url(get_permalink($id)); ?>"><?php echo esc_html(get_the_title($id)); ?></a></h3>
+      <h3><a data-google-vignette="false" href="<?php echo esc_url(get_permalink($id)); ?>"><?php echo esc_html(get_the_title($id)); ?></a></h3>
       <p><?php echo esc_html(a3g_excerpt($id,15)); ?></p>
       <div class="g-meta"><span><?php echo esc_html(get_the_modified_date('j M',$id)); ?></span><span><?php echo esc_html(a3g_read_time($id)); ?> دقائق</span><span class="g-views-mini"><?php echo a3g_icon('eye'); ?><b><?php echo esc_html(number_format_i18n(a3g_post_views($id))); ?></b></span></div>
     </div>
@@ -727,7 +730,6 @@ if (is_file(get_template_directory().'/seo-followup-20261018.php')) {
   require_once get_template_directory().'/seo-followup-20261018.php';
 }
 
-
 /**
  * A3TAL-CAR-CHOOSER-SEARCH-UX-20261020
  * Avoid circular search journeys: a model query must not recommend the
@@ -766,7 +768,6 @@ add_filter('the_content', static function($html) {
   }
   return $hint . $html;
 }, 75);
-
 
 /**
  * A3TAL-CHOOSER-PUBLISHED-VEHICLES-20261020
@@ -834,7 +835,6 @@ add_filter('the_content', static function($html) {
   return $section.$html;
 }, 76);
 
-
 /**
  * A3TAL-VERIFIED-BRAND-SERVICE-JOURNEYS-20261020
  * Connect actual vehicle detail pages to existing, published booking guides.
@@ -889,7 +889,6 @@ add_filter('the_content', static function($html) {
     .'</aside>';
   return $html.$aside;
 }, 82);
-
 
 /**
  * A3TAL-MODEL-EDITORIAL-VERIFIED-BATCH-20261020
@@ -984,7 +983,6 @@ add_filter('the_content', static function($content) {
     .'</aside>';
 }, 88);
 
-
 /**
  * A3TAL-TUCSON-DISTINCT-INTENT-20261020
  * Keep the historical 2026-vs-2027 model comparison separate from the
@@ -1016,7 +1014,6 @@ add_filter('the_content', static function($html) {
   return $is_old ? $notice.$html : $html.$notice;
 }, 73);
 
-
 /**
  * A3TAL-CAR-SOCIAL-FEATURED-FALLBACK-20261020
  * A shared, published vehicle should show its own featured image in OG/Twitter
@@ -1040,7 +1037,6 @@ function a3g_car_social_featured_fallback($url) {
 }
 add_filter('wpseo_opengraph_image','a3g_car_social_featured_fallback',90);
 add_filter('wpseo_twitter_image','a3g_car_social_featured_fallback',90);
-
 
 /**
  * A3TAL-CAR-SOCIAL-OG-METADATA-20261020
@@ -1073,7 +1069,6 @@ add_filter('wpseo_opengraph_image_height',static function($height){
 add_filter('wpseo_opengraph_image_type',static function($type){
   return a3g_car_featured_social_meta($type,'type');
 },90);
-
 
 /* A3TAL-DEEPAL-S09-VERIFIED-CAR-INDEX-20261026:START */
  /**
@@ -1120,7 +1115,6 @@ add_filter('wpseo_canonical', static function ($url) {
     return get_permalink(84627) ?: $url;
 }, 10011);
 /* A3TAL-DEEPAL-S09-VERIFIED-CAR-INDEX-20261026:END */
-
 
 /* A3TAL-DEEPAL-G318-VERIFIED-CAR-INDEX-20261027:START */
 /**
@@ -1170,7 +1164,6 @@ add_filter('wpseo_canonical',static function($canonical){
 },10012);
 /* A3TAL-DEEPAL-G318-VERIFIED-CAR-INDEX-20261027:END */
 
-
 /* A3TAL-JAECOO-J5-VERIFIED-CAR-INDEX-20261027:START */
 /** Index only the substantive, fresh Jaecoo J5 car encyclopedia entry.
  * Other new and thin records remain excluded until independently reviewed.
@@ -1216,3 +1209,6 @@ add_filter('wpseo_canonical',static function($url){
     return get_permalink(84715)?:$url;
 },10013);
 /* A3TAL-JAECOO-J5-VERIFIED-CAR-INDEX-20261027:END */
+
+/* A3TAL-UX-20261031 */
+if (is_file(__DIR__ . '/ux-improvements-20261031.php')) require_once __DIR__ . '/ux-improvements-20261031.php';

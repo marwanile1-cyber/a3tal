@@ -20,10 +20,21 @@ while (have_posts()): the_post();
   $dtc_source = (string) get_post_meta($dtc_id, '_a3_source_url', true);
   $dtc_checked = (string) get_post_meta($dtc_id, '_a3_source_checked_at', true);
   $dtc_scope_labels = ['generic' => 'عام OBD-II', 'manufacturer' => 'خاص بالشركة المصنعة'];
-  $dtc_excerpt = trim(wp_strip_all_tags((string) get_post_field('post_excerpt', $dtc_id)));
+  $dtc_excerpt = a3g_ux_dtc_summary($dtc_content_id, $dtc_code);
+  $dtc_thumb_id = (int) get_post_thumbnail_id($dtc_content_id);
+  if (!$dtc_thumb_id && $dtc_content_id !== $dtc_id) $dtc_thumb_id = (int) get_post_thumbnail_id($dtc_id);
+  $dtc_image_caption = $dtc_thumb_id ? trim(wp_strip_all_tags((string) get_post_field('post_excerpt', $dtc_thumb_id))) : '';
   $GLOBALS['post'] = $dtc_content_post;
   setup_postdata($dtc_content_post);
   $dtc_body = apply_filters('the_content', $dtc_content_post->post_content);
+  // Display the assigned cover once, before the guide, preserving its existing caption.
+  if ($dtc_thumb_id) {
+    $dtc_body = preg_replace_callback('~<figure\b[^>]*>.*?</figure>~is', static function($match) use ($dtc_thumb_id, &$dtc_image_caption) {
+      if (substr_count(strtolower($match[0]), '<img') !== 1 || !preg_match('/\bwp-image-' . $dtc_thumb_id . '\b/', $match[0])) return $match[0];
+      if ($dtc_image_caption === '' && preg_match('~<figcaption\b[^>]*>(.*?)</figcaption>~is', $match[0], $caption)) $dtc_image_caption = trim(wp_strip_all_tags($caption[1]));
+      return '';
+    }, $dtc_body);
+  }
   // Render a real, responsive YouTube player from a strict editorial whitelist.
   // WordPress strips arbitrary iframes saved in post_content. Reinsert ONLY these
   // three verified code-to-video IDs after content has been sanitised by WP.
@@ -142,61 +153,52 @@ while (have_posts()): the_post();
   $dtc_promos = a3g_dtc_promo_ids([$dtc_id, $dtc_content_id], 3);
 ?>
 <main id="dtc-main" class="d-wrap d-main d-single-main">
-  <nav class="d-breadcrumb" aria-label="مسار الصفحة"><a href="<?php echo esc_url($dtc_library_url); ?>">دليل أعطال</a><span aria-hidden="true">/</span><a href="<?php echo esc_url($dtc_library_url . '#dtc-codes'); ?>">مكتبة الأكواد</a><span aria-hidden="true">/</span><span dir="ltr" aria-current="page"><?php echo esc_html($dtc_code ?: $dtc_title); ?></span></nav>
+  <nav class="d-breadcrumb" aria-label="مسار الصفحة"><a data-google-vignette="false" href="<?php echo esc_url($dtc_library_url); ?>">دليل أعطال</a><span aria-hidden="true">/</span><a data-google-vignette="false" href="<?php echo esc_url($dtc_library_url . '#dtc-codes'); ?>">مكتبة الأكواد</a><span aria-hidden="true">/</span><span dir="ltr" aria-current="page"><?php echo esc_html($dtc_code ?: $dtc_title); ?></span></nav>
   <header class="d-detail-hero">
-    <div class="d-detail-copy"><p class="d-eyebrow">افهم الكود. رتّب الفحص.</p><h1><?php echo esc_html($dtc_title); ?></h1><?php if ($dtc_excerpt): ?><p class="d-detail-excerpt"><?php echo esc_html($dtc_excerpt); ?></p><?php endif; ?><div class="d-detail-meta"><?php if ($dtc_system): ?><span><?php echo esc_html($dtc_system); ?></span><?php endif; ?><?php if (isset($dtc_scope_labels[$dtc_scope])): ?><span><?php echo esc_html($dtc_scope_labels[$dtc_scope]); ?></span><?php endif; ?><?php if ($dtc_manufacturer): ?><span><?php echo esc_html($dtc_manufacturer); ?></span><?php endif; ?><a href="#dtc-discussion">الأسئلة والتجارب <span aria-hidden="true">↓</span></a></div></div>
+    <div class="d-detail-copy"><p class="d-eyebrow">افهم الكود. رتّب الفحص.</p><h1><?php echo esc_html($dtc_title); ?></h1><?php if ($dtc_excerpt): ?><div class="d-quick-answer"><strong>الإجابة المختصرة</strong><p class="d-detail-excerpt"><?php echo esc_html($dtc_excerpt); ?></p></div><?php endif; ?><div class="d-detail-meta"><?php if ($dtc_system): ?><span><?php echo esc_html($dtc_system); ?></span><?php endif; ?><?php if (isset($dtc_scope_labels[$dtc_scope])): ?><span><?php echo esc_html($dtc_scope_labels[$dtc_scope]); ?></span><?php endif; ?><?php if ($dtc_manufacturer): ?><span><?php echo esc_html($dtc_manufacturer); ?></span><?php endif; ?><a data-google-vignette="false" href="#dtc-discussion">الأسئلة والتجارب <span aria-hidden="true">↓</span></a></div><div class="d-author-meta"><span>إعداد: <?php echo esc_html(get_the_author_meta('display_name', (int)$dtc_content_post->post_author)); ?></span><time datetime="<?php echo esc_attr(get_the_modified_date('c', $dtc_content_id)); ?>">آخر تحديث: <?php echo esc_html(get_the_modified_date('j F Y', $dtc_content_id)); ?></time></div></div>
     <?php if ($dtc_code): ?><b class="d-detail-code" dir="ltr"><?php echo esc_html($dtc_code); ?></b><?php endif; ?>
   </header>
-  <?php // A3TAL-DTC39-FEATURED-VISIBLE-20261031: ensure original component art displays in the article, not only og:image. ?>
-  <?php
-    // Include the original component image based on its actual attachment name.
-    // The batch identifier has had multiple formats; relying only on meta hid the art.
-    $dtc_featured_art_url = has_post_thumbnail($dtc_id) ? wp_get_attachment_url(get_post_thumbnail_id($dtc_id)) : '';
-    $dtc_is_code_specific_art = $dtc_featured_art_url && $dtc_code
-      && strpos($dtc_featured_art_url, '/a3tal-dtc-' . strtolower((string)$dtc_code) . '-exclusive-ar.webp') !== false;
-    $dtc_is_previous_art = (bool) preg_match('/^A3TAL-DTC-[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{2}-(?:5|10)$/',
-      (string)get_post_meta($dtc_id, '_a3_dtc_batch', true));
-  ?>
-  <?php if (has_post_thumbnail($dtc_id) && ($dtc_is_code_specific_art || $dtc_is_previous_art)): ?>
-  <figure class="d-dtc-featured" style="max-width:1180px;margin:20px auto 24px;padding:0 2px;" aria-label="رسم توضيحي لمكونات النظام">
-    <?php echo get_the_post_thumbnail($dtc_id, 'full', ['loading'=>'eager','decoding'=>'async','fetchpriority'=>'high','style'=>'display:block;width:100%;height:auto;max-height:665px;object-fit:contain;border-radius:16px;']); ?>
-    <figcaption style="color:#64748b;font-size:13px;line-height:1.8;padding:10px 4px;">صورة تشخيصية توضيحية من تصميم أعطال.كوم، وليست مخطط توصيلات خاصًا بموديل معين.</figcaption>
-  </figure>
-  <?php endif; ?>
-  <section class="d-share" aria-label="مشاركة دليل الكود">
-    <div class="d-share-intro"><strong>الشرح نفعك؟ شاركه مع صاحب عربية عنده نفس الكود</strong><small>مشاركة مباشرة من غير تسجيل دخول</small></div>
-    <div class="d-share-actions">
-      <a class="d-share-btn d-share-wa" target="_blank" rel="noopener noreferrer nofollow" href="<?php echo esc_url('https://api.whatsapp.com/send?text='.rawurlencode($dtc_share_title.' '.$dtc_share_url)); ?>">واتساب</a>
-      <a class="d-share-btn d-share-fb" target="_blank" rel="noopener noreferrer nofollow" href="<?php echo esc_url('https://www.facebook.com/sharer/sharer.php?u='.rawurlencode($dtc_share_url)); ?>">فيسبوك</a>
-      <a class="d-share-btn d-share-x" target="_blank" rel="noopener noreferrer nofollow" href="<?php echo esc_url('https://twitter.com/intent/tweet?text='.rawurlencode($dtc_share_title).'&url='.rawurlencode($dtc_share_url)); ?>">X / تويتر</a>
-      <button class="d-share-btn d-share-copy" type="button" data-dtc-copy="<?php echo esc_attr($dtc_share_url); ?>">نسخ الرابط</button>
-    </div>
-    <span class="d-share-feedback" aria-live="polite"></span>
-  </section>
   <div class="d-detail-layout">
     <div class="d-detail-content">
       <?php if ($dtc_advice): ?><aside class="d-drive-note"><span class="d-note-icon" aria-hidden="true"><?php echo a3g_icon('warning'); ?></span><div><h2>هل يمكن الاستمرار في القيادة؟</h2><p><?php echo esc_html($dtc_advice); ?></p></div></aside><?php endif; ?>
       <article class="d-guide d-panel" aria-label="شرح الكود وخطوات التشخيص">
-        <div class="d-guide-meta"><span>آخر تحديث للمقال: <?php echo esc_html(get_the_modified_date(get_option('date_format'), $dtc_content_id)); ?></span><?php if ($dtc_content_id !== $dtc_id): ?><a href="<?php echo esc_url(get_permalink($dtc_content_id)); ?>">المقال الأصلي على أعطال <span aria-hidden="true">↗</span></a><?php endif; ?></div>
+        <?php if ($dtc_content_id !== $dtc_id): ?><div class="d-guide-meta"><a data-google-vignette="false" href="<?php echo esc_url(get_permalink($dtc_content_id)); ?>">المقال الأصلي على أعطال <span aria-hidden="true">↗</span></a></div><?php endif; ?>
+          <?php // A3TAL-UX-ALL-DTC-COVERS-20261031: all assigned covers, independent of filename or batch. ?>
+  <?php if ($dtc_thumb_id): ?>
+  <figure class="d-dtc-featured" aria-label="صورة توضيحية للمنظومة المرتبطة بالكود">
+    <?php echo wp_get_attachment_image($dtc_thumb_id, 'full', false, ['loading'=>'eager','decoding'=>'async','fetchpriority'=>'high','data-no-lazy'=>'1','class'=>'wp-post-image','sizes'=>'(max-width: 767px) calc(100vw - 32px), (max-width: 1240px) calc(100vw - 64px), 1180px']); ?>
+    <figcaption><?php echo esc_html($dtc_image_caption ?: 'صورة توضيحية للمنظومة المرتبطة بالكود؛ يختلف موضع المكونات حسب السيارة.'); ?></figcaption>
+  </figure>
+  <?php endif; ?>
         <div class="d-entry"><?php echo $dtc_body; ?></div>
-        <?php if ($dtc_source || $dtc_checked): ?><footer class="d-source-note"><?php if ($dtc_checked): ?><span>آخر مراجعة للمصدر: <?php echo esc_html($dtc_checked); ?></span><?php endif; ?><?php if ($dtc_source): ?><a href="<?php echo esc_url($dtc_source); ?>" target="_blank" rel="nofollow noopener">المصدر الفني <span aria-hidden="true">↗</span></a><?php endif; ?></footer><?php endif; ?>
+        <?php if ($dtc_source || $dtc_checked): ?><footer class="d-source-note"><?php if ($dtc_checked): ?><span>آخر مراجعة للمصدر: <?php echo esc_html($dtc_checked); ?></span><?php endif; ?><?php if ($dtc_source): ?><a data-google-vignette="false" href="<?php echo esc_url($dtc_source); ?>" target="_blank" rel="nofollow noopener">المصدر الفني <span aria-hidden="true">↗</span></a><?php endif; ?></footer><?php endif; ?>
       </article>
       <?php if ($dtc_video_links): ?><section class="d-videos d-panel" aria-labelledby="dtc-videos-title">
         <span class="d-kicker">فيديوهات تشخيص مرتبطة</span><h2 id="dtc-videos-title">شاهد خطوات الفحص على يوتيوب</h2>
         <p>روابط خارجية مختارة للفهم والتوضيح. تحقق من تطابق السيارة والمحرك قبل تطبيق أي إجراء.</p>
-        <ul><?php foreach (array_slice($dtc_video_links, 0, 5) as $dtc_video_url): ?><li><a href="<?php echo esc_url($dtc_video_url); ?>" rel="nofollow noopener noreferrer" target="_blank">شاهد الفيديو على YouTube <span aria-hidden="true">↗</span></a></li><?php endforeach; ?></ul>
+        <ul><?php foreach (array_slice($dtc_video_links, 0, 5) as $dtc_video_url): ?><li><a data-google-vignette="false" href="<?php echo esc_url($dtc_video_url); ?>" rel="nofollow noopener noreferrer" target="_blank">شاهد الفيديو على YouTube <span aria-hidden="true">↗</span></a></li><?php endforeach; ?></ul>
       </section><?php endif; ?>
+        <section class="d-share" aria-label="مشاركة دليل الكود">
+    <div class="d-share-intro"><strong>الشرح نفعك؟ شاركه مع صاحب عربية عنده نفس الكود</strong><small>مشاركة مباشرة من غير تسجيل دخول</small></div>
+    <div class="d-share-actions">
+      <a data-google-vignette="false" class="d-share-btn d-share-wa" target="_blank" rel="noopener noreferrer nofollow" href="<?php echo esc_url('https://api.whatsapp.com/send?text='.rawurlencode($dtc_share_title.' '.$dtc_share_url)); ?>">واتساب</a>
+      <a data-google-vignette="false" class="d-share-btn d-share-fb" target="_blank" rel="noopener noreferrer nofollow" href="<?php echo esc_url('https://www.facebook.com/sharer/sharer.php?u='.rawurlencode($dtc_share_url)); ?>">فيسبوك</a>
+      <a data-google-vignette="false" class="d-share-btn d-share-x" target="_blank" rel="noopener noreferrer nofollow" href="<?php echo esc_url('https://twitter.com/intent/tweet?text='.rawurlencode($dtc_share_title).'&url='.rawurlencode($dtc_share_url)); ?>">X / تويتر</a>
+      <button class="d-share-btn d-share-copy" type="button" data-dtc-copy="<?php echo esc_attr($dtc_share_url); ?>">نسخ الرابط</button>
+    </div>
+    <span class="d-share-feedback" aria-live="polite"></span>
+  </section>
       <?php a3g_dtc_render_discussion($dtc_content_id); ?>
     </div>
     <aside class="d-sidebar" aria-label="تنقل وأكواد أخرى">
       <div class="d-sidebar-sticky">
-        <?php if ($dtc_sidebar_toc): ?><nav class="d-sidebar-box d-toc" aria-label="محتويات شرح الكود"><h2>في هذا الدليل</h2><?php foreach (array_slice($dtc_sidebar_toc, 0, 24) as $dtc_heading): ?><a class="<?php echo $dtc_heading['level'] === 3 ? 'd-toc-sub' : ''; ?>" href="<?php echo esc_url('#' . rawurlencode($dtc_heading['id'])); ?>"><?php echo esc_html($dtc_heading['title']); ?></a><?php endforeach; ?><a class="d-toc-discussion" href="#dtc-discussion">الأسئلة وتجارب الإصلاح <span aria-hidden="true">↓</span></a></nav><?php endif; ?>
-        <div class="d-sidebar-box d-sidebar-question"><span class="d-kicker">عندك نفس الكود؟</span><h2>احكي تفاصيل عربيتك</h2><p>اكتب الأعراض وما تم فحصه، وشارك السؤال أو نتيجة الإصلاح باسم مستعار.</p><a class="d-button" href="#dtc-discussion">اسأل وشارك تجربتك</a></div>
+        <?php if ($dtc_sidebar_toc): ?><nav class="d-sidebar-box d-toc" aria-label="محتويات شرح الكود"><h2>في هذا الدليل</h2><?php foreach (array_slice($dtc_sidebar_toc, 0, 24) as $dtc_heading): ?><a data-google-vignette="false" class="<?php echo $dtc_heading['level'] === 3 ? 'd-toc-sub' : ''; ?>" href="<?php echo esc_url('#' . rawurlencode($dtc_heading['id'])); ?>"><?php echo esc_html($dtc_heading['title']); ?></a><?php endforeach; ?><a data-google-vignette="false" class="d-toc-discussion" href="#dtc-discussion">الأسئلة وتجارب الإصلاح <span aria-hidden="true">↓</span></a></nav><?php endif; ?>
+        <div class="d-sidebar-box d-sidebar-question"><span class="d-kicker">عندك نفس الكود؟</span><h2>احكي تفاصيل عربيتك</h2><p>اكتب الأعراض وما تم فحصه، وشارك السؤال أو نتيجة الإصلاح باسم مستعار.</p><a data-google-vignette="false" class="d-button" href="#dtc-discussion">اسأل وشارك تجربتك</a></div>
         <form class="d-sidebar-box d-small-search" action="<?php echo esc_url($dtc_library_url); ?>#dtc-codes" method="get" role="search" aria-label="ابحث عن كود آخر" data-dtc-search><label for="dtc-other-code">ابحث عن كود آخر</label><div><input id="dtc-other-code" name="code" type="text" placeholder="P0420" maxlength="12" dir="ltr" autocomplete="off" autocapitalize="characters" spellcheck="false"><button type="submit" aria-label="البحث عن الكود"><?php echo a3g_icon('search'); ?></button></div></form>
       </div>
     </aside>
   </div>
-  <?php if ($dtc_related_entries): ?><section class="d-editorial" aria-labelledby="dtc-related-title"><div class="d-section-heading"><div><p class="d-kicker">من نفس مجموعة الأكواد</p><h2 id="dtc-related-title">أكواد أخرى في المكتبة</h2></div><a class="d-text-link" href="<?php echo esc_url($dtc_library_url); ?>">كل الأكواد <span aria-hidden="true">←</span></a></div><div class="d-code-grid"><?php foreach ($dtc_related_entries as $dtc_entry): ?><article class="d-code-card"><a href="<?php echo esc_url($dtc_entry['url']); ?>"><div class="d-code-card-top"><b class="d-code" dir="ltr"><?php echo esc_html($dtc_entry['code']); ?></b><span class="d-card-arrow" aria-hidden="true">←</span></div><h3><?php echo esc_html($dtc_entry['title']); ?></h3><?php if (!empty($dtc_entry['category'])): ?><span class="d-code-category"><?php echo esc_html($dtc_entry['category']); ?></span><?php endif; ?></a></article><?php endforeach; ?></div></section><?php endif; ?>
-  <?php if ($dtc_promos): ?><section class="d-editorial" aria-labelledby="dtc-single-editorial-title"><div class="d-section-heading"><div><p class="d-kicker">من مقالات أعطال</p><h2 id="dtc-single-editorial-title">اكتشف السيارات مع أعطال</h2><p>مراجعات وأسعار من محتوى الموقع</p></div></div><div class="d-article-grid"><?php foreach ($dtc_promos as $dtc_promo_id): if (!has_post_thumbnail($dtc_promo_id)) continue; ?><article class="d-article-card"><a href="<?php echo esc_url(get_permalink($dtc_promo_id)); ?>"><div class="d-article-image"><?php echo get_the_post_thumbnail($dtc_promo_id, 'medium_large', ['loading' => 'lazy', 'decoding' => 'async']); ?></div><div class="d-article-body"><span class="d-kicker">من مقالات أعطال</span><h3><?php echo esc_html(get_the_title($dtc_promo_id)); ?></h3><span class="d-article-tail">اقرأ المقال <span aria-hidden="true">←</span></span></div></a></article><?php endforeach; ?></div></section><?php endif; ?>
+  <?php if ($dtc_related_entries): ?><section class="d-editorial" aria-labelledby="dtc-related-title"><div class="d-section-heading"><div><p class="d-kicker">من نفس مجموعة الأكواد</p><h2 id="dtc-related-title">أكواد أخرى في المكتبة</h2></div><a data-google-vignette="false" class="d-text-link" href="<?php echo esc_url($dtc_library_url); ?>">كل الأكواد <span aria-hidden="true">←</span></a></div><div class="d-code-grid"><?php foreach ($dtc_related_entries as $dtc_entry): ?><article class="d-code-card"><a data-google-vignette="false" href="<?php echo esc_url($dtc_entry['url']); ?>"><div class="d-code-card-top"><b class="d-code" dir="ltr"><?php echo esc_html($dtc_entry['code']); ?></b><span class="d-card-arrow" aria-hidden="true">←</span></div><h3><?php echo esc_html($dtc_entry['title']); ?></h3><?php if (!empty($dtc_entry['category'])): ?><span class="d-code-category"><?php echo esc_html($dtc_entry['category']); ?></span><?php endif; ?></a></article><?php endforeach; ?></div></section><?php endif; ?>
+  <?php if ($dtc_promos): ?><section class="d-editorial" aria-labelledby="dtc-single-editorial-title"><div class="d-section-heading"><div><p class="d-kicker">من مقالات أعطال</p><h2 id="dtc-single-editorial-title">اكتشف السيارات مع أعطال</h2><p>مراجعات وأسعار من محتوى الموقع</p></div></div><div class="d-article-grid"><?php foreach ($dtc_promos as $dtc_promo_id): if (!has_post_thumbnail($dtc_promo_id)) continue; ?><article class="d-article-card"><a data-google-vignette="false" href="<?php echo esc_url(get_permalink($dtc_promo_id)); ?>"><div class="d-article-image"><?php echo get_the_post_thumbnail($dtc_promo_id, 'medium_large', ['loading' => 'lazy', 'decoding' => 'async']); ?></div><div class="d-article-body"><span class="d-kicker">من مقالات أعطال</span><h3><?php echo esc_html(get_the_title($dtc_promo_id)); ?></h3><span class="d-article-tail">اقرأ المقال <span aria-hidden="true">←</span></span></div></a></article><?php endforeach; ?></div></section><?php endif; ?>
 </main>
 <?php endwhile; get_footer('dtc'); ?>

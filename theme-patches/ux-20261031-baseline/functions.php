@@ -1,0 +1,1208 @@
+<?php
+if (!defined('ABSPATH')) exit;
+define('A3G_VERSION','1.7.7');
+
+function a3g_setup(){
+  add_theme_support('title-tag');
+  add_theme_support('post-thumbnails');
+  add_theme_support('custom-logo',['height'=>100,'width'=>320,'flex-height'=>true,'flex-width'=>true]);
+  add_theme_support('responsive-embeds');
+  add_theme_support('html5',['search-form','gallery','caption','style','script']);
+  register_nav_menus(['primary'=>'القائمة الرئيسية','footer'=>'قائمة الفوتر']);
+}
+add_action('after_setup_theme','a3g_setup');
+
+function a3g_assets(){
+  wp_enqueue_style('a3g-fonts','https://fonts.googleapis.com/css2?family=Alexandria:wght@500..800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap',[],null);
+  wp_enqueue_style('a3g-style',get_stylesheet_uri(),['a3g-fonts'],A3G_VERSION);
+  wp_enqueue_script('a3g-theme',get_template_directory_uri().'/assets/js/theme.js',[],A3G_VERSION,true);
+}
+add_action('wp_enqueue_scripts','a3g_assets');
+// Load the optional Google Fonts stylesheet without blocking the initial visual render.
+// Keep the primary theme stylesheet render-blocking to preserve layout and CLS.
+add_filter('style_loader_tag', static function($html, $handle, $href) {
+  if ($handle !== 'a3g-fonts' || is_admin() || !$href) return $html;
+  $url = esc_url($href);
+  return '<link rel="stylesheet" id="a3g-fonts-css" href="' . $url . '" media="print" onload="this.media=\'all\'">' . "\n"
+    . '<noscript><link rel="stylesheet" href="' . $url . '"></noscript>' . "\n";
+}, 10, 3);
+// Establish the font connection early without changing the typography or AdSense integration.
+add_filter('wp_resource_hints',function($urls,$relation_type){
+  if($relation_type==='preconnect'){
+    $urls[]='https://fonts.googleapis.com';
+    $urls[]=['href'=>'https://fonts.gstatic.com','crossorigin'=>'anonymous'];
+  }
+  return $urls;
+},10,2);
+
+// Prioritize the exact responsive homepage LCP photo before the stylesheet and font downloads.
+// Match the front-page category query and sizes to avoid duplicate image requests.
+function a3g_preload_home_hero_image() {
+  if (!is_front_page()) return;
+  $posts = get_posts([
+    'post_type' => 'post',
+    'post_status' => 'publish',
+    'cat' => 374,
+    'posts_per_page' => 1,
+    'fields' => 'ids',
+    'ignore_sticky_posts' => true,
+    'no_found_rows' => true,
+  ]);
+  if (empty($posts)) return;
+  $attachment_id = get_post_thumbnail_id((int)$posts[0]);
+  if (!$attachment_id) return;
+  $source = wp_get_attachment_image_src($attachment_id, 'large');
+  if (!$source || empty($source[0])) return;
+  $srcset = wp_get_attachment_image_srcset($attachment_id, 'large');
+  $sizes = '(max-width: 767px) 100vw, (max-width: 1280px) 92vw, 1240px';
+  echo '<link rel="preload" as="image" href="'.esc_url($source[0]).'"'
+    . ($srcset ? ' imagesrcset="'.esc_attr($srcset).'"' : '')
+    . ' imagesizes="'.esc_attr($sizes).'" fetchpriority="high">'."\n";
+}
+add_action('wp_head', 'a3g_preload_home_hero_image', 2);
+
+add_action('wp_head',function(){echo '<meta name="theme-color" content="#091522">'.PHP_EOL;},1);
+
+function a3g_cat_link($id){$u=get_category_link((int)$id);return is_wp_error($u)?home_url('/'):$u;}
+function a3g_search($q=''){return add_query_arg('s',$q,home_url('/'));}
+function a3g_query($args=[]){return new WP_Query(wp_parse_args($args,['post_type'=>'post','post_status'=>'publish','ignore_sticky_posts'=>true,'no_found_rows'=>true]));}
+function a3g_primary_cat($id=0){$id=$id?:get_the_ID();$c=get_the_category($id);return $c?($c[0]??null):null;}
+function a3g_excerpt($id=0,$words=22){
+  $id=$id?:get_the_ID();
+  $manual=trim((string)get_post_field('post_excerpt',$id));
+  if($manual!=='') return wp_trim_words(wp_strip_all_tags($manual),$words);
+
+  $x=(string)get_post_field('post_content',$id);
+  $x=preg_replace('#<p\b[^>]*>[^<]*(?:<strong\b[^>]*>)?\s*مراجعة فنية\s*:[\s\S]*?</p>#iu',' ',$x,1);
+  $x=preg_replace('#<script\b[^>]*>.*?</script>#isu',' ',$x);
+  $x=preg_replace('#<style\b[^>]*>.*?</style>#isu',' ',$x);
+  $x=preg_replace('#<!--.*?-->#s',' ',$x);
+  $x=strip_shortcodes($x);
+  $x=wp_strip_all_tags($x,true);
+  $x=html_entity_decode($x,ENT_QUOTES|ENT_HTML5,'UTF-8');
+  $x=preg_replace('~https?://\S+~u',' ',$x);
+  $x=preg_replace('/\b(?:@context|@type|schema|sameAs)\b\s*[:=]\s*[^\s]+/iu',' ',$x);
+  $x=preg_replace('/^(?:مراجعة فنية|المراجع الفني|المصدر المرجعي|المصدر|اقرأ أيضًا|رابط الموضوع)\s*[:：\-–—]?\s*/u','',$x);
+  $x=preg_replace('/\s+/u',' ',trim($x));
+  return wp_trim_words($x,$words);
+}
+
+function a3g_post_views($id=0){
+  $id=$id?:get_the_ID();
+  return max(0,(int)get_post_meta($id,'post_views_count',true));
+}
+function a3g_views_label($id=0){
+  return number_format_i18n(a3g_post_views($id)).' مشاهدة';
+}
+
+add_action('rest_api_init',function(){
+  register_rest_route('a3tal/v1','/view/(?P<id>\\d+)',[
+    'methods'=>'POST',
+    'permission_callback'=>'__return_true',
+    'callback'=>function(WP_REST_Request $request){
+      global $wpdb;
+      $id=(int)$request['id'];
+      $post=get_post($id);
+      if(!$post || $post->post_status!=='publish' || $post->post_type!=='post'){
+        return new WP_Error('a3tal_view_not_found','Post not found.',['status'=>404]);
+      }
+
+      $ua=(string)($_SERVER['HTTP_USER_AGENT']??'');
+      if($ua==='' || preg_match('/bot|crawl|spider|slurp|bingpreview|facebookexternalhit|WhatsApp|TelegramBot|Google-InspectionTool/i',$ua)){
+        return rest_ensure_response(['ok'=>true,'count'=>a3g_post_views($id),'counted'=>false]);
+      }
+
+      // Prefer an anonymous browser ID. IP+UA caused real users behind mobile NAT/CDNs
+      // to share the same lock and made the public counter under-report views.
+      $visitor=preg_replace('/[^a-zA-Z0-9._-]/','',(string)$request->get_param('visitor'));
+      if(strlen($visitor)>=16 && strlen($visitor)<=96){
+        $fingerprint=substr(hash('sha256',$id.'|visitor|'.$visitor),0,32);
+      }else{
+        $ip=(string)($_SERVER['HTTP_CF_CONNECTING_IP']??'');
+        if($ip===''){
+          $forwarded=(string)($_SERVER['HTTP_X_FORWARDED_FOR']??'');
+          $ip=$forwarded!==''?trim(explode(',',$forwarded)[0]):(string)($_SERVER['REMOTE_ADDR']??'');
+        }
+        $fingerprint=substr(hash('sha256',$id.'|fallback|'.$ip.'|'.$ua),0,32);
+      }
+
+      $lock='a3g_view_v2_'.$fingerprint;
+      if(get_transient($lock)){
+        return rest_ensure_response(['ok'=>true,'count'=>a3g_post_views($id),'counted'=>false]);
+      }
+      // Ignore rapid refreshes but allow a genuine return visit to count later.
+      set_transient($lock,1,5*MINUTE_IN_SECONDS);
+
+      $updated=$wpdb->query($wpdb->prepare(
+        "UPDATE {$wpdb->postmeta} SET meta_value=CAST(meta_value AS UNSIGNED)+1 WHERE post_id=%d AND meta_key=%s",
+        $id,'post_views_count'
+      ));
+      if($updated===0){
+        if(!add_post_meta($id,'post_views_count',1,true)){
+          // A concurrent first view may have inserted the row between UPDATE and INSERT.
+          $wpdb->query($wpdb->prepare(
+            "UPDATE {$wpdb->postmeta} SET meta_value=CAST(meta_value AS UNSIGNED)+1 WHERE post_id=%d AND meta_key=%s",
+            $id,'post_views_count'
+          ));
+        }
+      }
+      clean_post_cache($id);
+      nocache_headers();
+      return rest_ensure_response(['ok'=>true,'count'=>a3g_post_views($id),'counted'=>true]);
+    },
+  ]);
+});
+
+add_action('wp_footer',function(){
+  if(!is_singular('post'))return;
+  $id=get_queried_object_id();
+  $url=rest_url('a3tal/v1/view/'.$id);
+  ?>
+  <script>
+  (function(){
+    var endpoint=<?php echo wp_json_encode($url); ?>;
+    if(!endpoint)return;
+
+    var storageKey='a3tal_viewer_id_v2';
+    var visitor='';
+    function makeId(){
+      if(window.crypto&&typeof window.crypto.randomUUID==='function'){
+        return window.crypto.randomUUID();
+      }
+      return 'a3v-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2);
+    }
+    try{
+      visitor=localStorage.getItem(storageKey)||'';
+      if(!visitor){
+        visitor=makeId();
+        localStorage.setItem(storageKey,visitor);
+      }
+    }catch(e){
+      var m=document.cookie.match(new RegExp('(?:^|; )'+storageKey+'=([^;]*)'));
+      visitor=m?decodeURIComponent(m[1]):'';
+      if(!visitor){
+        visitor=makeId();
+        document.cookie=storageKey+'='+encodeURIComponent(visitor)+'; path=/; max-age=31536000; SameSite=Lax';
+      }
+    }
+
+    fetch(endpoint,{
+      method:'POST',
+      credentials:'same-origin',
+      keepalive:true,
+      headers:{'Accept':'application/json','Content-Type':'application/json'},
+      body:JSON.stringify({visitor:visitor})
+    })
+      .then(function(r){return r.ok?r.json():null;})
+      .then(function(d){
+        if(!d||typeof d.count==='undefined')return;
+        document.querySelectorAll('[data-a3-views]').forEach(function(el){
+          el.textContent=new Intl.NumberFormat('ar-EG').format(Number(d.count))+' مشاهدة';
+        });
+      }).catch(function(){});
+  })();
+  </script>
+  <?php
+},99);
+
+add_filter('manage_posts_columns',function($cols){
+  $out=[];
+  foreach($cols as $key=>$label){
+    $out[$key]=$label;
+    if($key==='title')$out['a3tal_views']='المشاهدات';
+  }
+  return $out;
+});
+add_action('manage_posts_custom_column',function($column,$post_id){
+  if($column==='a3tal_views')echo esc_html(number_format_i18n(a3g_post_views($post_id)));
+},10,2);
+add_filter('manage_edit-post_sortable_columns',function($cols){
+  $cols['a3tal_views']='a3tal_views';
+  return $cols;
+});
+add_action('pre_get_posts',function($query){
+  if(!is_admin()||!$query->is_main_query()||$query->get('orderby')!=='a3tal_views')return;
+  $query->set('meta_key','post_views_count');
+  $query->set('orderby','meta_value_num');
+});
+
+function a3g_read_time($id=0){$id=$id?:get_the_ID();$t=wp_strip_all_tags((string)get_post_field('post_content',$id));$w=preg_split('/\s+/u',trim($t));return max(1,(int)ceil(count(array_filter((array)$w))/220));}
+function a3g_is_diagnostic($id=0){$id=$id?:get_the_ID();return has_category([2,8,9,10,11,12,13,14,15,18,298],$id);}
+
+function a3g_logo(){
+  if(has_custom_logo()){ echo get_custom_logo(); return; }
+  echo '<span class="g-logo-mark" aria-hidden="true"><span></span></span><span class="g-logo-copy"><strong>أعطال</strong><small>A3tal.com</small></span>';
+}
+
+function a3g_icon($name){
+  $icons=[
+    'search'=>'<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.7-3.7"></path></svg>',
+    'car'=>'<svg viewBox="0 0 24 24"><path d="M5 17h14l-1.4-6H6.4L5 17Z"></path><path d="m7 11 1.5-4h7L17 11"></path><circle cx="7.5" cy="18.5" r="1.5"></circle><circle cx="16.5" cy="18.5" r="1.5"></circle></svg>',
+    'wrench'=>'<svg viewBox="0 0 24 24"><path d="M14.7 6.3a5 5 0 0 0-6.8 6.8L3 18l3 3 4.9-4.9a5 5 0 0 0 6.8-6.8l-3 3-3-3 3-3Z"></path></svg>',
+    'compare'=>'<svg viewBox="0 0 24 24"><path d="M7 7h11"></path><path d="m15 4 3 3-3 3"></path><path d="M17 17H6"></path><path d="m9 14-3 3 3 3"></path></svg>',
+    'pin'=>'<svg viewBox="0 0 24 24"><path d="M12 21s6-5.2 6-11a6 6 0 1 0-12 0c0 5.8 6 11 6 11Z"></path><circle cx="12" cy="10" r="2"></circle></svg>',
+    'bolt'=>'<svg viewBox="0 0 24 24"><path d="m13 2-8 12h6l-1 8 9-13h-6l0-7Z"></path></svg>',
+    'gear'=>'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19 13.5v-3l-2-.6a6 6 0 0 0-.7-1.7l1-1.8-2.1-2.1-1.8 1A6 6 0 0 0 11.5 5L11 3H8l-.6 2a6 6 0 0 0-1.7.7l-1.8-1-2.1 2.1 1 1.8A6 6 0 0 0 2 10.5l-2 .5v3l2 .6c.2.6.4 1.2.7 1.7l-1 1.8 2.1 2.1 1.8-1c.5.3 1.1.5 1.7.7L8 22h3l.6-2a6 6 0 0 0 1.7-.7l1.8 1 2.1-2.1-1-1.8c.3-.5.5-1.1.7-1.7l2.1-.7Z" transform="translate(2 -1) scale(.84)"></path></svg>',
+    'leaf'=>'<svg viewBox="0 0 24 24"><path d="M20 4C11 4 5 8 5 15c0 3 2 5 5 5 7 0 10-7 10-16Z"></path><path d="M4 21c3-7 7-10 13-13"></path></svg>',
+    'calendar'=>'<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M7 3v4M17 3v4M3 10h18"></path></svg>',
+    'oil'=>'<svg viewBox="0 0 24 24"><path d="M12 3s6 7 6 12a6 6 0 1 1-12 0c0-5 6-12 6-12Z"></path></svg>',
+    'filter'=>'<svg viewBox="0 0 24 24"><path d="M4 4h16l-6 7v7l-4 2v-9L4 4Z"></path></svg>',
+    'motorcycle'=>'<svg viewBox="0 0 24 24"><circle cx="5.5" cy="17.5" r="3.5"></circle><circle cx="18.5" cy="17.5" r="3.5"></circle><path d="M9 17.5h5l-3-6H8l-2.5 6"></path><path d="M13 11.5h3l2.5 6"></path><path d="M15 8h3"></path></svg>',
+    'warning'=>'<svg viewBox="0 0 24 24"><path d="M12 3 2.8 20h18.4L12 3Z"></path><path d="M12 9v5"></path><path d="M12 17h.01"></path></svg>',
+    'eye'=>'<svg viewBox="0 0 24 24"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg>',
+    'brain'=>'<svg viewBox="0 0 24 24"><path d="M9 4a3 3 0 0 0-3 3v1a3 3 0 0 0-2 3c0 1.3.8 2.5 2 3a3.5 3.5 0 0 0 3.5 4H12V6a3 3 0 0 0-3-2Z"></path><path d="M15 4a3 3 0 0 1 3 3v1a3 3 0 0 1 2 3c0 1.3-.8 2.5-2 3a3.5 3.5 0 0 1-3.5 4H12V6a3 3 0 0 1 3-2Z"></path><path d="M8 10h4M12 14h4"></path></svg>',
+    'store'=>'<svg viewBox="0 0 24 24"><path d="M4 10v10h16V10"></path><path d="M3 10 5 4h14l2 6"></path><path d="M3 10c0 1.1.9 2 2 2s2-.9 2-2c0 1.1.9 2 2 2s2-.9 2-2c0 1.1.9 2 2 2s2-.9 2-2c0 1.1.9 2 2 2s2-.9 2-2c0 1.1.9 2 2 2s2-.9 2-2"></path></svg>',
+    'tag'=>'<svg viewBox="0 0 24 24"><path d="M3 12V5h7l10 10-7 7L3 12Z"></path><circle cx="7.5" cy="8.5" r="1.2"></circle></svg>',
+    'menu'=>'<svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>'
+  ];
+  return '<span class="g-icon" aria-hidden="true">'.($icons[$name]??$icons['car']).'</span>';
+}
+
+function a3g_content_type_label($id=0){
+  $id=$id?:get_the_ID();
+  $type=get_post_type($id);
+  $labels=[
+    'post'=>'مقال','page'=>'صفحة','a3_car'=>'موديل','a3_motorcycle'=>'موتوسيكل',
+    'a3_dtc'=>'كود عطل','a3_service_center'=>'مركز خدمة','a3_showroom'=>'معرض',
+    'a3_part'=>'قطعة غيار','a3_parts_vendor'=>'بائع قطع','a3_listing'=>'سيارة للبيع',
+    'a3_maintenance_plan'=>'جدول صيانة'
+  ];
+  return $labels[$type]??'محتوى';
+}
+function a3g_related_vehicle_entity($post_id=0){
+  $post_id=(int)($post_id?:get_the_ID());
+  if(!$post_id || get_post_type($post_id)!=='post') return null;
+  // A manually chosen entity always takes priority, when it is published.
+  $explicit=(int)get_post_meta($post_id,'_a3_vehicle_entity_id',true);
+  if($explicit>0){
+    $entity=get_post($explicit);
+    if($entity instanceof WP_Post && in_array($entity->post_type,['a3_car','a3_motorcycle'],true)
+        && $entity->post_status==='publish') return $entity;
+  }
+
+  // LIKE is only a candidate lookup. e.g. article 1234 must not match 91234.
+  // Check the complete tokenized post IDs and reject ambiguous multi-model
+  // comparisons rather than arbitrarily promoting one vehicle in the hero.
+  $matches=[];
+  $q=new WP_Query([
+    'post_type'=>['a3_car','a3_motorcycle'],
+    'post_status'=>'publish',
+    'posts_per_page'=>-1,
+    'fields'=>'ids',
+    'meta_query'=>[[
+      'key'=>'_a3_related_post_ids',
+      'value'=>(string)$post_id,
+      'compare'=>'LIKE'
+    ]],
+    'no_found_rows'=>true,
+    'suppress_filters'=>true,
+  ]);
+  foreach ($q->posts as $vehicle_id) {
+    $vehicle_id=(int)$vehicle_id;
+    $raw=(string)get_post_meta($vehicle_id,'_a3_related_post_ids',true);
+    $ids=array_values(array_filter(array_map('absint',preg_split('/[^0-9]+/',$raw))));
+    if(in_array($post_id,$ids,true)) $matches[$vehicle_id]=$vehicle_id;
+  }
+
+  // Include verified ID-and-slug relationships maintained in the car catalog.
+  if(function_exists('a3g_verified_car_guide_catalog') && function_exists('a3g_verified_car_guide_ids')){
+    foreach(a3g_verified_car_guide_catalog() as $car_id=>$row){
+      if(in_array($post_id,a3g_verified_car_guide_ids($car_id),true)) $matches[$car_id]=(int)$car_id;
+    }
+  }
+  if(count($matches)!==1) return null;
+  $entity=get_post((int)reset($matches));
+  return $entity instanceof WP_Post && $entity->post_status==='publish' ? $entity : null;
+}
+
+function a3g_card($id=0,$class=''){
+  $id=$id?:get_the_ID();$cat=a3g_primary_cat($id);?>
+  <article class="g-card <?php echo esc_attr($class); ?>">
+    <a class="g-card-media" href="<?php echo esc_url(get_permalink($id)); ?>">
+      <?php if(has_post_thumbnail($id)){echo get_the_post_thumbnail($id,'large',['loading'=>'lazy']);}else{echo '<span class="g-fallback">A3TAL</span>';} ?>
+    </a>
+    <div class="g-card-body">
+      <?php if(is_search()): ?><span class="g-result-type"><?php echo esc_html(a3g_content_type_label($id)); ?></span><?php endif; ?>
+      <?php if($cat): ?><a class="g-card-tag" href="<?php echo esc_url(get_category_link($cat)); ?>"><?php echo esc_html($cat->name); ?></a><?php endif; ?>
+      <h3><a href="<?php echo esc_url(get_permalink($id)); ?>"><?php echo esc_html(get_the_title($id)); ?></a></h3>
+      <p><?php echo esc_html(a3g_excerpt($id,15)); ?></p>
+      <div class="g-meta"><span><?php echo esc_html(get_the_modified_date('j M',$id)); ?></span><span><?php echo esc_html(a3g_read_time($id)); ?> دقائق</span><span class="g-views-mini"><?php echo a3g_icon('eye'); ?><b><?php echo esc_html(number_format_i18n(a3g_post_views($id))); ?></b></span></div>
+    </div>
+  </article><?php
+}
+
+function a3g_price_card($id=0){
+  $id=$id?:get_the_ID();?>
+  <article class="g-price-card">
+    <a class="g-price-media" href="<?php echo esc_url(get_permalink($id)); ?>"><?php if(has_post_thumbnail($id)){echo get_the_post_thumbnail($id,'large',['loading'=>'lazy']);}else{echo '<span class="g-fallback">A3TAL</span>';} ?></a>
+    <div class="g-price-body"><h3><a href="<?php echo esc_url(get_permalink($id)); ?>"><?php echo esc_html(get_the_title($id)); ?></a></h3><span>السعر والمواصفات والتفاصيل</span></div>
+  </article><?php
+}
+
+function a3g_compact($id=0){
+  $id=$id?:get_the_ID();?>
+  <article class="g-compact">
+    <a class="g-compact-media" href="<?php echo esc_url(get_permalink($id)); ?>"><?php if(has_post_thumbnail($id)){echo get_the_post_thumbnail($id,'medium_large',['loading'=>'lazy']);}else{echo '<span class="g-fallback">A3</span>';} ?></a>
+    <div><h3><a href="<?php echo esc_url(get_permalink($id)); ?>"><?php echo esc_html(get_the_title($id)); ?></a></h3><div class="g-meta"><span><?php echo esc_html(get_the_modified_date('j M',$id)); ?></span></div></div>
+  </article><?php
+}
+
+function a3g_heading_ids($content){
+  if(!is_singular())return $content;$used=[];
+  return preg_replace_callback('/<h([23])([^>]*)>(.*?)<\/h\1>/isu',function($m)use(&$used){
+    if(preg_match('/\sid=["\'][^"\']+["\']/i',$m[2]))return $m[0];
+    $plain=trim(wp_strip_all_tags($m[3]));$base=sanitize_title($plain);if(!$base)$base='section';$id=$base;$n=2;while(isset($used[$id])){$id=$base.'-'.$n++;}$used[$id]=1;
+    return '<h'.$m[1].$m[2].' id="'.esc_attr($id).'">'.$m[3].'</h'.$m[1].'>';
+  },$content);
+}
+add_filter('the_content','a3g_heading_ids',8);
+
+function a3g_toc(){
+  $content=(string)get_post_field('post_content',get_the_ID());preg_match_all('/<h2[^>]*>(.*?)<\/h2>/isu',$content,$m);$out=[];
+  foreach($m[1]??[] as $raw){$t=trim(wp_strip_all_tags($raw));if($t)$out[]=['t'=>$t,'id'=>sanitize_title($t)];}
+  return $out;
+}
+
+
+
+function a3g_responsive_tables($content){
+  if(!is_singular()) return $content;
+  $content=preg_replace('/<div class=["\']g-table-wrap["\']>\s*(<table\b.*?<\/table>)\s*<\/div>/isu','$1',$content);
+  return preg_replace_callback('/<table\b[^>]*>.*?<\/table>/isu',static function($m){
+    return '<div class="g-table-wrap">'.$m[0].'</div>';
+  },$content);
+}
+add_filter('the_content','a3g_responsive_tables',20);
+
+function a3g_entity_related_post_ids($post_type){
+  $entity_ids=get_posts([
+    'post_type'=>$post_type,
+    'post_status'=>'publish',
+    'numberposts'=>-1,
+    'fields'=>'ids',
+    'no_found_rows'=>true,
+  ]);
+  $out=[];
+  foreach($entity_ids as $entity_id){
+    $raw=(string)get_post_meta($entity_id,'_a3_related_post_ids',true);
+    foreach(preg_split('/[^0-9]+/',$raw) as $id){
+      $id=(int)$id;if($id>0)$out[$id]=$id;
+    }
+  }
+  return array_values($out);
+}
+
+function a3g_legacy_section($category_ids,$title,$subtitle='',$limit=12,$exclude=[],$link_category=0){
+  $category_ids=array_values(array_filter(array_map('intval',(array)$category_ids)));
+  if(!$category_ids)return false;
+  $q=a3g_query([
+    'category__in'=>$category_ids,
+    'posts_per_page'=>(int)$limit,
+    'post__not_in'=>array_values(array_filter(array_map('intval',(array)$exclude))),
+  ]);
+  if(!$q->have_posts())return false;
+  $count=0;
+  foreach($category_ids as $cat_id){
+    $cat=get_category($cat_id);
+    if($cat&&!is_wp_error($cat))$count+=(int)$cat->count;
+  }
+  if(!$link_category)$link_category=$category_ids[0];
+  ?>
+  <section class="g-legacy-bridge">
+    <div class="g-section-head">
+      <div><span>من مكتبة أعطال</span><h2><?php echo esc_html($title); ?></h2><?php if($subtitle): ?><p><?php echo esc_html($subtitle); ?></p><?php endif; ?></div>
+      <div class="g-legacy-count"><?php echo esc_html(number_format_i18n($count)); ?> دليل ومقال متاح</div>
+    </div>
+    <div class="g-news-grid g-legacy-grid">
+      <?php while($q->have_posts()):$q->the_post();a3g_card(get_the_ID(),'g-legacy-card');endwhile;wp_reset_postdata(); ?>
+    </div>
+    <div class="g-legacy-more"><a href="<?php echo esc_url(a3g_cat_link($link_category)); ?>">عرض كل الأدلة والمقالات ←</a></div>
+  </section>
+  <?php
+  return true;
+}
+
+function a3g_platform_link($post_type,$fallback='/'){
+  $u=get_post_type_archive_link($post_type);
+  return $u ?: home_url($fallback);
+}
+function a3g_term_names($post_id,$taxonomy){
+  $terms=get_the_terms($post_id,$taxonomy);
+  if(!$terms||is_wp_error($terms))return [];
+  return array_values(array_map(static fn($t)=>$t->name,$terms));
+}
+function a3g_first_term($post_id,$taxonomy){
+  $names=a3g_term_names($post_id,$taxonomy);
+  return $names[0]??'';
+}
+function a3g_related_post_ids($post_id=0){
+  $post_id=$post_id?:get_the_ID();
+  $raw=(string)get_post_meta($post_id,'_a3_related_post_ids',true);
+  $related=array_values(array_filter(array_map('absint',preg_split('/[^0-9]+/',$raw))));
+  // Supplement existing manually curated relationships with exact, reviewed pairs.
+  if (get_post_type($post_id)==='a3_car' && function_exists('a3g_verified_car_guide_ids')) {
+    $related=array_values(array_unique(array_merge($related,a3g_verified_car_guide_ids($post_id))));
+  }
+  return $related;
+}
+function a3g_directory_status($post_id=0){
+  $post_id=$post_id?:get_the_ID();
+  $terms=get_the_terms($post_id,'a3_directory_status');
+  if(!$terms||is_wp_error($terms))return null;
+  return $terms[0]??null;
+}
+function a3g_platform_card($post_id=0){
+  $post_id=$post_id?:get_the_ID();
+  $type=get_post_type($post_id);
+  $year=(string)get_post_meta($post_id,'_a3_year',true);
+  $price=function_exists('a3cp_vehicle_price')?a3cp_vehicle_price($post_id):'';
+  $brand=a3g_first_term($post_id,'a3_brand');
+  ?>
+  <article class="g-platform-card">
+    <a class="g-platform-media" href="<?php echo esc_url(get_permalink($post_id)); ?>">
+      <?php if(has_post_thumbnail($post_id)){echo get_the_post_thumbnail($post_id,'large',['loading'=>'lazy']);}else{echo '<span class="g-fallback">A3TAL</span>';} ?>
+    </a>
+    <div class="g-platform-body">
+      <div class="g-platform-kickers"><?php if($brand): ?><span><?php echo esc_html($brand); ?></span><?php endif; ?><?php if($year): ?><span><?php echo esc_html($year); ?></span><?php endif; ?></div>
+      <h3><a href="<?php echo esc_url(get_permalink($post_id)); ?>"><?php echo esc_html(get_the_title($post_id)); ?></a></h3>
+      <?php if($price): ?><strong class="g-platform-price"><?php echo esc_html($price); ?></strong><?php endif; ?>
+      <p><?php echo esc_html(a3g_excerpt($post_id,18)); ?></p>
+      <a class="g-platform-more" href="<?php echo esc_url(get_permalink($post_id)); ?>">عرض التفاصيل ←</a>
+    </div>
+  </article>
+  <?php
+}
+
+
+function a3g_platform_archive_seo(){
+  // Informative archive titles, avoiding generic "الأرشيف" and false stock claims.
+  // Does not change indexability or generate listings that do not exist.
+  $egypt_sections=[
+    'a3_service_center'=>[
+      'short'=>'دليل مراكز خدمة السيارات في مصر',
+      'title'=>'دليل مراكز خدمة السيارات في مصر | بيانات المراكز | أعطال.كوم',
+      'desc'=>'تصفح مراكز خدمة السيارات المسجلة في دليل أعطال.كوم داخل مصر. تعرّف على التخصص والعناوين ووسائل الاتصال المتاحة، وتحقق من صفة الاعتماد قبل الحجز.'
+    ],
+    'a3_maintenance_plan'=>[
+      'short'=>'جداول صيانة السيارات',
+      'title'=>'جداول صيانة السيارات | البنود والمواعيد المتاحة | أعطال.كوم',
+      'desc'=>'تصفح جداول الصيانة المنشورة للسيارات والموتوسيكلات حسب الموديل عند توافر البيانات. تعرّف على البنود الدورية والتنبيهات قبل مراجعة كتيب السيارة.'
+    ],
+    'a3_parts_vendor'=>[
+      'short'=>'أماكن بيع قطع الغيار',
+      'title'=>'أماكن بيع قطع الغيار في مصر | دليل الجهات المسجلة | أعطال.كوم',
+      'desc'=>'دليل الجهات المسجلة لبيع قطع غيار السيارات والموتوسيكلات في مصر، مع التخصص وبيانات التواصل عند توفرها. تحقق من توافق القطعة والضمان قبل الشراء.'
+    ],
+    'a3_part'=>[
+      'short'=>'دليل قطع غيار السيارات',
+      'title'=>'دليل قطع غيار السيارات | الأنواع والمواصفات | أعطال.كوم',
+      'desc'=>'تعرّف على قطع غيار السيارات ومواصفاتها وأهم فروق الاختيار عند توفر البيانات، مع شرح التوافق بين الموديلات والتنبيه إلى اختلاف رقم القطعة حسب المحرك والجيل.'
+    ],
+    'a3_listing'=>[
+      'short'=>'سوق السيارات المستعملة',
+      'title'=>'سوق السيارات المستعملة | الإعلانات المتاحة | أعطال.كوم',
+      'desc'=>'مساحة سوق السيارات المستعملة في أعطال.كوم. تصفح الإعلانات عند نشرها وتحقق من حالة السيارة والأوراق والفحص الفني قبل إتمام أي صفقة.'
+    ],
+  ];
+  foreach($egypt_sections as $type=>$copy) {
+    if(is_post_type_archive($type)) return $copy;
+  }
+  if(is_post_type_archive('a3_showroom')){
+    return [
+      'short'=>'معارض السيارات في مصر',
+      'title'=>'معارض السيارات في مصر | الفروع المعتمدة ودليل الشراء | أعطال.كوم',
+      'desc'=>'دليل معارض السيارات في مصر: فروع معتمدة رسميًا، عناوين وأرقام ومواعيد ومصادر تحقق، مع أدلة الحجز وتجربة القيادة والاستلام والتقسيط.'
+    ];
+  }
+  if(is_post_type_archive('a3_motorcycle')){
+    return [
+      'short'=>'الموتوسيكلات والسكوتر في مصر',
+      'title'=>'الموتوسيكلات والسكوتر في مصر | الماركات والمواصفات والصيانة | أعطال.كوم',
+      'desc'=>'دليل شامل للموتوسيكلات والسكوتر في مصر: TVS وBajaj والياباني والهندي والصيني، مواصفات ومقارنات وشراء وصيانة وقطع غيار وأعطال.'
+    ];
+  }
+  return null;
+}
+add_filter('wpseo_title',function($title){$seo=a3g_platform_archive_seo();return $seo?$seo['title']:$title;},90);
+add_filter('wpseo_metadesc',function($desc){$seo=a3g_platform_archive_seo();return $seo?$seo['desc']:$desc;},90);
+add_filter('wpseo_opengraph_title',function($title){$seo=a3g_platform_archive_seo();return $seo?$seo['title']:$title;},90);
+add_filter('wpseo_opengraph_desc',function($desc){$seo=a3g_platform_archive_seo();return $seo?$seo['desc']:$desc;},90);
+add_filter('wpseo_twitter_title',function($title){$seo=a3g_platform_archive_seo();return $seo?$seo['title']:$title;},90);
+add_filter('wpseo_twitter_description',function($desc){$seo=a3g_platform_archive_seo();return $seo?$seo['desc']:$desc;},90);
+add_filter('document_title_parts',function($parts){
+  $seo=a3g_platform_archive_seo();
+  if($seo)$parts['title']=$seo['short']??$seo['title'];
+  return $parts;
+},90);
+
+
+function a3g_showroom_social_image($image=''){
+  if(is_singular('a3_showroom') && has_post_thumbnail()){
+    $featured=get_the_post_thumbnail_url(get_queried_object_id(),'full');
+    if($featured) return $featured;
+  }
+  if(is_post_type_archive('a3_showroom')){
+    $ids=get_posts([
+      'post_type'=>'attachment',
+      'post_status'=>'inherit',
+      'posts_per_page'=>1,
+      'fields'=>'ids',
+      'meta_key'=>'_a3_asset_key',
+      'meta_value'=>'showroom-official-exterior-v2',
+    ]);
+    if($ids){
+      $src=wp_get_attachment_image_url((int)$ids[0],'full');
+      if($src) return $src;
+    }
+  }
+  return $image;
+}
+add_filter('wpseo_opengraph_image','a3g_showroom_social_image',99);
+add_filter('wpseo_twitter_image','a3g_showroom_social_image',99);
+
+
+/* Structured car data hubs initially stay out of the index while their source buying guides remain canonical search targets. */
+function a3g_structured_car_robots($robots){
+  if(is_singular('a3_car')){
+    $robots['noindex']=true;
+    unset($robots['index']);
+    $robots['follow']=true;
+  }
+  return $robots;
+}
+add_filter('wp_robots','a3g_structured_car_robots',99);
+
+function a3g_structured_car_yoast_robots($robots){
+  if(is_singular('a3_car')) return 'noindex, follow';
+  return $robots;
+}
+add_filter('wpseo_robots','a3g_structured_car_yoast_robots',99);
+
+
+/* Keep article UI clear of Google Auto Ads anchors and consent overlays without altering the ads themselves. */
+function a3g_overlay_safe_area(){
+  if(!is_singular('post')) return;
+  ?>
+  <script id="a3tal-overlay-safe-area">
+  (function(){
+    var body=document.body;
+    if(!body)return;
+    function sync(){
+      var anchor=document.querySelector('[data-anchor-status="displayed"], ins.adsbygoogle[data-anchor-status="displayed"]');
+      var consent=document.querySelector('.fc-consent-root,.fc-dialog-container,[class*="fc-consent"],iframe[src*="fundingchoices"],iframe[src*="consent.google"]');
+      body.classList.toggle('a3tal-has-anchor-ad',!!anchor);
+      body.classList.toggle('a3tal-has-consent',!!consent);
+    }
+    sync();
+    var observer=new MutationObserver(sync);
+    observer.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['class','style','data-anchor-status']});
+    window.addEventListener('load',function(){sync();setTimeout(sync,1200);setTimeout(sync,3500);});
+  })();
+  </script>
+  <?php
+}
+add_action('wp_footer','a3g_overlay_safe_area',120);
+
+
+/* A3TAL verified car records: scoped search indexing */
+add_filter('wpseo_robots_array', static function($robots) {
+  if (!is_singular('a3_car')) return $robots;
+  $id=(int)get_queried_object_id();
+  if (!in_array($id,[83383,83385,83386,83387],true)) return $robots;
+  if (get_post_meta($id,'_a3_entity_stub',true)) return $robots;
+  if (strlen((string)get_post_field('post_content',$id))<6500) return $robots;
+  if (!is_array($robots)) $robots=[];
+  $robots['index']='index';
+  $robots['follow']='follow';
+  $robots['max-snippet']='max-snippet:-1';
+  $robots['max-image-preview']='max-image-preview:large';
+  $robots['max-video-preview']='max-video-preview:-1';
+  unset($robots['noindex'],$robots['nofollow']);
+  return $robots;
+},999);
+add_filter('wpseo_canonical',static function($canonical){
+  if (!is_singular('a3_car')) return $canonical;
+  $id=(int)get_queried_object_id();
+  if (!in_array($id,[83383,83385,83386,83387],true)) return $canonical;
+  if (get_post_meta($id,'_a3_entity_stub',true)) return $canonical;
+  return get_permalink($id)?:$canonical;
+},999);
+
+/* A3TAL verified car robots final override */
+function a3g_verified_chery_indexable_request(): bool {
+  if (!is_singular('a3_car')) return false;
+  $id=(int)get_queried_object_id();
+  if (!in_array($id,[83383,83385,83386,83387],true)) return false;
+  if (get_post_meta($id,'_a3_entity_stub',true)) return false;
+  return strlen((string)get_post_field('post_content',$id))>=6500;
+}
+add_filter('wpseo_robots',static function($directive){
+  if (!a3g_verified_chery_indexable_request()) return $directive;
+  return 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1';
+},9999);
+add_filter('wp_robots',static function($rules){
+  if (!a3g_verified_chery_indexable_request()) return $rules;
+  unset($rules['noindex'],$rules['nofollow']);
+  $rules['index']=true;
+  $rules['follow']=true;
+  return $rules;
+},9999);
+
+
+/**
+ * One source of truth for DTC URLs chosen as canonical, uniquely useful
+ * indexing candidates. Share with Yoast sitemap and the archive index.
+ */
+function a3g_dtc_indexable_codes(): array {
+  static $codes=null;
+  if ($codes===null) {
+    $file=get_template_directory().'/dtc-approved-index-codes.php';
+    $codes=is_file($file)?(array)require $file:[];
+  }
+  return $codes;
+}
+
+/* A3TAL: remove 301 redirect sources and non-indexable DTC records from Yoast sitemaps.
+   Article guides remain indexable, while structured stub entities still serve the site UI. */
+add_filter('wpseo_exclude_from_sitemap_by_post_ids', static function($excluded) {
+  if (!is_array($excluded)) $excluded=[];
+  // These legacy articles currently resolve via 301 to their specialist guides.
+  $excluded=array_merge($excluded,[82275,82276,83384]);
+  // A3tal DTC SEO audit 2026-10-18: 277 codes reviewed; approve 234 standalone guides.
+  // 43 codes that reuse an existing canonical editorial guide stay out of XML sitemaps.
+  // Explicit allowlist: future pages must pass review rather than auto-index.
+  $dtc_indexable_codes=a3g_dtc_indexable_codes();
+  $dtc_ids=get_posts([
+    'post_type'=>'a3_dtc',
+    'post_status'=>'publish',
+    'posts_per_page'=>-1,
+    'fields'=>'ids',
+    'no_found_rows'=>true,
+    'suppress_filters'=>true,
+  ]);
+  foreach ((array)$dtc_ids as $dtc_id) {
+    $dtc_id=(int)$dtc_id;
+    $code=function_exists('a3g_dtc_current_code') ? a3g_dtc_current_code($dtc_id) : '';
+    $reuses_editorial=function_exists('a3g_dtc_content_id') && (int)a3g_dtc_content_id($dtc_id)!==$dtc_id;
+    if (!isset($dtc_indexable_codes[$code]) || $reuses_editorial) $excluded[]=$dtc_id;
+  }
+  return array_values(array_unique(array_map('intval',$excluded)));
+},20);
+
+/* Arrizo 6 GT has a complete indexable pricing article.
+   Its structured vehicle profile remains usable in the cars catalogue but not indexed. */
+add_filter('wpseo_robots_array', static function($robots) {
+  if (!is_singular('a3_car') || (int)get_queried_object_id()!==83384) return $robots;
+  if (!is_array($robots)) $robots=[];
+  $robots['index']='noindex';
+  $robots['follow']='follow';
+  unset($robots['max-image-preview'],$robots['max-video-preview'],$robots['max-snippet']);
+  return $robots;
+},10020);
+add_filter('wpseo_robots', static function($directives) {
+  if (is_singular('a3_car') && (int)get_queried_object_id()===83384) return 'noindex, follow';
+  return $directives;
+},10020);
+add_filter('wp_robots',static function($robots){
+  if (!is_singular('a3_car') || (int)get_queried_object_id()!==83384) return $robots;
+  unset($robots['index']);
+  $robots['noindex']=true;
+  $robots['follow']=true;
+  return $robots;
+},10020);
+
+/* A3TAL-DTC-LIBRARY:START */
+if (is_file(get_template_directory() . '/dtc-library-support.php')) {
+    require_once get_template_directory() . '/dtc-library-support.php';
+}
+/* A3TAL-DTC-LIBRARY:END */
+
+/* A3TAL SEO INTEGRITY 2026-10-18 */
+if (is_file(get_template_directory() . '/seo-integrity-20261018.php')) {
+    require_once get_template_directory() . '/seo-integrity-20261018.php';
+}
+
+/* A3tal post-audit verified links and contextual journey improvements. */
+if (is_file(get_template_directory().'/seo-followup-20261018.php')) {
+  require_once get_template_directory().'/seo-followup-20261018.php';
+}
+
+/**
+ * A3TAL-CAR-CHOOSER-SEARCH-UX-20261020
+ * Avoid circular search journeys: a model query must not recommend the
+ * choose-your-car index itself as if it were a model-specific guide.
+ * Preserve the index URL, existing posts and canonical rules.
+ */
+add_action('pre_get_posts', static function($query) {
+  if (is_admin() || !$query->is_main_query() || !$query->is_search()) return;
+  $phrase = trim((string)$query->get('s'));
+  if (preg_match('~(?:اختر\s+سيارتك|choose[\s-]+your[\s-]+car)~iu', $phrase)) return;
+  $chooser = get_page_by_path('choose-your-car', OBJECT, 'page');
+  if (!$chooser instanceof WP_Post || $chooser->post_status !== 'publish') return;
+  $excluded = array_map('absint', (array)$query->get('post__not_in'));
+  $excluded[] = (int)$chooser->ID;
+  $query->set('post__not_in', array_values(array_unique($excluded)));
+}, 12);
+
+/**
+ * Clarify what the model chooser links do without changing or inventing URLs.
+ * The published page remains indexable; missing models get a truthful
+ * no-results search state rather than a thin standalone page.
+ */
+add_filter('the_content', static function($html) {
+  if (!is_page('choose-your-car') || !in_the_loop() || !is_main_query()) return $html;
+  if (strpos($html, 'a3tal-chooser-coverage-hint') !== false) return $html;
+  $hint = '<aside class="a3tal-chooser-coverage-hint" role="note"'
+    . ' style="margin:16px 0 22px;padding:15px 18px;border:1px solid #ccdce9;border-radius:12px;background:#f5f9fc;color:#17334d">'
+    . '<strong>توضيح مهم عن تغطية الموديلات</strong>'
+    . '<p style="margin:7px 0 0">الموديل المكتوب بجانبه «ملف كامل» يفتح مركز معلومات خاصًا به.'
+    . ' باقي الموديلات تفتح نتائج البحث في المحتوى المنشور حاليًا؛ ظهور الموديل هنا لا يعني اكتمال'
+    . ' أعطاله وصيانته وقطع غياره. لو مفيش نتيجة مباشرة هنوضح ده بدل عرض صفحة الاختيار نفسها كإجابة.</p>'
+    . '</aside>';
+  $pattern = '~(<h2\b[^>]*>\s*اختر الماركة ثم الموديل\s*</h2>)~iu';
+  if (preg_match($pattern, $html)) {
+    return preg_replace_callback($pattern, static function($m) use ($hint) { return $hint . $m[1]; }, $html, 1);
+  }
+  return $hint . $html;
+}, 75);
+
+/**
+ * A3TAL-CHOOSER-PUBLISHED-VEHICLES-20261020
+ * Display actual published vehicle records within the existing model chooser.
+ * No new SEO landing pages or inferred model-specific technical claims.
+ * Year/brand and destination always come from the same WordPress vehicle.
+ */
+add_filter('the_content', static function($html) {
+  if (!is_page('choose-your-car') || !in_the_loop() || !is_main_query()) return $html;
+  if (strpos($html, 'a3tal-chooser-available-vehicles') !== false) return $html;
+  $cars = get_posts([
+    'post_type' => 'a3_car',
+    'post_status' => 'publish',
+    'posts_per_page' => 12,
+    'orderby' => 'modified',
+    'order' => 'DESC',
+    'ignore_sticky_posts' => true,
+    'no_found_rows' => true,
+    'suppress_filters' => false,
+  ]);
+  if (!$cars) return $html;
+  $items = '';
+  foreach ($cars as $car) {
+    if (!($car instanceof WP_Post) || $car->post_status !== 'publish') continue;
+    $url = get_permalink($car);
+    if (!$url) continue;
+    $name = get_the_title($car);
+    if (!$name) continue;
+    $brand = function_exists('a3g_first_term') ? a3g_first_term($car->ID, 'a3_brand') : '';
+    $year = trim((string)get_post_meta($car->ID, '_a3_year', true));
+    $image = has_post_thumbnail($car->ID)
+      ? get_the_post_thumbnail($car->ID, 'medium', [
+          'class' => 'a3tal-chooser-vehicle-image',
+          'loading' => 'lazy',
+          'decoding' => 'async',
+          'alt' => '',
+        ])
+      : '<span class="a3tal-chooser-vehicle-fallback" aria-hidden="true">A3TAL</span>';
+    $meta = [];
+    if ($brand) $meta[] = esc_html($brand);
+    if ($year && preg_match('/^20[0-9]{2}$/', $year)) $meta[] = esc_html($year);
+    $items .= '<a class="a3tal-chooser-vehicle-card" href="'.esc_url($url).'">'
+      .'<span class="a3tal-chooser-vehicle-media">'.$image.'</span>'
+      .'<span class="a3tal-chooser-vehicle-info">'
+      .($meta ? '<small>'.implode(' · ', $meta).'</small>' : '<small>صفحة سيارة منشورة</small>')
+      .'<strong>'.esc_html($name).'</strong>'
+      .'<em>عرض بيانات السيارة ←</em>'
+      .'</span></a>';
+  }
+  if ($items === '') return $html;
+  $archive = get_post_type_archive_link('a3_car') ?: home_url('/cars/');
+  $section = '<section class="a3tal-chooser-available-vehicles" aria-labelledby="a3tal-chooser-vehicles-heading">'
+    .'<div class="a3tal-chooser-catalog-head"><div>'
+    .'<h2 id="a3tal-chooser-vehicles-heading">موديلات لها صفحات منشورة بالفعل</h2>'
+    .'<p>ابدأ من بيانات السيارة المتاحة بروابط مباشرة، أو اختَر ماركة وموديلًا من القائمة التالية للبحث في المقالات. وجود صفحة سيارة لا يعني اكتمال كل شروحات أعطالها.</p>'
+    .'</div><a class="a3tal-chooser-all-cars" href="'.esc_url($archive).'">عرض دليل السيارات بالكامل ←</a></div>'
+    .'<div class="a3tal-chooser-vehicles-grid">'.$items.'</div>'
+    .'</section>';
+  $pattern='~(<h2\b[^>]*>\s*اختر الماركة ثم الموديل\s*</h2>)~iu';
+  if (preg_match($pattern, $html)) {
+    return preg_replace_callback($pattern, static function($match) use ($section) {
+      return $section.$match[1];
+    }, $html, 1);
+  }
+  return $section.$html;
+}, 76);
+
+/**
+ * A3TAL-VERIFIED-BRAND-SERVICE-JOURNEYS-20261020
+ * Connect actual vehicle detail pages to existing, published booking guides.
+ * Brand-level link only; never claim a specific branch or trim is supported.
+ */
+add_filter('the_content', static function($html) {
+  if (!is_singular('a3_car') || !in_the_loop() || !is_main_query()) return $html;
+  if (strpos($html, 'a3tal-brand-service-journey') !== false) return $html;
+  $id = (int)get_the_ID();
+  if (!$id) return $html;
+  $names = function_exists('a3g_term_names') ? a3g_term_names($id, 'a3_brand') : [];
+  if (!$names) return $html;
+  $key = '';
+  $aliases = [
+    'kia' => ['kia','كيا'],
+    'hyundai' => ['hyundai','هيونداي'],
+    'toyota' => ['toyota','تويوتا'],
+    'chevrolet' => ['chevrolet','شيفروليه'],
+    'opel' => ['opel','أوبل','اوبل'],
+    'renault' => ['renault','رينو'],
+    'geely' => ['geely','جيلي'],
+    'skoda' => ['skoda','سكودا'],
+  ];
+  foreach ($names as $name) {
+    $normal = function_exists('mb_strtolower') ? mb_strtolower(trim($name),'UTF-8') : strtolower(trim($name));
+    foreach ($aliases as $kind => $variants) {
+      if (in_array($normal, $variants, true)) { $key = $kind; break 2; }
+    }
+  }
+  if ($key === '') return $html;
+  // URLs verified against their published, brand-specific editorial guides.
+  $guide_slugs = [
+    'kia' => 'kia-egypt-service-centers-locations-booking',
+    'hyundai' => rawurldecode('%D8%AD%D8%AC%D8%B2-%D8%B5%D9%8A%D8%A7%D9%86%D8%A9-%D9%87%D9%8A%D9%88%D9%86%D8%AF%D8%A7%D9%8A-%D9%81%D9%8A-%D9%85%D8%B5%D8%B1-%D9%83%D9%84-%D8%A7%D9%84%D9%85%D8%B1%D8%A7%D9%83%D8%B2-%D9%88%D8%A3%D8%B1'),
+    'toyota' => 'toyota-egypt-maintenance-booking-guide',
+    'chevrolet' => 'mansour-chevrolet-maintenance-booking-numbers-branches',
+    'opel' => 'opel-egypt-service-centers-parts-guide',
+    'renault' => 'renault-egypt-maintenance-booking-centers-locations',
+    'geely' => 'geely-egypt-service-centers-hotline-ex2',
+    'skoda' => 'skoda-egypt-service-centers-locations',
+  ];
+  $guide = get_page_by_path($guide_slugs[$key], OBJECT, 'post');
+  if (!($guide instanceof WP_Post) || $guide->post_status !== 'publish') return $html;
+  $url = get_permalink($guide);
+  if (!$url || strpos($html, $url) !== false) return $html;
+  $name = trim((string)$names[0]);
+  $aside = '<aside class="a3tal-brand-service-journey" aria-label="دليل الصيانة والحجز"'
+    .' style="margin:22px 0;padding:18px;border:1px solid #d6e3ed;border-radius:13px;background:#f7fafc">'
+    .'<h2 style="font-size:1.15em;margin:0 0 8px">مراكز خدمة '.esc_html($name).' وحجز الصيانة</h2>'
+    .'<p style="margin:0 0 10px">للتواصل والحجز، راجع الدليل المنشور الخاص بالعلامة في مصر. هذه معلومات عن شبكة الخدمة، ولا تعني أن كل فرع يستقبل هذا الموديل أو ينفذ كل أنواع الإصلاح.</p>'
+    .'<p style="margin:0"><a href="'.esc_url($url).'">'.esc_html(get_the_title($guide)).' ←</a></p>'
+    .'</aside>';
+  return $html.$aside;
+}, 82);
+
+/**
+ * A3TAL-MODEL-EDITORIAL-VERIFIED-BATCH-20261020
+ * Manually matched public car/article IDs & immutable slugs, not guessed from
+ * a brand, title substring or model year. Only published records count.
+ * Related IDs are additive to existing editorial metadata. No page creation.
+ */
+function a3g_verified_car_guide_catalog(): array {
+  return [
+    83532 => ['slug'=>'mazda-3-2027-egypt','articles'=>[83527=>'mazda-3-2027-egypt-price-specs']],
+    83280 => ['slug'=>'gac-empow-2027-egypt','articles'=>[83276=>'gac-empow-2027-price-egypt']],
+    83190 => ['slug'=>'chery-tiggo-9-egypt','articles'=>[83037=>'chery-tiggo-9-egypt-price-specs-review']],
+    83191 => ['slug'=>'chery-arrizo-8-egypt','articles'=>[82853=>'chery-arrizo-8-egypt-review-price-specs']],
+    83192 => ['slug'=>'chery-tiggo-8-pro-max-egypt','articles'=>[
+      82844=>'chery-tiggo-8-pro-max-egypt-price-specs',
+      82852=>'tiggo-8-pro-max-vs-jetour-t2-comparison',
+    ]],
+    83196 => ['slug'=>'opel-frontera-egypt','articles'=>[
+      82603=>'opel-frontera-price-specs-egypt',
+      84045=>'opel-frontera-egypt-family-review-third-row-2026']],
+    83384 => ['slug'=>'chery-arrizo-6-gt-egypt','articles'=>[82578=>'chery-arrizo-6-gt-price-specs-egypt']],
+    83684 => ['slug'=>'kia-k4-2027-egypt','articles'=>[
+      83679=>'kia-k4-2027-egypt-prices-engines',
+      84036=>'kia-k4-vs-skoda-octavia-egypt-2027']],
+    83648 => ['slug'=>'skoda-octavia-2027-egypt','articles'=>[
+      83643=>'skoda-octavia-2027-egypt-prices-trims',
+      84036=>'kia-k4-vs-skoda-octavia-egypt-2027']],
+    84011 => ['slug'=>'hyundai-tucson-2027-egypt','articles'=>[84008=>'hyundai-tucson-2027-prices-egypt']],
+    83442 => ['slug'=>'geely-galaxy-ex2-egypt','articles'=>[83431=>'geely-ex2-price-specs-review-egypt']],
+    83193 => ['slug'=>'xpeng-p7-plus-super-reev-egypt','articles'=>[82612=>'xpeng-p7-plus-super-reev-price-specs-egypt']],
+    83194 => ['slug'=>'xpeng-g7-super-reev-egypt','articles'=>[82606=>'xpeng-g7-super-reev-price-specs-egypt']],
+    83302 => ['slug'=>'deepal-s07-2026-egypt','articles'=>[
+      83281=>'deepal-s07-price-egypt',83286=>'deepal-s07-vs-xpeng-g6-egypt']],
+    83304 => ['slug'=>'xpeng-g6-2026-egypt','articles'=>[83286=>'deepal-s07-vs-xpeng-g6-egypt']],
+    83198 => ['slug'=>'soueast-s05-2027-egypt','articles'=>[82554=>'soueast-s05-price-specs-egypt']],
+    83197 => ['slug'=>'haval-v7-egypt','articles'=>[
+      82550=>'haval-v7-price-specs-egypt',82590=>'haval-v7-vs-geely-monjaro-em-i-egypt']],
+    83303 => ['slug'=>'forthing-s7-2027-egypt','articles'=>[83284=>'forthing-s7-review-egypt']],
+    83187 => ['slug'=>'byd-sealion-6-ev-2027','articles'=>[83167=>'byd-sealion-6-ev-price-egypt']],
+    83538 => ['slug'=>'suzuki-alto-2027-egypt','articles'=>[
+      83533=>'suzuki-alto-2027-price-egypt-535000',
+      84042=>'suzuki-alto-vs-proton-saga-2027-egypt-city-car']],
+    83434 => ['slug'=>'kia-seltos-egypt-2026','articles'=>[83428=>'kia-seltos-price-specs-egypt-buying-guide']],
+    83425 => ['slug'=>'jac-js2-2027-egypt','articles'=>[83420=>'jac-js2-price-egypt']],
+    83195 => ['slug'=>'geely-monjaro-em-i-egypt','articles'=>[
+      82582=>'geely-monjaro-em-i-price-specs-egypt',
+      82590=>'haval-v7-vs-geely-monjaro-em-i-egypt']],
+  ];
+}
+
+function a3g_verified_car_guide_ids($car_id): array {
+  static $cache = [];
+  $car_id = (int) $car_id;
+  if (array_key_exists($car_id,$cache)) return $cache[$car_id];
+  $cache[$car_id]=[];
+  $entry=a3g_verified_car_guide_catalog()[$car_id] ?? null;
+  if (!$entry) return [];
+  $car=get_post($car_id);
+  if (!$car || $car->post_type!=='a3_car' || $car->post_status!=='publish' || $car->post_name!==$entry['slug']) return [];
+  foreach ($entry['articles'] as $id=>$slug) {
+    $post=get_post((int)$id);
+    if ($post && $post->post_type==='post' && $post->post_status==='publish' && $post->post_name===$slug) {
+      $cache[$car_id][]=(int)$id;
+    }
+  }
+  return $cache[$car_id];
+}
+
+// Reverse link: one or more exact editorial subjects -> published vehicle pages.
+// Comparisons may cover two vehicles. Skip existing links rather than duplicating.
+add_filter('the_content', static function($content) {
+  if (!is_singular('post') || !in_the_loop() || !is_main_query() ||
+      strpos($content,'a3tal-reviewed-model-journey')!==false) return $content;
+  $article_id=(int)get_the_ID();
+  $links=[];
+  foreach (a3g_verified_car_guide_catalog() as $car_id=>$row) {
+    if (!isset($row['articles'][$article_id]) ||
+        !in_array($article_id,a3g_verified_car_guide_ids($car_id),true)) continue;
+    $car=get_post($car_id);
+    if (!$car) continue;
+    $url=get_permalink($car);
+    if (!$url || strpos($content,$url)!==false) continue;
+    $links[$car_id]='<li><a href="'.esc_url($url).'">'.esc_html(get_the_title($car)).'</a></li>';
+  }
+  if (!$links) return $content;
+  return $content
+    .'<aside class="a3tal-reviewed-model-journey" aria-label="صفحات السيارات المرتبطة"'
+    .' style="margin:20px 0;padding:16px 18px;border-radius:12px;border:1px solid #d9e6f0;background:#f7fafc">'
+    .'<strong>ملفات السيارات المرتبطة بهذا المقال</strong>'
+    .'<p style="margin:6px 0 10px">المواصفات والأسعار والمراجعات والأعطال المتاحة، وفق كل موديل.</p>'
+    .'<ul style="margin:0 0 0 8px;padding-right:18px">'.implode('',$links).'</ul>'
+    .'</aside>';
+}, 88);
+
+/**
+ * A3TAL-TUCSON-DISTINCT-INTENT-20261020
+ * Keep the historical 2026-vs-2027 model comparison separate from the
+ * October 15, 2026 current-price article. Add freshness context without
+ * rewriting pricing tables, re-canonicalizing, or changing any permalink.
+ */
+add_filter('the_content', static function($html) {
+  if (!is_singular('post') || !in_the_loop() || !is_main_query()) return $html;
+  $post_id=(int)get_the_ID();
+  if (!in_array($post_id,[80567,84008],true)) return $html;
+  $is_old=$post_id===80567;
+  $related_id=$is_old?84008:80567;
+  $expected_slug=$is_old?'hyundai-tucson-2027-prices-egypt':'hyundai-tucson-2026-price-specs-review-egypt';
+  $related=get_post($related_id);
+  if (!($related instanceof WP_Post) || $related->post_type!=='post' ||
+      $related->post_status!=='publish' || $related->post_name!==$expected_slug) return $html;
+  $target=get_permalink($related);
+  if (!$target || strpos($html,'a3tal-tucson-intent-notice')!==false) return $html;
+  $title=$is_old?'تحديث مهم للأسعار بتاريخ 15 أكتوبر 2026':'تبحث عن الفرق بين موديل 2026 و2027؟';
+  $intro=$is_old
+    ? 'هذا الموضوع مخصص لمقارنة موديلَي توسان 2026 و2027، ويتضمن بيانات سعرية جرى تدقيقها يوم 1 أكتوبر 2026. لمراجعة قائمة أسعار 2027 بعد تحديث 15 أكتوبر، ارجع للمقال الأحدث قبل اتخاذ قرار الشراء.'
+    : 'هذا الموضوع يعرض أسعار توسان 2027 المراجعة بتاريخ 16 أكتوبر 2026. للمقارنة التاريخية بين فئات وأسعار 2026 و2027، راجع الدليل المنفصل ولا تتعامل مع أسعاره القديمة باعتبارها أحدث قائمة.';
+  $link=$is_old?'أسعار هيونداي توسان 2027 بعد تحديث أكتوبر ←':'مقارنة توسان 2026 و2027 ←';
+  $notice='<aside class="a3tal-tucson-intent-notice" role="note" aria-label="مسار توسان المكمل"'
+    .' style="margin:22px 0;padding:17px 19px;border:1px solid #cedfea;border-right:4px solid #18789b;border-radius:12px;background:#f5f9fc">'
+    .'<strong style="display:block;margin-bottom:7px;color:#123b63">'.esc_html($title).'</strong>'
+    .'<p style="margin:0 0 10px">'.esc_html($intro).'</p>'
+    .'<a href="'.esc_url($target).'">'.esc_html($link).'</a></aside>';
+  return $is_old ? $notice.$html : $html.$notice;
+}, 73);
+
+/**
+ * A3TAL-CAR-SOCIAL-FEATURED-FALLBACK-20261020
+ * A shared, published vehicle should show its own featured image in OG/Twitter
+ * previews, not the generic site icon. Preserve any bespoke social image.
+ * No change to canonical/robots rules or image files.
+ */
+function a3g_car_social_featured_fallback($url) {
+  if (!is_singular('a3_car')) return $url;
+  $id=(int)get_queried_object_id();
+  if (!$id || get_post_status($id)!=='publish') return $url;
+  $current=trim((string)$url);
+  $default_icon=(string)get_site_icon_url(512);
+  if ($current!=='' && $current!==$default_icon) {
+    $path=(string)wp_parse_url($current,PHP_URL_PATH);
+    if (basename($path)!=='icon.png') return $url;
+  }
+  $image_id=(int)get_post_thumbnail_id($id);
+  if (!$image_id) return $url;
+  $source=wp_get_attachment_image_url($image_id,'full');
+  return $source ?: $url;
+}
+add_filter('wpseo_opengraph_image','a3g_car_social_featured_fallback',90);
+add_filter('wpseo_twitter_image','a3g_car_social_featured_fallback',90);
+
+/**
+ * A3TAL-CAR-SOCIAL-OG-METADATA-20261020
+ * Yoast retains its generic 512x512 site-icon metadata if only og:image
+ * URL is overridden. Correct width, height and MIME for the four verified
+ * car profiles whose preview was replaced with their own featured image.
+ * Existing bespoke social-image metadata for other cars remains untouched.
+ */
+function a3g_car_featured_social_meta($original,$field) {
+  if (!is_singular('a3_car')) return $original;
+  $car_id=(int)get_queried_object_id();
+  if (!in_array($car_id,[84011,83684,83648,83538],true)) return $original;
+  $image_id=(int)get_post_thumbnail_id($car_id);
+  if (!$image_id) return $original;
+  if ($field==='type') {
+    $type=(string)get_post_mime_type($image_id);
+    return strpos($type,'image/')===0 ? $type : $original;
+  }
+  $meta=wp_get_attachment_metadata($image_id);
+  if (!is_array($meta)) return $original;
+  $size=(int)($meta[$field]??0);
+  return $size>0 ? $size : $original;
+}
+add_filter('wpseo_opengraph_image_width',static function($width){
+  return a3g_car_featured_social_meta($width,'width');
+},90);
+add_filter('wpseo_opengraph_image_height',static function($height){
+  return a3g_car_featured_social_meta($height,'height');
+},90);
+add_filter('wpseo_opengraph_image_type',static function($type){
+  return a3g_car_featured_social_meta($type,'type');
+},90);
+
+/* A3TAL-DEEPAL-S09-VERIFIED-CAR-INDEX-20261026:START */
+ /**
+  * Keep verified, substantive Deepal S09 model page indexable alongside its
+  * separately useful full-price analysis. Does not unlock thin car records,
+  * override other cars' robots, or touch unrelated sitemap/canonical rules.
+  */
+function a3g_verified_deepal_s09_car_indexable_20261026(): bool {
+    if (!is_singular('a3_car')) return false;
+    $pid = (int) get_queried_object_id();
+    if ($pid !== 84627) return false;
+    if (get_post_meta($pid, '_a3_entity_stub', true)) return false;
+    if (get_post_meta($pid, '_a3_source_checked_at', true) !== '2026-10-26') return false;
+    if ((int) get_post_meta($pid, '_a3_price_min', true) <= 0) return false;
+    if ((string) get_post_meta($pid, '_a3_related_post_ids', true) !== '84623') return false;
+    if (!has_post_thumbnail($pid)) return false;
+    if (strlen((string) get_post_field('post_content', $pid)) < 6500) return false;
+    return true;
+}
+add_filter('wpseo_robots', static function ($directive) {
+    if (!a3g_verified_deepal_s09_car_indexable_20261026()) return $directive;
+    return 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1';
+}, 10011);
+add_filter('wpseo_robots_array', static function ($robots) {
+    if (!a3g_verified_deepal_s09_car_indexable_20261026()) return $robots;
+    if (!is_array($robots)) $robots = [];
+    unset($robots['noindex'], $robots['nofollow']);
+    $robots['index']='index';
+    $robots['follow']='follow';
+    $robots['max-snippet']='max-snippet:-1';
+    $robots['max-image-preview']='max-image-preview:large';
+    $robots['max-video-preview']='max-video-preview:-1';
+    return $robots;
+}, 10011);
+add_filter('wp_robots', static function ($robots) {
+    if (!a3g_verified_deepal_s09_car_indexable_20261026()) return $robots;
+    unset($robots['noindex'], $robots['nofollow']);
+    $robots['index']=true;
+    $robots['follow']=true;
+    return $robots;
+}, 10011);
+add_filter('wpseo_canonical', static function ($url) {
+    if (!a3g_verified_deepal_s09_car_indexable_20261026()) return $url;
+    return get_permalink(84627) ?: $url;
+}, 10011);
+/* A3TAL-DEEPAL-S09-VERIFIED-CAR-INDEX-20261026:END */
+
+/* A3TAL-DEEPAL-G318-VERIFIED-CAR-INDEX-20261027:START */
+/**
+ * Precise index exception: only substantial, documented 2027 G318 car record,
+ * preserving default noindex for thin or unverified cars. Verified model links
+ * to its own review, comparison and branch/service articles.
+ */
+function a3g_verified_deepal_g318_indexable_20261027(): bool {
+    if (!is_singular('a3_car')) return false;
+    $id=(int)get_queried_object_id();
+    if ($id !== 84672) return false;
+    if ((string)get_post_field('post_name',$id) !== 'deepal-g318-2027-egypt') return false;
+    if ((string)get_post_meta($id,'_a3_source_checked_at',true) !== '2026-10-27') return false;
+    if (get_post_meta($id,'_a3_entity_stub',true)) return false;
+    if ((int)get_post_meta($id,'_a3_price_min',true) !== 2135000) return false;
+    if ((int)get_post_meta($id,'_a3_price_max',true) !== 2285000) return false;
+    if ((string)get_post_meta($id,'_a3_related_post_ids',true) !== '84660,84664,84668') return false;
+    if (strlen((string)get_post_field('post_content',$id)) < 8000) return false;
+    if (!has_post_thumbnail($id)) return false;
+    return true;
+}
+add_filter('wpseo_robots',static function($robots){
+    if (!a3g_verified_deepal_g318_indexable_20261027()) return $robots;
+    return 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1';
+},10012);
+add_filter('wpseo_robots_array',static function($robots){
+    if (!a3g_verified_deepal_g318_indexable_20261027()) return $robots;
+    if (!is_array($robots)) $robots=[];
+    unset($robots['noindex'],$robots['nofollow']);
+    $robots['index']='index';
+    $robots['follow']='follow';
+    $robots['max-snippet']='max-snippet:-1';
+    $robots['max-image-preview']='max-image-preview:large';
+    $robots['max-video-preview']='max-video-preview:-1';
+    return $robots;
+},10012);
+add_filter('wp_robots',static function($robots){
+    if (!a3g_verified_deepal_g318_indexable_20261027()) return $robots;
+    unset($robots['noindex'],$robots['nofollow']);
+    $robots['index']=true;
+    $robots['follow']=true;
+    return $robots;
+},10012);
+add_filter('wpseo_canonical',static function($canonical){
+    if (!a3g_verified_deepal_g318_indexable_20261027()) return $canonical;
+    return get_permalink(84672)?:$canonical;
+},10012);
+/* A3TAL-DEEPAL-G318-VERIFIED-CAR-INDEX-20261027:END */
+
+/* A3TAL-JAECOO-J5-VERIFIED-CAR-INDEX-20261027:START */
+/** Index only the substantive, fresh Jaecoo J5 car encyclopedia entry.
+ * Other new and thin records remain excluded until independently reviewed.
+ */
+function a3g_verified_jaecoo_j5_indexable_20261027(): bool {
+    if (!is_singular('a3_car')) return false;
+    $id=(int)get_queried_object_id();
+    if ($id!==84715) return false;
+    if ((string)get_post_field('post_name',$id)!=='jaecoo-j5-2027-egypt') return false;
+    if ((string)get_post_meta($id,'_a3_source_checked_at',true)!=='2026-10-27') return false;
+    if (get_post_meta($id,'_a3_entity_stub',true)) return false;
+    if ((int)get_post_meta($id,'_a3_price_min',true)!==1195000) return false;
+    if ((int)get_post_meta($id,'_a3_price_max',true)!==1325000) return false;
+    if ((string)get_post_meta($id,'_a3_related_post_ids',true)!=='84703,84707,84711') return false;
+    if (strlen((string)get_post_field('post_content',$id))<8500) return false;
+    if (!has_post_thumbnail($id)) return false;
+    return true;
+}
+add_filter('wpseo_robots', static function($robots){
+    if (!a3g_verified_jaecoo_j5_indexable_20261027()) return $robots;
+    return 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1';
+},10013);
+add_filter('wpseo_robots_array',static function($robots){
+    if (!a3g_verified_jaecoo_j5_indexable_20261027()) return $robots;
+    if (!is_array($robots)) $robots=[];
+    unset($robots['noindex'],$robots['nofollow']);
+    $robots['index']='index';
+    $robots['follow']='follow';
+    $robots['max-snippet']='max-snippet:-1';
+    $robots['max-image-preview']='max-image-preview:large';
+    $robots['max-video-preview']='max-video-preview:-1';
+    return $robots;
+},10013);
+add_filter('wp_robots',static function($robots){
+    if (!a3g_verified_jaecoo_j5_indexable_20261027()) return $robots;
+    unset($robots['noindex'],$robots['nofollow']);
+    $robots['index']=true;
+    $robots['follow']=true;
+    return $robots;
+},10013);
+add_filter('wpseo_canonical',static function($url){
+    if (!a3g_verified_jaecoo_j5_indexable_20261027()) return $url;
+    return get_permalink(84715)?:$url;
+},10013);
+/* A3TAL-JAECOO-J5-VERIFIED-CAR-INDEX-20261027:END */

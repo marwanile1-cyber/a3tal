@@ -27,35 +27,12 @@ elseif (preg_match('/(صيانه|صيانة|زيت|تغيير زيت|جدول ص
 elseif (preg_match('/(توكيل|مركز خدمه|مركز خدمة|معرض|وكيل|حجز صيانه)/iu',$si_query)) $si_intent='service';
 elseif (preg_match('/(سعر|اسعار|أسعار|مواصفات|مراجعه|مراجعة|مقارن|اشتري|شراء|زيرو|فئات|تقسيط|price)/iu',$si_query)) $si_intent='purchase';
 
-// Rank just the current page of the existing WordPress query.
-// Never change canonical URLs, WordPress relevance matching, or indexed articles.
+// WordPress ranks the entire query before pagination; linked DTC mirrors
+// are excluded by the shared UX module, with an exact-code original first.
 $si_rows=[];
-$si_position=0;
 while (have_posts()) {
     the_post();
-    $id=(int)get_the_ID();
-    $title=$si_normalize(get_the_title($id));
-    $type=get_post_type($id);
-    $score=0;
-    if ($si_phrase !== '' && $title === $si_phrase) $score+=500;
-    elseif ($si_phrase !== '' && strpos($title,$si_phrase)!==false) $score+=210;
-    $hits=0;
-    foreach ($si_tokens as $word) {
-        if (strpos($title,$word)!==false) { $score+=36; $hits++; }
-    }
-    if ($si_tokens && $hits===count($si_tokens)) $score+=90;
-    if ($si_code && $type==='a3_dtc') {
-        $dtc_meta=strtoupper((string)get_post_meta($id,'_a3_dtc_code',true));
-        if ($dtc_meta===$si_code || preg_match('/\b'.preg_quote($si_code,'/').'\b/i',get_the_title($id))) $score+=750;
-    }
-    if ($si_intent==='motorcycle' && $type==='a3_motorcycle') $score+=40;
-    if ($si_intent==='purchase' && $type==='a3_car') $score+=30;
-    if ($si_intent==='maintenance' && $type==='a3_maintenance_plan') $score+=45;
-    if ($si_intent==='service' && in_array($type,['a3_service_center','a3_showroom'],true)) $score+=45;
-    if ($si_intent==='parts' && in_array($type,['a3_part','a3_parts_vendor'],true)) $score+=45;
-    if ($si_intent==='diagnosis' && $type==='a3_dtc') $score+=15;
-    // Very weak matches stay available under More results, never presented as an exact answer.
-    $si_rows[]=['id'=>$id,'score'=>$score,'order'=>$si_position++];
+    $si_rows[]=['id'=>(int)get_the_ID()];
 }
 wp_reset_postdata();
 if ($si_intent==='general') {
@@ -63,7 +40,6 @@ if ($si_intent==='general') {
         if (get_post_type($row['id'])==='a3_car') { $si_intent='purchase'; break; }
     }
 }
-usort($si_rows,static function($a,$b){return ($b['score']<=>$a['score']) ?: ($a['order']<=>$b['order']);});
 $si_primary=array_slice($si_rows,0,3);
 $si_more=array_slice($si_rows,3);
 $si_title = [
@@ -115,7 +91,7 @@ if(is_file($si_css)) wp_enqueue_style('a3tal-search-intent',get_template_directo
 get_header(); ?>
 <header class="si-hero">
   <div class="g-wrap">
-    <span class="si-eyebrow">A3TAL · SMART DISCOVERY</span>
+    <span class="si-eyebrow">البحث في أعطال.كوم</span>
     <h1>نتائج البحث عن: <?php echo esc_html($si_query); ?></h1>
     <p>النتائج الأقرب أولًا، وبعدها المسار المناسب للبحث في الأسعار أو الأعطال أو الصيانة. لا نعتبر مجرد تشابه الكلمات دليلًا على توافق قطعة أو عطل مع موديل.</p>
     <form class="si-search-form" role="search" method="get" action="<?php echo esc_url(home_url('/')); ?>">
@@ -128,7 +104,7 @@ get_header(); ?>
 <main class="g-wrap si-layout" id="si-results">
   <?php if ($si_primary): ?>
     <section class="si-results" aria-labelledby="si-primary-title">
-      <div class="si-heading"><span>أول خطوة</span><h2 id="si-primary-title"><?php echo esc_html($si_title); ?></h2><p>الترتيب حسب مدى تطابق العنوان ونوع المعلومة مع بحثك، وليس حسب عدد المشاهدات.</p></div>
+      <div class="si-heading"><span>أول خطوة</span><h2 id="si-primary-title"><?php echo esc_html($si_title); ?></h2><p>نتائج مرتبة حسب ارتباطها ببحثك. اختر الشرح أو الموديل الذي تحتاجه.</p></div>
       <div class="g-archive-grid si-primary-grid">
         <?php foreach($si_primary as $entry) a3g_card($entry['id']); ?>
       </div>
@@ -137,7 +113,7 @@ get_header(); ?>
     <section class="si-empty"><h2>مفيش نتيجة مباشرة للبحث ده</h2><p>جرّب اسم الموديل من غير سنة أو اكتب كود العطل كما ظهر في جهاز الفحص. وتقدر تبدأ من الأقسام التالية.</p></section>
   <?php endif; ?>
   <section class="si-next" aria-labelledby="si-next-title">
-    <div class="si-heading"><span>استكمل بحثك</span><h2 id="si-next-title">المسار التالي المناسب</h2><p>دي أبواب مرتبطة بنوع بحثك، مش ادعاء إن المقالات أو الأكواد تخص موديلًا معينًا.</p></div>
+    <div class="si-heading"><span>استكمل بحثك</span><h2 id="si-next-title">المسار التالي المناسب</h2><p>استكمل البحث في القسم المناسب، وتأكد من تطابق الموديل والمحرك عند قراءة التشخيص.</p></div>
     <div class="si-next-grid">
       <?php foreach($si_next as $route): ?>
         <a class="si-next-link" href="<?php echo esc_url($route['url']); ?>"><strong><?php echo esc_html($route['title']); ?></strong><small><?php echo esc_html($route['desc']); ?></small><span aria-hidden="true">←</span></a>
@@ -146,7 +122,7 @@ get_header(); ?>
   </section>
   <?php if ($si_more): ?>
     <section class="si-results si-other" aria-labelledby="si-other-title">
-      <div class="si-heading"><span>قراءات إضافية</span><h2 id="si-other-title">نتائج أخرى قد تساعدك</h2><p>العناوين دي أقل تطابقًا مع بحثك، فراجع موضوع المقال قبل فتحه.</p></div>
+      <div class="si-heading"><span>قراءات إضافية</span><h2 id="si-other-title">نتائج أخرى قد تساعدك</h2><p>موضوعات مرتبطة قد تساعدك على استكمال البحث.</p></div>
       <div class="g-archive-grid si-secondary-grid">
         <?php foreach($si_more as $entry) a3g_card($entry['id']); ?>
       </div>

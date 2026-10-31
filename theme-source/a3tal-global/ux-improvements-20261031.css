@@ -1,0 +1,76 @@
+/* A3TAL UX 2026-10-31. Loaded after existing theme/library styles. */
+.g-sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.g-v3-hero .g-v3-hero-copy h1{font-size:clamp(28px,3.2vw,42px);line-height:1.5;margin-block:12px}
+.g-v3-hero-inner{min-height:390px;padding:32px;gap:28px}
+.g-v3-hero{min-height:0}
+.g-v3-hero .g-v3-hero-lead{font-size:16px;line-height:1.85}
+.g-home-dtc-zone{padding-block:24px}
+.g-home-car-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+.g-directory-card-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.g-directory-card-actions>a{min-height:44px;display:inline-flex;align-items:center;justify-content:center;padding:8px 13px;border:1px solid #cbd5e1;border-radius:8px;font-weight:700;font-size:14px;background:#fff;color:#17334d}
+.g-directory-card-actions>a:first-child{background:#123b63;border-color:#123b63;color:#fff}
+.g-directory-reset{display:inline-flex;min-height:44px;align-items:center;text-decoration:underline;text-underline-offset:4px;margin-top:10px}
+.g-guide-results{margin-top:32px}
+.g-guide-results .g-legacy-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g-service-brand-hubs a:focus-visible,.g-directory-card-actions a:focus-visible,.d-nav a:focus-visible{outline:3px solid #2376e8;outline-offset:3px}
+.a3g-dtc-library .d-header-row{min-height:76px;gap:20px;flex-wrap:wrap;padding-block:12px}
+.a3g-dtc-library .d-brand{flex-wrap:wrap;gap:10px}
+.a3g-dtc-library .d-brand .custom-logo{width:153px;height:auto;max-height:48px;object-fit:contain}
+.a3g-dtc-library .d-brand-sub{font-family:inherit;letter-spacing:0;font-size:12px;line-height:1.7;color:#4b6073;margin:0}
+.a3g-dtc-library .d-nav{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.a3g-dtc-library .d-nav a{display:inline-flex;align-items:center;min-height:44px;font-size:14px}
+.a3g-dtc-library .d-return{min-height:44px;display:inline-flex;align-items:center;font-size:13px}
+.a3g-dtc-library .d-single-main{padding-top:22px}
+.a3g-dtc-library .d-breadcrumb{margin-bottom:12px}
+.a3g-dtc-library .d-detail-hero{padding:24px 28px;gap:22px;align-items:flex-start}
+.a3g-dtc-library .d-detail-hero h1{font-size:clamp(21px,2.1vw,28px);line-height:1.65;margin:0}
+.a3g-dtc-library .d-detail-code{font-size:34px;line-height:1.5}
+.a3g-dtc-library .d-quick-answer{margin-top:12px;max-width:850px}
+.a3g-dtc-library .d-quick-answer>strong{font-size:12px;color:#c1f3df}
+.a3g-dtc-library .d-quick-answer .d-detail-excerpt{font-size:16px;line-height:1.9;margin-top:4px;max-width:none;color:#e3edf5}
+.a3g-dtc-library .d-detail-meta{margin-top:13px}
+.a3g-dtc-library .d-author-meta{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:12px;color:#c8d9e5}
+.a3g-dtc-library .d-detail-layout{margin-top:20px}
+.a3g-dtc-library .d-guide{padding:22px}
+.a3g-dtc-library .d-dtc-featured{margin:0 0 22px;width:100%;max-width:100%}
+.a3g-dtc-library .d-dtc-featured img{width:100%;height:auto;object-fit:contain;border-radius:12px}
+.a3g-dtc-library .d-dtc-featured figcaption{padding-top:8px;font-size:12px;line-height:1.8;color:#53677b}
+.a3g-dtc-library .d-entry{font-size:17px;line-height:1.95}
+.a3g-dtc-library .d-entry .g-table-wrap{max-width:100%;overflow-x:auto;overscroll-behavior-x:contain}
+.a3g-dtc-library .d-share{margin:22px 0}
+@media(max-width:1000px){
+ .g-home-car-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .g-guide-results .g-legacy-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .a3g-dtc-library .d-nav{gap:12px}
+ .a3g-dtc-library .d-header-row{gap:8px 18px}
+}
+@media(max-width:767px){
+ .g-v3-hero-inner{min-height:0;padding:22px 17px;gap:16px}
+ .g-v3-hero .g-v3-hero-copy h1{font-size:26px;line-height:1.55}
+ .g-v3-hero .g-v3-hero-lead{font-size:15px;line-height:1.8}
+ .g-v3-explorer{margin-top:16px}
+ .g-home-dtc-zone{padding-block:18px}
+ .g-dtc-command form input,.g-platform-filter input,.g-platform-filter select{font-size:16px;min-height:46px;max-width:100%}
+ .g-directory-card-actions>a{flex:1 1 auto}
+ .a3g-dtc-library .d-wrap{width:calc(100% - 32px)}
+ .a3g-dtc-library .d-header-row{padding-block:10px;justify-content:space-between}
+ .a3g-dtc-library .d-brand-sub{font-size:11px}
+ .a3g-dtc-library .d-nav{display:flex;order:3;flex-basis:100%;justify-content:flex-start;flex-wrap:nowrap;overflow-x:auto;gap:16px;min-width:0}
+ .a3g-dtc-library .d-nav a{flex:0 0 auto;font-size:13px;white-space:nowrap}
+ .a3g-dtc-library .d-return{padding:0;border:0;font-size:12px}
+ .a3g-dtc-library .d-single-main{padding-top:16px}
+ .a3g-dtc-library .d-detail-hero{padding:19px;gap:8px;flex-direction:column-reverse}
+ .a3g-dtc-library .d-detail-code{font-size:25px;line-height:1.3}
+ .a3g-dtc-library .d-detail-hero h1{font-size:20px;line-height:1.7}
+ .a3g-dtc-library .d-quick-answer .d-detail-excerpt{font-size:15px;line-height:1.9}
+ .a3g-dtc-library .d-author-meta{font-size:11px;gap:4px 12px}
+ .a3g-dtc-library .d-guide{padding:16px}
+ .a3g-dtc-library .d-entry{font-size:16px}
+}
+@media(max-width:520px){
+ .g-home-car-grid,.g-guide-results .g-legacy-grid{grid-template-columns:1fr}
+ .g-home-cars-section .g-home-cars-subhead{align-items:flex-start}
+ .a3g-dtc-library .d-brand .custom-logo{width:125px}
+ .a3g-dtc-library .d-brand-sub{display:none}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
