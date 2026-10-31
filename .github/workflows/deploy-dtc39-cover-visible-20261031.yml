@@ -1,0 +1,29 @@
+name: Fix missing inline featured photos on DTC batch39 (guarded)
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/deploy-dtc39-cover-visible-20261031.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-dtc-featured-cover-theme-20261031
+  cancel-in-progress: false
+jobs:
+  restore-visible-covers:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Syntax and protected source checks
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/deploy-dtc39-cover-visible-20261031.py
+          php -l theme-source/a3tal-global/dtc-library-single.php
+          php -l theme-patches/backup-dtc-library-single-before-batch39-cover-visible-20261031.php
+      - name: Atomic SHA-guarded live repair and public article-image verification
+        run: python3 -u scripts/deploy-dtc39-cover-visible-20261031.py
