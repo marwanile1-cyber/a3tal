@@ -1,0 +1,27 @@
+name: Finalize Open Graph descriptions for A3tal price pages 2026-10-31
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/finalize-price-social-og-description-20261031.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-price-social-og-meta-20261031
+  cancel-in-progress: false
+jobs:
+  social-meta:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify inputs
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/finalize-price-social-og-description-20261031.py
+      - name: Update social descriptions via Direct Bridge with live verification
+        run: python3 -u scripts/finalize-price-social-og-description-20261031.py
