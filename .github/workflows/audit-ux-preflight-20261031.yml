@@ -39,8 +39,10 @@ jobs:
             if not body.get('ok'): raise RuntimeError('Read-only bridge audit failed')
             return body['result']
           files=['functions.php','dtc-library-single.php','front-page.php','search.php','style.css','platform-archive-directory.php','header-dtc.php','footer-dtc.php','header.php']
+          output=Path('ux-live-baseline');output.mkdir(exist_ok=True)
           for name in files:
             live=admin(op='file_read',path='themes/a3tal-global/'+name)
+            (output/name).write_text(live['content'],encoding='utf8')
             local=Path('theme-source/a3tal-global/'+name).read_bytes()
             print('BASELINE',name,'MATCH' if hashlib.sha256(local).hexdigest()==live['sha256'] else 'DIFF',live['sha256'],flush=True)
             time.sleep(1)
@@ -51,8 +53,15 @@ jobs:
               result=admin(op='file_list',path=path)
               print('FILE_LIST',path,json.dumps(result,ensure_ascii=False)[:6000],flush=True)
             except Exception as e: print('OPTIONAL_LIST_UNAVAILABLE',type(e).__name__,flush=True)
-          req=urllib.request.Request('https://a3tal.com/p0420-catalyst-efficiency-bank-1/?ux-audit=20261031',headers={'Cache-Control':'no-cache'})
+          req=urllib.request.Request('https://a3tal.com/p0420-catalyst-efficiency-bank-1/?ux-audit=20261031',headers={'Cache-Control':'no-cache','User-Agent':'A3tal-Guarded-UX-Audit/20261031'})
           with urllib.request.urlopen(req,timeout=90) as r: html=r.read().decode('utf8','replace')
           sources=re.findall(r'<script\b[^>]*\bsrc=[\"\x27]([^\"\x27]+)',html,re.I)
           print('PUBLIC_AD_SCRIPTS',json.dumps([s for s in sources if re.search('ads|google|insert',s,re.I)]),flush=True)
           for m in list(re.finditer(r'adsbygoogle|ad-inserter|ai-insert|google_ad_client',html,re.I))[:6]: print('PUBLIC_AD_CONTEXT',re.sub(r'\s+',' ',html[max(0,m.start()-120):m.end()+180]),flush=True)
+      - name: Preserve exact theme baseline for conflict review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-ux-live-baseline-20261031
+          path: ux-live-baseline/
+          retention-days: 14
