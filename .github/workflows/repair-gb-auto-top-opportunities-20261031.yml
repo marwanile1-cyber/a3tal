@@ -1,0 +1,27 @@
+name: Safely update GB Auto hotline and branch articles 2026-10-31
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/repair-gb-auto-top-opportunities-20261031.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-gb-auto-original-article-updates-20261031
+  cancel-in-progress: false
+jobs:
+  guarded-seo-update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check scoped authentication and Python syntax
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY" || { echo "Missing configured Bridge secret"; exit 1; }
+          python3 -m py_compile scripts/repair-gb-auto-top-opportunities-20261031.py
+      - name: Guard original WordPress IDs timestamps URLs covers and update only verified facts
+        run: python3 -u scripts/repair-gb-auto-top-opportunities-20261031.py
