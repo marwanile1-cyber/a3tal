@@ -279,6 +279,32 @@ def main():
                         print_state("ALREADY_PUBLISHED_WITH_COVERS",number,
                             "Historical release verified; held flag preserved, no writes")
                         continue
+            # Manual batches 30+ are deliberately not marked ready for the
+            # old automatic publisher. Verify all ten live articles, covers,
+            # and OG images before moving on. This is READ-ONLY and never
+            # treats an unconfirmed manual release as completed.
+            if number >= 30:
+                held = json.loads(path.read_text(encoding="utf-8"))
+                codes = [str(x.get("code","")) for x in held.get("items",[])]
+                if (held.get("batch")==number and len(codes)==10
+                        and len(set(codes))==10 and all(CODE_RE.fullmatch(c) for c in codes)):
+                    try:
+                        live = [fetch_published_code(code) for code in codes]
+                    except TransientReadError as exc:
+                        print_state("PREFLIGHT_DEFERRED_NO_WRITES",str(exc))
+                        return
+                    complete = all(
+                        row is not None and row.get("status")=="publish"
+                        and row.get("featured_media")
+                        and (row.get("yoast_head_json") or {}).get("og_image")
+                        for row in live
+                    )
+                    if complete:
+                        print_state("ALREADY_PUBLISHED_WITH_COVERS",number,
+                                    "Manual release verified read-only; no writes")
+                        continue
+                    print_state("MANUAL_BATCH_NOT_FULLY_VERIFIED",number,
+                                "Publishing halted, needs media/OG review")
             print_state("WAITING",number,reason,"No WordPress writes.")
             return
         items,files=ready
