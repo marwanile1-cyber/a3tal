@@ -31,7 +31,7 @@ source=SOURCE.read_text("utf8")
 backup=BACKUP.read_text("utf8")
 if MARKER not in source or MARKER in backup:
     raise RuntimeError("Source/backup markers incorrect")
-if source.count("$quick_hubs=")!=1 or source.count("<?php if(!$is_showroom): ?>")!=1:
+if source.count("$quick_hubs=")!=1 or source.count(MARKER)!=1:
     raise RuntimeError("Unreviewed repeated brand shortcuts")
 if len(source)-len(backup)<1000:
     raise RuntimeError("Unexpected source diff extent")
