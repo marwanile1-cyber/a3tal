@@ -28,7 +28,7 @@ def safe_get(url):
 
 def already_live(path):
     r=safe_get(BASE+"/car-reference/"+path.strip("/")+"/")
-    return bool(r is not None and "a3cr-record" in r.text)
+    return bool(r is not None and "a3cr-article" in r.text)
 
 def req(url,obj):
     for attempt in range(4):
