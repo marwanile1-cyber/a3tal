@@ -3,7 +3,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'incoming/a3tal-kia-image-replacements.zip'
+      - 'assets/car-reference-replacements/**'
       - '.github/workflows/replace-kia-featured-images.yml'
   workflow_dispatch:
 permissions:
@@ -24,12 +24,16 @@ jobs:
         run: |
           set -euo pipefail
           test -n "$A3TAL_API_KEY"
-          test -s incoming/a3tal-kia-image-replacements.zip
-          python3 -m py_compile scripts/replace-kia-featured-from-zip.py
+          test -s assets/car-reference-replacements/kia.webp
+          test -s assets/car-reference-replacements/cerato-bd-2023.webp
+          test -s assets/car-reference-replacements/seltos-sp2-2023.webp
+          test -s assets/car-reference-replacements/sportage-nq5-2023.webp
+          test -s assets/car-reference-replacements/cerato-engine-oil-16-mpi.webp
+          python3 -m py_compile scripts/replace-kia-featured-from-repo.py
       - name: Install dependencies
         run: python3 -m pip install --quiet --disable-pip-version-check requests pillow
       - name: Upload and replace all five via Bridge
-        run: python3 scripts/replace-kia-featured-from-zip.py
+        run: python3 scripts/replace-kia-featured-from-repo.py
       - name: Preserve verification report
         if: always()
         uses: actions/upload-artifact@v4
