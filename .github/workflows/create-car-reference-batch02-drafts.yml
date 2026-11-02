@@ -1,0 +1,47 @@
+name: Create seven image-gated Kia Car Reference drafts
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/create-car-reference-batch02-drafts.py'
+      - 'data/car-reference/batch-02-kia-image-gated-drafts.json'
+      - '.github/workflows/create-car-reference-batch02-drafts.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-car-reference-draft-import
+  cancel-in-progress: false
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Quality gate and authorisation check
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY" || { echo "Missing API key"; exit 1; }
+          python3 -m py_compile scripts/create-car-reference-batch02-drafts.py
+          python3 - <<'PY'
+          import json
+          m=json.load(open('data/car-reference/batch-02-kia-image-gated-drafts.json'))
+          assert m['status']=='draft' and len(m['items'])==7
+          assert all(len(x['facts'])>=3 for x in m['items'])
+          assert all(x['model'] in m['models'] for x in m['items'])
+          assert all(u.startswith('https://ownersmanual.kia.com/') for u in m['models'].values())
+          print('Editorial quality / official source preflight passed')
+          PY
+      - name: Dependencies
+        run: python3 -m pip install --quiet requests
+      - name: Create unpublished cited drafts using Direct Bridge key
+        run: python3 scripts/create-car-reference-batch02-drafts.py
+      - name: Save draft record ids
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-car-ref-draft-ids-${{ github.run_id }}
+          path: car-reference-batch02-draft-results.json
+          if-no-files-found: warn
