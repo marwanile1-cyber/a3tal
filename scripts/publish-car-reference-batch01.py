@@ -184,6 +184,9 @@ def main():
         rec={**s,"kind":"spec","parent_path":"kia/"+m["slug"]}
         work.append((rec,m,"spec","kia/"+m["slug"]+"/"+s["slug"]))
     assert len({p for _,_,_,p in work})==30
+    limit=max(1,min(30,int(os.environ.get("A3CR_LIMIT","30"))))
+    work=work[:limit]
+    print("Deployment limit:",limit,flush=True)
     try:
         for rec,model,kind,path in work:
             publish(rec,model,kind,path)
