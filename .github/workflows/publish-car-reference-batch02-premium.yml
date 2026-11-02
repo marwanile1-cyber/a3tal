@@ -1,0 +1,61 @@
+name: Publish Kia Reference Batch 02 - Premium Photo Editorial
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/publish-car-reference-batch02-premium.py'
+      - 'data/car-reference/batch-02-kia-image-gated-drafts.json'
+      - '.github/workflows/publish-car-reference-batch02-premium.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-car-reference-batch02-premium-live
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3CR_LIMIT: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate source and existing photography
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-car-reference-batch02-premium.py
+          test -s assets/car-reference-replacements/cerato-bd-2023.webp
+          test -s assets/car-reference-replacements/cerato-engine-oil-16-mpi.webp
+          test -s assets/car-reference-replacements/seltos-sp2-2023.webp
+          test -s assets/car-reference-replacements/sportage-nq5-2023.webp
+          python3 - <<'PY'
+          import json
+          d=json.load(open('data/car-reference/batch-02-kia-image-gated-drafts.json'))
+          assert len(d['items'])==7
+          assert len({r['slug'] for r in d['items']})==7
+          assert all(len(r['facts'])>=3 for r in d['items'])
+          assert all(d['models'][r['model']].startswith('https://ownersmanual.kia.com/') for r in d['items'])
+          print('Sources and page distinctions validated')
+          PY
+      - name: Install typography and image libraries
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-core fonts-dejavu-core
+          python3 -m pip install --quiet --disable-pip-version-check requests pillow
+      - name: Verify installed reference engine
+        run: |
+          curl -fLsS --retry 3 "https://a3tal.com/wp-json/a3tal-car-reference/v1/health" -o /tmp/a3cr.json
+          jq -e '.ok == true and .version == "1.0.0"' /tmp/a3cr.json >/dev/null
+      - name: Publish only image-gated cited pages and check final HTML
+        run: python3 scripts/publish-car-reference-batch02-premium.py
+      - name: Store publication and image verification report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: car-reference-batch02-premium-${{ github.run_id }}
+          path: car-reference-batch02-premium-report.json
+          if-no-files-found: warn
+          retention-days: 30
