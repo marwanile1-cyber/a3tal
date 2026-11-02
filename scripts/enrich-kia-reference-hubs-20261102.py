@@ -67,7 +67,7 @@ def main():
   page=pages[0];pid=page["id"]; old=get(bridge+"/post/"+str(pid))
   assert old.get("type")=="a3_car_ref" and old.get("status")=="publish"
   assert old.get("featured_media"),"Hub missing featured image"
-  if marker in old["content"]:
+  if "a3cr-compare-audit" in old["content"]:
    report.append({"slug":slug,"result":"skipped-already-enhanced","url":page["link"]})
    continue
   items=[s for s in manifest["specs"] if s["model"]==slug]
@@ -76,7 +76,7 @@ def main():
   result=post({"id":pid,"content":fresh,"expected_modified_gmt":old["modified_gmt"]})
   assert result["id"]==pid and result["status"]=="publish"
   live=session.get(page["link"],params={"a3cr_qa":str(int(time.time()))},timeout=45).text
-  if marker not in live or "<table" not in live or "og:image" not in live:
+  if notes[slug][0] not in live or "<table" not in live or "og:image" not in live:
    raise RuntimeError("Live HTML post-update check failed for "+slug)
   report.append({"slug":slug,"result":"updated","url":page["link"],"rows":len(items),"featured_media":old["featured_media"]})
   print("ENHANCED",slug, len(items),"technical rows",flush=True)
