@@ -97,8 +97,12 @@ def main():
             tag="KIA-"+s["model"]+"-"+slug
             name="a3tal-verified-photo-"+slug+".webp"
             # Avoid any publication changes if existing photo is already upgraded.
-            if name in str(post.get("_embedded","")):
-                print("SKIP already photo-covered",slug,flush=True)
+            existing_html=S.get(desired,timeout=60).text
+            if name in existing_html:
+                original_id=int(post.get("featured_media") or 0)
+                check(desired,name,original_id)
+                DONE.append({"url":desired,"slug":slug,"new":original_id,"status":"already-verified"})
+                print("SKIP verified existing image",slug,flush=True)
                 continue
             premium.DESIGNS[tag]=(base,car,label,metric,
                 s["engine"] if all(ord(c)<128 for c in s["engine"]) and len(s["engine"])<=16 else "دليل المالك 2023",
