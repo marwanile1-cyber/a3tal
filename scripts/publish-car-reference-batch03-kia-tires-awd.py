@@ -105,7 +105,18 @@ def main():
         media_id=int(media.get("media_id") or 0)
         if not media_id or not media.get("url","").endswith(".webp"):
             raise RuntimeError("Image upload missing ID/URL "+slug)
-        response=p.req(p.UPSERT,{"items":[publish_entry(row,media_id)]})
+        entry=publish_entry(row,media_id)
+        try:
+            response=p.req(p.UPSERT,{"items":[entry]})
+        except requests.RequestException:
+            # A dropped connection can happen after WordPress committed the post.
+            # Recheck the stable slug before retrying, preventing duplicates.
+            time.sleep(3)
+            after=[x for x in get_record(slug) if x.get("status")=="publish"]
+            if len(after)==1 and after[0].get("link","").rstrip("/")==expected.rstrip("/"):
+                response={"results":[{"ok":True,"status":"publish","id":after[0]["id"],"url":expected}]}
+            else:
+                response=p.req(p.UPSERT,{"items":[entry]})
         results=response.get("results") or []
         if len(results)!=1 or not results[0].get("ok") or results[0].get("status")!="publish":
             raise RuntimeError("Upsert failed "+slug+" "+repr(results)[:300])
