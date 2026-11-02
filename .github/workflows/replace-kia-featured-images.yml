@@ -1,0 +1,39 @@
+name: Replace Kia Car Reference featured images
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'incoming/a3tal-kia-image-replacements.zip'
+      - '.github/workflows/replace-kia-featured-images.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-car-reference-image-replacement
+  cancel-in-progress: false
+jobs:
+  replace:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Validate inputs
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          test -s incoming/a3tal-kia-image-replacements.zip
+          python3 -m py_compile scripts/replace-kia-featured-from-zip.py
+      - name: Install dependencies
+        run: python3 -m pip install --quiet --disable-pip-version-check requests pillow
+      - name: Upload and replace all five via Bridge
+        run: python3 scripts/replace-kia-featured-from-zip.py
+      - name: Preserve verification report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-kia-image-replacement-${{ github.run_id }}
+          path: a3tal-kia-images-replacement-report.json
+          if-no-files-found: warn
