@@ -17,7 +17,7 @@ jobs:
     timeout-minutes: 60
     env:
       A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
-      A3CR_IMAGE_LIMIT: '3'
+      A3CR_IMAGE_LIMIT: '25'
     steps:
       - uses: actions/checkout@v4
       - name: Verify safe photo content and data
