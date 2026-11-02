@@ -29,7 +29,7 @@ jobs:
           import json,re
           d1=json.load(open('data/dtc-batch40-part1-20261102.json',encoding='utf8'))
           d2=json.load(open('data/dtc-batch40-part2-20261102.json',encoding='utf8'))
-          codes="P0299 P0520 P0562 P0070 P0222 P0093 P0507 P0710 P0741 P0444".split()
+          codes="P0470 P0520 P0563 P0070 P0222 P0093 P0532 P0710 P0232 P0444".split()
           rows=d1['items']+d2['items']
           assert len(rows)==10 and len(set(r['code'] for r in rows))==10
           assert d1['batch']==d2['batch']==40
@@ -47,7 +47,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for code in P0299 P0520 P0562 P0070 P0222 P0093 P0507 P0710 P0741 P0444; do
+          for code in P0470 P0520 P0563 P0070 P0222 P0093 P0532 P0710 P0232 P0444; do
             echo "DTC40_START_CODE $code"
             A3TAL_DTC40_CODE="$code" python3 -u scripts/release-dtc-batch40-component.py
             echo "DTC40_PUBLISHED_VERIFIED $code"
