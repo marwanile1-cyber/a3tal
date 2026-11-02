@@ -8,10 +8,10 @@ from PIL import Image,ImageOps,ImageEnhance
 ROOT=Path(__file__).resolve().parents[1]
 SITE="https://a3tal.com"
 BRIDGE=SITE+"/wp-json/a3tal-direct/v1"
-ALLOWED=set("P0070 P0093 P0222 P0299 P0507 P0520 P0562 P0710 P0741 P0444".split())
+ALLOWED=set("P0070 P0093 P0222 P0470 P0532 P0520 P0563 P0710 P0232 P0444".split())
 CODE=os.getenv("A3TAL_DTC40_CODE","").upper()
 if CODE not in ALLOWED:raise RuntimeError("Invalid or missing approved DTC40 code")
-FILE=ROOT/("data/dtc-batch40-part1-20261102.json" if CODE in {"P0299","P0520","P0562","P0070","P0222"} else "data/dtc-batch40-part2-20261102.json")
+FILE=ROOT/("data/dtc-batch40-part1-20261102.json" if CODE in {"P0470","P0520","P0563","P0070","P0222"} else "data/dtc-batch40-part2-20261102.json")
 ZIP=ROOT/"assets/dtc-batch27-photographic.zip"
 CODES=[CODE]
 SOURCE=[CODE]
