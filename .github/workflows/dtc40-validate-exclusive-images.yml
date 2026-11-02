@@ -1,0 +1,40 @@
+name: Validate DTC40 ten Arabic component illustrations
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/dtc40-validate-exclusive-images.yml']
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  images:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Arabic font and WebP
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y fonts-dejavu-core
+          python3 -m pip install -q Pillow
+      - name: Test ten distinct code and component image pairs
+        run: |
+          python3 -m py_compile scripts/render-dtc-batch40-component-images.py
+          for code in P0070 P0093 P0222 P0299 P0507 P0520 P0562 P0710 P0741 P0444; do
+            python3 scripts/render-dtc-batch40-component-images.py "$code" || exit 1
+          done
+          python3 - <<'PY'
+          import hashlib
+          from pathlib import Path
+          from PIL import Image
+          p=list(Path('assets/dtc-batch40').glob('*exclusive-ar.webp'))
+          assert len(p)==10,len(p)
+          checks=set()
+          for item in p:
+              b=item.read_bytes()
+              with Image.open(item) as im:
+                  assert im.size==(1600,900) and im.format=="WEBP"
+              checks.add(hashlib.sha256(b).hexdigest())
+              assert 25000<len(b)<1000000,(item,len(b))
+          assert len(checks)==10
+          print("DTC40_TEN_UNIQUE_ORIGINAL_1600X900_WEBP_PASSED")
+          PY
