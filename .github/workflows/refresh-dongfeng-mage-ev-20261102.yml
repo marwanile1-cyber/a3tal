@@ -1,0 +1,28 @@
+name: Refresh existing Dongfeng MAGE EV 2027 Egypt article
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/refresh-dongfeng-mage-ev-20261102.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-dongfeng-mage-ev-82712-update
+  cancel-in-progress: false
+jobs:
+  update-canonical:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify safe publishing credentials and Python syntax
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/update-dongfeng-mage-ev-20261102.py
+          test -s data/editorial/dongfeng-mage-ev-update-20261102.html
+      - name: Update only reviewed post 82712 via GitHub and A3tal Direct Bridge
+        run: python3 -u scripts/update-dongfeng-mage-ev-20261102.py
