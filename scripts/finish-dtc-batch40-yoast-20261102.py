@@ -10,7 +10,7 @@ ROOT=Path(__file__).resolve().parents[1]
 SITE="https://a3tal.com"
 BRIDGE=SITE+"/wp-json/a3tal-direct/v1"
 KEY=os.getenv("A3TAL_API_KEY","")
-IDS={"P0299":None,"P0520":None,"P0562":None,"P0070":None,"P0222":None,"P0093":None,"P0507":None,"P0710":None,"P0741":None,"P0444":None}
+IDS={"P0470":None,"P0520":None,"P0563":None,"P0070":None,"P0222":None,"P0093":None,"P0532":None,"P0710":None,"P0232":None,"P0444":None}
 H={"User-Agent":"A3tal-DTC40-SEO-20261102","Accept":"application/json","Cache-Control":"no-cache"}
 def req(method,url,body=None,private=False):
     headers=dict(H)
