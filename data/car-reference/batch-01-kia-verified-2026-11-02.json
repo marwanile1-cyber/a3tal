@@ -1,0 +1,580 @@
+{
+  "edition": "2026-11-02",
+  "market": "دليل المالك الرسمي مع تحديد مصر والشرق الأوسط حيث ورد",
+  "brand": {
+    "slug": "kia",
+    "title": "دليل المواصفات الفنية لسيارات كيا",
+    "source": "https://ownersmanual.kia.com/"
+  },
+  "models": [
+    {
+      "slug": "cerato-bd-2023",
+      "name": "كيا سيراتو 2023 (BD)",
+      "ref": "https://ownersmanual.kia.com/full_webhelp/BD/2023/ar_AA/topics/chapter9_8.html",
+      "family": "سيراتو BD",
+      "safety": "يختلف محرك سيراتو 1.6 MPI عن نسخة 2.0 MPI ونسخة التيربو؛ يجب التأكد من كود المحرك وناقل الحركة قبل شراء السوائل."
+    },
+    {
+      "slug": "seltos-sp2-2023",
+      "name": "كيا سيلتوس 2023 (SP2)",
+      "ref": "https://ownersmanual.kia.com/full_webhelp/SP2/2023/ar_AA/topics/chapter8_8.html",
+      "family": "سيلتوس SP2",
+      "safety": "يتغير الزيت حسب محرك 1.6 MPI أو 1.6 تيربو أو 2.0 MPI، وتتغير سوائل ناقل الحركة حسب MT وAT وIVT."
+    },
+    {
+      "slug": "sportage-nq5-2023",
+      "name": "كيا سبورتاج 2023 (NQ5)",
+      "ref": "https://ownersmanual.kia.com/full_webhelp/NQ5/2023/ar_AA/topics/chapter9_8.html",
+      "family": "سبورتاج NQ5",
+      "safety": "لا تساوي بين فتيس 7DCT والأوتوماتيك التقليدي، ولا تفترض أن سعة أو لزوجة زيت محرك 1.6 تيربو تنطبق على محرك 2.0 أو 2.5."
+    }
+  ],
+  "specs": [
+    {
+      "model": "cerato-bd-2023",
+      "slug": "engine-oil-16-mpi",
+      "title": "كمية زيت محرك كيا سيراتو 2023 1.6 MPI",
+      "category": "engine-oil",
+      "engine": "1.6 MPI",
+      "facts": [
+        [
+          "كمية الزيت مع التغيير",
+          "3.6 لتر"
+        ],
+        [
+          "اللزوجة لمصر والشرق الأوسط",
+          "SAE 5W-30"
+        ],
+        [
+          "مواصفة الزيت",
+          "ACEA A5/B5"
+        ]
+      ]
+    },
+    {
+      "model": "cerato-bd-2023",
+      "slug": "engine-oil-20-mpi",
+      "title": "كمية زيت محرك كيا سيراتو 2023 2.0 MPI",
+      "category": "engine-oil",
+      "engine": "2.0 MPI",
+      "facts": [
+        [
+          "كمية الزيت مع التغيير",
+          "4.0 لتر"
+        ],
+        [
+          "اللزوجة لمصر والشرق الأوسط",
+          "SAE 5W-30"
+        ],
+        [
+          "التصنيف المذكور في الدليل",
+          "API Latest (ILSAC Latest) أو ACEA A5/B5"
+        ]
+      ]
+    },
+    {
+      "model": "cerato-bd-2023",
+      "slug": "engine-oil-16-tgdi",
+      "title": "كمية زيت محرك كيا سيراتو 2023 1.6 تيربو",
+      "category": "engine-oil",
+      "engine": "1.6 T-GDI",
+      "facts": [
+        [
+          "كمية الزيت مع التغيير",
+          "4.0 لتر"
+        ],
+        [
+          "اللزوجة المذكورة لبعض الأسواق",
+          "SAE 5W-30"
+        ],
+        [
+          "المواصفة حسب السوق",
+          "ACEA A5/B5 (المذكورة لأوروبا وأمريكا الوسطى والجنوبية)"
+        ]
+      ]
+    },
+    {
+      "model": "cerato-bd-2023",
+      "slug": "engine-oil-smartstream-16",
+      "title": "كمية زيت سيراتو 2023 Smartstream G1.6",
+      "category": "engine-oil",
+      "engine": "Smartstream G1.6",
+      "facts": [
+        [
+          "كمية الزيت مع التغيير",
+          "3.8 لتر"
+        ],
+        [
+          "اللزوجة المذكورة لهذا المحرك",
+          "SAE 0W-20"
+        ],
+        [
+          "تصنيف الزيت",
+          "API SN PLUS/SP أو ILSAC GF-6"
+        ]
+      ]
+    },
+    {
+      "model": "cerato-bd-2023",
+      "slug": "manual-transmission-fluid-16",
+      "title": "زيت الفتيس المانيوال لسيراتو 2023 محرك 1.6",
+      "category": "transmission-oil",
+      "engine": "1.6 MPI مع فتيس MT",
+      "facts": [
+        [
+          "سعة سائل ناقل الحركة",
+          "1.5 إلى 1.6 لتر"
+        ],
+        [
+          "التصنيف",
+          "API GL-4"
+        ],
+        [
+          "اللزوجة",
+          "SAE 70W"
+        ]
+      ]
+    },
+    {
+      "model": "cerato-bd-2023",
+      "slug": "automatic-transmission-fluid-16",
+      "title": "زيت الفتيس الأوتوماتيك لسيراتو 2023 محرك 1.6",
+      "category": "transmission-oil",
+      "engine": "1.6 MPI مع فتيس AT",
+      "facts": [
+        [
+          "سعة سائل ناقل الحركة الكلية بالدليل",
+          "6.7 لتر"
+        ],
+        [
+          "المواصفة",
+          "ATF SP4M-1"
+        ],
+        [
+          "نوع الناقل",
+          "أوتوماتيك تقليدي (AT)"
+        ]
+      ]
+    },
+    {
+      "model": "cerato-bd-2023",
+      "slug": "dct-fluid-16-tgdi",
+      "title": "مواصفة زيت فتيس DCT سيراتو 2023 1.6 تيربو",
+      "category": "transmission-oil",
+      "engine": "1.6 T-GDI مع فتيس DCT",
+      "facts": [
+        [
+          "سعة زيت التروس المذكورة",
+          "1.9 إلى 2.0 لتر"
+        ],
+        [
+          "نوع الزيت",
+          "DCTF 70W SYNTHETIC PLUS"
+        ],
+        [
+          "نوع الناقل",
+          "ناقل حركة مزدوج القابض"
+        ]
+      ]
+    },
+    {
+      "model": "cerato-bd-2023",
+      "slug": "coolant-16-mt",
+      "title": "كمية مياه تبريد كيا سيراتو 2023 محرك 1.6 مانيوال",
+      "category": "coolant",
+      "engine": "1.6 MPI مع MT",
+      "facts": [
+        [
+          "سعة دورة التبريد",
+          "5.5 لتر"
+        ],
+        [
+          "مواصفة السائل",
+          "إيثيلين جليكول قائم على الفوسفات"
+        ],
+        [
+          "نوع الناقل",
+          "مانيوال"
+        ]
+      ]
+    },
+    {
+      "model": "cerato-bd-2023",
+      "slug": "coolant-16-at",
+      "title": "كمية مياه تبريد كيا سيراتو 2023 محرك 1.6 أوتوماتيك",
+      "category": "coolant",
+      "engine": "1.6 MPI مع AT",
+      "facts": [
+        [
+          "سعة دورة التبريد",
+          "5.3 لتر"
+        ],
+        [
+          "مواصفة السائل",
+          "إيثيلين جليكول قائم على الفوسفات"
+        ],
+        [
+          "نوع الناقل",
+          "أوتوماتيك"
+        ]
+      ]
+    },
+    {
+      "model": "seltos-sp2-2023",
+      "slug": "engine-oil-16-mpi",
+      "title": "كمية زيت كيا سيلتوس 2023 محرك 1.6 MPI",
+      "category": "engine-oil",
+      "engine": "1.6 MPI",
+      "facts": [
+        [
+          "كمية الزيت مع التغيير",
+          "3.6 لتر"
+        ],
+        [
+          "اللزوجة لمصر والشرق الأوسط",
+          "SAE 5W-30"
+        ],
+        [
+          "مواصفة الزيت",
+          "ACEA A5/B5"
+        ]
+      ]
+    },
+    {
+      "model": "seltos-sp2-2023",
+      "slug": "engine-oil-16-tgdi",
+      "title": "كمية زيت كيا سيلتوس 2023 محرك 1.6 تيربو",
+      "category": "engine-oil",
+      "engine": "Smartstream G1.6 T-GDI",
+      "facts": [
+        [
+          "كمية الزيت مع التغيير",
+          "4.8 لتر"
+        ],
+        [
+          "اللزوجة لمصر والشرق الأوسط",
+          "SAE 5W-30"
+        ],
+        [
+          "مواصفة الزيت",
+          "ACEA A5/B5"
+        ]
+      ]
+    },
+    {
+      "model": "seltos-sp2-2023",
+      "slug": "engine-oil-20-mpi",
+      "title": "كمية زيت كيا سيلتوس 2023 محرك 2.0 MPI",
+      "category": "engine-oil",
+      "engine": "2.0 MPI",
+      "facts": [
+        [
+          "كمية الزيت مع التغيير",
+          "4.5 لتر"
+        ],
+        [
+          "اللزوجة للشرق الأوسط",
+          "SAE 5W-30"
+        ],
+        [
+          "المواصفة",
+          "API Latest أو ACEA A5/B5"
+        ]
+      ]
+    },
+    {
+      "model": "seltos-sp2-2023",
+      "slug": "manual-fluid-16-2wd",
+      "title": "زيت فتيس كيا سيلتوس 2023 مانيوال دفع أمامي 1.6",
+      "category": "transmission-oil",
+      "engine": "1.6 MPI MT 2WD",
+      "facts": [
+        [
+          "سعة سائل الناقل",
+          "1.5 إلى 1.6 لتر"
+        ],
+        [
+          "اللزوجة",
+          "SAE 70W"
+        ],
+        [
+          "التصنيف",
+          "API GL-4 TGO-9"
+        ]
+      ]
+    },
+    {
+      "model": "seltos-sp2-2023",
+      "slug": "manual-fluid-16-awd",
+      "title": "زيت فتيس كيا سيلتوس 2023 مانيوال دفع كلي 1.6",
+      "category": "transmission-oil",
+      "engine": "1.6 MPI MT AWD",
+      "facts": [
+        [
+          "سعة سائل الناقل",
+          "1.4 إلى 1.5 لتر"
+        ],
+        [
+          "اللزوجة",
+          "SAE 70W"
+        ],
+        [
+          "التصنيف",
+          "API GL-4 TGO-9"
+        ]
+      ]
+    },
+    {
+      "model": "seltos-sp2-2023",
+      "slug": "automatic-fluid-16-mpi",
+      "title": "زيت الفتيس الأوتوماتيك كيا سيلتوس 2023 1.6 MPI",
+      "category": "transmission-oil",
+      "engine": "1.6 MPI AT",
+      "facts": [
+        [
+          "سعة سائل الناقل الكلية بالدليل",
+          "7.2 لتر"
+        ],
+        [
+          "المواصفة",
+          "ATF SP4M-1"
+        ],
+        [
+          "نوع الناقل",
+          "أوتوماتيك (AT)"
+        ]
+      ]
+    },
+    {
+      "model": "seltos-sp2-2023",
+      "slug": "automatic-fluid-16-tgdi",
+      "title": "زيت الفتيس الأوتوماتيك سيلتوس 2023 1.6 تيربو",
+      "category": "transmission-oil",
+      "engine": "Smartstream G1.6 T-GDI AT",
+      "facts": [
+        [
+          "سعة سائل الناقل الكلية بالدليل",
+          "6.5 لتر"
+        ],
+        [
+          "المواصفة",
+          "ATF SP4M-1"
+        ],
+        [
+          "نوع الناقل",
+          "أوتوماتيك (AT) بحسب الدليل"
+        ]
+      ]
+    },
+    {
+      "model": "seltos-sp2-2023",
+      "slug": "ivt-fluid-20",
+      "title": "زيت فتيس IVT كيا سيلتوس 2023 محرك 2.0",
+      "category": "transmission-oil",
+      "engine": "2.0 MPI IVT",
+      "facts": [
+        [
+          "سعة سائل الناقل الكلية بالدليل",
+          "6.7 لتر"
+        ],
+        [
+          "المواصفة",
+          "SP-CVT1"
+        ],
+        [
+          "نوع الناقل",
+          "ناقل حركة متغير ذكي IVT"
+        ]
+      ]
+    },
+    {
+      "model": "seltos-sp2-2023",
+      "slug": "coolant-16-at",
+      "title": "سعة مياه تبريد كيا سيلتوس 2023 محرك 1.6 أوتوماتيك",
+      "category": "coolant",
+      "engine": "1.6 MPI AT",
+      "facts": [
+        [
+          "سعة دورة التبريد",
+          "5.8 لتر"
+        ],
+        [
+          "نوع الناقل",
+          "AT"
+        ],
+        [
+          "نوع السائل",
+          "خليط ماء ومانع تجمد إيثيلين جليكول بفوسفات"
+        ]
+      ]
+    },
+    {
+      "model": "sportage-nq5-2023",
+      "slug": "engine-oil-16-tgdi",
+      "title": "كمية زيت كيا سبورتاج 2023 محرك 1.6 تيربو",
+      "category": "engine-oil",
+      "engine": "Smartstream G1.6 T-GDI",
+      "facts": [
+        [
+          "كمية الزيت مع التغيير",
+          "4.8 لتر"
+        ],
+        [
+          "اللزوجة لمصر والشرق الأوسط",
+          "SAE 5W-30"
+        ],
+        [
+          "المواصفة",
+          "ACEA A5/B5"
+        ]
+      ]
+    },
+    {
+      "model": "sportage-nq5-2023",
+      "slug": "engine-oil-20",
+      "title": "كمية زيت كيا سبورتاج 2023 محرك 2.0",
+      "category": "engine-oil",
+      "engine": "Smartstream G2.0",
+      "facts": [
+        [
+          "كمية الزيت مع التغيير",
+          "4.3 لتر"
+        ],
+        [
+          "اللزوجة لمصر والشرق الأوسط",
+          "SAE 5W-30"
+        ],
+        [
+          "التصنيف",
+          "ACEA A5/B5"
+        ]
+      ]
+    },
+    {
+      "model": "sportage-nq5-2023",
+      "slug": "engine-oil-25-gdi",
+      "title": "كمية زيت كيا سبورتاج 2023 محرك 2.5 GDI",
+      "category": "engine-oil",
+      "engine": "Smartstream G2.5 GDI",
+      "facts": [
+        [
+          "كمية الزيت مع التغيير",
+          "5.8 لتر"
+        ],
+        [
+          "اللزوجة لمصر والشرق الأوسط",
+          "SAE 0W-30"
+        ],
+        [
+          "المواصفة",
+          "ACEA C2"
+        ]
+      ]
+    },
+    {
+      "model": "sportage-nq5-2023",
+      "slug": "engine-oil-20-diesel",
+      "title": "كمية زيت كيا سبورتاج 2023 ديزل 2.0",
+      "category": "engine-oil",
+      "engine": "Smartstream D2.0",
+      "facts": [
+        [
+          "كمية الزيت مع التغيير",
+          "5.6 لتر"
+        ],
+        [
+          "المواصفة مع فلتر DPF",
+          "ACEA C5 أو C2 أو C3"
+        ],
+        [
+          "المواصفة من دون DPF",
+          "ACEA A3 أو B4"
+        ]
+      ]
+    },
+    {
+      "model": "sportage-nq5-2023",
+      "slug": "dct-fluid-16-tgdi",
+      "title": "زيت فتيس DCT كيا سبورتاج 2023 محرك 1.6 تيربو",
+      "category": "transmission-oil",
+      "engine": "Smartstream G1.6 T-GDI DCT",
+      "facts": [
+        [
+          "سعة زيت فتيس DCT المذكورة",
+          "1.6 إلى 1.7 لتر"
+        ],
+        [
+          "المواصفة",
+          "HK D DCTF TGO-10 PLUS"
+        ],
+        [
+          "نوع الناقل",
+          "مزدوج القابض DCT"
+        ]
+      ]
+    },
+    {
+      "model": "sportage-nq5-2023",
+      "slug": "automatic-fluid-20",
+      "title": "زيت فتيس كيا سبورتاج 2023 أوتوماتيك محرك 2.0",
+      "category": "transmission-oil",
+      "engine": "Smartstream G2.0 AT",
+      "facts": [
+        [
+          "السعة الكلية لسائل الناقل بالدليل",
+          "6.7 لتر"
+        ],
+        [
+          "المواصفة",
+          "ATF SP4M-1"
+        ],
+        [
+          "نوع الناقل",
+          "أوتوماتيك تقليدي AT"
+        ]
+      ]
+    },
+    {
+      "model": "sportage-nq5-2023",
+      "slug": "coolant-16-tgdi",
+      "title": "كمية مياه تبريد كيا سبورتاج 2023 1.6 تيربو",
+      "category": "coolant",
+      "engine": "Smartstream G1.6 T-GDI",
+      "facts": [
+        [
+          "سعة دورة التبريد",
+          "7.5 لتر"
+        ],
+        [
+          "نوع السائل",
+          "إيثيلين جليكول قائم على الفوسفات"
+        ],
+        [
+          "المحرك",
+          "Smartstream G1.6 T-GDI"
+        ]
+      ]
+    },
+    {
+      "model": "sportage-nq5-2023",
+      "slug": "fuel-tank",
+      "title": "سعة تانك بنزين كيا سبورتاج 2023 NQ5",
+      "category": "fuel",
+      "engine": "محركات البنزين المبيّنة بالدليل",
+      "facts": [
+        [
+          "سعة خزان الوقود",
+          "54 لتر"
+        ],
+        [
+          "نوع الوقود",
+          "بنزين"
+        ],
+        [
+          "المرجع",
+          "دليل سبورتاج NQ5 لسنة 2023"
+        ]
+      ]
+    }
+  ]
+}
