@@ -1,0 +1,41 @@
+name: Fix Kia Car Reference OG Images
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/repair-kia-yoast-og-after-image-swap.py'
+      - '.github/workflows/repair-kia-og.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-car-reference-og
+  cancel-in-progress: false
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate environment and source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/repair-kia-yoast-og-after-image-swap.py
+      - name: Install client
+        run: python3 -m pip install --quiet --disable-pip-version-check requests
+      - name: Deploy guarded Yoast OG fix and verify five URLs
+        run: python3 scripts/repair-kia-yoast-og-after-image-swap.py
+      - name: Retain rollback and check reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-kia-og-fix-verification-${{ github.run_id }}
+          path: |
+            /tmp/a3cr-og-backup.enc
+            a3tal-kia-og-image-check.json
+          if-no-files-found: warn
+          retention-days: 7
