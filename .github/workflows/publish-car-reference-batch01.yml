@@ -18,7 +18,7 @@ jobs:
     timeout-minutes: 45
     env:
       A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
-      A3CR_LIMIT: '5'
+      A3CR_LIMIT: '30'
     steps:
       - uses: actions/checkout@v4
       - name: Validate data and script before production
