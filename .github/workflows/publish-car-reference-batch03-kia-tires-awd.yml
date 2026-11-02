@@ -1,0 +1,57 @@
+name: Publish Kia Reference Batch 03 Tire Pressure and AWD
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/publish-car-reference-batch03-kia-tires-awd.py'
+      - '.github/workflows/publish-car-reference-batch03-kia-tires-awd.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-car-reference-batch03-publish
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3CR_LIMIT: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate data and script
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-car-reference-batch02-premium.py scripts/publish-car-reference-batch03-kia-tires-awd.py
+          python3 - <<'PY'
+          import json
+          d=json.load(open('data/car-reference/batch-03-kia-tires-safety-awd-20261102.json'))
+          assert len(d['items'])==6
+          assert len(set(x['slug'] for x in d['items']))==6
+          assert len([x for x in d['items'] if x['category']=='tire-specs'])==3
+          assert all(len(x['facts'])>=4 and x['model'] in d['models'] for x in d['items'])
+          assert all(all(y.startswith('https://ownersmanual.kia.com/') for y in x['sources']) for x in d['items'])
+          print('Six source-backed entries validated')
+          PY
+      - name: Install photographic layout tooling
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-core fonts-dejavu-core
+          python3 -m pip install --quiet --disable-pip-version-check requests pillow
+      - name: Verify WordPress reference engine
+        run: |
+          curl -fLsS --retry 3 'https://a3tal.com/wp-json/a3tal-car-reference/v1/health' -o /tmp/status.json
+          jq -e '.ok == true' /tmp/status.json >/dev/null
+      - name: Upload original photography composition and publish with live SEO checks
+        run: python3 scripts/publish-car-reference-batch03-kia-tires-awd.py
+      - name: Archive verified links
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kia-car-reference-batch03-${{ github.run_id }}
+          path: kia-reference-batch03-published-images.json
+          if-no-files-found: warn
+          retention-days: 30
