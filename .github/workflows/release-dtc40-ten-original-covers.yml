@@ -1,0 +1,55 @@
+name: Publish DTC40 ten original Arabic technical guides
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/release-dtc40-ten-original-covers.yml']
+  workflow_dispatch:
+permissions: {contents: read}
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3TAL_BATCH40_RELEASE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install WebP support and Arabic fonts
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y fonts-dejavu-core
+          python3 -m pip install -q Pillow
+      - name: Check ten unique codes, article length, source and graphical fault labels
+        run: |
+          python3 -m py_compile scripts/release-dtc-batch40-component.py scripts/render-dtc-batch40-component-images.py
+          python3 - <<'PY'
+          import json,re
+          d1=json.load(open('data/dtc-batch40-part1-20261102.json',encoding='utf8'))
+          d2=json.load(open('data/dtc-batch40-part2-20261102.json',encoding='utf8'))
+          codes="P0299 P0520 P0562 P0070 P0222 P0093 P0507 P0710 P0741 P0444".split()
+          rows=d1['items']+d2['items']
+          assert len(rows)==10 and len(set(r['code'] for r in rows))==10
+          assert d1['batch']==d2['batch']==40
+          assert set(r['code'] for r in rows)==set(codes)
+          for r in rows:
+              wc=len(re.sub(r'<[^>]+>',' ',r['content']).split())
+              assert r['slug']==r['code'].lower() and r['qa']['ready_for_publication']
+              assert wc>=700 and wc==r['word_count'] and r['content'].count('<h2>')>=8
+              assert r['media_status']=='awaiting_original_component_infographic'
+              assert r['source'].startswith('https://')
+              assert r['code'] in r['title'] and r['code'] in r['excerpt']
+              print('DTC40_EDITORIAL_VALID',r['code'],wc,flush=True)
+          PY
+      - name: Publish each code one time with exclusive image and immediate OG verification
+        shell: bash
+        run: |
+          set -euo pipefail
+          for code in P0299 P0520 P0562 P0070 P0222 P0093 P0507 P0710 P0741 P0444; do
+            echo "DTC40_START_CODE $code"
+            A3TAL_DTC40_CODE="$code" python3 -u scripts/release-dtc-batch40-component.py
+            echo "DTC40_PUBLISHED_VERIFIED $code"
+          done
+          echo "DTC40_ALL_TEN_PUBLISH_JOBS_SUCCEEDED"
