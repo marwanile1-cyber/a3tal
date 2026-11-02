@@ -1,0 +1,39 @@
+name: Enrich published Kia Car Reference hubs
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/enrich-kia-reference-hubs-20261102.py'
+      - '.github/workflows/enrich-kia-reference-hubs-20261102.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-car-reference-live-hub-enrichment
+  cancel-in-progress: false
+jobs:
+  enrich:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate script and required existing manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/enrich-kia-reference-hubs-20261102.py
+          test -s data/car-reference/batch-01-kia-verified-2026-11-02.json
+      - name: Install requests
+        run: python3 -m pip install --quiet requests
+      - name: Improve model hubs through Direct Bridge with revision control
+        run: python3 scripts/enrich-kia-reference-hubs-20261102.py
+      - name: Preserve updated URL report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-hub-enrichment-${{ github.run_id }}
+          path: car-reference-hub-audit-20261102.json
+          if-no-files-found: warn
