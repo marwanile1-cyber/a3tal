@@ -1,0 +1,61 @@
+name: Publish verified Car Reference batch 01 (Kia)
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'data/car-reference/batch-01-kia-verified-2026-11-02.json'
+      - 'scripts/publish-car-reference-batch01.py'
+      - '.github/workflows/publish-car-reference-batch01.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-car-reference-publishing
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3CR_LIMIT: '5'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate data and script before production
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY" || { echo "Missing A3TAL_API_KEY"; exit 1; }
+          python3 -m py_compile scripts/publish-car-reference-batch01.py
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('data/car-reference/batch-01-kia-verified-2026-11-02.json')
+          d=json.loads(p.read_text(encoding='utf-8'))
+          assert len(d['models'])==3 and len(d['specs'])==26
+          assert all(len(s['facts'])>=2 for s in d['specs'])
+          assert all(m['ref'].startswith('https://ownersmanual.kia.com/') for m in d['models'])
+          paths=[(s['model'],s['slug']) for s in d['specs']]
+          assert len(paths)==len(set(paths))
+          print('Verified manifest validation passed: 30 reference records')
+          PY
+      - name: Install image renderer
+        run: python3 -m pip install --quiet --disable-pip-version-check requests pillow
+      - name: Check installed reference engine
+        run: |
+          set -euo pipefail
+          curl -fLsS --retry 3 https://a3tal.com/wp-json/a3tal-car-reference/v1/health -o /tmp/a3cr-health.json
+          jq -e '.ok==true and .version=="1.0.0"' /tmp/a3cr-health.json >/dev/null
+      - name: Upload original technical artwork and publish verified data
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/publish-car-reference-batch01.py
+      - name: Preserve result links
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-car-reference-batch01-links-${{ github.run_id }}
+          path: car-reference-batch01-results.json
+          if-no-files-found: warn
+          retention-days: 30
