@@ -1,0 +1,33 @@
+name: Save Yoast SEO DTC40 after ten verified new posts
+on:
+  workflow_run:
+    workflows: ['Publish DTC40 ten original Arabic technical guides']
+    types: [completed]
+  workflow_dispatch:
+permissions: {contents: read}
+concurrency:
+  group: a3tal-production-content
+  cancel-in-progress: false
+jobs:
+  metadata:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify ten Yoast descriptions and script syntax
+        run: |
+          python3 -m py_compile scripts/finish-dtc-batch40-yoast-20261102.py
+          python3 - <<'PY'
+          import json
+          d=json.load(open('data/dtc-batch40-yoast-metadesc-20261102.json',encoding='utf8'))
+          codes="P0299 P0520 P0562 P0070 P0222 P0093 P0507 P0710 P0741 P0444".split()
+          assert d['batch']==40 and list(d['descriptions'])==codes
+          assert len(set(d['descriptions'].values()))==10
+          assert all(105<=len(d['descriptions'][c])<=160 and c in d['descriptions'][c] for c in codes)
+          print('DTC40_YOAST_TEN_VERIFIED')
+          PY
+      - name: Save only meta description via revision-guarded A3tal bridge
+        run: python3 -u scripts/finish-dtc-batch40-yoast-20261102.py
