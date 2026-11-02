@@ -1,0 +1,32 @@
+name: Publish 3 car repairs - suspension, mechanics and electrical
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-three-car-repairs-20261102.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-three-car-repairs-20261102
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 26
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install photo processing
+        run: python3 -m pip install --quiet Pillow
+      - name: Validate editorial files and protected bridge
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          test -s data/editorial/car-floating-wandering-highway-suspension-diagnosis-20261102.html
+          test -s data/editorial/car-hesitates-cold-start-fine-when-warm-20261102.html
+          test -s data/editorial/car-low-beam-not-working-high-beam-works-20261102.html
+          python3 -m py_compile scripts/publish-three-car-repairs-20261102.py
+      - name: Safely publish three unique car repair articles with licensed visuals and check Yoast
+        run: python3 -u scripts/publish-three-car-repairs-20261102.py
