@@ -167,11 +167,12 @@ def publish(item):
     # Existing automotive diagnostics belong in the WordPress posts system.
     # Category 3028 is motorcycles, so DO NOT assign it to car posts.
     # Select the site's actual automotive repair/suspension/mechanics/electrical taxonomy from live REST.
-    cats=request("/wp-json/wp/v2/categories?per_page=100&search="+urllib.parse.quote(item["category"]))
-    matches=[c for c in cats if c.get("name","").find(item["category"])>=0 and c.get("count",0)>0]
-    # Prefer exact diagnostic category, not broad or incidental product pages.
-    cat_id=int(matches[0]["id"]) if matches else 0
-    if not cat_id:raise RuntimeError("Could not confirm relevant automotive category for "+item["category"])
+    # Confirmed live A3tal WordPress IDs: 11 Suspension, 9 Engine problems, 13 Electrical.
+    category_map={"عفشة":(11,"نظام التعليق"),"ميكانيكا":(9,"مشاكل المحرك"),"كهربا":(13,"أعطال كهربائية")}
+    cat_id, expected_name=category_map[item["category"]]
+    cat=request("/wp-json/wp/v2/categories/"+str(cat_id))
+    if expected_name not in cat.get("name",""):
+        raise RuntimeError("Live automotive category mismatch; refusing taxonomy changes")
     payload={
       "title":item["title"],"slug":slug,"type":"post","status":"publish",
       "content":source,"excerpt":item["excerpt"],"categories":[cat_id],
