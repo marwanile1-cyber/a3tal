@@ -20,7 +20,7 @@ jobs:
               q=urllib.parse.urlencode({"search":code,"per_page":100,"_fields":"id,slug,status,title,link"})
               req=urllib.request.Request("https://a3tal.com/wp-json/wp/v2/posts?"+q,headers={"User-Agent":"A3tal-DTC40-IntentPreflight","Cache-Control":"no-cache","Accept":"application/json"})
               with urllib.request.urlopen(req,timeout=55) as r: rows=json.load(r)
-              rx=re.compile(r"^\\s*(?:كود\\s+(?:العطل\\s+)?|DTC\\s+|(?:شرح|تشخيص)\\s+كود\\s+)"+re.escape(code)+r"(?![0-9A-F])",re.I)
+              rx=re.compile(r"^\s*(?:كود\s+(?:العطل\s+)?|DTC\s+|(?:شرح|تشخيص)\s+كود\s+)"+re.escape(code)+r"(?![0-9A-F])",re.I)
               results=[]
               for post in rows:
                   title=html.unescape(re.sub(r"<[^>]*>"," ",post.get("title",{}).get("rendered",""))).strip()
