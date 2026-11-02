@@ -1,0 +1,47 @@
+name: Final DTC40 ten live SEO and unique image audit
+on:
+  workflow_run:
+    workflows: ['Save Yoast SEO DTC40 after ten verified new posts']
+    types: [completed]
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  read-only-audit:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify canonical indexability featured images OG Yoast and distinctness
+        shell: python
+        run: |
+          import json,urllib.parse,urllib.request,time
+          codes="P0299 P0520 P0562 P0070 P0222 P0093 P0507 P0710 P0741 P0444".split()
+          seen=set()
+          def read(url):
+              req=urllib.request.Request(url,headers={"User-Agent":"A3tal-DTC40-Verified-Live-Audit","Cache-Control":"no-store","Accept":"application/json"})
+              with urllib.request.urlopen(req,timeout=60) as r:return json.load(r)
+          for code in codes:
+              q=urllib.parse.urlencode({"slug":code.lower(),"per_page":4,"_fields":"id,slug,status,link,featured_media,yoast_head_json"})
+              rows=read("https://a3tal.com/wp-json/wp/v2/a3tal-dtc?"+q)
+              candidates=[r for r in rows if r.get("slug")==code.lower()]
+              assert len(candidates)==1,(code,"missing or duplicate",candidates)
+              row=candidates[0]
+              target="https://a3tal.com/dtc/"+code.lower()+"/"
+              assert row.get("status")=="publish" and row.get("link")==target,(code,"not published canonical URL")
+              id=int(row.get("featured_media") or 0)
+              assert id>0 and id not in seen,(code,"no unique featured image")
+              seen.add(id)
+              image=read("https://a3tal.com/wp-json/wp/v2/media/"+str(id)+"?_fields=id,source_url,mime_type,alt_text")
+              source=image.get("source_url") or ""
+              assert image.get("mime_type")=="image/webp" and "a3tal-dtc-"+code.lower()+"-exclusive-ar" in source,(code,"wrong code image",source)
+              seo=row.get("yoast_head_json") or {}
+              assert (seo.get("canonical") or "").rstrip("/")==target.rstrip("/"),(code,"canonical mismatch")
+              assert source in [m.get("url") for m in seo.get("og_image",[]) if isinstance(m,dict)],(code,"OG image mismatch")
+              assert "noindex" not in json.dumps(seo.get("robots") or {}).lower(),(code,"noindex")
+              desc=seo.get("description") or ""
+              assert code in desc and len(desc)>=105,(code,"Yoast missing",desc)
+              print("DTC40_LIVE_PASS",code,target,"IMAGE",source,"YOAST",len(desc),flush=True)
+              time.sleep(.3)
+          assert len(seen)==10
+          print("DTC40_TEN_UNIQUE_PUBLISHED_IMAGES_OG_CANONICAL_YOAST_VERIFIED",flush=True)
