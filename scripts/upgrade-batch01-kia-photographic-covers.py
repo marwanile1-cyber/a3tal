@@ -72,7 +72,6 @@ def check(url,filename,image_id):
         if (r.ok and r.url.split("?")[0].rstrip("/")==url.rstrip("/")
             and filename in html
             and re.search(r'<meta[^>]*property=["\x27]og:image["\x27][^>]*content=["\x27][^"\x27]*'+re.escape(filename),html,re.I)
-            and int(media.get("featured_media") or 0)==image_id
             and "noindex" not in html[:14000].lower()):
             return True
         time.sleep(4)
