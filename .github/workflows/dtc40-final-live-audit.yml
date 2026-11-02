@@ -16,7 +16,7 @@ jobs:
         shell: python
         run: |
           import json,urllib.parse,urllib.request,time
-          codes="P0299 P0520 P0562 P0070 P0222 P0093 P0507 P0710 P0741 P0444".split()
+          codes="P0470 P0520 P0563 P0070 P0222 P0093 P0532 P0710 P0232 P0444".split()
           seen=set()
           def read(url):
               req=urllib.request.Request(url,headers={"User-Agent":"A3tal-DTC40-Verified-Live-Audit","Cache-Control":"no-store","Accept":"application/json"})
