@@ -221,7 +221,7 @@
     },
     {
       "model": "seltos-sp2-2023",
-      "slug": "engine-oil-16-mpi",
+      "slug": "seltos-engine-oil-16-mpi",
       "title": "كمية زيت كيا سيلتوس 2023 محرك 1.6 MPI",
       "category": "engine-oil",
       "engine": "1.6 MPI",
@@ -242,7 +242,7 @@
     },
     {
       "model": "seltos-sp2-2023",
-      "slug": "engine-oil-16-tgdi",
+      "slug": "seltos-engine-oil-16-tgdi",
       "title": "كمية زيت كيا سيلتوس 2023 محرك 1.6 تيربو",
       "category": "engine-oil",
       "engine": "Smartstream G1.6 T-GDI",
@@ -263,7 +263,7 @@
     },
     {
       "model": "seltos-sp2-2023",
-      "slug": "engine-oil-20-mpi",
+      "slug": "seltos-engine-oil-20-mpi",
       "title": "كمية زيت كيا سيلتوس 2023 محرك 2.0 MPI",
       "category": "engine-oil",
       "engine": "2.0 MPI",
@@ -389,7 +389,7 @@
     },
     {
       "model": "seltos-sp2-2023",
-      "slug": "coolant-16-at",
+      "slug": "seltos-coolant-16-at",
       "title": "سعة مياه تبريد كيا سيلتوس 2023 محرك 1.6 أوتوماتيك",
       "category": "coolant",
       "engine": "1.6 MPI AT",
@@ -410,7 +410,7 @@
     },
     {
       "model": "sportage-nq5-2023",
-      "slug": "engine-oil-16-tgdi",
+      "slug": "sportage-engine-oil-16-tgdi",
       "title": "كمية زيت كيا سبورتاج 2023 محرك 1.6 تيربو",
       "category": "engine-oil",
       "engine": "Smartstream G1.6 T-GDI",
@@ -431,7 +431,7 @@
     },
     {
       "model": "sportage-nq5-2023",
-      "slug": "engine-oil-20",
+      "slug": "sportage-engine-oil-20",
       "title": "كمية زيت كيا سبورتاج 2023 محرك 2.0",
       "category": "engine-oil",
       "engine": "Smartstream G2.0",
@@ -494,7 +494,7 @@
     },
     {
       "model": "sportage-nq5-2023",
-      "slug": "dct-fluid-16-tgdi",
+      "slug": "sportage-dct-fluid-16-tgdi",
       "title": "زيت فتيس DCT كيا سبورتاج 2023 محرك 1.6 تيربو",
       "category": "transmission-oil",
       "engine": "Smartstream G1.6 T-GDI DCT",
