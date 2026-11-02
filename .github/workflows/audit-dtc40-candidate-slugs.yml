@@ -1,0 +1,28 @@
+name: Preflight DTC40 exact live duplicate scan
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/audit-dtc40-candidate-slugs.yml']
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check exact codes read-only
+        shell: python
+        run: |
+          import urllib.request, urllib.parse, json, time
+          codes=["P0031","P0032","P0037","P0051","P0052","P0053","P0068","P0070","P0071","P0089","P0093","P0096","P0097","P0098","P0111","P0114","P0120","P0222","P0223","P0232","P0270","P0299","P0307","P0343","P0350","P0390","P0411","P0412","P0430","P0444","P0457","P0470","P0471","P0491","P0507","P0513","P0520","P0532","P0550","P0562","P0572","P0580","P0610","P0625","P0642","P0651","P0688","P0692","P0710","P0711","P0717","P0725","P0741","P0743","P0744","P0751","P0752","P0771","P0776","P0780","P0796","P0841","P0871","P0882","P0961","P0999","P1101","P2096","P0219","P0563","P0601","P0175","P2189"]
+          free=[];exists=[]
+          for code in codes:
+              q=urllib.parse.urlencode({"slug":code.lower(),"per_page":2,"_fields":"id,slug,status,link"})
+              req=urllib.request.Request("https://a3tal.com/wp-json/wp/v2/a3tal-dtc?"+q,headers={"User-Agent":"A3tal-DTC40-Review","Accept":"application/json","Cache-Control":"no-cache"})
+              with urllib.request.urlopen(req,timeout=55) as r: data=json.load(r)
+              found=[x for x in data if x.get("slug")==code.lower()]
+              if found: exists.append({"code":code,"existing":found})
+              else: free.append(code)
+              time.sleep(.12)
+          print("DTC40_FREE_CODES",json.dumps(free),flush=True)
+          print("DTC40_ALREADY_PUBLISHED",json.dumps(exists),flush=True)
