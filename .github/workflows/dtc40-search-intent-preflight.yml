@@ -1,0 +1,34 @@
+name: DTC40 search-intent published-article conflict scan
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/dtc40-search-intent-preflight.yml']
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  read-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Check generic article competing with each DTC
+        shell: python
+        run: |
+          import urllib.request,urllib.parse,re,html,json,time
+          codes=["P0070","P0093","P0222","P0299","P0507","P0520","P0562","P0710","P0741","P0444","P0071","P0089","P0232","P0470","P0506","P0532","P0563","P0572","P0711","P0725","P0776","P0796","P0841","P0961","P0219","P0580","P0031","P0053"]
+          available=[];conflicts={}
+          for code in codes:
+              q=urllib.parse.urlencode({"search":code,"per_page":100,"_fields":"id,slug,status,title,link"})
+              req=urllib.request.Request("https://a3tal.com/wp-json/wp/v2/posts?"+q,headers={"User-Agent":"A3tal-DTC40-IntentPreflight","Cache-Control":"no-cache","Accept":"application/json"})
+              with urllib.request.urlopen(req,timeout=55) as r: rows=json.load(r)
+              rx=re.compile(r"^\\s*(?:كود\\s+(?:العطل\\s+)?|DTC\\s+|(?:شرح|تشخيص)\\s+كود\\s+)"+re.escape(code)+r"(?![0-9A-F])",re.I)
+              results=[]
+              for post in rows:
+                  title=html.unescape(re.sub(r"<[^>]*>"," ",post.get("title",{}).get("rendered",""))).strip()
+                  slug=urllib.parse.unquote(post.get("slug","")).lower()
+                  if post.get("status")=="publish" and (rx.match(title) or slug.startswith(code.lower()+"-")):
+                      results.append({"title":title,"url":post.get("link")})
+              if results:conflicts[code]=results
+              else:available.append(code)
+              time.sleep(.12)
+          print("DTC40_INTENT_AVAILABLE",json.dumps(available,ensure_ascii=False),flush=True)
+          print("DTC40_INTENT_CONFLICTS",json.dumps(conflicts,ensure_ascii=False),flush=True)
