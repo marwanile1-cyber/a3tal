@@ -10,15 +10,15 @@ DATA={
 "P0070":("عطل دائرة حساس","حرارة الهواء الخارجي","ambient","افحص الحساس والفيشة"),
 "P0093":("تسريب كبير بمنظومة","ضغط وتغذية الوقود","fuel","تحقق من التسريب بأمان"),
 "P0222":("إشارة منخفضة لحساس","البوابة أو الدعسة B","throttle","فحص الجهد المرجعي والإشارة"),
-"P0299":("ضغط التيربو أقل","من القيمة المطلوبة","turbo","افحص الخراطيم والتحكم"),
-"P0507":("ارتفاع دوران المحرك","أثناء السلانسيه","idle","افحص بوابة الهواء والتسريب"),
+"P0470":("عطل دائرة حساس","ضغط غازات العادم","exhaust","فحص الحساس وأنبوب الضغط"),
+"P0532":("إشارة منخفضة لحساس","ضغط فريون التكييف","ac_pressure","افحص الفيشة وضغط الدورة"),
 "P0520":("عطل دائرة حساس","ضغط زيت المحرك","oil","تحقق من الضغط الحقيقي أولًا"),
-"P0562":("جهد كهرباء السيارة","أقل من المطلوب","charge","افحص البطارية والدينامو"),
+"P0563":("ارتفاع جهد شحن","كهرباء السيارة","charge","افحص المنظم والأرضي"),
 "P0710":("عطل دائرة حساس","حرارة زيت الفتيس","atf","فحص حرارة وموصل الفتيس"),
-"P0741":("ضعف أداء قفل","محول عزم الفتيس","torque","فحص TCC والزيت والانزلاق"),
+"P0232":("ارتفاع إشارة دائرة","طرمبة الوقود","pump","افحص الريلاي وأرضي الطرمبة"),
 "P0444":("دائرة صمام تبخير","الوقود مفتوحة","evap","افحص صمام Purge والفيشة")
 }
-COLORS={"ambient":(75,219,236),"fuel":(248,169,94),"throttle":(79,198,223),"turbo":(249,177,83),"idle":(95,220,213),"oil":(244,185,75),"charge":(94,194,239),"atf":(138,199,239),"torque":(242,179,89),"evap":(94,232,188)}
+COLORS={"ambient":(75,219,236),"fuel":(248,169,94),"throttle":(79,198,223),"turbo":(249,177,83),"exhaust":(247,169,91),"ac_pressure":(93,205,244),"pump":(114,219,186),"idle":(95,220,213),"oil":(244,185,75),"charge":(94,194,239),"atf":(138,199,239),"torque":(242,179,89),"evap":(94,232,188)}
 BOLD="/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
 REG="/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
 def font(size,b=True):return ImageFont.truetype(BOLD if b else REG,size)
@@ -104,6 +104,38 @@ def diag(code):
   d.rounded_rectangle((629,618,789,683),radius=19,fill=(24,46,60,255),outline=(*C,255),width=6)
   stroke(d,(663,618,572,577),(215,232,230,240),9)
   d.text((136,204),"TURBO BOOST",font=font(30),fill=(*C,255))
+ elif kind=="exhaust":
+  # Exhaust backpressure sensor connected to heat-resistant pressure tube.
+  tube([(152,596),(343,596),(454,532),(607,531)],(116,135,146,255),width=42)
+  d.rounded_rectangle((353,244,606,483),radius=32,fill=(52,77,91,255),outline=(218,232,233,255),width=10)
+  d.rounded_rectangle((418,163,546,257),radius=18,fill=(19,41,56,255),outline=(*C,255),width=7)
+  d.rounded_rectangle((430,470,521,550),radius=15,fill=(135,157,163,255),outline=(231,232,228,255),width=8)
+  for x in range(384,592,40):stroke(d,(x,273,x,448),(118,160,173,180),7)
+  d.ellipse((427,315,539,423),fill=(20,44,59,255),outline=(*C,255),width=10)
+  d.text((120,205),"EXHAUST PRESSURE",font=font(27),fill=(*C,255))
+ elif kind=="ac_pressure":
+  # Refrigerant pressure transducer mounted on sealed AC pipe.
+  tube([(139,602),(364,602),(557,536),(754,537)],(119,149,161,255),width=64)
+  d.rounded_rectangle((332,255,572,435),radius=45,fill=(82,112,130,255),outline=(211,231,234,255),width=11)
+  d.rounded_rectangle((364,178,539,294),radius=17,fill=(16,42,58,255),outline=(*C,255),width=7)
+  for x in [392,430,468,506]:stroke(d,(x,202,x,250),(159,204,213,255),6)
+  poly(d,[(376,435),(527,435),(547,508),(510,568),(387,568),(355,510)],(144,165,173,255))
+  for y in [462,487,520]:stroke(d,(396,y,502,y),(225,225,206,255),5)
+  d.ellipse((630,270,762,402),fill=(15,43,60,255),outline=(*C,255),width=11)
+  d.arc((660,296,729,370),start=200,end=335,fill=(242,193,104,255),width=9)
+  d.text((128,202),"A/C PRESSURE",font=font(30),fill=(*C,255))
+ elif kind=="pump":
+  # Electric in-tank pump module silhouette with top plate and electrical terminal.
+  d.ellipse((176,250,690,362),fill=(95,123,137,255),outline=(221,234,236,255),width=11)
+  d.rounded_rectangle((222,319,629,665),radius=40,fill=(35,66,83,255),outline=(193,222,230,255),width=10)
+  d.rounded_rectangle((322,368,506,596),radius=29,fill=(114,137,145,255),outline=(229,236,230,255),width=11)
+  for y in range(407,568,24):stroke(d,(350,y,479,y),(69,91,103,230),9)
+  d.rectangle((390,584,451,680),fill=(22,44,58,255),outline=(170,199,206,255),width=7)
+  d.rounded_rectangle((379,182,491,262),radius=15,fill=(14,39,54,255),outline=(*C,255),width=7)
+  for x in [404,431,458]:stroke(d,(x,202,x,238),(205,221,221,255),5)
+  tube([(640,290),(736,242),(799,243)],(131,172,174,255),width=29)
+  bolt(238,309);bolt(625,309)
+  d.text((138,194),"FUEL PUMP",font=font(30),fill=(*C,255))
  elif kind=="oil":
   # Pressure sender threaded into engine oil gallery; wiring pin.
   d.rounded_rectangle((258,243,577,459),radius=47,fill=(94,116,127,255),outline=(223,234,236,255),width=11)
