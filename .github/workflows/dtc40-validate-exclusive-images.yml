@@ -19,7 +19,7 @@ jobs:
       - name: Test ten distinct code and component image pairs
         run: |
           python3 -m py_compile scripts/render-dtc-batch40-component-images.py
-          for code in P0070 P0093 P0222 P0299 P0507 P0520 P0562 P0710 P0741 P0444; do
+          for code in P0070 P0093 P0222 P0470 P0532 P0520 P0563 P0710 P0232 P0444; do
             python3 scripts/render-dtc-batch40-component-images.py "$code" || exit 1
           done
           python3 - <<'PY'
