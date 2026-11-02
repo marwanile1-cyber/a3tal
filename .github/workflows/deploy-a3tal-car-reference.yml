@@ -1,0 +1,79 @@
+name: Deploy A3tal Car Reference Engine
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'plugin-source/a3tal-car-reference/**'
+      - '.github/workflows/deploy-a3tal-car-reference.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: a3tal-car-reference-deploy
+  cancel-in-progress: false
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Validate plugin source
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY" || { echo "Missing A3TAL_API_KEY"; exit 1; }
+          find plugin-source/a3tal-car-reference -name '*.php' -print0 | xargs -0 -n1 php -l
+      - name: Build plugin package
+        run: |
+          set -euo pipefail
+          mkdir -p plugin-builds
+          cd plugin-source
+          zip -qr ../plugin-builds/a3tal-car-reference.zip a3tal-car-reference
+          cd ..
+          unzip -t plugin-builds/a3tal-car-reference.zip
+      - name: Commit the package for Bridge install
+        run: |
+          set -euo pipefail
+          git config user.name "A3tal Build Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add plugin-builds/a3tal-car-reference.zip
+          if ! git diff --cached --quiet; then
+            git commit -m "build: package A3tal Car Reference Engine"
+            git push
+          fi
+      - name: Verify raw package matches built bytes
+        run: |
+          set -euo pipefail
+          RAW="https://raw.githubusercontent.com/marwanile1-cyber/a3tal/main/plugin-builds/a3tal-car-reference.zip"
+          EXPECTED="$(sha256sum plugin-builds/a3tal-car-reference.zip | awk '{print $1}')"
+          for i in $(seq 1 18); do
+            curl --fail --location --silent --show-error --max-time 45 "$RAW?attempt=$i" -o /tmp/a3cr-remote.zip || true
+            if test -f /tmp/a3cr-remote.zip && test "$(sha256sum /tmp/a3cr-remote.zip | awk '{print $1}')" = "$EXPECTED"; then exit 0; fi
+            sleep 5
+          done
+          echo "GitHub raw package did not match release bytes"; exit 1
+      - name: Install and activate with A3tal Direct Bridge
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL="https://a3tal.com/wp-json/a3tal-direct/v1/admin"
+          SOURCE="https://raw.githubusercontent.com/marwanile1-cyber/a3tal/main/plugin-builds/a3tal-car-reference.zip"
+          jq -n --arg src "$SOURCE" '{op:"plugin_install",source_url:$src,activate:true,confirm:true}' > /tmp/a3cr-install.json
+          STATUS="$(curl --retry 3 --retry-delay 3 --silent --show-error --max-time 180 -o /tmp/a3cr-install-result.json -w '%{http_code}' -X POST -H "X-A3tal-Key: $A3TAL_API_KEY" -H "Content-Type: application/json" --data-binary @/tmp/a3cr-install.json "$URL")"
+          echo "Bridge install HTTP $STATUS"
+          if test "$STATUS" -lt 200 || test "$STATUS" -ge 300; then
+            jq '{code,message}' /tmp/a3cr-install-result.json || true
+            exit 1
+          fi
+          jq -e '.ok == true and .result.active == true' /tmp/a3cr-install-result.json >/dev/null
+      - name: Verify live archive, API and indexing guard
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --retry 3 --retry-all-errors "https://a3tal.com/wp-json/a3tal-car-reference/v1/health?check=$GITHUB_RUN_ID" -o /tmp/a3cr-health.json
+          jq -e '.ok == true and .version == "1.0.0"' /tmp/a3cr-health.json
+          curl --fail --silent --show-error --retry 3 --retry-all-errors "https://a3tal.com/car-reference/?check=$GITHUB_RUN_ID" -o /tmp/a3cr-archive.html
+          grep -q 'دليل المواصفات الفنية للسيارات' /tmp/a3cr-archive.html
+          echo "Live archive and REST health verified"
