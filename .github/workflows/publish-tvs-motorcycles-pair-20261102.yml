@@ -1,0 +1,31 @@
+name: Publish TVS HLX 150 F and Ronin Nimbus 225 guides in Egypt
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-tvs-motorcycles-pair-20261102.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-tvs-price-guides-20261102
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install image processing
+        run: python3 -m pip install --quiet Pillow
+      - name: Validate articles and publisher syntax
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          test -s data/editorial/tvs-hlx-150f-price-egypt-20261102.html
+          test -s data/editorial/tvs-ronin-nimbus-225-price-egypt-20261102.html
+          python3 -m py_compile scripts/publish-tvs-motorcycles-pair-20261102.py
+      - name: Publish two reviewed motorcycle articles and verify featured media plus Yoast metadata
+        run: python3 -u scripts/publish-tvs-motorcycles-pair-20261102.py
