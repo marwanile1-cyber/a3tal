@@ -39,6 +39,11 @@ jobs:
               assert (seo.get("canonical") or "").rstrip("/")==target.rstrip("/"),(code,"canonical mismatch")
               assert source in [m.get("url") for m in seo.get("og_image",[]) if isinstance(m,dict)],(code,"OG image mismatch")
               assert "noindex" not in json.dumps(seo.get("robots") or {}).lower(),(code,"noindex")
+              req=urllib.request.Request(target,headers={"User-Agent":"A3tal-DTC40-BodyImageAudit","Cache-Control":"no-cache"})
+              with urllib.request.urlopen(req,timeout=60) as response:
+                  public_html=response.read().decode("utf8","replace")
+              body=public_html[public_html.lower().find("<body"):]
+              assert "a3tal-dtc-"+code.lower()+"-exclusive-ar" in body,(code,"featured image not displayed in article body")
               desc=seo.get("description") or ""
               assert code in desc and len(desc)>=105,(code,"Yoast missing",desc)
               print("DTC40_LIVE_PASS",code,target,"IMAGE",source,"YOAST",len(desc),flush=True)
