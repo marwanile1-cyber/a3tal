@@ -96,6 +96,10 @@ def main():
             tag="KIA-"+s["model"]+"-"+slug
             name="a3tal-verified-photo-"+slug+".webp"
             # Avoid any publication changes if existing photo is already upgraded.
+            if slug in {"engine-oil-20-mpi","engine-oil-16-tgdi","engine-oil-smartstream-16"}:
+                DONE.append({"url":desired,"slug":slug,"status":"pilot-already-verified"})
+                print("SKIP pilot photo already verified independently",slug,flush=True)
+                continue
             existing_html=S.get(desired,timeout=60).text
             if name in existing_html:
                 original_id=int(post.get("featured_media") or 0)
