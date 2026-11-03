@@ -1,0 +1,62 @@
+name: Publish Nissan Magnite Egypt Technical Reference
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'data/car-reference/batch-07-nissan-magnite-egypt-20261103.json'
+      - 'scripts/publish-car-reference-batch07-magnite.py'
+      - '.github/workflows/publish-car-reference-batch07-magnite.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-car-reference-magnite-egypt
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3CR_LIMIT: '5'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify sources, unique intents, photograph and code
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-car-reference-batch07-magnite.py
+          python3 - <<'PY'
+          import json
+          d=json.load(open('data/car-reference/batch-07-nissan-magnite-egypt-20261103.json'))
+          assert d['brand_existing']=='nissan'
+          assert d['model']['slug']=='magnite-2026-egypt'
+          assert len(d['items'])==3
+          assert len({r['slug'] for r in d['items']})==3
+          assert len(d['nonduplication']['existing_urls'])==3
+          assert all(len(r['facts'])>=6 and len(r['intro'])>=100 and len(r['detail'])>=100 for r in d['items'])
+          assert all(r['source'].startswith('https://ar-eg.magniteconfigurator.com/eg/ar/') for r in d['items'])
+          assert d['photo_source']['preferred'].startswith('https://a3tal.com/')
+          assert any('36 لتر' in str(r['facts']) for r in d['items'])
+          print('Egypt-specific manufacturer data and image/intent safety checks passed')
+          PY
+      - name: Install image and Arabic layout dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-core fonts-dejavu-core
+          python3 -m pip install --quiet --disable-pip-version-check pillow requests
+      - name: Check production engine
+        run: |
+          curl -fLsS --retry 3 https://a3tal.com/wp-json/a3tal-car-reference/v1/health -o /tmp/health.json
+          jq -e '.ok == true' /tmp/health.json >/dev/null
+      - name: Publish and verify a sourced photographed record
+        run: python3 scripts/publish-car-reference-batch07-magnite.py
+      - name: Retain published links and image checks
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nissan-magnite-reference-batch07-${{ github.run_id }}
+          path: magnite-batch07-result.json
+          if-no-files-found: warn
+          retention-days: 30
