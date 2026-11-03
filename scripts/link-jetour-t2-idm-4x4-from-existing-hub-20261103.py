@@ -17,9 +17,9 @@ def call(path,method="GET",payload=None):
 def main():
   if not KEY:raise RuntimeError("Missing bridge credential")
   # A positive live check ensures we never link to an un-published draft.
-  req=urllib.request.Request(ROOT+"/wp-json/wp/v2/posts?"+urllib.parse.urlencode({"slug":"jetour-t2-idm-4x4-2027-egypt-price-specs","_fields":"id,status,link,featured_media"}))
-  with urllib.request.urlopen(req,timeout=45) as f:published=json.load(f)
-  if len(published)!=1 or published[0]["status"]!="publish" or not published[0]["featured_media"]:raise RuntimeError("New variant page is not fully published")
+  newpost=call("/post/85078")
+  if newpost.get("status")!="publish" or newpost.get("link")!=NEW or not newpost.get("featured_media"):
+    raise RuntimeError("New variant page is not fully published")
   post=call("/post/"+str(ID))
   if post["slug"]!="jetour-t2-egypt-review-specs-price" or post["status"]!="publish" or post["link"]!=HUB:
     raise RuntimeError("Unexpected hub post; no mutation")
