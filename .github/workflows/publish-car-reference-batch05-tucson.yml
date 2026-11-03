@@ -1,0 +1,63 @@
+name: Publish Hyundai Tucson NX4e 2025 Reference Cluster
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/publish-car-reference-batch05-tucson-nx4e.py'
+      - 'data/car-reference/batch-05-hyundai-tucson-nx4e-2025.json'
+      - '.github/workflows/publish-car-reference-batch05-tucson.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-car-reference-tucson-nx4e-batch05
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3CR_LIMIT: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check official sources, quality and uniqueness
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-car-reference-batch05-tucson-nx4e.py
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          path=Path('data/car-reference/batch-05-hyundai-tucson-nx4e-2025.json')
+          x=json.loads(path.read_text('utf8'))
+          assert x['edition']=='2026-11-03'
+          assert x['model']['slug']=='tucson-nx4e-2025'
+          assert len(x['items'])==7
+          assert len({z['slug'] for z in x['items']})==7
+          assert all(len(z['facts'])>=4 and len(z['intro'])>=100 and len(z['detail'])>=100 for z in x['items'])
+          assert all(z['source'].startswith('https://ownersmanual.hyundai.com/full_webhelp/NX4e/2025/en_GN/') for z in x['items'])
+          assert x['image_source']['preferred'].startswith('https://a3tal.com/')
+          print('Verified batch05 8 unique reference pages incl model')
+          PY
+      - name: Install photographic and typography dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-core fonts-dejavu-core
+          python3 -m pip install --quiet --disable-pip-version-check requests pillow
+      - name: Check WordPress reference engine
+        run: |
+          set -euo pipefail
+          curl -fLsS --retry 3 "https://a3tal.com/wp-json/a3tal-car-reference/v1/health" -o /tmp/a3tal-ref-health.json
+          jq -e '.ok == true and .version == "1.0.0"' /tmp/a3tal-ref-health.json >/dev/null
+      - name: Upload images, publish only reviewed records, and verify OG/canonical
+        run: python3 scripts/publish-car-reference-batch05-tucson-nx4e.py
+      - name: Retain live URLs and image QA
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-tucson-nx4e-batch05-${{ github.run_id }}
+          path: tucson-nx4e-batch05-results.json
+          if-no-files-found: warn
+          retention-days: 30
