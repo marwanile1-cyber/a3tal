@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Publish Nigerian? No: Nissan Magnite 2026 Egypt technical car references.
+"""Publish Nissan Magnite 2026 Egypt technical car references.
 
 Only Nissan Egypt's configurator figures, with a market-specific 36 litre
 fuel tank. Existing Magnite price, CVT and fluid articles are not duplicated. Uses original
