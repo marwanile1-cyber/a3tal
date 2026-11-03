@@ -18,7 +18,7 @@ jobs:
     timeout-minutes: 40
     env:
       A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
-      A3CR_LIMIT: '1'
+      A3CR_LIMIT: '8'
     steps:
       - uses: actions/checkout@v4
       - name: Check official sources, quality and uniqueness
