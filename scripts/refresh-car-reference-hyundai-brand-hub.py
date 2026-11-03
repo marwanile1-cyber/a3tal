@@ -56,7 +56,7 @@ def run():
         response=SESSION.get(BASE+"/car-reference/hyundai/",params={"verify_hub":str(time.time_ns())},timeout=45)
         h=response.text
         if (response.ok and "tucson-nx4e-2025" in h and "elantra-cn7-2025" in h and "accent-rb-egypt-2025" in h and
-            "أدلة مالك هيونداي الرسمية" in h and "noindex" not in h[:15000].lower()):
+            "أدلة هيونداي الرسمية ونشرة غبور" in h and "noindex" not in h[:15000].lower()):
             break
         if i==5:raise RuntimeError("Hub live HTML verification failed")
         time.sleep(3)
