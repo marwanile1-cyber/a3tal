@@ -1,0 +1,58 @@
+name: Publish Nissan Sunny N17 Egypt Car Reference
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'data/car-reference/batch-06-nissan-sunny-n17-egypt-20261103.json'
+      - 'scripts/publish-car-reference-batch06-sunny.py'
+      - '.github/workflows/publish-car-reference-batch06-sunny.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-car-reference-sunny-n17
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3CR_LIMIT: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify sources, unique intents, photograph and code
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-car-reference-batch06-sunny.py
+          python3 - <<'PY'
+          import json
+          d=json.load(open('data/car-reference/batch-06-nissan-sunny-n17-egypt-20261103.json'))
+          assert len(d['items'])==3 and len({r['slug'] for r in d['items']})==3
+          assert len(d['intent_collision_excluded'])==1
+          assert d['intent_collision_excluded'][0]['slug']=='sunny-n17-manual-vs-auto-egypt'
+          assert all(len(r['facts'])>=5 and len(r['intro'])>=100 and len(r['detail'])>=100 for r in d['items'])
+          assert all(r['source'].startswith('https://') for r in d['items'])
+          print('Quality gates and cannibalization exclusion verified.')
+          PY
+      - name: Install image and Arabic layout dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-core fonts-dejavu-core
+          python3 -m pip install --quiet --disable-pip-version-check pillow requests
+      - name: Check production engine
+        run: |
+          curl -fLsS --retry 3 https://a3tal.com/wp-json/a3tal-car-reference/v1/health -o /tmp/health.json
+          jq -e '.ok == true' /tmp/health.json >/dev/null
+      - name: Publish and verify a sourced photographed record
+        run: python3 scripts/publish-car-reference-batch06-sunny.py
+      - name: Retain published links and image checks
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nissan-sunny-reference-batch06-${{ github.run_id }}
+          path: sunny-n17-batch06-result.json
+          if-no-files-found: warn
+          retention-days: 30
