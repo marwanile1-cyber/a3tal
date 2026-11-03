@@ -18,7 +18,7 @@ jobs:
     timeout-minutes: 35
     env:
       A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
-      A3CR_LIMIT: '1'
+      A3CR_LIMIT: '5'
     steps:
       - uses: actions/checkout@v4
       - name: Verify sources, unique intents, photograph and code
