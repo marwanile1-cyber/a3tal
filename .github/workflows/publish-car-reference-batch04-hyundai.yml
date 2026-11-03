@@ -1,0 +1,58 @@
+name: Publish Hyundai Elantra CN7 2025 Technical Reference
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/publish-car-reference-batch04-hyundai.py'
+      - 'data/car-reference/batch-04-hyundai-cn7-2025-official.json'
+      - '.github/workflows/publish-car-reference-batch04-hyundai.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-hyundai-cn7-reference-publishing
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3CR_LIMIT: '2'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate manuscript and independent search intent
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-car-reference-batch04-hyundai.py
+          python3 - <<'PY'
+          import json
+          d=json.load(open("data/car-reference/batch-04-hyundai-cn7-2025-official.json",encoding="utf-8"))
+          assert len(d["items"]) == 7 and d["brand"]["slug"] == "hyundai"
+          assert d["model"]["slug"] == "elantra-cn7-2025"
+          assert len({x["slug"] for x in d["items"]}) == 7
+          assert all(x["source"].startswith("https://ownersmanual.hyundai.com/full_webhelp/CN7/2025/") for x in d["items"])
+          assert all(len(x["facts"])>=3 for x in d["items"])
+          print("Verified 9 unique URL paths and 7 source-backed technical entries")
+          PY
+      - name: Install high-resolution editorial renderer
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-core fonts-dejavu-core
+          python3 -m pip install --quiet --disable-pip-version-check requests pillow
+      - name: Verify WordPress engine live
+        run: |
+          curl --fail --location --silent --show-error --retry 3 "https://a3tal.com/wp-json/a3tal-car-reference/v1/health" -o /tmp/health.json
+          jq -e '.ok == true and .version == "1.0.0"' /tmp/health.json > /dev/null
+      - name: Upload distinct photo compositions and publish source-backed records
+        run: python3 scripts/publish-car-reference-batch04-hyundai.py
+      - name: Preserve URLs and OG checks
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-hyundai-cn7-2025-publication-${{ github.run_id }}
+          path: car-reference-batch04-hyundai-publishing.json
+          if-no-files-found: warn
+          retention-days: 30
