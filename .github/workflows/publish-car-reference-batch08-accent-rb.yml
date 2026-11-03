@@ -1,0 +1,60 @@
+name: Publish Accent RB 2025 Egypt Car Reference
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'data/car-reference/batch-08-hyundai-accent-rb-egypt-20251103.json'
+      - 'scripts/publish-car-reference-batch08-accent-rb.py'
+      - '.github/workflows/publish-car-reference-batch08-accent-rb.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-car-reference-accent-rb-egypt
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3CR_LIMIT: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate brochure data and uniqueness
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-car-reference-batch08-accent-rb.py
+          python3 - <<'PY'
+          import json
+          d=json.load(open("data/car-reference/batch-08-hyundai-accent-rb-egypt-20251103.json"))
+          assert d['brand_existing']=='hyundai'
+          assert d['model']['slug']=='accent-rb-egypt-2025'
+          assert len(d['items'])==4 and len({x['slug'] for x in d['items']})==4
+          assert all(x['source'].startswith('https://hyundai-egypt.net/') for x in d['items'])
+          assert all(len(x['facts'])>=5 and len(x['intro'])>100 and len(x['detail'])>100 for x in d['items'])
+          assert all(d['photo_source'][key].startswith('https://a3tal.com/') for key in ('preferred','secondary','tertiary'))
+          assert d['nonduplication']['existing_review'].startswith('https://a3tal.com/')
+          print("Accent brochure facts and original site photo inputs passed preflight")
+          PY
+      - name: Install Arabic font and image libraries
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-core fonts-dejavu-core
+          python3 -m pip install --quiet --disable-pip-version-check pillow requests
+      - name: Check production WordPress reference engine
+        run: |
+          curl -fLsS --retry 3 "https://a3tal.com/wp-json/a3tal-car-reference/v1/health" -o /tmp/ref-health.json
+          jq -e '.ok==true and .version=="1.0.0"' /tmp/ref-health.json >/dev/null
+      - name: Post source-backed pages with photographic WebP and verify live SEO
+        run: python3 scripts/publish-car-reference-batch08-accent-rb.py
+      - name: Save verification report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: accent-rb-2025-reference-${{ github.run_id }}
+          path: accent-rb-batch08-audit.json
+          if-no-files-found: warn
+          retention-days: 30
