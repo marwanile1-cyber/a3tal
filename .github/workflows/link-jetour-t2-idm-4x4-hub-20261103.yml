@@ -1,0 +1,22 @@
+name: Link new Jetour 4x4 review from existing T2 guide
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/link-jetour-t2-idm-4x4-hub-20261103.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-link-jetour-t2-4x4-hub-20261103
+  cancel-in-progress: false
+jobs:
+  link-hub:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Link new 4x4 version from existing article without duplicate intent or image change
+        run: python3 -u scripts/link-jetour-t2-idm-4x4-from-existing-hub-20261103.py
