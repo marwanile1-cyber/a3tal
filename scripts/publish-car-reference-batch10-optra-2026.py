@@ -159,7 +159,7 @@ def entry(kind,row,parent,featured):
     data={"kind":kind,
           "market":"مصر - مواصفات Chevrolet Egypt المنشورة، الفئات حسب النشرة",
           "years":"كتالوج شيفروليه أوبترا المصرية موديل 2026",
-          "engine":row.get("engine","MG5 - 1.5L CVT"),"category":row.get("category",""),
+          "engine":row.get("engine","شيفروليه أوبترا 1485 سم³ + CVT"),"category":row.get("category",""),
           "reviewed_at":"2026-11-03","facts":facts,
           "sources":[{"title":"شيفروليه مصر - مواصفات أوبترا 2026 الرسمية",
                       "url":url} for url in sources]}
@@ -167,7 +167,7 @@ def entry(kind,row,parent,featured):
       "kind":kind,"slug":row["slug"],"title":row["title"],
       "parent_path":parent,"status":"publish","featured_image_id":featured,
       "content":brand_html() if kind=="brand" else model_html() if kind=="model" else spec_html(row),
-      "excerpt":"المواصفات الفنية المحلية لـMG5، مع الفصل بين الفئات والمصادر الرسمية.",
+      "excerpt":"المواصفات الفنية لشيفروليه أوبترا الجديدة 2026 من كتالوج شيفروليه مصر الرسمي.",
       "data":data,"meta_title":row["title"]+" | أعطال.كوم",
       "meta_description":("تعرف على "+row["title"]+" من بيانات إم جي مصر الرسمية، مع اختلاف الفئات وتنبيهات مهمة قبل الصيانة.")[:155]
     }
