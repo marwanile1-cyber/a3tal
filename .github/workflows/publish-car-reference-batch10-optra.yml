@@ -1,0 +1,61 @@
+name: Publish Chevrolet Optra 2026 Egypt Technical Reference
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'data/car-reference/batch-10-chevrolet-optra-egypt-2026.json'
+      - 'scripts/publish-car-reference-batch10-optra-2026.py'
+      - '.github/workflows/publish-car-reference-batch10-optra.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-reference-optra-2026-egypt
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3CR_LIMIT: '2'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate original MG Egypt data and non-duplicate search intents
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-car-reference-batch10-optra-2026.py
+          python3 - <<'PY'
+          import json
+          d=json.load(open('data/car-reference/batch-10-chevrolet-optra-egypt-2026.json'))
+          assert d['brand']['slug']=='chevrolet'
+          assert d['model']['slug']=='optra-2026-egypt'
+          assert len(d['items'])==3
+          assert len({x['slug'] for x in d['items']})==3
+          assert all(len(x['facts'])>=6 and len(x['intro'])>100 and len(x['detail'])>100 for x in d['items'])
+          assert all(all(u.startswith('https://www.chevroletarabia.com/') for u in x['sources']) for x in d['items'])
+          assert d['photos']['primary'].startswith('https://a3tal.com/')
+          assert len(d['nonduplication']['excluded_intents'])>=3
+          print('Manufacturer and anti-duplication gates passed')
+          PY
+      - name: Install photo and Arabic fonts
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-core fonts-dejavu-core
+          python3 -m pip install --quiet --disable-pip-version-check pillow requests
+      - name: Confirm installed WordPress reference engine
+        run: |
+          curl -fLsS --retry 3 "https://a3tal.com/wp-json/a3tal-car-reference/v1/health" -o /tmp/status.json
+          jq -e '.ok == true and .version == "1.0.0"' /tmp/status.json >/dev/null
+      - name: Publish and verify photo, Yoast OG, canonical and live URL
+        run: python3 scripts/publish-car-reference-batch10-optra-2026.py
+      - name: Save report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: car-reference-optra-batch10-${{ github.run_id }}
+          path: car-reference-batch10-optra-results.json
+          if-no-files-found: warn
+          retention-days: 30
