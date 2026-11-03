@@ -1,0 +1,37 @@
+name: Update Hyundai Car Reference Brand Hub After Tucson
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/refresh-car-reference-hyundai-brand-hub.py'
+      - '.github/workflows/refresh-hyundai-reference-brand-hub.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-car-reference-hyundai-hub
+  cancel-in-progress: false
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate script and credentials
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/refresh-car-reference-hyundai-brand-hub.py
+          python3 -m pip install --quiet --disable-pip-version-check requests
+      - name: Update brand parent in-place and verify existing photo and links
+        run: python3 scripts/refresh-car-reference-hyundai-brand-hub.py
+      - name: Preserve audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hyundai-hub-content-links-${{ github.run_id }}
+          path: hyundai-hub-cohesion-audit.json
+          if-no-files-found: warn
+          retention-days: 30
