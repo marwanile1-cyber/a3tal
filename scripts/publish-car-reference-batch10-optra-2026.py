@@ -192,7 +192,7 @@ def verify_live(url,filename,title):
 
 def main():
     assert len(ROWS)==5 and len(DATA["items"])==3
-    assert len({r["slug"] for kind,r,parent in ROWS})==6
+    assert len({r["slug"] for kind,r,parent in ROWS})==5
     limit=max(1,min(5,int(os.getenv("A3CR_LIMIT","1"))))
     photo_source,original=photo()
     print("OPTRA PHOTO MASTER",original,"sha",hashlib.sha256(photo_source.tobytes()).hexdigest()[:16],flush=True)
