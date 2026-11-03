@@ -79,7 +79,7 @@ def photo():
 def cover(im,kind,row,index):
     accent=COLORS.get(row.get("category",kind),(64,147,170))
     width,height=1600,900
-    # Large actual Optra 2026 imagery without oversized text or generic vector car.
+    # Photo-based Optra editorial imagery without oversized text or generic vector car.
     # Every page gets a separately composed crop and tonal treatment.
     focus=[(0.50,0.47),(0.52,0.53),(0.42,0.51),(0.57,0.46),
            (0.46,0.57),(0.55,0.54)][index]
@@ -149,7 +149,7 @@ def spec_html(row):
       "ونوع الناقل. الأرقام المعروضة بيانات للتعريف والمقارنة، وليست تعليمات "
       "بإضافة سوائل أو تعديل أنظمة سلامة. تُراجع إجراءات الصيانة في كتيب المالك الأصلي.</p>"
       "<p><strong>المصدر:</strong> <a href='"+escape(sources[0],quote=True)+
-      "' rel='nofollow noopener noreferrer'>إم جي مصر: النشرة أو صفحة المواصفات الرسمية</a>.</p>"
+      "' rel='nofollow noopener noreferrer'>شيفروليه مصر: النشرة أو صفحة المواصفات الرسمية</a>.</p>"
     )
 
 def entry(kind,row,parent,featured):
@@ -157,7 +157,7 @@ def entry(kind,row,parent,featured):
     sources=([ref,DATA["sources"]["brochure"]] if kind!="spec" else row["sources"])
     facts=[{"label":k,"value":v} for k,v in row.get("facts",[])]
     data={"kind":kind,
-          "market":"مصر - مواصفات Chevrolet Egypt المنشورة، الفئات حسب النشرة",
+          "market":"مصر - كتالوج شيفروليه أوبترا 2026 الرسمي",
           "years":"كتالوج شيفروليه أوبترا المصرية موديل 2026",
           "engine":row.get("engine","شيفروليه أوبترا 1485 سم³ + CVT"),"category":row.get("category",""),
           "reviewed_at":"2026-11-03","facts":facts,
@@ -169,7 +169,7 @@ def entry(kind,row,parent,featured):
       "content":brand_html() if kind=="brand" else model_html() if kind=="model" else spec_html(row),
       "excerpt":"المواصفات الفنية لشيفروليه أوبترا الجديدة 2026 من كتالوج شيفروليه مصر الرسمي.",
       "data":data,"meta_title":row["title"]+" | أعطال.كوم",
-      "meta_description":("تعرف على "+row["title"]+" من بيانات إم جي مصر الرسمية، مع اختلاف الفئات وتنبيهات مهمة قبل الصيانة.")[:155]
+      "meta_description":("تعرف على "+row["title"]+" من بيانات شيفروليه مصر الرسمية، مع اختلاف الفئات وتنبيهات مهمة قبل الصيانة.")[:155]
     }
 
 def verify_live(url,filename,title):
