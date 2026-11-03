@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/link-jetour-t2-idm-4x4-hub-20261103.yml'
+      - 'scripts/link-jetour-t2-idm-4x4-from-existing-hub-20261103.py'
   workflow_dispatch:
 permissions:
   contents: read
