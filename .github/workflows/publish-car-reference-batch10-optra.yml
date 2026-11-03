@@ -18,7 +18,7 @@ jobs:
     timeout-minutes: 40
     env:
       A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
-      A3CR_LIMIT: '2'
+      A3CR_LIMIT: '5'
     steps:
       - uses: actions/checkout@v4
       - name: Validate original MG Egypt data and non-duplicate search intents
