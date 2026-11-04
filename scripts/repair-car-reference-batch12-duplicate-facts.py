@@ -26,8 +26,8 @@ assert len(SPECS) == 15
 assert 1 <= LIMIT <= 15
 
 INLINE = re.compile(
-    r'<div class="a3tal-responsive-table" style="overflow-x:auto"><table><tbody>.*?</tbody></table></div>',
-    re.DOTALL,
+    r'<div\b(?=[^>]*class=["\x27]a3tal-responsive-table["\x27])[^>]*>\s*<table\b[^>]*>\s*<tbody\b[^>]*>.*?</tbody>\s*</table>\s*</div>',
+    re.DOTALL | re.IGNORECASE,
 )
 
 def request(url, payload=None, authenticated=False):
@@ -131,7 +131,7 @@ for spec, url in SPECS[:LIMIT]:
     elif len(matches) == 0 and 'a3tal-responsive-table' not in raw:
         print("ALREADY CLEAN", spec["slug"], "id", public["id"], flush=True)
     else:
-        raise RuntimeError("Ambiguous/repeated inline facts tables: " + spec["slug"])
+        raise RuntimeError("Ambiguous/repeated inline facts tables: " + spec["slug"] + " excerpt=" + repr(raw[max(0, raw.find("a3tal-responsive-table")-100):raw.find("a3tal-responsive-table")+500]))
     now = read_bridge(public["id"])
     assert "a3tal-responsive-table" not in now["content"], "inline table still persisted"
     assert now["featured_media"] == image_id and now["meta"] == item["meta"], "post changed unexpectedly"
