@@ -14,16 +14,18 @@ REPORT=Path("car-reference-mg-brand-hub-result.json")
 HUB=BASE+"/car-reference/mg/"
 MG5=BASE+"/car-reference/mg/mg5-egypt/"
 ZS=BASE+"/car-reference/mg/zs-legacy-4at-egypt/"
+GT=BASE+"/car-reference/mg/mg-gt-15t-egypt/"
+MG7=BASE+"/car-reference/mg/mg7-15-turbo-egypt/"
 PRICE=BASE+"/mg-zs-price-egypt/"
-HTML="""<p>دليل مواصفات سيارات MG في أعطال.كوم يجمع البيانات الفنية المستندة إلى نشرات MG Motor Egypt الرسمية. يضم حاليًا MG5 السيدان، وMG ZS الجيل السابق بمحرك 1.5 لتر وناقل أوتوماتيك تقليدي 4 سرعات. نعرض المقاسات والأبعاد وتجهيزات الأمان حسب الفئة، دون خلط بيانات الأجيال المختلفة.</p>
-<h2>اختر موديل MG المناسب</h2>
-<p>ابدأ من <a href="https://a3tal.com/car-reference/mg/mg5-egypt/">دليل مواصفات MG5 في مصر</a> لمعرفة مقاسات الإطارات وبيانات المحرك وفتيس CVT والسعات وتجهيزات السلامة. أما <a href="https://a3tal.com/car-reference/mg/zs-legacy-4at-egypt/">دليل MG ZS القديمة في مصر</a> فيشرح ناقل 4AT ومقاسات إطارات 16 و17 بوصة وسعة تانك 48 لترًا وتجهيزات الفئات وفق كتالوج 2023.</p>
-<h2>MG ZS القديمة ليست New MG ZS</h2>
-<p>الجيل التقليدي في دليل الشركة القديم يستخدم ناقل أوتوماتيك 4 سرعات وخزان وقود سعة 48 لترًا. أما New MG ZS المعروضة أيضًا في السوق المصري فتستخدم CVT وخزان 45 لترًا ومقاس إطارات مختلفًا. لا تُنقل بيانات السعة أو الإطارات أو سوائل الفتيس بين الجيلين. وفي ZS القديمة ذاتها قد تختلف مقاسات الإطارات وتجهيزات الوسائد الهوائية حسب الفئة وسنة النشرة.</p>
-<h2>الفرق بين المواصفات والأسعار والأعطال</h2>
-<p>هذا الدليل مرجع للمقاسات والسعات قبل الشراء أو الصيانة، بينما <a href="https://a3tal.com/mg-zs-price-egypt/">مقال سعر MG ZS في مصر ومقارنة الجيلين</a> يشرح الأسعار والشراء، و<a href="https://a3tal.com/mg-5-cvt-transmission-problems-guide/">مقال أعطال CVT في MG5</a> يتناول التشخيص. لن ننشئ هنا صفحات أخرى تستهدف نية البحث نفسها.</p>
-<h2>كيف تستخدم البيانات بشكل صحيح؟</h2>
-<p>راجع سنة الإنتاج ونوع ناقل الحركة والفئة وبلد السيارة، واطلب التأكد من رقم الشاسيه أو كتالوج المالك عند اختيار قطع الغيار أو الزيوت. نشرات الشركة تمثل نسخة وتاريخ إصدار محددين ولا تضمن استمرار كل الفئات أو التجهيزات للبيع اليوم.</p>"""
+HTML="""<p>دليل المواصفات الفنية لسيارات MG في أعطال.كوم يعرض البيانات الفنية من نشرات MG Motor Egypt الرسمية، مع فصل الأجيال والفئات وأنواع الفتيس. يشمل MG5 وMG ZS الجيل السابق وMG GT تيربو وMG7، من غير تكرار صفحات الأسعار أو أعطال السيارات الموجودة بالموقع.</p>
+<h2>اختر موديل MG</h2>
+<p><a href="https://a3tal.com/car-reference/mg/mg5-egypt/">مواصفات MG5 في مصر</a> تشمل محرك 1.5 لتر وCVT ومقاسات الجنوط والأمان. <a href="https://a3tal.com/car-reference/mg/zs-legacy-4at-egypt/">دليل MG ZS القديمة</a> يوضح فتيس 4AT والإطارات وأبعاد الجيل السابق. <a href="https://a3tal.com/car-reference/mg/mg-gt-15t-egypt/">دليل MG GT تيربو</a> يغطي محرك 170 حصانًا وناقل WDCT ومقاس الكاوتش. <a href="https://a3tal.com/car-reference/mg/mg7-15-turbo-egypt/">دليل MG7 في مصر</a> يعرض محرك 185 حصانًا وفروق تجهيز Luxury وTrophy.</p>
+<h2>لا تنقل مواصفات سيارة إلى الأخرى</h2>
+<p>تختلف MG5 المزودة بناقل CVT عن MG GT وMG7 ذواتي القابض المزدوج الرطب. كما أن MG ZS القديمة بناقل 4 سرعات وتانك 48 لترًا تختلف عن New MG ZS ذات CVT وتانك 45 لترًا. وتختلف الوسائد وأنظمة مساعدة السائق بين MG7 Luxury وTrophy. يجب مطابقة الفئة والجيل ورقم الشاسيه عند شراء القطع أو تنفيذ الصيانة.</p>
+<h2>متى تستفيد من هذا القسم؟</h2>
+<p>استخدم صفحات الدليل لمعرفة مقاس الكاوتش والأبعاد والأرقام الفنية قبل الصيانة. أما <a href="https://a3tal.com/mg-zs-price-egypt/">سعر MG ZS والجيلين</a> و<a href="https://a3tal.com/mg7-price-egypt-specs-2026/">أسعار ومراجعة MG7</a> و<a href="https://a3tal.com/mg-5-cvt-transmission-problems-guide/">أعطال فتيس MG5</a> فلها مقالات متخصصة. لا تُعد أسعار السيارات وتوافر فئاتها حقائق ثابتة من نشرات المواصفات وحدها.</p>
+<h2>المصادر والاحتياطات</h2>
+<p>تحتفظ الشركة بحق تعديل التجهيزات، وقد يختلف رقم بين النسخة الورقية والصفحة الحية كما في سعة تانك MG GT. لذلك نوضح الاختلاف عند وجوده بدل وضع قيمة غير محسومة، ويظل كتيب سيارة المالك هو المرجع النهائي للإجراءات الفنية.</p>"""
 
 def get_page(url,**kw):
     r=S.get(url,timeout=50,**kw)
@@ -41,22 +43,24 @@ def main():
     before=getbrand()
     image=int(before.get("featured_media") or 0)
     if not image:raise RuntimeError("Brand hub has no featured image, fail closed")
-    for url in (MG5,ZS,PRICE):
+    for url in (MG5,ZS,GT,MG7,PRICE):
         if not get_page(url).ok:raise RuntimeError("Existing internal page unavailable "+url)
     record={
       "kind":"brand","slug":"mg","title":"دليل المواصفات الفنية لسيارات MG في مصر",
       "parent_path":"","status":"publish","allow_update_published":True,
       "featured_image_id":image,"content":HTML,
-      "excerpt":"مواصفات MG5 وMG ZS الجيل السابق في مصر: المحركات والفتيس ومقاسات الكاوتش والأمان من مصادر الوكيل الرسمية.",
+      "excerpt":"دليل MG5 وMG ZS القديمة وMG GT وMG7 في مصر: المحركات والفتيس ومقاسات الكاوتش والأمان من المصادر الرسمية.",
       "data":{"kind":"brand","market":"مصر - نشرات MG Motor Egypt الرسمية",
-        "years":"MG5 حسب النشرة؛ ZS الجيل السابق وفق كتالوج 2023",
+        "years":"نشرات كل موديل رسمية؛ MG ZS القديمة وفق كتالوج 2023",
         "engine":"","category":"","reviewed_at":"2026-11-04",
         "facts":[],"sources":[
           {"title":"MG5 - النشرة المحلية","url":"https://www.mgmotor.com.eg/wp-content/uploads/2025/10/MG5-Amended-Brochure.pdf"},
           {"title":"MG ZS الجيل السابق - نشرة 2023","url":"https://www.mgmotor.com.eg/wp-content/uploads/2023/03/MG-ZS.pdf"},
-          {"title":"New ZS - فصل المواصفات","url":"https://www.mgmotor.com.eg/model/new-zs/?pp=0"}]},
-      "meta_title":"دليل مواصفات MG في مصر: MG5 وZS القديمة | أعطال.كوم",
-      "meta_description":"مواصفات MG5 وMG ZS الجيل السابق في مصر من نشرات الوكيل: المقاسات والمحرك والفتيس والأبعاد والفرامل وتجهيزات الأمان."
+          {"title":"New ZS - فصل المواصفات","url":"https://www.mgmotor.com.eg/model/new-zs/?pp=0"},
+          {"title":"MG GT - النشرة المصرية","url":"https://www.mgmotor.com.eg/wp-content/uploads/2025/12/MG-GT-Brochure-Compressed.pdf"},
+          {"title":"MG7 - النشرة المصرية","url":"https://www.mgmotor.com.eg/wp-content/uploads/2025/08/MG7-Brochure-Jul-25-Amended.pdf"}]},
+      "meta_title":"دليل مواصفات MG مصر: MG5 وZS وGT وMG7 | أعطال.كوم",
+      "meta_description":"موسوعة مواصفات MG5 وMG ZS القديمة وMG GT وMG7 في مصر: المحرك والفتيس والإطارات والأبعاد والأمان من مصادر الوكيل الرسمية."
     }
     r=S.post(BASE+"/wp-json/a3tal-car-reference/v1/upsert",
       headers={"X-A3tal-Key":KEY,"Content-Type":"application/json"},
@@ -70,7 +74,7 @@ def main():
         try:
             page=get_page(HUB,params={"mg_brand_qa":str(time.time_ns())},headers={"Cache-Control":"no-cache"})
             text=page.text
-            if ("href=\""+MG5+"\"" not in text and "mg5-egypt" not in text) or "zs-legacy-4at-egypt" not in text:
+            if any(part not in text for part in ("mg5-egypt","zs-legacy-4at-egypt","mg-gt-15t-egypt","mg7-15-turbo-egypt")):
                 raise RuntimeError("Links not visible")
             if "New MG ZS" not in text:raise RuntimeError("No generation separation")
             if not re.search(r'<link[^>]*rel=["\x27]canonical["\x27][^>]*href=["\x27]'+re.escape(HUB.rstrip("/"))+r'/?["\x27]',text,re.I):
@@ -86,7 +90,7 @@ def main():
     if int(after["id"])!=int(before["id"]) or int(after["featured_media"])!=image:
         raise RuntimeError("Existing brand post id or photo changed")
     result={"url":HUB,"post_id":before["id"],"photo_id":image,
-      "linked_models":[MG5,ZS],"unchanged_permalink":True,
+      "linked_models":[MG5,ZS,GT,MG7],"unchanged_permalink":True,
       "unchanged_featured_image":True,"verified":True}
     REPORT.write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding="utf8")
     print("UPDATED MG HUB VERIFIED",json.dumps(result,ensure_ascii=False),flush=True)
