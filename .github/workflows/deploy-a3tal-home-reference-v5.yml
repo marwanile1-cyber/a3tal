@@ -9,7 +9,7 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: a3tal-production-theme
+  group: a3tal-production-home-reference-v5-recovery
   cancel-in-progress: false
 jobs:
   deploy:
