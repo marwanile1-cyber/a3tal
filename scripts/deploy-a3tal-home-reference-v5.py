@@ -115,7 +115,7 @@ def modify_front(live):
             raise RuntimeError("Missing reviewed home section navigation")
         out=live.replace(marker,marker+nav,1)
         anchors={
-          'class="g-section g-section-soft g-home-dtc-zone g-ency-home-dtc-zone"':'id="a3r-home-diagnostics" class="g-section g-section-soft g-home-dtc-zone g-ency-home-dtc-zone"',
+          '<section class="g-section g-section-soft g-home-dtc-zone':'<section id="a3r-home-diagnostics" class="g-section g-section-soft g-home-dtc-zone',
           'class="g-section g-home-cars-section"':'id="a3r-home-vehicles" class="g-section g-home-cars-section"',
           'class="g-section g-home-moto-section"':'id="a3r-home-motorcycles" class="g-section g-home-moto-section"',
           'class="g-home-places-grid"':'id="a3r-home-services" class="g-home-places-grid"'
