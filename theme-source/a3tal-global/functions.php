@@ -39,9 +39,9 @@ add_filter('wp_resource_hints',function($urls,$relation_type){
 // Match the front-page category query and sizes to avoid duplicate image requests.
 function a3g_preload_home_hero_image() {
   if (!is_front_page()) return;
-  $base=get_template_directory_uri().'/assets/img/reference-20261104/';
-  echo '<link rel="preload" as="image" media="(min-width: 701px)" href="'.esc_url($base.'hero-desktop.webp').'" fetchpriority="high">'.PHP_EOL;
-  echo '<link rel="preload" as="image" media="(max-width: 700px)" href="'.esc_url($base.'hero-mobile.webp').'" fetchpriority="high">'.PHP_EOL;
+  $base=content_url('/uploads/2026/11/');
+  echo '<link rel="preload" as="image" media="(min-width: 701px)" href="'.esc_url($base.'a3tal-ref-20261104-hero-desktop.webp').'" fetchpriority="high">'.PHP_EOL;
+  echo '<link rel="preload" as="image" media="(max-width: 700px)" href="'.esc_url($base.'a3tal-ref-20261104-hero-mobile.webp').'" fetchpriority="high">'.PHP_EOL;
 }
 add_action('wp_head', 'a3g_preload_home_hero_image', 2);
 
