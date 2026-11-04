@@ -162,10 +162,20 @@ add_action('wp_enqueue_scripts','a3g_reference_v5_home_assets',25);
     return out
 
 def live_public():
-    url=BASE+"/?a3tal_reference_v5="+str(time.time_ns())
-    r=session.get(url,timeout=90,headers={"Cache-Control":"no-cache"})
-    r.raise_for_status()
-    return r.text
+    # A successful bridge write is not proof that public visitors see it.
+    # Retry transient origin disconnects instead of failing on the first socket reset.
+    last_error=None
+    for attempt in range(4):
+        try:
+            url=BASE+"/?a3tal_reference_v5="+str(time.time_ns())
+            r=session.get(url,timeout=60,headers={"Cache-Control":"no-cache"})
+            r.raise_for_status()
+            return r.text
+        except requests.RequestException as exc:
+            last_error=exc
+            print("PUBLIC_HOMEPAGE_READ_RETRY",attempt+1,type(exc).__name__,flush=True)
+            if attempt<3:time.sleep(3+attempt*2)
+    raise RuntimeError("Public homepage verification unavailable after 4 attempts: "+type(last_error).__name__) from last_error
 
 def verify_live():
     for i in range(9):
@@ -207,7 +217,15 @@ def main():
         live[name]=data
         if name in NEW:
             if data and data["content"]!=source(name):
-                raise RuntimeError("Live pre-existing file has a conflicting revision: "+name)
+                # Allow exactly the audited V5 CSS release to be replaced.
+                # Never overwrite unrecognized manual production edits.
+                if name != "home-reference-20261104.css":
+                    raise RuntimeError("Live pre-existing file has a conflicting revision: "+name)
+                old_css=data["content"].encode("utf8")
+                old_git_blob=hashlib.sha1(b"blob "+str(len(old_css)).encode("ascii")+b"\0"+old_css).hexdigest()
+                if old_git_blob != "a4b5866cc363adfda7978c2b45fe6acef56de31f":
+                    raise RuntimeError("Live CSS differs from audited pre-fix release; refusing overwrite")
+                print("AUDITED_SCOPED_CSS_UPGRADE",flush=True)
             prepared[name]=source(name)
         elif name=="front-page.php":prepared[name]=modify_front(data["content"])
         elif name=="header.php":prepared[name]=modify_header(data["content"])
