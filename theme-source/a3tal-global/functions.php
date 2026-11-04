@@ -1203,7 +1203,7 @@ function a3g_encyclopedia_home_assets(){
   if(!is_front_page())return;
   $uri=get_template_directory_uri();
   $ver=defined('A3G_VERSION')?A3G_VERSION:'4-preview';
-  wp_enqueue_style('a3g-encyclopedia-home',$uri.'/assets/css/home-reference-20261104.css',['a3g-style'],'20261104-v5');
+  wp_enqueue_style('a3g-encyclopedia-home',$uri.'/home-reference-20261104.css',['a3g-style'],'20261104-v5');
   wp_enqueue_script('a3g-encyclopedia-home',$uri.'/assets/js/home-reference-20261104.js',[],'20261104-v5',true);
 }
 add_action('wp_enqueue_scripts','a3g_encyclopedia_home_assets',25);
