@@ -45,7 +45,25 @@ if(!$home_car_img)$home_car_img=content_url('/uploads/2026/11/a3tal-ref-20261104
 <a class="carcard" href="https://a3tal.com/car-reference/chevrolet/captiva-2026-egypt/"><img width="320" height="180" loading="eager" src="<?php echo esc_url(content_url('/uploads/2026/11/a3tal-ref-20261104-model-chevrolet-captiva.webp')); ?>" alt="تصميم توضيحي لشيفروليه كابتيفا"><strong>شيفروليه كابتيفا</strong><small>دليل المواصفات</small><span class="btn">عرض المواصفات ←</span></a>
 <?php endif; ?>
 </div></div><aside class="panel tools-panel"><h2>⚒ أدوات مهمة لكل مالك سيارة</h2><div class="toolgrid"><a href="https://a3tal.com/dtc/"><span>⚙</span>معرفة كود العطل</a><a href="https://a3tal.com/?s=صيانة"><span>▦</span>معلومات تكلفة الصيانة</a><a href="https://a3tal.com/?s=استهلاك+الوقود"><span>⛽</span>معلومات استهلاك الوقود</a><a href="https://a3tal.com/?s=مقاسات+الإطارات"><span>◉</span>مقاسات الإطارات</a><a href="https://a3tal.com/parts/"><span>⚙</span>دليل قطع الغيار</a><a href="https://a3tal.com/maintenance-schedules/"><span>▣</span>جدول الصيانة</a></div></aside></section>
-<section class="lower"><div class="panel maint-feature"><h2>▮ دليل الصيانة الدورية</h2><a href="https://a3tal.com/maintenance-schedules/"><img src="<?php echo esc_url(content_url('/uploads/2026/11/a3tal-ref-20261104-maintenance-feature.webp')); ?>" alt="صيانة سيارة كما في التصميم المرجعي"></a></div><div class="panel"><h2>▮ أحدث المقالات والتحليلات</h2><div class="article-list"><a href="https://a3tal.com/?s=الفرامل"><img src="<?php echo esc_url(content_url('/uploads/2026/11/a3tal-ref-20261104-article-brakes.webp')); ?>" alt="فرامل السيارة"><strong>علامات تآكل تيل الفرامل</strong></a><a href="https://a3tal.com/?s=البطارية"><img src="<?php echo esc_url(content_url('/uploads/2026/11/a3tal-ref-20261104-article-battery.webp')); ?>" alt="بطارية سيارة"><strong>أسباب ضعف البطارية</strong></a><a href="https://a3tal.com/?s=زيت+المحرك"><img src="<?php echo esc_url(content_url('/uploads/2026/11/a3tal-ref-20261104-article-oil.webp')); ?>" alt="زيت المحرك"><strong>اختيار زيت المحرك</strong></a></div></div><div class="panel"><h2>▮ أحدث المراجعات</h2><a class="review-card" href="https://a3tal.com/?s=توسان+2026"><img src="<?php echo esc_url(content_url('/uploads/2026/11/a3tal-ref-20261104-review-tucson.webp')); ?>" alt="سيارة من التصميم المرجعي"><strong>مراجعات السيارات ومواصفاتها</strong></a></div></section></div>
+<section class="lower"><div class="panel maint-feature"><h2>▮ دليل الصيانة الدورية</h2><a href="https://a3tal.com/maintenance-schedules/"><img src="<?php echo esc_url(content_url('/uploads/2026/11/a3tal-ref-20261104-maintenance-feature.webp')); ?>" alt="صيانة سيارة كما في التصميم المرجعي"></a></div><div class="panel"><h2>▮ أحدث المقالات والتحليلات</h2><div class="article-list">
+<?php if($home_latest_guides->have_posts()): ?>
+<?php while($home_latest_guides->have_posts()):$home_latest_guides->the_post();
+$guide_img=get_the_post_thumbnail_url(get_the_ID(),'medium');
+if(!$guide_img)$guide_img=content_url('/uploads/2026/11/a3tal-ref-20261104-article-brakes.webp');
+?>
+<a href="<?php the_permalink(); ?>"><img loading="lazy" decoding="async" width="220" height="130" src="<?php echo esc_url($guide_img); ?>" alt="<?php echo esc_attr(get_the_title()); ?>"><strong><?php echo esc_html(get_the_title()); ?></strong></a>
+<?php endwhile;wp_reset_postdata(); ?>
+<?php endif; ?>
+</div></div><div class="panel"><h2>▮ أحدث المراجعات</h2><?php if($home_latest_review->have_posts()):$home_latest_review->the_post();
+$review_img=get_the_post_thumbnail_url(get_the_ID(),'medium_large');
+if(!$review_img)$review_img=content_url('/uploads/2026/11/a3tal-ref-20261104-review-tucson.webp');
+?>
+<a class="review-card" href="<?php the_permalink(); ?>"><img loading="lazy" decoding="async" width="360" height="180" src="<?php echo esc_url($review_img); ?>" alt="<?php echo esc_attr(get_the_title()); ?>"><strong><?php echo esc_html(get_the_title()); ?></strong>
+<?php wp_reset_postdata(); ?>
+<?php else: ?>
+<a class="review-card" href="<?php echo esc_url(a3g_cat_link(22)); ?>"><img loading="lazy" decoding="async" width="360" height="180" src="<?php echo esc_url(content_url('/uploads/2026/11/a3tal-ref-20261104-review-tucson.webp')); ?>" alt="مراجعات السيارات"><strong>تصفح مراجعات السيارات</strong>
+<?php endif; ?>
+</a></div></section></div>
 <section class="facts" aria-label="ملخص أقسام الموسوعة"><div class="wrap stats"><span><strong>أعطال.كوم</strong><br>موسوعة السيارات العربية</span><span><strong><?php echo esc_html(number_format_i18n($ref_count)); ?></strong><br>صفحة مواصفات فنية منشورة</span><span>أعطال وأكواد وتشخيص<br><em>معلومات منظمة للبحث</em></span><span>مواصفات وصيانة<br>دليل متكامل للسيارات</span></div></section>
 <nav class="dock" aria-label="روابط سريعة للموبايل"><a class="active" href="https://a3tal.com/"><b>⌂</b>الرئيسية</a><a href="https://a3tal.com/car-reference/"><b>▤</b>الدليل</a><a href="https://a3tal.com/dtc/"><b>⚙</b>الأعطال</a><a href="https://a3tal.com/maintenance-schedules/"><b>◇</b>الصيانة</a><a href="https://a3tal.com/?s=مقارنة"><b>⋯</b>المزيد</a></nav>
 
