@@ -35,7 +35,7 @@ jobs:
           css=sources['assets/css/home-reference-20261104.css']
           assert 'home-reference-20261104' in homepage
           assert 'home-reference-header-20261104' in sources['header.php']
-          assert len(re.findall(r'<h1\\b',exact))==1
+          assert len(re.findall(r'<h1\b',exact))==1
           assert 'wp_count_posts' in exact
           assert 'car-reference/' in exact and 'maintenance-schedules/' in exact and '/dtc/' in exact
           assert 'g-home-dtc-zone' in homepage
