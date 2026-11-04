@@ -1,0 +1,62 @@
+name: Publish MG ZS Legacy Egypt Official Technical Specs
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'data/car-reference/batch-11-mg-zs-legacy-egypt-20261104.json'
+      - 'scripts/publish-car-reference-batch11-mg-zs-legacy.py'
+      - '.github/workflows/publish-car-reference-batch11-mg-zs-legacy.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-reference-mg-zs-legacy-egypt
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3CR_LIMIT: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate old MG ZS specs and model-specific search intent
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-car-reference-batch11-mg-zs-legacy.py
+          python3 - <<'PY'
+          import json
+          d=json.load(open('data/car-reference/batch-11-mg-zs-legacy-egypt-20261104.json'))
+          assert d['brand_existing']=='mg'
+          assert d['model']['slug']=='zs-legacy-4at-egypt'
+          assert len(d['items'])==4 and len({x['slug'] for x in d['items']})==4
+          assert len(d['collision']['exclude_intents'])>=3
+          assert all(len(x['facts'])>=6 and len(x['intro'])>=150 and len(x['detail'])>=100 for x in d['items'])
+          assert all(x['sources'] and all(u.startswith('https://www.mgmotor.com.eg/') for u in x['sources']) for x in d['items'])
+          assert d['sources']['brochure'].endswith('/MG-ZS.pdf')
+          assert d['photos']['primary'].startswith('https://a3tal.com/')
+          assert '4AT' in d['collision']['specific_scope']
+          print('Legacy MG ZS 2023 brochure and separated-new-generation source gate passed')
+          PY
+      - name: Install photo and Arabic fonts
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-core fonts-dejavu-core
+          python3 -m pip install --quiet --disable-pip-version-check pillow requests
+      - name: Confirm installed WordPress reference engine
+        run: |
+          curl -fLsS --retry 3 "https://a3tal.com/wp-json/a3tal-car-reference/v1/health" -o /tmp/status.json
+          jq -e '.ok == true and .version == "1.0.0"' /tmp/status.json >/dev/null
+      - name: Publish and verify photo, Yoast OG, canonical and live URL
+        run: python3 scripts/publish-car-reference-batch11-mg-zs-legacy.py
+      - name: Save report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: car-reference-mg-zs-legacy-batch11-${{ github.run_id }}
+          path: car-reference-batch11-mg-zs-legacy-results.json
+          if-no-files-found: warn
+          retention-days: 30
