@@ -1,0 +1,21 @@
+name: Release stale failed A3tal theme Actions lock (one-shot)
+# Recovery only. The prior V5 workflow's theme write step already FAILED,
+# all job steps finished, but GitHub still reports the run as in_progress.
+# This one-shot workflow holds the original concurrency group briefly to
+# supersede that failed run. It does not call WordPress or modify the site.
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/recover-stale-a3tal-theme-lock-20261104.yml']
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-theme
+  cancel-in-progress: true
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - run: |
+          echo "A3TAL_THEME_LOCK_RECOVERY_NO_SITE_WRITE"
