@@ -223,6 +223,13 @@ def verify_live():
                  "/maintenance-schedules/","/service-centers/"]:
         if 'href="'+BASE+path+'"' not in s:
             raise RuntimeError("Missing public navigation destination: "+path)
+    for image in ["a3tal-ref-20261104-service-specs.webp","a3tal-ref-20261104-service-dtc.webp",
+                  "tvs-raider-125-egypt.webp","a3tal-egypt-parts-market-20261026-hero-original-20261025-1024x576.webp",
+                  "a3tal-ref-20261104-service-maintenance.webp",
+                  "a3tal-authorized_hero-real-photograph-20261022-1024x576.webp"]:
+        if image not in s: raise RuntimeError("Missing PSEO card artwork: "+image)
+    if s.count('class="hub-visual"')!=6:
+        raise RuntimeError("Expected six visual homepage PSEO cards")
     if s.count('class="hub-card"')!=6:
         raise RuntimeError("Expected six compact homepage navigation cards")
     for forbidden in ["استكشف باقي موسوعة أعطال","g-home-dtc-zone",
@@ -257,8 +264,8 @@ def main():
             if data and data["content"]!=source(name):
                 # Permit only the known, reviewed previous live revisions.
                 # Other production edits must stop the deployment, not be overwritten.
-                previous={"home-reference-20261104.css":("1ea34bd36d55deceb4c911b2145556d111eb4da3","a958e8225d83138a2c22d818d51747a27a3c1c1c"),
-                          "home-reference-20261104.php":("c302a40d27311cdd210e38a859360b8606ad8dfa","daf4ac29b66669086c72564f512df0b241d93131"),
+                previous={"home-reference-20261104.css":("1ea34bd36d55deceb4c911b2145556d111eb4da3","a958e8225d83138a2c22d818d51747a27a3c1c1c","34d4174bc999f468e8f39f018c2ddb616f2ebdb5"),
+                          "home-reference-20261104.php":("c302a40d27311cdd210e38a859360b8606ad8dfa","daf4ac29b66669086c72564f512df0b241d93131","d6c3ee1216a0d7e05db51e28d349f8497aa27c01"),
                           "assets/js/home-reference-20261104.js":"27e9cc0848332616ca1e0b1f6287f2884cb49b57"}
                 raw=data["content"].encode("utf8")
                 git_blob=hashlib.sha1(b"blob "+str(len(raw)).encode("ascii")+b"\0"+raw).hexdigest()
