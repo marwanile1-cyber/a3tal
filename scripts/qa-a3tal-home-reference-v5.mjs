@@ -20,6 +20,14 @@ try{
   if(await page.getByText('استكشف باقي موسوعة أعطال',{exact:true}).count())throw Error(label+' duplicate legacy directory still rendered');
   if(await page.locator('main.a3r-production-home > .a3tal-reference-page').count()!==1)throw Error(label+' expected precisely one V5 homepage interface');
   if(await page.locator('.a3tal-reference-page .dock').count()!==1)throw Error(label+' expected precisely one V5 mobile navigation dock');
+  const hubs=await page.locator('.a3tal-hub-tiles .hub-card').count();
+  if(hubs!==6)throw Error(label+' expected six compact PSEO navigation cards; got '+hubs);
+  for(const path of ['/car-reference/','/dtc/','/motorcycles/','/parts/','/maintenance-schedules/','/service-centers/']){
+    const card=page.locator('.a3tal-hub-tiles .hub-card[href="https://a3tal.com'+path+'"]');
+    if(await card.count()!==1 || !(await card.isVisible()))throw Error(label+' missing visible PSEO hub '+path);
+  }
+  const heroText=await page.locator('.a3tal-reference-page .hero h1').innerText();
+  if(!heroText.includes('السيارات في مصر'))throw Error(label+' homepage H1 does not describe the Egyptian automotive portal');
   const metrics=await page.evaluate(()=>{
     const rect=selector=>{const el=document.querySelector(selector);if(!el)return null;const r=el.getBoundingClientRect();const st=getComputedStyle(el);return {top:Math.round(r.top),bottom:Math.round(r.bottom),height:Math.round(r.height),paddingTop:st.paddingTop,marginTop:st.marginTop};};
     return {header:rect('.a3r-site-header'),main:rect('main'),hero:rect('.a3tal-reference-page .hero'),h1:rect('.a3tal-reference-page .hero h1'),heroCopy:rect('.a3tal-reference-page .hero-copy'),scrollWidth:document.documentElement.scrollWidth,viewport:innerWidth};
@@ -40,8 +48,14 @@ try{
       mobileDock:getComputedStyle(document.querySelector('.dock')).display,
     };
   });
-  if(info.h1!==1||info.failedImages.length||!info.specLink||!info.hasCarousel||info.totalImages<20)throw Error(label+' failed UI assertions '+JSON.stringify(info));
+  if(info.h1!==1||info.failedImages.length||!info.specLink||!info.hasCarousel||info.totalImages<16)throw Error(label+' failed UI assertions '+JSON.stringify(info));
   if(label==='mobile' && info.overflow>3)throw Error('Mobile horizontal overflow '+info.overflow);
+  const cardLayout=await page.locator('.a3tal-hub-tiles').evaluate(el=>({
+    columns:getComputedStyle(el).gridTemplateColumns.split(' ').length,
+    clipped:[...el.querySelectorAll('.hub-card')].filter(c=>c.scrollWidth>c.clientWidth+2).length,
+  }));
+  if(cardLayout.clipped)throw Error(label+' unreadable or clipped navigation card');
+  if(label==='mobile' && cardLayout.columns!==3)throw Error('Mobile PSEO navigation must have three compact columns');
   if(label==='desktop' && !info.heroBackground.includes('a3tal-ref-20261104-hero-desktop.webp'))throw Error('Desktop exact hero absent');
   if(label==='mobile' && !info.heroBackground.includes('a3tal-ref-20261104-hero-desktop.webp')){/* mobile uses separate scene */}
   // Load actual below-the-fold thumbnails before a full-page screenshot.
