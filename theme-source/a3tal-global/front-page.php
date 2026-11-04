@@ -66,92 +66,10 @@ $ref_examples=[
 $ref_brands=['mg'=>'إم جي','chevrolet'=>'شيفروليه','kia'=>'كيا','nissan'=>'نيسان','hyundai'=>'هيونداي'];
 
 ?>
-<main class="g-home g-home-platform">
+<main class="g-home g-home-platform a3r-production-home">
+<?php get_template_part('home-reference-20261104'); ?>
 
-<!-- PREVIEW ONLY: encyclopedia homepage V4, never deploy without review -->
-<section class="g-ency-hero" aria-labelledby="g-ency-title">
-  <div class="g-wrap g-ency-hero-grid">
-    <div class="g-ency-copy">
-      <span class="g-ency-eyebrow">موسوعة السيارات والمعلومات الفنية</span>
-      <h1 id="g-ency-title">موسوعة السيارات في مصر.<br><span>كل ما يخص عربيتك في مكان واحد.</span></h1>
-      <p>من المواصفات والأسعار إلى أكواد الأعطال وخطوات الصيانة. اعرف معلومات عربيتك قبل شراء قطعة أو اتخاذ قرار.</p>
-      <div class="g-ency-search" data-home="<?php echo esc_url(home_url('/')); ?>" data-reference="<?php echo esc_url($ref_archive); ?>" data-dtc="<?php echo esc_url(a3g_platform_link('a3_dtc','/dtc/')); ?>">
-        <div class="g-ency-tabs" role="tablist" aria-label="نوع البحث">
-          <button type="button" role="tab" aria-selected="true" data-ency-search="car">اسم السيارة</button>
-          <button type="button" role="tab" aria-selected="false" data-ency-search="reference">المواصفات الفنية</button>
-          <button type="button" role="tab" aria-selected="false" data-ency-search="fault">كود العطل</button>
-          <button type="button" role="tab" aria-selected="false" data-ency-search="price">الأسعار</button>
-        </div>
-        <form role="search" method="get" action="<?php echo esc_url(home_url('/')); ?>">
-          <label class="g-sr-only" for="g-ency-search-input">ابحث في موسوعة أعطال</label>
-          <input id="g-ency-search-input" type="search" name="s" placeholder="ابحث باسم الماركة أو الموديل" required autocomplete="off">
-          <button type="submit">ابحث ←</button>
-        </form>
-      </div>
-      <div class="g-ency-actions">
-        <a data-google-vignette="false" class="g-ency-primary" href="<?php echo esc_url($ref_archive); ?>">استكشف دليل المواصفات الفنية ←</a>
-        <a data-google-vignette="false" class="g-ency-secondary" href="<?php echo esc_url(a3g_platform_link('a3_car','/cars/')); ?>">تصفح موسوعة السيارات</a>
-      </div>
-    </div>
-    <div class="g-ency-photo">
-      <?php if($hero_img_id): echo wp_get_attachment_image($hero_img_id,'large',false,['loading'=>'eager','fetchpriority'=>'high','decoding'=>'async','alt'=>'','sizes'=>'(max-width:980px) 100vw, (max-width:1280px) 42vw, 550px']); endif; ?>
-      <div class="g-ency-photo-caption">أعطال.كوم | معرفة من أول اختيار العربية لحد صيانتها</div>
-      <?php if($ref_published>0): ?><div class="g-ency-ref-count"><strong><?php echo esc_html(number_format_i18n($ref_published)); ?></strong><small>صفحات مواصفات فنية منشورة</small></div><?php endif; ?>
-    </div>
-  </div>
-</section>
-<div class="g-wrap g-ency-quick-outer">
-  <nav class="g-ency-quick" aria-label="المداخل الرئيسية لموسوعة السيارات">
-    <a data-google-vignette="false" href="<?php echo esc_url($ref_archive); ?>"><span class="g-ency-q-icon"><?php echo a3g_icon('gear'); ?></span><span><b>مواصفات سيارتك</b><small>محركات ومقاسات وتجهيزات</small></span></a>
-    <a data-google-vignette="false" href="<?php echo esc_url(a3g_platform_link('a3_dtc','/dtc/')); ?>"><span class="g-ency-q-icon"><?php echo a3g_icon('warning'); ?></span><span><b>تشخيص الأعطال</b><small>أكواد OBD-II وخطوات الفحص</small></span></a>
-    <a data-google-vignette="false" href="<?php echo esc_url(a3g_platform_link('a3_car','/cars/')); ?>"><span class="g-ency-q-icon"><?php echo a3g_icon('car'); ?></span><span><b>الأسعار والموديلات</b><small>الفئات والمواصفات</small></span></a>
-    <a data-google-vignette="false" href="<?php echo esc_url(a3g_platform_link('a3_maintenance_plan','/maintenance-schedules/')); ?>"><span class="g-ency-q-icon"><?php echo a3g_icon('calendar'); ?></span><span><b>جداول الصيانة</b><small>العداد والمستلزمات</small></span></a>
-  </nav>
-</div>
-
-<section class="g-ency-path-section" aria-labelledby="g-ency-path-title">
-  <div class="g-wrap">
-    <div class="g-ency-section-head"><div><span class="g-ency-kicker">بوابتك لمعلومات السيارات</span><h2 id="g-ency-path-title">اختار اللي محتاج تعرفه</h2><p>كل معلومة ليها مكان واضح، مع روابط بين المواصفات والأعطال والصيانة والموديلات.</p></div></div>
-    <div class="g-ency-paths">
-      <a class="g-ency-path" data-google-vignette="false" href="<?php echo esc_url($ref_archive); ?>"><strong>الدليل الفني للسيارات</strong><p>مواصفات المحرك والكاوتش والأبعاد وبيانات الموديلات.</p><span>افتح الدليل ←</span></a>
-      <a class="g-ency-path" data-google-vignette="false" href="<?php echo esc_url(a3g_platform_link('a3_dtc','/dtc/')); ?>"><strong>مكتبة أكواد الأعطال</strong><p>معاني الأكواد وأعراضها وأسبابها وخطوات التشخيص.</p><span>ابدأ التشخيص ←</span></a>
-      <a class="g-ency-path" data-google-vignette="false" href="<?php echo esc_url(a3g_platform_link('a3_car','/cars/')); ?>"><strong>دليل السيارات والأسعار</strong><p>الموديلات والفئات والأسعار والمقارنات قبل الشراء.</p><span>استكشف السيارات ←</span></a>
-      <a class="g-ency-path" data-google-vignette="false" href="<?php echo esc_url(a3g_platform_link('a3_maintenance_plan','/maintenance-schedules/')); ?>"><strong>الصيانة الدورية</strong><p>جداول ومعلومات صيانة المركبات حسب الموديل.</p><span>شوف جدول الصيانة ←</span></a>
-      <a class="g-ency-path" data-google-vignette="false" href="<?php echo esc_url(a3g_platform_link('a3_part','/parts/')); ?>"><strong>قطع الغيار والمقاسات</strong><p>معلومات القطع والمستلزمات ومصادر الشراء.</p><span>افتح دليل القطع ←</span></a>
-      <a class="g-ency-path" data-google-vignette="false" href="<?php echo esc_url(a3g_platform_link('a3_service_center','/service-centers/')); ?>"><strong>مراكز الصيانة والخدمة</strong><p>دليل المراكز ومعلومات الاتصال والخدمات المنشورة.</p><span>شوف المراكز ←</span></a>
-    </div>
-  </div>
-</section>
-
-<?php if($ref_published>0): ?>
-<section class="g-ency-reference" aria-labelledby="g-ency-reference-title">
-  <div class="g-wrap">
-    <div class="g-ency-section-head"><div><span class="g-ency-kicker">مرجع فني موثق</span><h2 id="g-ency-reference-title">دليل المواصفات الفنية للسيارات</h2><p>معلومات محددة للموديل والسوق والفئة، من مصادر معلنة ومراجعة.</p></div><a data-google-vignette="false" href="<?php echo esc_url($ref_archive); ?>">تصفح الدليل بالكامل ←</a></div>
-    <div class="g-ency-ref-hero">
-      <div><span class="eyebrow">CAR TECHNICAL REFERENCE</span><h3>قبل ما تغير قطعة، اعرف مواصفات عربيتك الصحيحة.</h3><p>المحرك، ناقل الحركة، الإطارات، الأبعاد وتجهيزات الأمان. بيانات فنية مع تنبيهات الفروق بين الموديلات والسنوات والفئات.</p><a data-google-vignette="false" class="g-ency-primary" href="<?php echo esc_url($ref_archive); ?>">افتح الدليل الفني ←</a></div>
-      <div class="g-ency-ref-counter"><strong><?php echo esc_html(number_format_i18n($ref_published)); ?></strong><small>صفحات فنية منشورة</small></div>
-    </div>
-    <div class="g-ency-ref-models">
-    <?php foreach($ref_examples as $item):
-      $record=get_page_by_path($item['path'],OBJECT,'a3_car_ref');
-      if(!$record||$record->post_status!=='publish')continue; ?>
-      <a class="g-ency-model" data-google-vignette="false" href="<?php echo esc_url(get_permalink($record)); ?>">
-        <div class="g-ency-model-thumb"><?php if(has_post_thumbnail($record->ID)) echo get_the_post_thumbnail($record->ID,'medium_large',['loading'=>'lazy','decoding'=>'async']); ?></div>
-        <div class="g-ency-model-copy"><small><?php echo esc_html($item['brand']); ?></small><b><?php echo esc_html($item['short']); ?></b><span><?php echo esc_html($item['note']); ?> ←</span></div>
-      </a>
-    <?php endforeach; ?>
-    </div>
-    <nav class="g-ency-brands" aria-label="ماركات دليل المواصفات الفنية">
-    <?php foreach($ref_brands as $slug=>$name):
-      $brand=get_page_by_path($slug,OBJECT,'a3_car_ref');
-      if(!$brand||$brand->post_status!=='publish')continue; ?>
-      <a data-google-vignette="false" href="<?php echo esc_url(get_permalink($brand)); ?>"><?php echo esc_html($name); ?></a>
-    <?php endforeach; ?>
-    </nav>
-  </div>
-</section>
-<?php endif; ?>
-
+<!-- Existing dynamic diagnostic, vehicle, price, motorcycle, garage and directory modules preserved. -->
 <section class="g-section g-section-soft g-home-dtc-zone g-ency-home-dtc-zone">
   <div class="g-wrap">
     <div class="g-dtc-command">
