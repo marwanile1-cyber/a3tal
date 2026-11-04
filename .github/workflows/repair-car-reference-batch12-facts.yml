@@ -19,7 +19,7 @@ jobs:
       A3CR_REPAIR_LIMIT: '1'
     steps:
       - uses: actions/checkout@v4
-      - name: Validate and run one-page pilot for existing published MG7 technical data
+      - name: Validate and run one-page pilot for existing published Captiva technical data
         shell: bash
         run: |
           set -euo pipefail
