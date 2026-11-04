@@ -1,0 +1,72 @@
+name: Publish 18 Captiva MG GT MG7 Technical Reference Pages
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/publish-car-reference-batch12-18-pages.py'
+      - 'data/car-reference/batch-12-18-technical-references-20261104.json'
+      - '.github/workflows/publish-car-reference-batch12-multi.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        family: [captiva, mg-gt, mg7]
+    concurrency:
+      group: a3tal-car-reference-b12-${{ matrix.family }}
+      cancel-in-progress: false
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3CR_FAMILY: ${{ matrix.family }}
+      A3CR_LIMIT: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate sources, photo origin and unique intents
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-car-reference-batch12-18-pages.py
+          python3 - <<'PY'
+          import json
+          d=json.load(open('data/car-reference/batch-12-18-technical-references-20261104.json'))
+          clusters=d['clusters']
+          assert len(clusters)==3
+          assert [x['key'] for x in clusters]==['captiva','mg-gt','mg7']
+          assert sum(1+len(x['specs']) for x in clusters)==18
+          slugs=[p['slug'] for g in clusters for p in [g['model']]+g['specs']]
+          assert len(set(slugs))==18
+          for g in clusters:
+            assert len(g['specs'])==5 and g['brand'] in {'chevrolet','mg'}
+            assert len({x['category'] for x in g['specs']})==5
+            assert all(photo.startswith('https://a3tal.com/wp-content/uploads/') for photo in g['photos'])
+            assert all(p['sources'] and all(s.startswith('https://') for s in p['sources']) for p in [g['model']]+g['specs'])
+            assert all(len(s['facts'])>=5 and len(s['intro'])>100 and len(s['detail'])>100 and len(s['warning'])>60 for s in g['specs'])
+          print('Verified 18 distinct source-backed records and model-matched photo sources')
+          PY
+      - name: Install photographic design requirements
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-core fonts-dejavu-core
+          python3 -m pip install --quiet --disable-pip-version-check pillow requests
+      - name: Confirm production reference engine
+        run: |
+          set -euo pipefail
+          curl -fsSL --retry 3 'https://a3tal.com/wp-json/a3tal-car-reference/v1/health' -o /tmp/health.json
+          jq -e '.ok == true and .version == "1.0.0"' /tmp/health.json >/dev/null
+      - name: Publish source-backed unique pages and verify photo/canonical/OG live
+        run: python3 scripts/publish-car-reference-batch12-18-pages.py
+      - name: Preserve published URLs and image proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-batch12-${{ matrix.family }}-${{ github.run_id }}
+          path: car-reference-batch12-${{ matrix.family }}-audit.json
+          if-no-files-found: warn
+          retention-days: 30
