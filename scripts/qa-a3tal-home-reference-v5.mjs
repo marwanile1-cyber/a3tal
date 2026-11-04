@@ -15,6 +15,11 @@ try{
   if(!response||response.status()>=400)throw Error(label+' navigation HTTP '+response?.status());
   await page.waitForSelector('.a3tal-reference-page .hero',{timeout:15000});
   await page.waitForTimeout(2200);
+  const metrics=await page.evaluate(()=>{
+    const rect=selector=>{const el=document.querySelector(selector);if(!el)return null;const r=el.getBoundingClientRect();const st=getComputedStyle(el);return {top:Math.round(r.top),bottom:Math.round(r.bottom),height:Math.round(r.height),paddingTop:st.paddingTop,marginTop:st.marginTop};};
+    return {header:rect('.a3r-site-header'),main:rect('main'),hero:rect('.a3tal-reference-page .hero'),h1:rect('.a3tal-reference-page .hero h1'),heroCopy:rect('.a3tal-reference-page .hero-copy'),scrollWidth:document.documentElement.scrollWidth,viewport:innerWidth};
+  });
+  console.log('LAYOUT_METRICS',label,JSON.stringify(metrics));
   const info=await page.evaluate(()=>{
     const img=[...document.querySelectorAll('.a3tal-reference-page img')];
     return {
@@ -44,7 +49,7 @@ try{
       await delay(90);
     }
     await delay(1100);
-    window.scrollTo(0,0);
+    document.documentElement.style.scrollBehavior='auto';window.scrollTo({top:0,behavior:'instant'});
     await delay(400);
   });
   const legacyImages=await page.evaluate(()=>[...document.querySelectorAll('.g-home img')].filter(x=>x.getBoundingClientRect().width>0).map(x=>({src:x.currentSrc||x.src,ok:x.complete&&x.naturalWidth>0})));
@@ -69,7 +74,7 @@ try{
   if(label==='mobile'){
     const mobileHero=await page.locator('.hero-mobile-scene').evaluate(x=>getComputedStyle(x).backgroundImage);
     if(!mobileHero.includes(heroFile))throw Error('Mobile hero background is missing');
-    if(!(await page.locator('.search-modes').isHidden()))throw Error('Mobile search controls unexpectedly visible outside reference layout');
+    if(!(await page.locator('.search-modes').isVisible()))throw Error('Mobile search controls unexpectedly hidden');
     await page.locator('#menuToggle').click();
     if(!(await page.locator('.a3r-site-header .desktop-nav').isVisible()))throw Error('Mobile navigation failed to open');
     if(!(await page.locator('.g-mobile-bottom').isHidden()))throw Error('Duplicate legacy mobile navigation still visible');
