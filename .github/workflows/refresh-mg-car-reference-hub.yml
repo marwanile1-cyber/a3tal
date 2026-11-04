@@ -1,0 +1,37 @@
+name: Refresh MG Car Reference Brand Hub For ZS Legacy
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/refresh-car-reference-mg-brand-hub.py'
+      - '.github/workflows/refresh-mg-car-reference-hub.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-car-reference-mg-hub
+  cancel-in-progress: false
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate write only existing MG brand hub
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/refresh-car-reference-mg-brand-hub.py
+          python3 -m pip install --quiet --disable-pip-version-check requests
+      - name: Upsert brand hub and verify 2 live model links, old featured ID and SEO
+        run: python3 scripts/refresh-car-reference-mg-brand-hub.py
+      - name: Store verified post id and live links
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-mg-brand-hub-${{ github.run_id }}
+          path: car-reference-mg-brand-hub-result.json
+          if-no-files-found: warn
+          retention-days: 30
