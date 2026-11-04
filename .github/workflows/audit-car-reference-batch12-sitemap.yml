@@ -1,0 +1,72 @@
+name: Audit A3tal 108 Car Reference Pages After Batch 12
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/audit-car-reference-batch12-sitemap.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify all 18 new records in real XML sitemap, engine and parent hubs
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,re,time,urllib.request
+          from pathlib import Path
+          BASE='https://a3tal.com'
+          DATA=json.loads(Path('data/car-reference/batch-12-18-technical-references-20261104.json').read_text(encoding='utf8'))
+          def fetch(url):
+              error=None
+              for attempt in range(5):
+                  try:
+                      req=urllib.request.Request(url,headers={
+                          'User-Agent':'A3tal-Batch12-Sitemap-Verification/1.0',
+                          'Cache-Control':'no-cache'})
+                      with urllib.request.urlopen(req,timeout=65) as resp:
+                          status=resp.status
+                          raw=resp.read().decode('utf8',errors='replace')
+                          if status!=200:raise RuntimeError('HTTP '+str(status))
+                          return raw
+                  except Exception as exc:
+                      error=exc
+                      if attempt<4:time.sleep(4*(attempt+1))
+              raise RuntimeError('Failed '+url+' '+str(error))
+          health=json.loads(fetch(BASE+'/wp-json/a3tal-car-reference/v1/health'))
+          assert health.get('ok')==True
+          assert health.get('published',0)>=108,health
+          assert health.get('drafts')==0,health
+          xml=fetch(BASE+'/a3_car_ref-sitemap.xml')
+          locs=re.findall(r'<loc>([^<]+)</loc>',xml)
+          print('CAR REFERENCE SITEMAP URL COUNT',len(locs))
+          assert len(locs)>=109, 'Expected 108 pages + one archive'
+          new_urls=[]
+          for group in DATA['clusters']:
+              name=group['brand']+'/'+group['model']['slug']
+              for record in [group['model']]+group['specs']:
+                  path=name if record['slug']==group['model']['slug'] else name+'/'+record['slug']
+                  url=BASE+'/car-reference/'+path+'/'
+                  if url not in locs:raise RuntimeError('NOT IN SITEMAP '+url)
+                  new_urls.append(url)
+                  print('SITEMAP VERIFIED',url)
+          assert len(new_urls)==18 and len(set(new_urls))==18
+          for hub,slugs in {
+              'mg':['mg5-egypt','zs-legacy-4at-egypt','mg-gt-15t-egypt','mg7-15-turbo-egypt'],
+              'chevrolet':['optra-2026-egypt','captiva-2026-egypt']
+          }.items():
+              page=fetch(BASE+'/car-reference/'+hub+'/?audit_20261104='+str(time.time_ns()))
+              for slug in slugs:
+                  if slug not in page:raise RuntimeError('Missing internal hub link '+hub+'/'+slug)
+              if 'noindex' in page[:14000].lower():raise RuntimeError('Hub noindex '+hub)
+              if not re.search(r'<meta[^>]*property=["\x27]og:image["\x27]',page,re.I):
+                  raise RuntimeError('Missing hub og:image '+hub)
+              print('HUB VERIFIED',hub,'all links',len(slugs))
+          print('SUCCESS',json.dumps({'published':health['published'],'sitemap_urls':len(locs),
+              'batch12_published_urls_verified':len(new_urls),'brands_updated':2},ensure_ascii=False))
+          PY
