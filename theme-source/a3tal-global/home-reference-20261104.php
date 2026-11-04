@@ -19,4 +19,42 @@ if (post_type_exists('a3_car_ref')) {
 <section class="lower"><div class="panel maint-feature"><h2>▮ دليل الصيانة الدورية</h2><a href="https://a3tal.com/maintenance-schedules/"><img src="<?php echo esc_url(content_url('/uploads/2026/11/a3tal-ref-20261104-maintenance-feature.webp')); ?>" alt="صيانة سيارة كما في التصميم المرجعي"></a></div><div class="panel"><h2>▮ أحدث المقالات والتحليلات</h2><div class="article-list"><a href="https://a3tal.com/?s=الفرامل"><img src="<?php echo esc_url(content_url('/uploads/2026/11/a3tal-ref-20261104-article-brakes.webp')); ?>" alt="فرامل السيارة"><strong>علامات تآكل تيل الفرامل</strong></a><a href="https://a3tal.com/?s=البطارية"><img src="<?php echo esc_url(content_url('/uploads/2026/11/a3tal-ref-20261104-article-battery.webp')); ?>" alt="بطارية سيارة"><strong>أسباب ضعف البطارية</strong></a><a href="https://a3tal.com/?s=زيت+المحرك"><img src="<?php echo esc_url(content_url('/uploads/2026/11/a3tal-ref-20261104-article-oil.webp')); ?>" alt="زيت المحرك"><strong>اختيار زيت المحرك</strong></a></div></div><div class="panel"><h2>▮ أحدث المراجعات</h2><a class="review-card" href="https://a3tal.com/?s=توسان+2026"><img src="<?php echo esc_url(content_url('/uploads/2026/11/a3tal-ref-20261104-review-tucson.webp')); ?>" alt="سيارة من التصميم المرجعي"><strong>مراجعات السيارات ومواصفاتها</strong></a></div></section></div>
 <section class="facts" aria-label="ملخص أقسام الموسوعة"><div class="wrap stats"><span><strong>أعطال.كوم</strong><br>موسوعة السيارات العربية</span><span><strong><?php echo esc_html(number_format_i18n($ref_count)); ?></strong><br>صفحة مواصفات فنية منشورة</span><span>أعطال وأكواد وتشخيص<br><em>معلومات منظمة للبحث</em></span><span>مواصفات وصيانة<br>دليل متكامل للسيارات</span></div></section>
 <nav class="dock" aria-label="روابط سريعة للموبايل"><a class="active" href="https://a3tal.com/"><b>⌂</b>الرئيسية</a><a href="https://a3tal.com/car-reference/"><b>▤</b>الدليل</a><a href="https://a3tal.com/dtc/"><b>⚙</b>الأعطال</a><a href="https://a3tal.com/maintenance-schedules/"><b>◇</b>الصيانة</a><a href="https://a3tal.com/?s=مقارنة"><b>⋯</b>المزيد</a></nav>
+
+<script id="a3tal-v5-home-interactions">
+(function(){
+  function init(){
+    var root=document.querySelector('.a3tal-reference-page:not(.a3r-site-header)');
+    if(!root || root.dataset.a3talV5Bound==='1')return;
+    root.dataset.a3talV5Bound='1';
+    var modes={
+      car:{target:'https://a3tal.com/',name:'s',placeholder:'ابحث باسم السيارة أو الموديل'},
+      code:{target:'https://a3tal.com/dtc/',name:'code',placeholder:'مثال: P0420'},
+      compare:{target:'https://a3tal.com/',name:'s',placeholder:'ابحث عن مقارنة بين سيارتين'},
+      spec:{target:'https://a3tal.com/car-reference/',name:'q',placeholder:'ابحث عن مواصفات الموديل'}
+    };
+    root.addEventListener('click',function(e){
+      var button=e.target.closest('button[data-mode]');
+      if(!button || !root.contains(button))return;
+      var mode=modes[button.dataset.mode];
+      var form=root.querySelector('#searchForm'),input=root.querySelector('#query');
+      if(!mode || !form || !input)return;
+      root.querySelectorAll('[data-mode]').forEach(function(el){el.classList.remove('active');});
+      button.classList.add('active');
+      form.action=mode.target;
+      input.name=mode.name;
+      input.placeholder=mode.placeholder;
+      input.value='';
+      input.focus();
+    });
+    var menu=document.querySelector('.a3r-site-header #menuToggle');
+    var nav=document.querySelector('.a3r-site-header .desktop-nav');
+    if(menu && nav)menu.addEventListener('click',function(){
+      var opened=nav.classList.toggle('is-open');
+      menu.setAttribute('aria-expanded',String(opened));
+    });
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
+  else init();
+})();
+</script>
 </div>
