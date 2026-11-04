@@ -5,6 +5,7 @@ before deploy. Never send credentials to public URLs or log response bodies.
 """
 import argparse
 import hashlib
+import http.client
 import json
 import os
 from pathlib import Path
@@ -86,7 +87,7 @@ class Bridge:
                 code = payload.get('code', '')
                 suffix = ': ' + code if isinstance(code, str) and re.fullmatch('[a-z][a-z0-9_]{0,70}', code) else ''
                 raise RuntimeError(f"Bridge {data['op']} rejected (HTTP {error.code}){suffix}") from None
-            except (TimeoutError, urllib.error.URLError, json.JSONDecodeError):
+            except (TimeoutError, urllib.error.URLError, json.JSONDecodeError, http.client.IncompleteRead, http.client.RemoteDisconnected, ConnectionResetError):
                 if write or attempt == attempts - 1:
                     raise RuntimeError(f"Bridge {data['op']} transport error") from None
                 print('Bridge read transport interruption; retrying the safe read after cooldown', flush=True)
