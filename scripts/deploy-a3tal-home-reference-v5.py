@@ -31,7 +31,7 @@ SourceFileLoader(mod.__name__, "scripts/deploy-dtc-library.py").exec_module(mod)
 Bridge = mod.Bridge
 
 NEW = [
- "assets/css/home-reference-20261104.css",
+ "home-reference-20261104.css",
  "assets/js/home-reference-20261104.js",
  "home-reference-header-20261104.php",
  "home-reference-20261104.php",
@@ -140,7 +140,7 @@ def modify_functions(live):
 function a3g_reference_v5_home_assets(){
  if(!is_front_page())return;
  $base=get_template_directory_uri();
- wp_enqueue_style('a3g-reference-v5',$base.'/assets/css/home-reference-20261104.css',['a3g-style'],'20261104.5');
+ wp_enqueue_style('a3g-reference-v5',$base.'/home-reference-20261104.css',['a3g-style'],'20261104.5');
  wp_enqueue_script('a3g-reference-v5',$base.'/assets/js/home-reference-20261104.js',[],'20261104.5',true);
 }
 add_action('wp_enqueue_scripts','a3g_reference_v5_home_assets',25);
@@ -186,7 +186,7 @@ def verify_live():
             raise RuntimeError("Missing source design or preserved module in live homepage: "+required)
     canon=re.search(r'<link\b[^>]*\brel=["\x27]canonical["\x27][^>]*\bhref=["\x27]([^"\x27]+)',s,re.I)
     if not canon or canon.group(1).rstrip("/")!=BASE:raise RuntimeError("Homepage canonical unexpectedly changed")
-    css=session.get(BASE+"/wp-content/themes/a3tal-global/assets/css/home-reference-20261104.css",timeout=45).text
+    css=session.get(BASE+"/wp-content/themes/a3tal-global/home-reference-20261104.css",timeout=45).text
     if "a3tal-ref-20261104-hero-desktop.webp" not in css:raise RuntimeError("Final reference stylesheet not accessible")
     js=session.get(BASE+"/wp-content/themes/a3tal-global/assets/js/home-reference-20261104.js",timeout=45).text
     if "menuToggle" not in js or "searchForm" not in js:raise RuntimeError("Final interactive logic absent")
