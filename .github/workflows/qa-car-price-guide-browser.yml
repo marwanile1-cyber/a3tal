@@ -6,8 +6,9 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+# Read-only browser QA must not cancel a pending production theme deployment.
 concurrency:
-  group: a3tal-production-theme
+  group: a3tal-readonly-car-guide-browser-qa
   cancel-in-progress: false
 jobs:
   browser-qa:
