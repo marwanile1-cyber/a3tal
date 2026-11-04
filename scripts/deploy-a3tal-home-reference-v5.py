@@ -110,6 +110,17 @@ def modify_front(live):
         if start<0 or end<0 or live[start:pos].count('<section')!=1:
             raise RuntimeError("Cannot safely isolate duplicate homepage feed")
         live=live[:start]+live[end+len('</section>'):]
+    # Price posts belong to the price feed, not the reviews/comparisons feed.
+    old_filter="'category__in'=>[374,22,21],"
+    new_filter="'category__in'=>[22,21],\n  'category__not_in'=>[374],"
+    if old_filter in live:
+        if live.count(old_filter)!=1:raise RuntimeError("Homepage editorial filter is ambiguous")
+        live=live.replace(old_filter,new_filter,1)
+    elif new_filter not in live:
+        raise RuntimeError("Homepage editorial filter no longer matches reviewed source")
+    if "أحدث الأسعار والمراجعات" in live:
+        if live.count("أحدث الأسعار والمراجعات")!=1:raise RuntimeError("Repeated review heading")
+        live=live.replace("أحدث الأسعار والمراجعات","أحدث المراجعات والمقارنات",1)
     if RELEASE in live and "home-reference-20261104" in live:
         # Keep the existing live modules intact and append only the reviewed
         # homepage section index/anchors. Don't replace the entire legacy file.
@@ -275,7 +286,8 @@ def main():
                 # Permit only the known, reviewed previous live revisions.
                 # Other production edits must stop the deployment, not be overwritten.
                 previous={"home-reference-20261104.css":"e0fb29b29d1d4d01db4518141090992853ab9ef6",
-                          "home-reference-20261104.php":"7c4bd05a5e130970ae14912ef74add4c949f34d5"}
+                          "home-reference-20261104.php":"7c4bd05a5e130970ae14912ef74add4c949f34d5",
+                          "assets/js/home-reference-20261104.js":"27e9cc0848332616ca1e0b1f6287f2884cb49b57"}
                 raw=data["content"].encode("utf8")
                 git_blob=hashlib.sha1(b"blob "+str(len(raw)).encode("ascii")+b"\0"+raw).hexdigest()
                 if previous.get(name)!=git_blob:
