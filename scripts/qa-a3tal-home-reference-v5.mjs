@@ -22,7 +22,7 @@ try{
       h1:document.querySelector('.a3tal-reference-page h1')?.innerText||'',
       hubs:document.querySelectorAll('.a3tal-hub-tiles .hub-card').length
     }));
-    if(live.h1.includes('السيارات في مصر') && live.hubs===6)break;
+    if(live.h1.includes('للسيارات في مصر') && live.hubs===6)break;
     if(attempt===6)throw Error(label+' latest release not visible after repeated uncached requests '+JSON.stringify(live));
     console.log('PUBLIC_CACHE_RETRY',label,attempt+1,JSON.stringify(live));
     await page.waitForTimeout(3500);
@@ -42,7 +42,7 @@ try{
     if(await card.count()!==1 || !(await card.isVisible()))throw Error(label+' missing visible PSEO hub '+path);
   }
   const heroText=await page.locator('.a3tal-reference-page .hero h1').innerText();
-  if(!heroText.includes('السيارات في مصر'))throw Error(label+' homepage H1 does not describe the Egyptian automotive portal');
+  if(!heroText.includes('للسيارات في مصر'))throw Error(label+' homepage H1 does not describe the Egyptian automotive portal');
   const metrics=await page.evaluate(()=>{
     const rect=selector=>{const el=document.querySelector(selector);if(!el)return null;const r=el.getBoundingClientRect();const st=getComputedStyle(el);return {top:Math.round(r.top),bottom:Math.round(r.bottom),height:Math.round(r.height),paddingTop:st.paddingTop,marginTop:st.marginTop};};
     return {header:rect('.a3r-site-header'),main:rect('main'),hero:rect('.a3tal-reference-page .hero'),h1:rect('.a3tal-reference-page .hero h1'),heroCopy:rect('.a3tal-reference-page .hero-copy'),scrollWidth:document.documentElement.scrollWidth,viewport:innerWidth};
