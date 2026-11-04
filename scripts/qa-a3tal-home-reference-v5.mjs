@@ -34,6 +34,23 @@ try{
   if(label==='mobile' && info.overflow>3)throw Error('Mobile horizontal overflow '+info.overflow);
   if(label==='desktop' && !info.heroBackground.includes('a3tal-ref-20261104-hero-desktop.webp'))throw Error('Desktop exact hero absent');
   if(label==='mobile' && !info.heroBackground.includes('a3tal-ref-20261104-hero-desktop.webp')){/* mobile uses separate scene */}
+  // Load actual below-the-fold thumbnails before a full-page screenshot.
+  // A screenshot of native loading=lazy images without scrolling shows false gray blanks.
+  await page.evaluate(async()=>{
+    const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+    const max=document.documentElement.scrollHeight;
+    for(let y=0;y<max;y+=Math.max(350,Math.floor(window.innerHeight*.9))){
+      window.scrollTo(0,y);
+      await delay(90);
+    }
+    await delay(1100);
+    window.scrollTo(0,0);
+    await delay(400);
+  });
+  const legacyImages=await page.evaluate(()=>[...document.querySelectorAll('.g-home img')].filter(x=>x.getBoundingClientRect().width>0).map(x=>({src:x.currentSrc||x.src,ok:x.complete&&x.naturalWidth>0})));
+  const legacyBroken=legacyImages.filter(x=>!x.ok);
+  if(legacyBroken.length)console.log('LEGACY_IMAGE_AUDIT',label,'broken',legacyBroken.slice(0,12));
+  console.log('LAZY_IMAGE_SCROLL_AUDIT',label,'total',legacyImages.length,'loaded',legacyImages.length-legacyBroken.length);
   await page.screenshot({path:dir+'/'+label+'-first-screen.png',fullPage:false,animations:'disabled'});
   await page.screenshot({path:dir+'/'+label+'-full.png',fullPage:true,animations:'disabled'});
   // Mode buttons are intentionally hidden below 720px; test their interaction on desktop.
@@ -48,13 +65,16 @@ try{
     if(await input.getAttribute('name')!=='q')throw Error('Desktop technical reference search mode failed');
     if(await page.locator('#searchForm').getAttribute('action')!=='https://a3tal.com/car-reference/')throw Error('Desktop reference search action failed');
   }
-  const heroFile=label==='desktop'?'a3tal-ref-20261104-hero-desktop.webp':'a3tal-ref-20261104-hero-mobile.webp';
+  const heroFile='a3tal-ref-20261104-hero-desktop.webp'; // shared clean scene has no baked-in copy
   if(label==='mobile'){
     const mobileHero=await page.locator('.hero-mobile-scene').evaluate(x=>getComputedStyle(x).backgroundImage);
     if(!mobileHero.includes(heroFile))throw Error('Mobile hero background is missing');
     if(!(await page.locator('.search-modes').isHidden()))throw Error('Mobile search controls unexpectedly visible outside reference layout');
     await page.locator('#menuToggle').click();
     if(!(await page.locator('.a3r-site-header .desktop-nav').isVisible()))throw Error('Mobile navigation failed to open');
+    if(!(await page.locator('.g-mobile-bottom').isHidden()))throw Error('Duplicate legacy mobile navigation still visible');
+    if(!(await page.locator('.a3tal-reference-page .dock').isVisible()))throw Error('Reference mobile dock missing');
+    if(!(await page.locator('.search-modes').isVisible()))throw Error('Search modes unavailable on mobile');
   }
   const heroLoaded=await page.evaluate(async filename=>{
     const probe=new Image();
