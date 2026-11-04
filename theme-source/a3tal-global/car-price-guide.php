@@ -103,7 +103,7 @@ if ($cg_brand_selected && !$cg_top && $cg_search==='' && !$cg_year && !$cg_budge
     && !isset($_GET['market']) && !isset($_GET['vehicle_type'])) {
   $cg_related_guides=new WP_Query([
     'post_type'=>'post','post_status'=>'publish',
-    's'=>$cg_brand_selected['search'],'posts_per_page'=>8,
+    's'=>$cg_brand_selected['search'],'search_columns'=>['post_title'],'posts_per_page'=>8,
     'orderby'=>'date','order'=>'DESC','ignore_sticky_posts'=>true,
     'no_found_rows'=>true
   ]);
@@ -116,6 +116,7 @@ $cg_hero_ids = array_slice($cg_hero_ids,0,3);
 $cg_price_updates = new WP_Query([
   'post_type'=>'post','post_status'=>'publish','cat'=>374,'posts_per_page'=>5,
   's'=>$cg_brand_selected ? $cg_brand_selected['search'] : '',
+  'search_columns'=>['post_title'],
   'orderby'=>'date','order'=>'DESC','no_found_rows'=>true,'ignore_sticky_posts'=>true
 ]);
 // Scoped assets: only the cars archive, never motorcycle, DTC or posts.
