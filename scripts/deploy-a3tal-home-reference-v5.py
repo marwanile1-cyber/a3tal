@@ -223,6 +223,12 @@ def verify_live():
                  "/maintenance-schedules/","/service-centers/"]:
         if 'href="'+BASE+path+'"' not in s:
             raise RuntimeError("Missing public navigation destination: "+path)
+    for brand in ["geely","toyota","kia","hyundai","nissan","mg","chevrolet","byd"]:
+        href='href="'+BASE+'/cars/?brand='+brand+'"'
+        if href not in s:
+            raise RuntimeError("Wrong homepage car-brand logo destination: "+brand)
+    if 'class="allbrands" href="'+BASE+'/cars/"' not in s:
+        raise RuntimeError("All brands must lead to the cars archive")
     for image in ["a3tal-ref-20261104-service-specs.webp","a3tal-ref-20261104-service-dtc.webp",
                   "tvs-raider-125-egypt.webp","a3tal-egypt-parts-market-20261026-hero-original-20261025-1024x576.webp",
                   "a3tal-ref-20261104-service-maintenance.webp",
