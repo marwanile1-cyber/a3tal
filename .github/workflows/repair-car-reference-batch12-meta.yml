@@ -1,0 +1,111 @@
+name: Repair Batch12 Car Reference Meta Descriptions
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/repair-car-reference-batch12-meta.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-car-reference-batch12-meta-repair
+  cancel-in-progress: false
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Safely update only the Yoast description on 18 existing published pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 - <<'PY'
+          import html,json,os,re,time,urllib.request,urllib.parse,urllib.error
+          from pathlib import Path
+          BASE='https://a3tal.com'
+          DATA=json.loads(Path('data/car-reference/batch-12-18-technical-references-20261104.json').read_text())
+          DESC=json.loads(Path('data/car-reference/batch12-meta-descriptions-20261104.json').read_text())['description_by_slug']
+          KEY=os.environ['A3TAL_API_KEY']
+          rows=[]
+          for g in DATA['clusters']:
+              for kind,item in [('model',g['model'])]+[('spec',s) for s in g['specs']]:
+                  model=g['model']['slug']
+                  path=g['brand']+'/'+model+('/'+item['slug'] if kind=='spec' else '')
+                  rows.append((item,BASE+'/car-reference/'+path+'/'))
+          assert len(rows)==18 and len(DESC)==18
+          assert set(DESC)=={x[0]['slug'] for x in rows}
+          def request(url,payload=None):
+              body=None if payload is None else json.dumps(payload,ensure_ascii=False).encode('utf8')
+              headers={'User-Agent':'A3tal-Batch12-MetaRepair/1.0','Cache-Control':'no-cache'}
+              if body is not None:
+                  headers.update({'Content-Type':'application/json','X-A3tal-Key':KEY})
+              last=None
+              for attempt in range(5):
+                  try:
+                      req=urllib.request.Request(url,data=body,headers=headers,method='POST' if body else 'GET')
+                      with urllib.request.urlopen(req,timeout=90) as r:
+                          return r.read().decode('utf8',errors='replace')
+                  except (urllib.error.HTTPError,urllib.error.URLError,TimeoutError) as e:
+                      if isinstance(e,urllib.error.HTTPError) and e.code not in (429,500,502,503,504,520,522,524):
+                          raise
+                      last=e
+                      if attempt<4:time.sleep(4*(attempt+1))
+              raise RuntimeError('HTTP retry exhausted '+url+' '+str(last))
+          def check_live(url,expected,og):
+              err=''
+              for i in range(9):
+                  try:
+                      page=request(url+'?seo_meta_audit='+str(time.time_ns()))
+                      m=re.search(r'<meta\b[^>]*name=["\x27]description["\x27][^>]*>',page,re.I)
+                      assert m, 'meta missing'
+                      description=re.search(r'content=["\x27](.*?)["\x27]',m.group(0),re.I)
+                      assert description,'meta content missing'
+                      actual=html.unescape(description.group(1))
+                      assert actual==expected, 'meta not refreshed'
+                      c=re.search(r'<link\b[^>]*rel=["\x27]canonical["\x27][^>]*>',page,re.I)
+                      assert c and url.rstrip('/') in html.unescape(c.group(0)), 'canonical changed'
+                      images=re.findall(r'<meta\b[^>]*property=["\x27]og:image["\x27][^>]*>',page,re.I)
+                      assert images and any(html.unescape(og) in html.unescape(tag) for tag in images),'og:image changed'
+                      robots=re.search(r'<meta\b[^>]*name=["\x27]robots["\x27][^>]*>',page,re.I)
+                      assert not robots or 'noindex' not in robots.group(0).lower(), 'noindex set'
+                      return
+                  except (Exception,) as ex:
+                      err=str(ex)
+                      if i<8:time.sleep(6)
+              raise RuntimeError('live SEO verification failed '+url+' '+err)
+          changed=skipped=0
+          for item,url in rows:
+              slug=item['slug']; expected=DESC[slug]
+              assert 60<=len(expected)<=155 and 'دليل دليل' not in expected
+              api=BASE+'/wp-json/wp/v2/car-reference-records?'+urllib.parse.urlencode({'slug':slug,'per_page':10})
+              found=json.loads(request(api))
+              found=[x for x in found if x.get('slug')==slug and x.get('status')=='publish']
+              assert len(found)==1,'missing/duplicate publication '+slug
+              post=found[0]
+              assert post['link'].rstrip('/')==url.rstrip('/'),'permalink mismatch '+slug
+              assert html.unescape(re.sub(r'<[^>]+>','',post['title']['rendered'])).strip()==item['title'],'title changed '+slug
+              assert int(post['featured_media'])>0,'photo missing '+slug
+              info=post.get('yoast_head_json') or {}
+              old=info.get('description') or ''
+              pics=info.get('og_image') or []
+              assert pics and pics[0].get('url','').endswith('.webp'),'bad original OG image '+slug
+              image_url=pics[0]['url']
+              if old!=expected:
+                  # Refuse to overwrite a manually edited description. Old batch12 template was "دليل "+title.
+                  assert old.startswith('دليل '+item['title'][:20]),'unexpected editorial description '+slug+': '+old[:55]
+                  answer=json.loads(request(BASE+'/wp-json/a3tal-direct/v1/update-post',{
+                      'id':post['id'],
+                      'meta':{'_yoast_wpseo_metadesc':expected}
+                  }))
+                  assert answer.get('id',post['id'])==post['id'],'wrong target post ID '+slug
+                  changed+=1
+              else:skipped+=1
+              check_live(url,expected,image_url)
+              print('VERIFIED',slug,'id',post['id'],'image',post['featured_media'],'changed',old!=expected,flush=True)
+          print('SUCCESS',json.dumps({'pages':18,'meta_updated':changed,'already_clean':skipped,
+                'canonical_og_featured_image_unchanged':18},ensure_ascii=False))
+          PY
