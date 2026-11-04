@@ -1212,3 +1212,14 @@ add_filter('wpseo_canonical',static function($url){
 
 /* A3TAL-UX-20261031 */
 if (is_file(__DIR__ . '/ux-improvements-20261031.php')) require_once __DIR__ . '/ux-improvements-20261031.php';
+
+
+/* Encyclopedia preview: load only on the homepage. Existing content and URLs remain untouched. */
+function a3g_encyclopedia_home_assets(){
+  if(!is_front_page())return;
+  $uri=get_template_directory_uri();
+  $ver=defined('A3G_VERSION')?A3G_VERSION:'4-preview';
+  wp_enqueue_style('a3g-encyclopedia-home',$uri.'/assets/css/home-encyclopedia.css',['a3g-style'],$ver);
+  wp_enqueue_script('a3g-encyclopedia-home',$uri.'/assets/js/home-encyclopedia.js',[],$ver,true);
+}
+add_action('wp_enqueue_scripts','a3g_encyclopedia_home_assets',25);
