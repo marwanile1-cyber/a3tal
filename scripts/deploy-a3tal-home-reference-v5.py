@@ -101,76 +101,31 @@ def lint_php(content,name):
 
 def source(name):return (THEME/name).read_text("utf8")
 def modify_front(live):
-    # Remove the redundant editorial feed only, leaving posts and URLs untouched.
-    heading="موضوعات أخرى من أعطال"
-    if heading in live:
-        pos=live.index(heading)
-        start=live.rfind('<section',0,pos)
-        end=live.find('</section>',pos)
-        if start<0 or end<0 or live[start:pos].count('<section')!=1:
-            raise RuntimeError("Cannot safely isolate duplicate homepage feed")
-        live=live[:start]+live[end+len('</section>'):]
-    # Price posts belong to the price feed, not the reviews/comparisons feed.
-    old_filter="'category__in'=>[374,22,21],"
-    new_filter="'category__in'=>[22,21],\n  'category__not_in'=>[374],"
-    if old_filter in live:
-        if live.count(old_filter)!=1:raise RuntimeError("Homepage editorial filter is ambiguous")
-        live=live.replace(old_filter,new_filter,1)
-    elif new_filter not in live:
-        raise RuntimeError("Homepage editorial filter no longer matches reviewed source")
-    if "أحدث الأسعار والمراجعات" in live:
-        if live.count("أحدث الأسعار والمراجعات")!=1:raise RuntimeError("Repeated review heading")
-        live=live.replace("أحدث الأسعار والمراجعات","أحدث المراجعات والمقارنات",1)
-    if RELEASE in live and "home-reference-20261104" in live:
-        # Keep the existing live modules intact and append only the reviewed
-        # homepage section index/anchors. Don't replace the entire legacy file.
-        if 'id="a3r-home-contents-title"' in live:
-            return live
-        marker="<?php get_template_part('home-reference-20261104'); ?>"
-        reviewed=source("front-page.php")
-        if live.count(marker)!=1 or reviewed.count(marker)!=1:
-            raise RuntimeError("Unexpected live homepage template anchor")
-        nav=reviewed.split(marker,1)[1].split("<!-- Existing dynamic",1)[0]
-        if 'a3r-home-directory' not in nav:
-            raise RuntimeError("Missing reviewed home section navigation")
-        out=live.replace(marker,marker+nav,1)
-        anchors={
-          '<section class="g-section g-section-soft g-home-dtc-zone':'<section id="a3r-home-diagnostics" class="g-section g-section-soft g-home-dtc-zone',
-          'class="g-section g-home-cars-section"':'id="a3r-home-vehicles" class="g-section g-home-cars-section"',
-          'class="g-section g-home-moto-section"':'id="a3r-home-motorcycles" class="g-section g-home-moto-section"',
-          'class="g-home-places-grid"':'id="a3r-home-services" class="g-home-places-grid"'
-        }
-        for old,new in anchors.items():
-            if out.count(old)!=1:
-                raise RuntimeError("Live homepage section anchor changed: "+old)
-            out=out.replace(old,new,1)
-        fault_label="ابدأ من العَرَض أو من الكود"
-        if out.count(fault_label)!=1:
-            raise RuntimeError("Troubleshooting heading changed")
-        pos=out.index(fault_label)
-        section=out.rfind("<section",0,pos)
-        if section<0 or 'id="a3r-home-troubleshooting"' in out[section:pos]:
-            raise RuntimeError("Troubleshooting section anchor changed")
-        out=out[:section]+out[section:].replace("<section",'<section id="a3r-home-troubleshooting"',1)
-        lint_php(out,"front-page.php")
-        return out
-    start='<main class="g-home g-home-platform">'
-    next_section='<section class="g-section g-section-soft g-home-dtc-zone">'
-    if live.count(start)!=1 or live.count(next_section)!=1:
-        raise RuntimeError("Live home has changed from the expected V3 layout; refusing overwrite")
-    i,j=live.index(start),live.index(next_section)
-    section=live[i:j]
-    if "g-v3-hero-inner" not in section or 'A3TAL-EXPERIENCE-V3-20261022' not in section:
-        raise RuntimeError("Unexpected older homepage hero; manual reconciliation required")
-    new='<main class="g-home g-home-platform a3r-production-home">'+"\n" \
-         +'<!-- '+RELEASE+' -->'+"\n" \
-         +"<?php get_template_part('home-reference-20261104'); ?>"+"\n\n"
-    out=live[:i]+new+live[j:]
-    for required in ["g-home-dtc-zone","g-home-cars-section","g-home-os-section",
-                     "g-home-moto-section","g-home-places-grid","g-v3-mobile-dock"]:
-        if required not in out:raise RuntimeError("Existing homepage module lost: "+required)
-    lint_php(out,"front-page.php")
-    return out
+    """Guardedly replace the duplicated V5 homepage with its single reviewed template.
+
+    This touches only front-page.php; posts, CPT archives, permalinks,
+    options and canonical configuration remain unchanged. The previous
+    live file is captured for a compare-and-swap rollback.
+    """
+    reviewed=source("front-page.php")
+    if live==reviewed:
+        return live
+    anchor="<?php get_template_part('home-reference-20261104'); ?>"
+    existing=[
+        '<main class="g-home g-home-platform a3r-production-home">',
+        '<section class="a3r-home-directory"',
+        'class="g-section g-home-cars-section"',
+        'class="g-v3-mobile-dock"',
+        '<?php get_footer(); ?>'
+    ]
+    if live.count(anchor)!=1 or any(live.count(value)!=1 for value in existing):
+        raise RuntimeError("Live homepage no longer matches the reviewed duplicated V5 layout; refusing unsafe replacement")
+    if live.count("</main>")!=1 or live.count("get_header();")!=1:
+        raise RuntimeError("Unexpected live PHP wrapper; not removing homepage content")
+    if reviewed.count(anchor)!=1 or "a3r-home-directory" in reviewed:
+        raise RuntimeError("Reviewed homepage still contains duplicate navigation")
+    lint_php(reviewed,"front-page.php")
+    return reviewed
 
 def modify_header(live):
     if 'home-reference-header-20261104' in live:return live
@@ -258,14 +213,18 @@ def verify_live():
     else:raise RuntimeError("User-facing homepage did not switch to exact reference after cache flush")
     if len(re.findall(r'<h1\b',s,re.I))!=1:raise RuntimeError("Homepage must retain exactly one H1")
     for required in ["service-specs.webp","brand-toyota.webp","carcard",
-         "a3tal-ref-20261104-hero-desktop.webp","أحدث موديلات السيارات",
-         "g-home-dtc-zone","g-home-moto-section","g-home-places-grid"]:
+         "a3tal-ref-20261104-hero-desktop.webp","أحدث موديلات السيارات"]:
         if required not in s:
-            # Hero is in CSS and preload, verified separately. Static src points to branded filenames.
-            if required.endswith(".webp"):
-                expected="a3tal-ref-20261104-"+required
-                if expected in s:continue
-            raise RuntimeError("Missing source design or preserved module in live homepage: "+required)
+            if required.endswith(".webp") and "a3tal-ref-20261104-"+required in s:
+                continue
+            raise RuntimeError("Missing V5 encyclopedia homepage content: "+required)
+    for forbidden in ["استكشف باقي موسوعة أعطال","g-home-dtc-zone",
+         "g-home-cars-section","g-home-os-section","g-home-moto-section",
+         "g-v3-mobile-dock"]:
+        if forbidden in s:
+            raise RuntimeError("Duplicate legacy homepage section survived production deployment: "+forbidden)
+    if len(re.findall(r'<nav\\b[^>]*class=["\\x27]dock["\\x27]',s,re.I))!=1:
+        raise RuntimeError("Expected one V5 mobile dock, no duplicate navigation")
     canon=re.search(r'<link\b[^>]*\brel=["\x27]canonical["\x27][^>]*\bhref=["\x27]([^"\x27]+)',s,re.I)
     if not canon or canon.group(1).rstrip("/")!=BASE:raise RuntimeError("Homepage canonical unexpectedly changed")
     css=session.get(BASE+"/wp-content/themes/a3tal-global/home-reference-20261104.css",timeout=45).text
@@ -273,7 +232,7 @@ def verify_live():
     js=session.get(BASE+"/wp-content/themes/a3tal-global/assets/js/home-reference-20261104.js",timeout=45).text
     if "menuToggle" not in js or "searchForm" not in js:raise RuntimeError("Final interactive logic absent")
     (REPORT/"homepage-preview-check.json").write_text(json.dumps({"ok":True,"canonical":canon.group(1),
-      "h1_count":1,"exact_reference_images":EXPECTED_ASSETS,"old_sections":True},ensure_ascii=False,indent=2),encoding="utf8")
+      "h1_count":1,"exact_reference_images":EXPECTED_ASSETS,"old_sections":False},ensure_ascii=False,indent=2),encoding="utf8")
     print("LIVE_HOMEPAGE_REFERENCE_AND_SEO_VERIFIED",flush=True)
 
 def main():
