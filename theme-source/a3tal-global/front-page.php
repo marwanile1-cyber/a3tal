@@ -271,18 +271,7 @@ $ref_brands=['mg'=>'إم جي','chevrolet'=>'شيفروليه','kia'=>'كيا','
   </div>
 </section>
 
-<section class="g-section g-section-soft">
-  <div class="g-wrap">
-    <div class="g-section-head"><div><span>الجديد الآن</span><h2>موضوعات أخرى من أعطال</h2></div><a data-google-vignette="false" href="<?php echo esc_url(home_url('/')); ?>">عرض المزيد</a></div>
-    <div class="g-news-grid"><?php while($news->have_posts()){$news->the_post();a3g_card(get_the_ID(),'g-news-card');}wp_reset_postdata(); ?></div>
-    <div class="g-trust-strip g-trust-platform">
-      <div><?php echo a3g_icon('gear'); ?><span><strong>محتوى متخصص</strong><small>تشخيص ومعلومات منظمة</small></span></div>
-      <div><?php echo a3g_icon('car'); ?><span><strong>قاعدة مركبات</strong><small>سيارات وموتوسيكلات</small></span></div>
-      <div><?php echo a3g_icon('pin'); ?><span><strong>خدمات وسوق</strong><small>مراكز ومعارض وقطع غيار</small></span></div>
-      <div><?php echo a3g_icon('calendar'); ?><span><strong>ملكية وصيانة</strong><small>جراج وسجل وتذكيرات</small></span></div>
-    </div>
-  </div>
-</section>
+
 
 <nav class="g-v3-mobile-dock" aria-label="التنقل السريع على الجوال">
   <a data-google-vignette="false" href="<?php echo esc_url(home_url('/')); ?>" aria-current="page"><?php echo a3g_icon('car'); ?><span>الرئيسية</span></a>
