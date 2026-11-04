@@ -22,6 +22,22 @@ if (is_wp_error($cg_bodies)) $cg_bodies = [];
 $cg_search = isset($_GET['car_search']) && is_string($_GET['car_search']) ? trim(sanitize_text_field(wp_unslash($_GET['car_search']))) : '';
 $cg_search = function_exists('mb_substr') ? mb_substr($cg_search,0,85) : substr($cg_search,0,85);
 $cg_brand = get_query_var('brand');
+// One consistent brand destination for homepage logos: existing /cars/?brand=<slug>.
+// For brands without published vehicle records, show real published guides instead
+// of an empty catalog. Filtered pages remain noindex/follow and do not create SEO URLs.
+$cg_brand_slug = isset($_GET['brand']) && is_string($_GET['brand'])
+  ? sanitize_key(wp_unslash($_GET['brand'])) : sanitize_key((string)$cg_brand);
+$cg_brand_directory = [
+ 'geely'=>['name'=>'جيلي','search'=>'جيلي','reference'=>''],
+ 'toyota'=>['name'=>'تويوتا','search'=>'تويوتا','reference'=>''],
+ 'kia'=>['name'=>'كيا','search'=>'كيا','reference'=>'/car-reference/kia/'],
+ 'hyundai'=>['name'=>'هيونداي','search'=>'هيونداي','reference'=>'/car-reference/hyundai/'],
+ 'nissan'=>['name'=>'نيسان','search'=>'نيسان','reference'=>'/car-reference/nissan/'],
+ 'mg'=>['name'=>'MG','search'=>'MG','reference'=>'/car-reference/mg/'],
+ 'chevrolet'=>['name'=>'شيفروليه','search'=>'شيفروليه','reference'=>'/car-reference/chevrolet/'],
+ 'byd'=>['name'=>'BYD','search'=>'BYD','reference'=>''],
+];
+$cg_brand_selected=$cg_brand_directory[$cg_brand_slug]??null;
 $cg_market = get_query_var('market');
 $cg_body = get_query_var('vehicle_type');
 // Budget is based on the car record's starting published price, not an estimated market quote.
@@ -81,6 +97,17 @@ if ($cg_search !== '' || $cg_year > 0 || $cg_budget !== '' || $cg_sort !== 'newe
 $cg_all = $cg_listing->posts ?? [];
 $cg_top = array_slice($cg_all,0,6);
 $cg_more = array_slice($cg_all,6);
+// Never route brand logos into 0-result listings when related published content exists.
+$cg_related_guides = null;
+if ($cg_brand_selected && !$cg_top && $cg_search==='' && !$cg_year && !$cg_budget
+    && !isset($_GET['market']) && !isset($_GET['vehicle_type'])) {
+  $cg_related_guides=new WP_Query([
+    'post_type'=>'post','post_status'=>'publish',
+    's'=>$cg_brand_selected['search'],'posts_per_page'=>8,
+    'orderby'=>'date','order'=>'DESC','ignore_sticky_posts'=>true,
+    'no_found_rows'=>true
+  ]);
+}
 $cg_hero_ids = get_posts([
   'post_type'=>'a3_car','post_status'=>'publish','posts_per_page'=>7,
   'fields'=>'ids','no_found_rows'=>true,'meta_query'=>[['key'=>'_thumbnail_id','compare'=>'EXISTS']]
@@ -88,6 +115,7 @@ $cg_hero_ids = get_posts([
 $cg_hero_ids = array_slice($cg_hero_ids,0,3);
 $cg_price_updates = new WP_Query([
   'post_type'=>'post','post_status'=>'publish','cat'=>374,'posts_per_page'=>5,
+  's'=>$cg_brand_selected ? $cg_brand_selected['search'] : '',
   'orderby'=>'date','order'=>'DESC','no_found_rows'=>true,'ignore_sticky_posts'=>true
 ]);
 // Scoped assets: only the cars archive, never motorcycle, DTC or posts.
@@ -138,7 +166,7 @@ get_header();
     <div class="cg-hero-shade"></div>
     <div class="cg-container cg-hero-content">
       <span class="cg-eyebrow">A3TAL CAR PRICES • EGYPT</span>
-      <h1 id="cg-title">أسعار السيارات في مصر</h1>
+      <h1 id="cg-title"><?php echo $cg_brand_selected ? esc_html("دليل سيارات ".$cg_brand_selected["name"]." في مصر") : "أسعار السيارات في مصر"; ?></h1>
       <p>دليل السيارات الجديدة والمواصفات والفئات والمقارنات، من بيانات الموديلات والمقالات المنشورة بالفعل على أعطال.كوم.</p>
       <form class="cg-search" role="search" action="<?php echo esc_url($cg_url); ?>" method="get">
         <label class="screen-reader-text" for="cg-car-search">ابحث عن سيارة أو موديل</label>
@@ -198,7 +226,26 @@ get_header();
       <div class="cg-models-col">
         <section class="cg-surface cg-models-section" id="cg-popular" aria-labelledby="cg-popular-title">
           <div class="cg-section-heading"><div><span class="cg-kicker">موديلات منشورة ومعلومات فعلية</span><h2 id="cg-popular-title">أحدث السيارات في الدليل</h2></div><span class="cg-total"><?php echo esc_html(number_format_i18n((int)$cg_listing->found_posts)); ?> نتيجة</span></div>
-          <?php if($cg_top): ?><div class="cg-cars-grid"><?php foreach($cg_top as $car){$cg_render_card($car);} ?></div><?php else: ?><p class="cg-empty">مفيش موديلات مطابقة للفلاتر دي حاليًا. جرّب مسح الفلاتر أو اسم موديل تاني.</p><?php endif; ?>
+          <?php if($cg_top): ?>
+            <div class="cg-cars-grid"><?php foreach($cg_top as $car){$cg_render_card($car);} ?></div>
+          <?php elseif($cg_brand_selected && $cg_related_guides): ?>
+            <div class="cg-brand-discovery">
+              <h3><?php echo esc_html("كل ما يخص سيارات ".$cg_brand_selected["name"]); ?></h3>
+              <p>لا توجد موديلات مسجلة لهذه الماركة في قاعدة الأسعار حاليًا. هذه أدلة ومقالات منشورة بالفعل، وليست أسعارًا أو مواصفات لم يتم التحقق منها.</p>
+              <?php if($cg_brand_selected['reference']): ?>
+                <p><a class="cg-secondary-link" href="<?php echo esc_url(home_url($cg_brand_selected['reference'])); ?>">دليل المواصفات الفنية لهذه الماركة ←</a></p>
+              <?php endif; ?>
+              <?php if($cg_related_guides->have_posts()): ?>
+                <div class="cg-guide-links">
+                  <?php while($cg_related_guides->have_posts()):$cg_related_guides->the_post(); ?>
+                    <a href="<?php the_permalink(); ?>"><b><?php echo esc_html(get_the_title()); ?></b><span>اقرأ الدليل المنشور ←</span></a>
+                  <?php endwhile;wp_reset_postdata(); ?>
+                </div>
+              <?php else: ?>
+                <p class="cg-empty">لم تُنشر بعد أدلة كافية لهذه الماركة. تابع دليل السيارات والماركات المتاحة.</p>
+              <?php endif; ?>
+            </div>
+          <?php else: ?><p class="cg-empty">مفيش موديلات مطابقة للفلاتر دي حاليًا. جرّب مسح الفلاتر أو اسم موديل تاني.</p><?php endif; ?>
         </section>
       </div>
     </div>
