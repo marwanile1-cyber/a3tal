@@ -5,6 +5,7 @@ on:
     paths:
       - '.github/workflows/deploy-a3tal-home-reference-v5.yml'
       - 'scripts/deploy-a3tal-home-reference-v5.py'
+      - 'scripts/qa-a3tal-home-reference-v5.mjs'
   workflow_dispatch:
 permissions:
   contents: read
