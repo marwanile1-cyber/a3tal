@@ -5,6 +5,11 @@ on:
       - 'theme-source/a3tal-global/**'
       - '.github/workflows/qa-encyclopedia-homepage-preview.yml'
       - 'scripts/deploy-a3tal-home-reference-v5.py'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/qa-encyclopedia-homepage-preview.yml'
+      - 'scripts/qa-a3tal-home-reference-v5.mjs'
   workflow_dispatch:
 permissions:
   contents: read
@@ -56,3 +61,28 @@ jobs:
           assert len(re.findall(r'a3tal-ref-20261104-',exact))>=15
           print('PASS: 27 real reference source assets; semantic H1; 108 count dynamic; unchanged legacy modules; responsive assets')
           PY
+
+  live-browser-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install isolated browser dependencies
+        run: |
+          npm install --prefix /tmp/a3tal-home-qa --no-audit --no-fund playwright@1.56.1
+          if ! command -v google-chrome >/dev/null 2>&1; then
+            /tmp/a3tal-home-qa/node_modules/.bin/playwright install chromium
+          fi
+      - name: Verify live V5 desktop and mobile without deployment
+        run: |
+          cp scripts/qa-a3tal-home-reference-v5.mjs /tmp/a3tal-home-qa/qa.mjs
+          mkdir -p reports/a3tal-home-reference-v5/screenshots
+          node /tmp/a3tal-home-qa/qa.mjs
+      - name: Save browser checks and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-v5-live-readonly-qa
+          path: reports/a3tal-home-reference-v5/
+          if-no-files-found: ignore
+          retention-days: 14
