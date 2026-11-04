@@ -43,7 +43,7 @@ jobs:
           assert len(re.findall(r'<h1\b',exact))==1
           assert 'wp_count_posts' in exact
           assert 'car-reference/' in exact and 'maintenance-schedules/' in exact and '/dtc/' in exact
-          assert 'a3tal-reference-page' in exact and 'السيارات في مصر' in exact
+          assert 'a3tal-reference-page' in exact and 'للسيارات في مصر' in exact
           assert exact.count('class="hub-card"')==6, 'Expected six PSEO cards'
           for path in ['/car-reference/','/dtc/','/motorcycles/','/parts/','/maintenance-schedules/','/service-centers/']:
             assert 'href="https://a3tal.com'+path+'"' in exact, path
