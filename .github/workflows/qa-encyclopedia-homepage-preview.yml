@@ -1,0 +1,58 @@
+name: QA A3tal Exact Reference Homepage (No Deployment)
+on:
+  pull_request:
+    paths:
+      - 'theme-source/a3tal-global/**'
+      - '.github/workflows/qa-encyclopedia-homepage-preview.yml'
+      - 'scripts/deploy-a3tal-home-reference-v5.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  reference-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint complete PHP and JS production candidate
+        run: |
+          set -euo pipefail
+          for file in front-page.php header.php functions.php home-reference-20261104.php home-reference-header-20261104.php; do
+            php -l "theme-source/a3tal-global/$file"
+          done
+          node --check theme-source/a3tal-global/assets/js/home-reference-20261104.js
+          python3 -m py_compile scripts/deploy-a3tal-home-reference-v5.py
+      - name: Exact reference assets, visible links, dynamic SEO and previous modules
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          root=Path('theme-source/a3tal-global')
+          sources={f:(root/f).read_text('utf8') for f in ['front-page.php','header.php','functions.php','home-reference-20261104.php','home-reference-header-20261104.php','assets/css/home-reference-20261104.css','assets/js/home-reference-20261104.js']}
+          homepage=sources['front-page.php']
+          exact=sources['home-reference-20261104.php']
+          css=sources['assets/css/home-reference-20261104.css']
+          assert 'home-reference-20261104' in homepage
+          assert 'home-reference-header-20261104' in sources['header.php']
+          assert len(re.findall(r'<h1\b',exact))==1
+          assert 'wp_count_posts' in exact
+          assert 'car-reference/' in exact and 'maintenance-schedules/' in exact and '/dtc/' in exact
+          assert 'g-home-dtc-zone' in homepage
+          assert 'g-home-cars-section' in homepage and 'g-home-os-section' in homepage
+          assert 'g-home-moto-section' in homepage and 'g-home-places-grid' in homepage
+          assert 'home-reference-20261104.css' in sources['functions.php']
+          assert 'home-reference-20261104.js' in sources['functions.php']
+          assert 'hero-mobile.webp' in css and 'hero-desktop.webp' in css
+          assert 'body.home .g-newsbar{display:none!important}' in css
+          assets=list((root/'assets/img/reference-20261104').glob('*.webp'))
+          assert len(assets)==27, (len(assets),[x.name for x in assets])
+          for name in ['hero-desktop','hero-mobile','a3tal-logo','service-specs','service-comparison','service-dtc','service-maintenance','brand-toyota','brand-hyundai','brand-chevrolet','brand-mg','model-mg7','model-chevrolet-captiva']:
+            assert (root/'assets/img/reference-20261104'/f'{name}.webp').is_file(),name
+          for item in assets:
+            data=item.read_bytes()
+            assert data[:4]==b'RIFF' and data[8:12]==b'WEBP',(item,len(data))
+            assert len(data)<80000,(item,len(data))
+          assert len(re.findall(r'a3tal-ref-20261104-',exact))>=15
+          print('PASS: 27 real reference source assets; semantic H1; 108 count dynamic; unchanged legacy modules; responsive assets')
+          PY

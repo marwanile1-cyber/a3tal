@@ -1,0 +1,59 @@
+name: Deploy A3tal exact-reference encyclopedia homepage V5
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/deploy-a3tal-home-reference-v5.yml'
+      - 'scripts/deploy-a3tal-home-reference-v5.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-theme
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate required production source and GitHub secret
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          for x in front-page.php header.php functions.php home-reference-20261104.php home-reference-header-20261104.php; do
+            php -l "theme-source/a3tal-global/$x"
+          done
+          node --check theme-source/a3tal-global/assets/js/home-reference-20261104.js
+          python3 -m py_compile scripts/deploy-a3tal-home-reference-v5.py
+          test "$(find theme-source/a3tal-global/assets/img/reference-20261104 -name '*.webp' | wc -l)" -eq 27
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install HTTP dependency
+        run: python3 -m pip install --disable-pip-version-check requests
+      - name: Upload 27 reference assets and deploy guarded live theme
+        run: python3 -u scripts/deploy-a3tal-home-reference-v5.py
+      - name: Install Playwright and browser for 1440 and 390 layout verification
+        if: success()
+        run: |
+          npm install --prefix /tmp/a3tal-home-qa --no-audit --no-fund playwright@1.56.1
+          if ! command -v google-chrome >/dev/null 2>&1; then
+            /tmp/a3tal-home-qa/node_modules/.bin/playwright install chromium
+          fi
+      - name: Check user-visible desktop and mobile image rendering
+        if: success()
+        run: |
+          cp scripts/qa-a3tal-home-reference-v5.mjs /tmp/a3tal-home-qa/qa.mjs
+          mkdir -p reports/a3tal-home-reference-v5/screenshots
+          node /tmp/a3tal-home-qa/qa.mjs
+      - name: Retain predeployment originals, reference image audit and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-home-exact-v5-production-evidence
+          path: reports/a3tal-home-reference-v5/
+          if-no-files-found: ignore
+          retention-days: 30

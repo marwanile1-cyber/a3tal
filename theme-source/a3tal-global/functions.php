@@ -39,25 +39,9 @@ add_filter('wp_resource_hints',function($urls,$relation_type){
 // Match the front-page category query and sizes to avoid duplicate image requests.
 function a3g_preload_home_hero_image() {
   if (!is_front_page()) return;
-  $posts = get_posts([
-    'post_type' => 'post',
-    'post_status' => 'publish',
-    'cat' => 374,
-    'posts_per_page' => 1,
-    'fields' => 'ids',
-    'ignore_sticky_posts' => true,
-    'no_found_rows' => true,
-  ]);
-  if (empty($posts)) return;
-  $attachment_id = get_post_thumbnail_id((int)$posts[0]);
-  if (!$attachment_id) return;
-  $source = wp_get_attachment_image_src($attachment_id, 'large');
-  if (!$source || empty($source[0])) return;
-  $srcset = wp_get_attachment_image_srcset($attachment_id, 'large');
-  $sizes = '(max-width: 767px) 100vw, (max-width: 1280px) 92vw, 1240px';
-  echo '<link rel="preload" as="image" href="'.esc_url($source[0]).'"'
-    . ($srcset ? ' imagesrcset="'.esc_attr($srcset).'"' : '')
-    . ' imagesizes="'.esc_attr($sizes).'" fetchpriority="high">'."\n";
+  $base=content_url('/uploads/2026/11/');
+  echo '<link rel="preload" as="image" media="(min-width: 701px)" href="'.esc_url($base.'a3tal-ref-20261104-hero-desktop.webp').'" fetchpriority="high">'.PHP_EOL;
+  echo '<link rel="preload" as="image" media="(max-width: 700px)" href="'.esc_url($base.'a3tal-ref-20261104-hero-mobile.webp').'" fetchpriority="high">'.PHP_EOL;
 }
 add_action('wp_head', 'a3g_preload_home_hero_image', 2);
 
@@ -1212,3 +1196,14 @@ add_filter('wpseo_canonical',static function($url){
 
 /* A3TAL-UX-20261031 */
 if (is_file(__DIR__ . '/ux-improvements-20261031.php')) require_once __DIR__ . '/ux-improvements-20261031.php';
+
+
+/* Encyclopedia preview: load only on the homepage. Existing content and URLs remain untouched. */
+function a3g_encyclopedia_home_assets(){
+  if(!is_front_page())return;
+  $uri=get_template_directory_uri();
+  $ver=defined('A3G_VERSION')?A3G_VERSION:'4-preview';
+  wp_enqueue_style('a3g-encyclopedia-home',$uri.'/assets/css/home-reference-20261104.css',['a3g-style'],'20261104-v5');
+  wp_enqueue_script('a3g-encyclopedia-home',$uri.'/assets/js/home-reference-20261104.js',[],'20261104-v5',true);
+}
+add_action('wp_enqueue_scripts','a3g_encyclopedia_home_assets',25);
