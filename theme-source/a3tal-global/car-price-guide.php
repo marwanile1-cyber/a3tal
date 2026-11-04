@@ -168,6 +168,9 @@ get_header();
       <span class="cg-eyebrow">A3TAL CAR PRICES • EGYPT</span>
       <h1 id="cg-title"><?php echo $cg_brand_selected ? esc_html("دليل سيارات ".$cg_brand_selected["name"]." في مصر") : "أسعار السيارات في مصر"; ?></h1>
       <p>دليل السيارات الجديدة والمواصفات والفئات والمقارنات، من بيانات الموديلات والمقالات المنشورة بالفعل على أعطال.كوم.</p>
+      <?php if($cg_brand_selected && $cg_brand_selected['reference']): ?>
+        <p><a class="cg-secondary-link" href="<?php echo esc_url(home_url($cg_brand_selected['reference'])); ?>">دليل المواصفات الفنية لسيارات <?php echo esc_html($cg_brand_selected['name']); ?> ←</a></p>
+      <?php endif; ?>
       <form class="cg-search" role="search" action="<?php echo esc_url($cg_url); ?>" method="get">
         <label class="screen-reader-text" for="cg-car-search">ابحث عن سيارة أو موديل</label>
         <input type="search" id="cg-car-search" name="car_search" placeholder="ابحث عن سيارة... تويوتا، كيا، جيلي، نيسان" value="<?php echo esc_attr($cg_search); ?>" maxlength="85">
@@ -225,7 +228,7 @@ get_header();
 
       <div class="cg-models-col">
         <section class="cg-surface cg-models-section" id="cg-popular" aria-labelledby="cg-popular-title">
-          <div class="cg-section-heading"><div><span class="cg-kicker">موديلات منشورة ومعلومات فعلية</span><h2 id="cg-popular-title">أحدث السيارات في الدليل</h2></div><span class="cg-total"><?php echo esc_html(number_format_i18n((int)$cg_listing->found_posts)); ?> نتيجة</span></div>
+          <div class="cg-section-heading"><div><span class="cg-kicker">موديلات منشورة ومعلومات فعلية</span><h2 id="cg-popular-title"><?php echo $cg_brand_selected ? esc_html("سيارات ومعلومات ".$cg_brand_selected["name"]) : "أحدث السيارات في الدليل"; ?></h2></div><span class="cg-total"><?php echo esc_html($cg_related_guides && !$cg_top ? "أدلة منشورة" : number_format_i18n((int)$cg_listing->found_posts)." نتيجة"); ?></span></div>
           <?php if($cg_top): ?>
             <div class="cg-cars-grid"><?php foreach($cg_top as $car){$cg_render_card($car);} ?></div>
           <?php elseif($cg_brand_selected && $cg_related_guides): ?>
