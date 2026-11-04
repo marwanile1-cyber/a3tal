@@ -1,0 +1,37 @@
+name: Refresh Chevrolet Car Reference Hub With Captiva
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/refresh-car-reference-chevrolet-hub.py'
+      - '.github/workflows/refresh-chevrolet-car-reference-hub.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    concurrency:
+      group: a3tal-chevrolet-brand-hub
+      cancel-in-progress: false
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate existing-hub-only update
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/refresh-car-reference-chevrolet-hub.py
+          python3 -m pip install --quiet --disable-pip-version-check requests
+      - name: Update existing Chevrolet brand and verify IDs, image and links
+        run: python3 scripts/refresh-car-reference-chevrolet-hub.py
+      - name: Save brand coherence audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: chevrolet-reference-hub-${{ github.run_id }}
+          path: car-reference-chevrolet-hub-update-proof.json
+          if-no-files-found: warn
+          retention-days: 30
