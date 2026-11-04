@@ -101,6 +101,15 @@ def lint_php(content,name):
 
 def source(name):return (THEME/name).read_text("utf8")
 def modify_front(live):
+    # Remove the redundant editorial feed only, leaving posts and URLs untouched.
+    heading="موضوعات أخرى من أعطال"
+    if heading in live:
+        pos=live.index(heading)
+        start=live.rfind('<section',0,pos)
+        end=live.find('</section>',pos)
+        if start<0 or end<0 or live[start:pos].count('<section')!=1:
+            raise RuntimeError("Cannot safely isolate duplicate homepage feed")
+        live=live[:start]+live[end+len('</section>'):]
     if RELEASE in live and "home-reference-20261104" in live:
         # Keep the existing live modules intact and append only the reviewed
         # homepage section index/anchors. Don't replace the entire legacy file.
