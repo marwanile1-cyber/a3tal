@@ -41,6 +41,12 @@ try{
     const card=page.locator('.a3tal-hub-tiles .hub-card[href="https://a3tal.com'+path+'"]');
     if(await card.count()!==1 || !(await card.isVisible()))throw Error(label+' missing visible PSEO hub '+path);
   }
+  const imageCards=page.locator('.a3tal-hub-tiles .hub-card .hub-visual');
+  if(await imageCards.count()!==6)throw Error(label+' expected six image-led navigation cards');
+  await imageCards.first().waitFor({state:'visible',timeout:15000});
+  await page.waitForFunction(()=>[...document.querySelectorAll('.a3tal-hub-tiles .hub-visual')].every(x=>x.complete&&x.naturalWidth>0),{timeout:20000}).catch(()=>{});
+  const failedHubImages=await imageCards.evaluateAll(images=>images.filter(x=>!x.complete||x.naturalWidth===0).map(x=>x.src));
+  if(failedHubImages.length)throw Error(label+' broken PSEO hub artwork: '+JSON.stringify(failedHubImages));
   const heroText=await page.locator('.a3tal-reference-page .hero h1').innerText();
   if(!heroText.includes('للسيارات في مصر'))throw Error(label+' homepage H1 does not describe the Egyptian automotive portal');
   const metrics=await page.evaluate(()=>{
