@@ -54,10 +54,10 @@ function a3g_preload_home_hero_image() {
   $source = wp_get_attachment_image_src($attachment_id, 'large');
   if (!$source || empty($source[0])) return;
   $srcset = wp_get_attachment_image_srcset($attachment_id, 'large');
-  $sizes = '(max-width: 767px) 100vw, (max-width: 1280px) 92vw, 1240px';
+  $sizes = '(max-width: 1280px) 42vw, 550px';
   echo '<link rel="preload" as="image" href="'.esc_url($source[0]).'"'
     . ($srcset ? ' imagesrcset="'.esc_attr($srcset).'"' : '')
-    . ' imagesizes="'.esc_attr($sizes).'" fetchpriority="high">'."\n";
+    . ' imagesizes="'.esc_attr($sizes).'" media="(min-width: 981px)" fetchpriority="high">'."\n";
 }
 add_action('wp_head', 'a3g_preload_home_hero_image', 2);
 
