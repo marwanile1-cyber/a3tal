@@ -73,7 +73,7 @@ $ref_brands=['mg'=>'إم جي','chevrolet'=>'شيفروليه','kia'=>'كيا','
   <div class="g-wrap g-ency-hero-grid">
     <div class="g-ency-copy">
       <span class="g-ency-eyebrow">موسوعة السيارات والمعلومات الفنية</span>
-      <h1 id="g-ency-title">كل ما يخص عربيتك.<br><span>في مكان واحد.</span></h1>
+      <h1 id="g-ency-title">موسوعة السيارات في مصر.<br><span>كل ما يخص عربيتك في مكان واحد.</span></h1>
       <p>من المواصفات والأسعار إلى أكواد الأعطال وخطوات الصيانة. اعرف معلومات عربيتك قبل شراء قطعة أو اتخاذ قرار.</p>
       <div class="g-ency-search" data-home="<?php echo esc_url(home_url('/')); ?>" data-reference="<?php echo esc_url($ref_archive); ?>" data-dtc="<?php echo esc_url(a3g_platform_link('a3_dtc','/dtc/')); ?>">
         <div class="g-ency-tabs" role="tablist" aria-label="نوع البحث">
