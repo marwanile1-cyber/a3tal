@@ -16,6 +16,9 @@ wp_reset_postdata();
 </head>
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
+<?php if(is_front_page()): ?>
+<?php get_template_part('home-reference-header-20261104'); ?>
+<?php else: ?>
 <header class="g-header">
   <div class="g-wrap g-header-row">
     <a data-google-vignette="false" class="g-brand" href="<?php echo esc_url(home_url('/')); ?>" aria-label="أعطال.كوم"><?php a3g_logo(); ?></a>
@@ -72,3 +75,4 @@ wp_reset_postdata();
     <a data-google-vignette="false" href="<?php echo esc_url(home_url('/my-garage/')); ?>">سيارتي</a>
   </nav>
 </header>
+<?php endif; ?>
