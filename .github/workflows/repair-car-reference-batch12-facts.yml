@@ -1,0 +1,28 @@
+name: Repair Batch12 Duplicate Facts Tables via Authorized Post Bridge
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/repair-car-reference-batch12-facts.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-b12-duplicate-facts-repair
+  cancel-in-progress: false
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3CR_REPAIR_LIMIT: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate and run one-page pilot for existing published MG7 technical data
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/repair-car-reference-batch12-duplicate-facts.py
+          python3 scripts/repair-car-reference-batch12-duplicate-facts.py
