@@ -11,7 +11,8 @@ $children=get_posts(['post_type'=>A3tal_Car_Reference_Engine::TYPE,'post_status'
 <?php if(has_post_thumbnail($post)): ?><figure><?php echo get_the_post_thumbnail($post,'large',['loading'=>'eager']); ?></figure><?php endif; ?>
 <?php if(!empty($data['years'])||!empty($data['market'])||!empty($data['engine'])): ?><div class="a3cr-grid">
 <?php foreach(['market'=>'السوق','years'=>'السنوات','engine'=>'المحرك'] as $key=>$label): if(empty($data[$key]))continue; ?><div class="a3cr-tile"><small><?php echo esc_html($label); ?></small><strong><?php echo esc_html($data[$key]); ?></strong></div><?php endforeach; ?></div><?php endif; ?>
-<?php if(!empty($data['facts'])): ?><section><h2>جدول المواصفات</h2><div class="a3cr-table"><table><tbody>
+<?php // Inline verified-facts tables are authored in some reference records; do not render the same fact rows twice. ?>
+<?php if(!empty($data['facts']) && strpos((string)$post->post_content,'a3tal-responsive-table')===false): ?><section><h2>جدول المواصفات</h2><div class="a3cr-table"><table><tbody>
 <?php foreach($data['facts'] as $fact): ?><tr><th scope="row"><?php echo esc_html($fact['label']); ?></th><td><?php echo esc_html($fact['value']); ?></td></tr><?php endforeach; ?>
 </tbody></table></div></section><?php endif; ?>
 <div class="a3cr-content"><?php echo apply_filters('the_content',$post->post_content); ?></div>
