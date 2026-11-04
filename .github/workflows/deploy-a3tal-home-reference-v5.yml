@@ -5,12 +5,11 @@ on:
     paths:
       - '.github/workflows/deploy-a3tal-home-reference-v5.yml'
       - 'scripts/deploy-a3tal-home-reference-v5.py'
-      - 'scripts/qa-a3tal-home-reference-v5.mjs'
   workflow_dispatch:
 permissions:
   contents: read
 concurrency:
-  group: a3tal-production-home-reference-v5-recovery
+  group: a3tal-production-home-reference-v5-verified-final-20261104
   cancel-in-progress: false
 jobs:
   deploy:
