@@ -250,7 +250,9 @@ def verify_live():
     css=session.get(BASE+"/wp-content/themes/a3tal-global/home-reference-20261104.css",timeout=45).text
     if "a3tal-ref-20261104-hero-desktop.webp" not in css:raise RuntimeError("Final reference stylesheet not accessible")
     js=session.get(BASE+"/wp-content/themes/a3tal-global/assets/js/home-reference-20261104.js",timeout=45).text
-    if "menuToggle" not in js or "searchForm" not in js:raise RuntimeError("Final interactive logic absent")
+    if "searchForm" not in js:raise RuntimeError("External search-mode logic absent")
+    if 'id="menuToggle"' not in s or "a3tal-v5-home-interactions" not in s:
+        raise RuntimeError("Inline mobile navigation interaction absent")
     (REPORT/"homepage-preview-check.json").write_text(json.dumps({"ok":True,"canonical":canon.group(1),
       "h1_count":1,"exact_reference_images":EXPECTED_ASSETS,"old_sections":False},ensure_ascii=False,indent=2),encoding="utf8")
     print("LIVE_HOMEPAGE_REFERENCE_AND_SEO_VERIFIED",flush=True)
