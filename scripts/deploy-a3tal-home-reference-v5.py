@@ -223,7 +223,7 @@ def verify_live():
          "g-v3-mobile-dock"]:
         if forbidden in s:
             raise RuntimeError("Duplicate legacy homepage section survived production deployment: "+forbidden)
-    if len(re.findall(r'<nav\\b[^>]*class=["\\x27]dock["\\x27]',s,re.I))!=1:
+    if s.count('<nav class="dock"')!=1:
         raise RuntimeError("Expected one V5 mobile dock, no duplicate navigation")
     canon=re.search(r'<link\b[^>]*\brel=["\x27]canonical["\x27][^>]*\bhref=["\x27]([^"\x27]+)',s,re.I)
     if not canon or canon.group(1).rstrip("/")!=BASE:raise RuntimeError("Homepage canonical unexpectedly changed")
