@@ -47,6 +47,13 @@ try{
   await page.waitForFunction(()=>[...document.querySelectorAll('.a3tal-hub-tiles .hub-visual')].every(x=>x.complete&&x.naturalWidth>0),{timeout:20000}).catch(()=>{});
   const failedHubImages=await imageCards.evaluateAll(images=>images.filter(x=>!x.complete||x.naturalWidth===0).map(x=>x.src));
   if(failedHubImages.length)throw Error(label+' broken PSEO hub artwork: '+JSON.stringify(failedHubImages));
+  // Every car brand logo must open the matching live, non-generic brand filter.
+  for(const brand of ['geely','toyota','kia','hyundai','nissan','mg','chevrolet','byd']){
+    const locator=page.locator('.a3tal-reference-page .brands-bar a.brand[href="https://a3tal.com/cars/?brand='+brand+'"]');
+    if(await locator.count()!==1)throw Error(label+' wrong car-brand logo destination: '+brand);
+  }
+  if(await page.locator('.a3tal-reference-page .brands-bar a.allbrands[href="https://a3tal.com/cars/"]').count()!==1)
+    throw Error(label+' all brands link must open the full car directory');
   const heroText=await page.locator('.a3tal-reference-page .hero h1').innerText();
   if(!heroText.includes('للسيارات في مصر'))throw Error(label+' homepage H1 does not describe the Egyptian automotive portal');
   const metrics=await page.evaluate(()=>{
