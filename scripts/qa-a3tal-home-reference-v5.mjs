@@ -14,6 +14,21 @@ try{
   const response=await page.goto('https://a3tal.com/?a3tal_reference_browser='+Date.now(),{waitUntil:'domcontentloaded',timeout:90000});
   if(!response||response.status()>=400)throw Error(label+' navigation HTTP '+response?.status());
   await page.waitForSelector('.a3tal-reference-page .hero',{timeout:15000});
+  // WordPress page-cache and edge nodes can briefly serve the previous release
+  // after a verified bridge write. Re-fetch before treating a stale view as a
+  // permanent UI regression; retain all assertions against the public page.
+  for(let attempt=0;attempt<7;attempt++){
+    const live=await page.evaluate(()=>({
+      h1:document.querySelector('.a3tal-reference-page h1')?.innerText||'',
+      hubs:document.querySelectorAll('.a3tal-hub-tiles .hub-card').length
+    }));
+    if(live.h1.includes('السيارات في مصر') && live.hubs===6)break;
+    if(attempt===6)throw Error(label+' latest release not visible after repeated uncached requests '+JSON.stringify(live));
+    console.log('PUBLIC_CACHE_RETRY',label,attempt+1,JSON.stringify(live));
+    await page.waitForTimeout(3500);
+    await page.goto('https://a3tal.com/?a3tal_reference_browser_retry='+Date.now()+'_'+attempt,{waitUntil:'domcontentloaded',timeout:90000});
+    await page.waitForSelector('.a3tal-reference-page .hero',{timeout:15000});
+  }
   await page.waitForTimeout(2200);
   const redundant=await page.locator('.a3r-home-directory, .g-home-dtc-zone, .g-home-cars-section, .g-home-os-section, .g-home-moto-section, .g-v3-mobile-dock').count();
   if(redundant!==0)throw Error(label+' legacy homepage sections or duplicate mobile dock are still rendered: '+redundant);
