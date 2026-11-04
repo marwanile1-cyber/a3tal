@@ -224,6 +224,12 @@ add_action('wp_enqueue_scripts','a3g_reference_v5_home_assets',25);
         out=out.replace("'20261104.6'","'20261104.7'")
     if "a3g_encyclopedia_home_assets" in out and "'20261104-v5b'" in out:
         out=out.replace("'20261104-v5b'","'20261104-v5c'")
+    if "'20261104.7'" in out:
+        if out.count("'20261104.7'") != 2:
+            raise RuntimeError("Unexpected V5 cache version 7 anchors")
+        out=out.replace("'20261104.7'","'20261104.8'")
+    if "a3g_encyclopedia_home_assets" in out and "'20261104-v5c'" in out:
+        out=out.replace("'20261104-v5c'","'20261104-v5d'")
     lint_php(out,"functions.php")
     return out
 
@@ -285,7 +291,7 @@ def main():
             if data and data["content"]!=source(name):
                 # Permit only the known, reviewed previous live revisions.
                 # Other production edits must stop the deployment, not be overwritten.
-                previous={"home-reference-20261104.css":"e0fb29b29d1d4d01db4518141090992853ab9ef6",
+                previous={"home-reference-20261104.css":"1ea34bd36d55deceb4c911b2145556d111eb4da3",
                           "home-reference-20261104.php":"c302a40d27311cdd210e38a859360b8606ad8dfa",
                           "assets/js/home-reference-20261104.js":"27e9cc0848332616ca1e0b1f6287f2884cb49b57"}
                 raw=data["content"].encode("utf8")
