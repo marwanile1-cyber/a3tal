@@ -101,7 +101,39 @@ def lint_php(content,name):
 
 def source(name):return (THEME/name).read_text("utf8")
 def modify_front(live):
-    if RELEASE in live and "home-reference-20261104" in live: return live
+    if RELEASE in live and "home-reference-20261104" in live:
+        # Keep the existing live modules intact and append only the reviewed
+        # homepage section index/anchors. Don't replace the entire legacy file.
+        if 'id="a3r-home-contents-title"' in live:
+            return live
+        marker="<?php get_template_part('home-reference-20261104'); ?>"
+        reviewed=source("front-page.php")
+        if live.count(marker)!=1 or reviewed.count(marker)!=1:
+            raise RuntimeError("Unexpected live homepage template anchor")
+        nav=reviewed.split(marker,1)[1].split("<!-- Existing dynamic",1)[0]
+        if 'a3r-home-directory' not in nav:
+            raise RuntimeError("Missing reviewed home section navigation")
+        out=live.replace(marker,marker+nav,1)
+        anchors={
+          'class="g-section g-section-soft g-home-dtc-zone g-ency-home-dtc-zone"':'id="a3r-home-diagnostics" class="g-section g-section-soft g-home-dtc-zone g-ency-home-dtc-zone"',
+          'class="g-section g-home-cars-section"':'id="a3r-home-vehicles" class="g-section g-home-cars-section"',
+          'class="g-section g-home-moto-section"':'id="a3r-home-motorcycles" class="g-section g-home-moto-section"',
+          'class="g-home-places-grid"':'id="a3r-home-services" class="g-home-places-grid"'
+        }
+        for old,new in anchors.items():
+            if out.count(old)!=1:
+                raise RuntimeError("Live homepage section anchor changed: "+old)
+            out=out.replace(old,new,1)
+        fault_label="ابدأ من العَرَض أو من الكود"
+        if out.count(fault_label)!=1:
+            raise RuntimeError("Troubleshooting heading changed")
+        pos=out.index(fault_label)
+        section=out.rfind("<section",0,pos)
+        if section<0 or 'id="a3r-home-troubleshooting"' in out[section:pos]:
+            raise RuntimeError("Troubleshooting section anchor changed")
+        out=out[:section]+out[section:].replace("<section",'<section id="a3r-home-troubleshooting"',1)
+        lint_php(out,"front-page.php")
+        return out
     start='<main class="g-home g-home-platform">'
     next_section='<section class="g-section g-section-soft g-home-dtc-zone">'
     if live.count(start)!=1 or live.count(next_section)!=1:
@@ -154,7 +186,7 @@ add_action('wp_enqueue_scripts','a3g_reference_v5_home_assets',25);
  if(!is_front_page())return;
  $base=content_url('/uploads/2026/11/');
  echo '<link rel="preload" as="image" media="(min-width: 701px)" href="'.esc_url($base.'a3tal-ref-20261104-hero-desktop.webp').'" fetchpriority="high">'.PHP_EOL;
- echo '<link rel="preload" as="image" media="(max-width: 700px)" href="'.esc_url($base.'a3tal-ref-20261104-hero-mobile.webp').'" fetchpriority="high">'.PHP_EOL;
+ echo '<link rel="preload" as="image" media="(max-width: 700px)" href="'.esc_url($base.'a3tal-ref-20261104-hero-desktop.webp').'" fetchpriority="high">'.PHP_EOL;
 }
 """
     out=live[:i]+new+live[j:]
@@ -166,6 +198,12 @@ add_action('wp_enqueue_scripts','a3g_reference_v5_home_assets',25);
         out=out.replace("'20261104.5'","'20261104.6'")
     if "a3g_encyclopedia_home_assets" in out and "'20261104-v5'" in out:
         out=out.replace("'20261104-v5'","'20261104-v5b'")
+    if "'20261104.6'" in out:
+        if out.count("'20261104.6'") != 2:
+            raise RuntimeError("Unexpected V5 cached asset versions")
+        out=out.replace("'20261104.6'","'20261104.7'")
+    if "a3g_encyclopedia_home_assets" in out and "'20261104-v5b'" in out:
+        out=out.replace("'20261104-v5b'","'20261104-v5c'")
     lint_php(out,"functions.php")
     return out
 
@@ -193,7 +231,7 @@ def verify_live():
         time.sleep(5)
     else:raise RuntimeError("User-facing homepage did not switch to exact reference after cache flush")
     if len(re.findall(r'<h1\b',s,re.I))!=1:raise RuntimeError("Homepage must retain exactly one H1")
-    for required in ["service-specs.webp","brand-toyota.webp","model-mg7.webp",
+    for required in ["service-specs.webp","brand-toyota.webp","carcard",
          "a3tal-ref-20261104-hero-desktop.webp","أحدث السيارات في دليل المواصفات",
          "g-home-dtc-zone","g-home-moto-section","g-home-places-grid"]:
         if required not in s:
@@ -227,8 +265,8 @@ def main():
             if data and data["content"]!=source(name):
                 # Permit only the known, reviewed previous live revisions.
                 # Other production edits must stop the deployment, not be overwritten.
-                previous={"home-reference-20261104.css":"a4b5866cc363adfda7978c2b45fe6acef56de31f",
-                          "home-reference-20261104.php":"e83b22305332d41a2b78fc08341567dbdf218c4c"}
+                previous={"home-reference-20261104.css":"e0fb29b29d1d4d01db4518141090992853ab9ef6",
+                          "home-reference-20261104.php":"7c4bd05a5e130970ae14912ef74add4c949f34d5"}
                 raw=data["content"].encode("utf8")
                 git_blob=hashlib.sha1(b"blob "+str(len(raw)).encode("ascii")+b"\0"+raw).hexdigest()
                 if previous.get(name)!=git_blob:
