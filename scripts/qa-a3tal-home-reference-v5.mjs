@@ -15,6 +15,11 @@ try{
   if(!response||response.status()>=400)throw Error(label+' navigation HTTP '+response?.status());
   await page.waitForSelector('.a3tal-reference-page .hero',{timeout:15000});
   await page.waitForTimeout(2200);
+  const redundant=await page.locator('.a3r-home-directory, .g-home-dtc-zone, .g-home-cars-section, .g-home-os-section, .g-home-moto-section, .g-v3-mobile-dock').count();
+  if(redundant!==0)throw Error(label+' legacy homepage sections or duplicate mobile dock are still rendered: '+redundant);
+  if(await page.getByText('استكشف باقي موسوعة أعطال',{exact:true}).count())throw Error(label+' duplicate legacy directory still rendered');
+  if(await page.locator('main.a3r-production-home > .a3tal-reference-page').count()!==1)throw Error(label+' expected precisely one V5 homepage interface');
+  if(await page.locator('.a3tal-reference-page .dock').count()!==1)throw Error(label+' expected precisely one V5 mobile navigation dock');
   const metrics=await page.evaluate(()=>{
     const rect=selector=>{const el=document.querySelector(selector);if(!el)return null;const r=el.getBoundingClientRect();const st=getComputedStyle(el);return {top:Math.round(r.top),bottom:Math.round(r.bottom),height:Math.round(r.height),paddingTop:st.paddingTop,marginTop:st.marginTop};};
     return {header:rect('.a3r-site-header'),main:rect('main'),hero:rect('.a3tal-reference-page .hero'),h1:rect('.a3tal-reference-page .hero h1'),heroCopy:rect('.a3tal-reference-page .hero-copy'),scrollWidth:document.documentElement.scrollWidth,viewport:innerWidth};
