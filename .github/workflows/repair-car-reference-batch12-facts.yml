@@ -16,10 +16,10 @@ jobs:
     timeout-minutes: 25
     env:
       A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
-      A3CR_REPAIR_LIMIT: '1'
+      A3CR_REPAIR_LIMIT: '15'
     steps:
       - uses: actions/checkout@v4
-      - name: Validate and run one-page pilot for existing published Captiva technical data
+      - name: Repair all 15 source-matched duplicate facts tables without touching images or meta
         shell: bash
         run: |
           set -euo pipefail
