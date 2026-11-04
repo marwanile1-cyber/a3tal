@@ -34,15 +34,30 @@ try{
   if(label==='mobile' && !info.heroBackground.includes('a3tal-ref-20261104-hero-desktop.webp')){/* mobile uses separate scene */}
   await page.screenshot({path:dir+'/'+label+'-first-screen.png',fullPage:false,animations:'disabled'});
   await page.screenshot({path:dir+'/'+label+'-full.png',fullPage:true,animations:'disabled'});
-  if(label==='mobile'){
+  // Mode buttons are intentionally hidden below 720px; test their interaction on desktop.
+  if(label==='desktop'){
     await page.locator('[data-mode="code"]').click();
     const input=page.locator('#query');
-    if(await input.getAttribute('name')!=='code')throw Error('DTC search mode failed');
+    if(await input.getAttribute('name')!=='code')throw Error('Desktop DTC search mode failed');
+    if(await page.locator('#searchForm').getAttribute('action')!=='https://a3tal.com/dtc/')throw Error('Desktop DTC action failed');
     await page.locator('[data-mode="spec"]').click();
-    if(await input.getAttribute('name')!=='q')throw Error('Technical reference search mode failed');
-    await page.locator('#menuToggle').click();
-    if(!(await page.locator('.a3r-site-header .desktop-nav').evaluate(x=>x.classList.contains('is-open'))))throw Error('Mobile navigation failed');
+    if(await input.getAttribute('name')!=='q')throw Error('Desktop technical reference search mode failed');
+    if(await page.locator('#searchForm').getAttribute('action')!=='https://a3tal.com/car-reference/')throw Error('Desktop reference search action failed');
   }
+  const heroFile=label==='desktop'?'a3tal-ref-20261104-hero-desktop.webp':'a3tal-ref-20261104-hero-mobile.webp';
+  if(label==='mobile'){
+    const mobileHero=await page.locator('.hero-mobile-scene').evaluate(x=>getComputedStyle(x).backgroundImage);
+    if(!mobileHero.includes(heroFile))throw Error('Mobile hero background is missing');
+    if(!(await page.locator('.search-modes').isHidden()))throw Error('Mobile search controls unexpectedly visible outside reference layout');
+    await page.locator('#menuToggle').click();
+    if(!(await page.locator('.a3r-site-header .desktop-nav').isVisible()))throw Error('Mobile navigation failed to open');
+  }
+  const heroLoaded=await page.evaluate(async filename=>{
+    const probe=new Image();
+    probe.src='https://a3tal.com/wp-content/uploads/2026/11/'+filename;
+    try{await probe.decode();return probe.naturalWidth>0;}catch{return false;}
+  },heroFile);
+  if(!heroLoaded)throw Error(label+' hero image failed to decode '+heroFile);
   reports.push({device:label,...info});
   console.log('BROWSER_VERIFIED',label,'images',info.totalImages,'overflow',info.overflow,'H1',info.h1);
   await page.close();
