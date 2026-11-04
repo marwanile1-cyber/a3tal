@@ -29,8 +29,11 @@ jobs:
           node --check theme-source/a3tal-global/assets/js/home-reference-20261104.js
           python3 -m py_compile scripts/deploy-a3tal-home-reference-v5.py
           test "$(find theme-source/a3tal-global/assets/img/reference-20261104 -name '*.webp' | wc -l)" -eq 27
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
       - name: Install HTTP dependency
-        run: python3 -m pip install --user --disable-pip-version-check requests
+        run: python3 -m pip install --disable-pip-version-check requests
       - name: Upload 27 reference assets and deploy guarded live theme
         run: python3 -u scripts/deploy-a3tal-home-reference-v5.py
       - name: Install Playwright and browser for 1440 and 390 layout verification
