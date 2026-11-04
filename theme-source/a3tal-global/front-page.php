@@ -24,7 +24,8 @@ $cars=new WP_Query([
 $car_editorials=new WP_Query([
   'post_type'=>'post',
   'post_status'=>'publish',
-  'category__in'=>[374,22,21],
+  'category__in'=>[22,21],
+  'category__not_in'=>[374],
   'posts_per_page'=>4,
   'orderby'=>'date',
   'order'=>'DESC',
@@ -126,7 +127,7 @@ $ref_brands=['mg'=>'إم جي','chevrolet'=>'شيفروليه','kia'=>'كيا','
     <div class="g-home-cars-editorials" aria-labelledby="g-home-cars-editorials-heading">
       <div class="g-home-cars-subhead">
         <div>
-          <h3 id="g-home-cars-editorials-heading">أحدث الأسعار والمراجعات</h3>
+          <h3 id="g-home-cars-editorials-heading">أحدث المراجعات والمقارنات</h3>
           <p>اقرأ أحدث الأسعار والفروق بين الفئات والمميزات والعيوب قبل الشراء.</p>
         </div>
         <a data-google-vignette="false" href="<?php echo esc_url(a3g_cat_link(374)); ?>">كل أسعار السيارات</a>
