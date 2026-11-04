@@ -9,6 +9,8 @@ let reports=[];
 try{
  for(const [label,width,height] of [['desktop',1440,900],['mobile',390,844]]){
   const page=await browser.newPage({viewport:{width,height},deviceScaleFactor:1,locale:'ar-EG'});
+  page.on('pageerror',e=>console.log('PAGE_JS_ERROR',label,e.message));
+  page.on('requestfailed',r=>{if(r.url().includes('home-reference-20261104'))console.log('REFERENCE_ASSET_REQUEST_FAILED',label,r.url(),r.failure()?.errorText);});
   const response=await page.goto('https://a3tal.com/?a3tal_reference_browser='+Date.now(),{waitUntil:'domcontentloaded',timeout:90000});
   if(!response||response.status()>=400)throw Error(label+' navigation HTTP '+response?.status());
   await page.waitForSelector('.a3tal-reference-page .hero',{timeout:15000});
@@ -36,7 +38,9 @@ try{
   await page.screenshot({path:dir+'/'+label+'-full.png',fullPage:true,animations:'disabled'});
   // Mode buttons are intentionally hidden below 720px; test their interaction on desktop.
   if(label==='desktop'){
+    console.log('SEARCH_MODE_BEFORE',JSON.stringify(await page.evaluate(()=>({scripts:[...document.scripts].filter(x=>x.src.includes('home-reference-20261104')).map(x=>({src:x.src,async:x.async,defer:x.defer,type:x.type})), inputName:document.querySelector('#query')?.name,readyState:document.readyState}))));
     await page.locator('[data-mode="code"]').click();
+    console.log('SEARCH_MODE_AFTER',JSON.stringify(await page.evaluate(()=>({inputName:document.querySelector('#query')?.name,modeActive:document.querySelector('[data-mode="code"]')?.classList.contains('active')}))));
     const input=page.locator('#query');
     if(await input.getAttribute('name')!=='code')throw Error('Desktop DTC search mode failed');
     if(await page.locator('#searchForm').getAttribute('action')!=='https://a3tal.com/dtc/')throw Error('Desktop DTC action failed');
