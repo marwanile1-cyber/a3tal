@@ -27,7 +27,7 @@ jobs:
           done
           node --check theme-source/a3tal-global/assets/js/home-reference-20261104.js
           python3 -m py_compile scripts/deploy-a3tal-home-reference-v5.py
-      - name: Exact reference assets, visible links, dynamic SEO and previous modules
+      - name: Exact reference assets, compact PSEO hubs and one homepage interface
         run: |
           set -euo pipefail
           python3 - <<'PY'
@@ -43,9 +43,13 @@ jobs:
           assert len(re.findall(r'<h1\b',exact))==1
           assert 'wp_count_posts' in exact
           assert 'car-reference/' in exact and 'maintenance-schedules/' in exact and '/dtc/' in exact
-          assert 'g-home-dtc-zone' in homepage
-          assert 'g-home-cars-section' in homepage and 'g-home-os-section' in homepage
-          assert 'g-home-moto-section' in homepage and 'g-home-places-grid' in homepage
+          assert 'a3tal-reference-page' in exact and 'السيارات في مصر' in exact
+          assert exact.count('class="hub-card"')==6, 'Expected six PSEO cards'
+          for path in ['/car-reference/','/dtc/','/motorcycles/','/parts/','/maintenance-schedules/','/service-centers/']:
+            assert 'href="https://a3tal.com'+path+'"' in exact, path
+          for marker in ['a3r-home-directory','g-home-dtc-zone','g-home-cars-section','g-home-os-section','g-home-moto-section','g-v3-mobile-dock']:
+            assert marker not in homepage, 'Legacy duplicate homepage section '+marker
+          assert homepage.count("get_template_part('home-reference-20261104')")==1
           assert 'home-reference-20261104.css' in sources['functions.php']
           assert 'home-reference-20261104.js' in sources['functions.php']
           assert 'hero-mobile.webp' in css and 'hero-desktop.webp' in css
@@ -59,7 +63,7 @@ jobs:
             assert data[:4]==b'RIFF' and data[8:12]==b'WEBP',(item,len(data))
             assert len(data)<80000,(item,len(data))
           assert len(re.findall(r'a3tal-ref-20261104-',exact))>=15
-          print('PASS: 27 real reference source assets; semantic H1; 108 count dynamic; unchanged legacy modules; responsive assets')
+          print('PASS: 27 verified reference assets; Egypt H1; six visible PSEO hubs; no duplicated legacy homepage modules')
           PY
 
   live-browser-qa:
