@@ -1,0 +1,53 @@
+name: QA Encyclopedia Homepage V4 Preview (No Deployment)
+on:
+  pull_request:
+    paths:
+      - 'theme-source/a3tal-global/front-page.php'
+      - 'theme-source/a3tal-global/header.php'
+      - 'theme-source/a3tal-global/functions.php'
+      - 'theme-source/a3tal-global/assets/css/home-encyclopedia.css'
+      - 'theme-source/a3tal-global/assets/js/home-encyclopedia.js'
+      - '.github/workflows/qa-encyclopedia-homepage-preview.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: PHP syntax validation
+        run: |
+          set -euo pipefail
+          php -l theme-source/a3tal-global/front-page.php
+          php -l theme-source/a3tal-global/header.php
+          php -l theme-source/a3tal-global/functions.php
+      - name: JS syntax validation
+        run: node --check theme-source/a3tal-global/assets/js/home-encyclopedia.js
+      - name: SEO, navigation, and legacy-module preservation checks
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          home=Path('theme-source/a3tal-global/front-page.php').read_text()
+          header=Path('theme-source/a3tal-global/header.php').read_text()
+          functions=Path('theme-source/a3tal-global/functions.php').read_text()
+          css=Path('theme-source/a3tal-global/assets/css/home-encyclopedia.css').read_text()
+          assert home.count('<h1 ') == 1, 'Homepage must have one H1'
+          assert 'موسوعة السيارات في مصر' in home
+          assert "post_type_exists('a3_car_ref')" in home
+          assert "get_page_by_path($item['path'],OBJECT,'a3_car_ref')" in home
+          assert 'g-ency-reference' in home and 'g-ency-brands' in home
+          assert 'data-ency-search="reference"' in home
+          assert 'data-ency-search="fault"' in home
+          assert 'g-home-cars-section' in home, 'Existing cars feed must remain'
+          assert 'g-home-dtc-zone' in home, 'Existing diagnostic library must remain'
+          assert 'g-home-os-section' in home, 'Garage module must remain'
+          assert 'g-home-moto-section' in home, 'Motorcycle module must remain'
+          assert '/car-reference/' in header, 'Direct desktop and mobile guide entry required'
+          assert "is_front_page()" in functions and 'home-encyclopedia.css' in functions
+          assert 'media="(min-width: 981px)"' in functions, 'Mobile must not preload hidden hero'
+          assert '@media(max-width:620px)' in css
+          print('PASS: model data is dynamic, no duplicate homepage H1, existing sections preserved, mobile CSS present')
+          PY
