@@ -69,8 +69,22 @@ $ref_brands=['mg'=>'إم جي','chevrolet'=>'شيفروليه','kia'=>'كيا','
 <main class="g-home g-home-platform a3r-production-home">
 <?php get_template_part('home-reference-20261104'); ?>
 
+<section class="a3r-home-directory" aria-labelledby="a3r-home-contents-title">
+  <div class="g-wrap">
+    <h2 id="a3r-home-contents-title">استكشف باقي موسوعة أعطال</h2>
+    <nav aria-label="اختصارات أقسام الموسوعة">
+      <a href="#a3r-home-diagnostics">تشخيص الأكواد</a>
+      <a href="#a3r-home-vehicles">الجديد في السيارات</a>
+      <a href="#a3r-home-motorcycles">الموتوسيكلات</a>
+      <a href="#a3r-home-services">مراكز الخدمة</a>
+      <a href="#a3r-home-troubleshooting">أعطال وحلول</a>
+    </nav>
+  </div>
+</section>
+
+
 <!-- Existing dynamic diagnostic, vehicle, price, motorcycle, garage and directory modules preserved. -->
-<section class="g-section g-section-soft g-home-dtc-zone g-ency-home-dtc-zone">
+<section id="a3r-home-diagnostics" class="g-section g-section-soft g-home-dtc-zone g-ency-home-dtc-zone">
   <div class="g-wrap">
     <div class="g-dtc-command">
       <div class="g-dtc-command-copy">
@@ -97,7 +111,7 @@ $ref_brands=['mg'=>'إم جي','chevrolet'=>'شيفروليه','kia'=>'كيا','
 
 
 <?php if($cars->have_posts() || $car_editorials->have_posts()): ?>
-<section class="g-section g-home-cars-section" aria-labelledby="g-home-cars-heading">
+<section id="a3r-home-vehicles" class="g-section g-home-cars-section" aria-labelledby="g-home-cars-heading">
   <div class="g-wrap">
     <div class="g-section-head">
       <div>
@@ -170,7 +184,7 @@ $ref_brands=['mg'=>'إم جي','chevrolet'=>'شيفروليه','kia'=>'كيا','
   </div>
 </section>
 
-<section class="g-section g-home-moto-section">
+<section id="a3r-home-motorcycles" class="g-section g-home-moto-section">
   <div class="g-wrap">
     <div class="g-home-moto-head">
       <div><span>A3TAL MOTO</span><h2>عالم الموتوسيكلات والسكوتر</h2><p>أسعار ومواصفات وأعطال وصيانة وقطع غيار للموتوسيكل، لأن السوق المصري مش عربيات بس.</p></div>
@@ -229,7 +243,7 @@ $ref_brands=['mg'=>'إم جي','chevrolet'=>'شيفروليه','kia'=>'كيا','
 <section class="g-section g-section-soft">
   <div class="g-wrap g-home-places-wrap">
     <div class="g-section-head"><div><span>A3TAL PLACES</span><h2>مراكز الخدمة والمعارض</h2></div><a data-google-vignette="false" href="<?php echo esc_url(a3g_platform_link('a3_service_center','/service-centers/')); ?>">استكشف الدليل</a></div>
-    <div class="g-home-places-grid">
+    <div id="a3r-home-services" class="g-home-places-grid">
       <a data-google-vignette="false" class="g-place-mega" href="<?php echo esc_url(a3g_platform_link('a3_service_center','/service-centers/')); ?>"><span><?php echo a3g_icon('wrench'); ?></span><div><b>مراكز الخدمة</b><small>معتمد رسميًا، موثّق من أعطال، ومستقل</small></div></a>
       <a data-google-vignette="false" class="g-place-mega" href="<?php echo esc_url(a3g_platform_link('a3_showroom','/car-showrooms/')); ?>"><span><?php echo a3g_icon('store'); ?></span><div><b>معارض السيارات</b><small>رسمي، موثّق، وخاص</small></div></a>
       <a data-google-vignette="false" class="g-place-mega" href="<?php echo esc_url(a3g_platform_link('a3_parts_vendor','/parts-stores/')); ?>"><span><?php echo a3g_icon('gear'); ?></span><div><b>بائعو قطع الغيار</b><small>رسمي، موثّق، ومستقل</small></div></a>
@@ -237,7 +251,7 @@ $ref_brands=['mg'=>'إم جي','chevrolet'=>'شيفروليه','kia'=>'كيا','
   </div>
 </section>
 
-<section class="g-section">
+<section id="a3r-home-troubleshooting" class="g-section">
   <div class="g-wrap g-duo-grid">
     <div class="g-feature-box g-compare-box">
       <div class="g-box-head"><div><span>قرار أسرع</span><h2>مقارنات السيارات</h2></div><a data-google-vignette="false" href="<?php echo esc_url(a3g_cat_link(21)); ?>">تصفح المقارنات</a></div>
