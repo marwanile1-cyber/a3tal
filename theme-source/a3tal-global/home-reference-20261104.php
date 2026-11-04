@@ -29,12 +29,12 @@ if (post_type_exists('a3_car_ref')) {
 <section class="quickarea" aria-label="أقسام وأدلة أعطال.كوم">
   <div class="wrap">
     <nav class="service-tiles a3tal-hub-tiles" aria-label="أهم قواعد البيانات والأدلة">
-      <a class="hub-card" href="https://a3tal.com/car-reference/"><span class="hub-number" aria-hidden="true">01</span><strong>مواصفات السيارات</strong><small>موديلات وماركات</small></a>
-      <a class="hub-card" href="https://a3tal.com/dtc/"><span class="hub-number" aria-hidden="true">02</span><strong>مكتبة الأعطال</strong><small>أكواد وتشخيص</small></a>
-      <a class="hub-card" href="https://a3tal.com/motorcycles/"><span class="hub-number" aria-hidden="true">03</span><strong>الموتوسيكلات</strong><small>موديلات وسكوتر</small></a>
-      <a class="hub-card" href="https://a3tal.com/parts/"><span class="hub-number" aria-hidden="true">04</span><strong>قطع الغيار</strong><small>أدلة وبيانات</small></a>
-      <a class="hub-card" href="https://a3tal.com/maintenance-schedules/"><span class="hub-number" aria-hidden="true">05</span><strong>جداول الصيانة</strong><small>مواعيد ومتابعة</small></a>
-      <a class="hub-card" href="https://a3tal.com/service-centers/"><span class="hub-number" aria-hidden="true">06</span><strong>مراكز الخدمة</strong><small>دليل المراكز</small></a>
+      <a class="hub-card hub-card-visual" href="https://a3tal.com/car-reference/"><img class="hub-visual" loading="eager" decoding="async" width="360" height="180" src="https://a3tal.com/wp-content/uploads/2026/11/a3tal-ref-20261104-service-specs.webp" alt="" aria-hidden="true"><strong>مواصفات السيارات</strong><small>موديلات وماركات</small></a>
+      <a class="hub-card hub-card-visual" href="https://a3tal.com/dtc/"><img class="hub-visual" loading="eager" decoding="async" width="360" height="180" src="https://a3tal.com/wp-content/uploads/2026/11/a3tal-ref-20261104-service-dtc.webp" alt="" aria-hidden="true"><strong>مكتبة الأعطال</strong><small>أكواد وتشخيص</small></a>
+      <a class="hub-card hub-card-visual" href="https://a3tal.com/motorcycles/"><img class="hub-visual" loading="eager" decoding="async" width="360" height="180" src="https://a3tal.com/wp-content/uploads/2026/10/tvs-raider-125-egypt.webp" alt="" aria-hidden="true"><strong>الموتوسيكلات</strong><small>موديلات وسكوتر</small></a>
+      <a class="hub-card hub-card-visual" href="https://a3tal.com/parts/"><img class="hub-visual" loading="eager" decoding="async" width="360" height="180" src="https://a3tal.com/wp-content/uploads/2026/10/a3tal-egypt-parts-market-20261026-hero-original-20261025-1024x576.webp" alt="" aria-hidden="true"><strong>قطع الغيار</strong><small>أدلة وبيانات</small></a>
+      <a class="hub-card hub-card-visual" href="https://a3tal.com/maintenance-schedules/"><img class="hub-visual" loading="eager" decoding="async" width="360" height="180" src="https://a3tal.com/wp-content/uploads/2026/11/a3tal-ref-20261104-service-maintenance.webp" alt="" aria-hidden="true"><strong>جداول الصيانة</strong><small>مواعيد ومتابعة</small></a>
+      <a class="hub-card hub-card-visual" href="https://a3tal.com/service-centers/"><img class="hub-visual" loading="eager" decoding="async" width="360" height="180" src="https://a3tal.com/wp-content/uploads/2026/10/a3tal-authorized_hero-real-photograph-20261022-1024x576.webp" alt="" aria-hidden="true"><strong>مراكز الخدمة</strong><small>دليل المراكز</small></a>
     </nav>
   </div>
 </section>
