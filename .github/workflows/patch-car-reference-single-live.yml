@@ -1,0 +1,84 @@
+name: Deploy Guarded Car Reference Single Template Patch
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/patch-car-reference-single-live.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-car-reference-single-safe-patch
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate new PHP template
+        run: php -l plugin-source/a3tal-car-reference/single.php
+      - name: Apply only the verified one-line duplicate-table guard using A3tal Direct Bridge
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 - <<'PY'
+          import hashlib,html,json,os,re,time,urllib.request,urllib.error
+          from pathlib import Path
+          BASE='https://a3tal.com'
+          TARGET='plugins/a3tal-car-reference/single.php'
+          URL=BASE+'/wp-json/a3tal-direct/v1/admin'
+          KEY=os.environ['A3TAL_API_KEY']
+          before="<?php if(!empty($data['facts'])): ?>"
+          replacement="<?php // Inline verified-facts tables are authored in some reference records; do not render the same fact rows twice. ?>\n<?php if(!empty($data['facts']) && strpos((string)$post->post_content,'a3tal-responsive-table')===false): ?>"
+          expected=Path('plugin-source/a3tal-car-reference/single.php').read_text(encoding='utf8')
+          assert expected.count(replacement)==1,'template guard not unique'
+          assert expected.count(before)==0,'old duplicate table marker persists'
+          def post(payload):
+              data=json.dumps(payload,ensure_ascii=False).encode('utf8')
+              req=urllib.request.Request(URL,data=data,headers={'X-A3tal-Key':KEY,'Content-Type':'application/json'},method='POST')
+              with urllib.request.urlopen(req,timeout=100) as r:
+                  value=json.loads(r.read())
+                  if not value.get('ok'):raise RuntimeError('Bridge rejected '+payload['op'])
+                  return value['result']
+          old=post({'op':'file_read','path':TARGET})
+          assert old['path']==TARGET,'wrong file path'
+          current=old['content']
+          if current==expected:
+              print('ALREADY DEPLOYED guarded template')
+          else:
+              assert current.count(before)==1,'original guard not found exactly once'
+              assert current.replace(before,replacement)==expected,'live template differs beyond the reviewed one-line fix: refuse patch'
+              assert hashlib.sha256(current.encode('utf8')).hexdigest()==old['sha256'],'live sha mismatch'
+              change=post({'op':'file_write','path':TARGET,'content':expected,
+                           'expected_sha256':old['sha256'],'confirm':True,'dangerous':True})
+              assert change['path']==TARGET,'wrong write destination'
+              assert change['sha256']==hashlib.sha256(expected.encode('utf8')).hexdigest(),'write sha mismatch'
+              print('PATCHED only duplicated table guard',change['sha256'])
+          now=post({'op':'file_read','path':TARGET})
+          assert now['content']==expected,'readback failed'
+          path=BASE+'/car-reference/mg/mg7-15-turbo-egypt/mg7-tyre-size-245-40-r19-egypt/'
+          fail=''
+          for i in range(10):
+              try:
+                  req=urllib.request.Request(path+'?table_audit='+str(time.time_ns()),headers={'Cache-Control':'no-cache','User-Agent':'A3tal-TableGuard-Audit/1.0'})
+                  with urllib.request.urlopen(req,timeout=65) as resp:
+                      page=resp.read().decode('utf8',errors='replace')
+                  assert 'a3tal-responsive-table' in page,'inline facts table missing'
+                  assert 'class="a3cr-table"' not in page,'duplicate legacy facts table still visible'
+                  assert page.count('245/40 R19')>=1,'tire information disappeared'
+                  assert re.search(r'<meta\b[^>]*property=["\x27]og:image["\x27]',page,re.I),'OG absent'
+                  assert re.search(r'<link\b[^>]*rel=["\x27]canonical["\x27]',page,re.I),'canonical absent'
+                  break
+              except Exception as e:
+                  fail=str(e)
+                  if i==9:raise RuntimeError('Live page QA failed: '+fail)
+                  time.sleep(5)
+          hreq=urllib.request.Request(BASE+'/wp-json/a3tal-car-reference/v1/health',headers={'User-Agent':'A3tal-TableGuard-Audit/1.0'})
+          with urllib.request.urlopen(hreq,timeout=65) as resp:health=json.loads(resp.read())
+          assert health['ok'] and health['published']==108 and health['drafts']==0,'post deployment health changed'
+          print('SUCCESS: one table retained, title/source/image untouched, 108 published pages preserved.')
+          PY
