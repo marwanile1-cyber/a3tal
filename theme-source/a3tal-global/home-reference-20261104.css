@@ -49,3 +49,37 @@ body.home .a3r-production-home .g-platform-grid img{background:#e2e9f2}
   .a3r-home-directory nav{flex-wrap:nowrap;overflow-x:auto;padding-bottom:5px;scrollbar-width:thin}
   .a3r-home-directory nav a{flex:0 0 auto;padding:8px 11px;white-space:nowrap;font-size:11px}
 }
+
+/* 2026-11-04: compact, readable encyclopedia hubs replacing the old seven image tiles. */
+.a3tal-reference-page .hero{height:278px}
+.a3tal-reference-page .hero-copy{width:57%;padding-top:17px}
+.a3tal-reference-page .hero-copy h1{font-size:clamp(23px,2.6vw,33px);line-height:1.4;white-space:normal;letter-spacing:-.4px;max-width:690px}
+.a3tal-reference-page .hero-copy p{font-size:12px;line-height:1.75;font-weight:700;white-space:normal;max-width:650px}
+.a3tal-reference-page .quickarea{padding:11px 0}
+.a3tal-reference-page .a3tal-hub-tiles{grid-template-columns:repeat(6,minmax(0,1fr));gap:9px}
+.a3tal-reference-page .a3tal-hub-tiles .hub-card{min-width:0;min-height:95px;padding:9px 6px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;text-align:center;border:1px solid #d9e4f1;border-radius:12px;background:linear-gradient(150deg,#fff,#edf4fb);color:#172942;box-shadow:0 3px 10px #172a4012;overflow:visible}
+.a3tal-reference-page .a3tal-hub-tiles .hub-card .hub-number{display:inline-grid;place-items:center;width:27px;height:27px;border-radius:9px;background:#e6effa;color:#c40019;font-size:12px;font-weight:900;line-height:1}
+.a3tal-reference-page .a3tal-hub-tiles .hub-card strong{display:block;font-size:12px;font-weight:900;line-height:1.45;max-width:100%;overflow-wrap:anywhere}
+.a3tal-reference-page .a3tal-hub-tiles .hub-card small{display:block;color:#63758a;font-size:10px;font-weight:700;line-height:1.35}
+.a3tal-reference-page .a3tal-hub-tiles .hub-card:hover,.a3tal-reference-page .a3tal-hub-tiles .hub-card:focus-visible{border-color:#d21b32;background:#fff;color:#b80b21;transform:translateY(-2px)}
+@media(min-width:721px) and (max-width:1020px){
+ .a3tal-reference-page .hero{height:286px}
+ .a3tal-reference-page .hero-copy h1{font-size:25px}
+ .a3tal-reference-page .hero-copy p{font-size:11px}
+ .a3tal-reference-page .a3tal-hub-tiles .hub-card strong{font-size:11px}
+}
+@media(max-width:720px){
+ body.home .a3tal-reference-page .hero{height:auto!important}
+ body.home .a3tal-reference-page .hero-copy h1{font-size:clamp(18px,5vw,21px)!important;line-height:1.45!important;max-width:calc(100% - 22px);text-wrap:balance}
+ body.home .a3tal-reference-page .hero-copy p{font-size:10px!important;line-height:1.7!important;max-width:calc(100% - 28px);text-wrap:pretty}
+ .a3tal-reference-page .quickarea{padding:8px 0}
+ .a3tal-reference-page .a3tal-hub-tiles{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+ .a3tal-reference-page .a3tal-hub-tiles .hub-card{min-height:94px;padding:8px 4px;gap:3px;display:flex}
+ .a3tal-reference-page .a3tal-hub-tiles .hub-card:nth-child(n+7){display:none}
+ .a3tal-reference-page .a3tal-hub-tiles .hub-card .hub-number{width:23px;height:23px;font-size:10px;border-radius:7px}
+ .a3tal-reference-page .a3tal-hub-tiles .hub-card strong{font-size:11px;line-height:1.4}
+ .a3tal-reference-page .a3tal-hub-tiles .hub-card small{font-size:9px;line-height:1.35}
+}
+@media(max-width:350px){
+ .a3tal-reference-page .a3tal-hub-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
