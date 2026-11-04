@@ -207,17 +207,24 @@ def live_public():
 def verify_live():
     for i in range(9):
         s=live_public()
-        if "a3tal-reference-page" in s and "موسوعة سيارات عربية" in s:
+        if "a3tal-reference-page" in s and "دليلك الشامل للسيارات في مصر" in s:
             break
         time.sleep(5)
     else:raise RuntimeError("User-facing homepage did not switch to exact reference after cache flush")
     if len(re.findall(r'<h1\b',s,re.I))!=1:raise RuntimeError("Homepage must retain exactly one H1")
-    for required in ["service-specs.webp","brand-toyota.webp","carcard",
-         "a3tal-ref-20261104-hero-desktop.webp","أحدث موديلات السيارات"]:
+    for required in ["brand-toyota.webp","carcard","أحدث موديلات السيارات",
+                     "مواصفات السيارات","مكتبة الأعطال","الموتوسيكلات",
+                     "قطع الغيار","جداول الصيانة","مراكز الخدمة"]:
         if required not in s:
             if required.endswith(".webp") and "a3tal-ref-20261104-"+required in s:
                 continue
-            raise RuntimeError("Missing V5 encyclopedia homepage content: "+required)
+            raise RuntimeError("Missing source homepage or PSEO navigation: "+required)
+    for path in ["/car-reference/","/dtc/","/motorcycles/","/parts/",
+                 "/maintenance-schedules/","/service-centers/"]:
+        if 'href="'+BASE+path+'"' not in s:
+            raise RuntimeError("Missing public navigation destination: "+path)
+    if s.count('class="hub-card"')!=6:
+        raise RuntimeError("Expected six compact homepage navigation cards")
     for forbidden in ["استكشف باقي موسوعة أعطال","g-home-dtc-zone",
          "g-home-cars-section","g-home-os-section","g-home-moto-section",
          "g-v3-mobile-dock"]:
@@ -250,12 +257,12 @@ def main():
             if data and data["content"]!=source(name):
                 # Permit only the known, reviewed previous live revisions.
                 # Other production edits must stop the deployment, not be overwritten.
-                previous={"home-reference-20261104.css":"1ea34bd36d55deceb4c911b2145556d111eb4da3",
-                          "home-reference-20261104.php":"c302a40d27311cdd210e38a859360b8606ad8dfa",
+                previous={"home-reference-20261104.css":("1ea34bd36d55deceb4c911b2145556d111eb4da3","a958e8225d83138a2c22d818d51747a27a3c1c1c"),
+                          "home-reference-20261104.php":("c302a40d27311cdd210e38a859360b8606ad8dfa","daf4ac29b66669086c72564f512df0b241d93131"),
                           "assets/js/home-reference-20261104.js":"27e9cc0848332616ca1e0b1f6287f2884cb49b57"}
                 raw=data["content"].encode("utf8")
                 git_blob=hashlib.sha1(b"blob "+str(len(raw)).encode("ascii")+b"\0"+raw).hexdigest()
-                if previous.get(name)!=git_blob:
+                if git_blob not in (previous.get(name) if isinstance(previous.get(name),tuple) else (previous.get(name),)):
                     raise RuntimeError("Live "+name+" differs from audited pre-fix release; refusing overwrite")
                 print("AUDITED_REFERENCE_UPGRADE",name,flush=True)
             prepared[name]=source(name)
