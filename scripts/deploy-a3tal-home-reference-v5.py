@@ -230,7 +230,7 @@ def verify_live():
         if image not in s: raise RuntimeError("Missing PSEO card artwork: "+image)
     if s.count('class="hub-visual"')!=6:
         raise RuntimeError("Expected six visual homepage PSEO cards")
-    if s.count('class="hub-card"')!=6:
+    if s.count('class="hub-card hub-card-visual"')!=6:
         raise RuntimeError("Expected six compact homepage navigation cards")
     for forbidden in ["استكشف باقي موسوعة أعطال","g-home-dtc-zone",
          "g-home-cars-section","g-home-os-section","g-home-moto-section",
