@@ -252,7 +252,7 @@ def verify_live():
     else:raise RuntimeError("User-facing homepage did not switch to exact reference after cache flush")
     if len(re.findall(r'<h1\b',s,re.I))!=1:raise RuntimeError("Homepage must retain exactly one H1")
     for required in ["service-specs.webp","brand-toyota.webp","carcard",
-         "a3tal-ref-20261104-hero-desktop.webp","أحدث السيارات في دليل المواصفات",
+         "a3tal-ref-20261104-hero-desktop.webp","أحدث موديلات السيارات",
          "g-home-dtc-zone","g-home-moto-section","g-home-places-grid"]:
         if required not in s:
             # Hero is in CSS and preload, verified separately. Static src points to branded filenames.
@@ -286,7 +286,7 @@ def main():
                 # Permit only the known, reviewed previous live revisions.
                 # Other production edits must stop the deployment, not be overwritten.
                 previous={"home-reference-20261104.css":"e0fb29b29d1d4d01db4518141090992853ab9ef6",
-                          "home-reference-20261104.php":"7c4bd05a5e130970ae14912ef74add4c949f34d5",
+                          "home-reference-20261104.php":"c302a40d27311cdd210e38a859360b8606ad8dfa",
                           "assets/js/home-reference-20261104.js":"27e9cc0848332616ca1e0b1f6287f2884cb49b57"}
                 raw=data["content"].encode("utf8")
                 git_blob=hashlib.sha1(b"blob "+str(len(raw)).encode("ascii")+b"\0"+raw).hexdigest()
