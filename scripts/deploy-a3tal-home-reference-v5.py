@@ -158,6 +158,14 @@ add_action('wp_enqueue_scripts','a3g_reference_v5_home_assets',25);
 }
 """
     out=live[:i]+new+live[j:]
+    # Fresh URL versions are required after the CSS isolation and JS fixes;
+    # never rely on stale edge/browser caches of the original V5 assets.
+    if "'20261104.5'" in out:
+        if out.count("'20261104.5'") != 2:
+            raise RuntimeError("Unexpected V5 asset version anchors in live functions.php")
+        out=out.replace("'20261104.5'","'20261104.6'")
+    if "a3g_encyclopedia_home_assets" in out and "'20261104-v5'" in out:
+        out=out.replace("'20261104-v5'","'20261104-v5b'")
     lint_php(out,"functions.php")
     return out
 
