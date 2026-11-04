@@ -28,9 +28,18 @@ HTML="""<p>دليل المواصفات الفنية لسيارات MG في أع�
 <p>تحتفظ الشركة بحق تعديل التجهيزات، وقد يختلف رقم بين النسخة الورقية والصفحة الحية كما في سعة تانك MG GT. لذلك نوضح الاختلاف عند وجوده بدل وضع قيمة غير محسومة، ويظل كتيب سيارة المالك هو المرجع النهائي للإجراءات الفنية.</p>"""
 
 def get_page(url,**kw):
-    r=S.get(url,timeout=50,**kw)
-    r.raise_for_status()
-    return r
+    error=None
+    for attempt in range(5):
+        try:
+            r=S.get(url,timeout=55,**kw)
+            if r.status_code in (408,429,500,502,503,504,520,521,522,523,524):
+                raise requests.RequestException("Transient HTTP "+str(r.status_code))
+            r.raise_for_status()
+            return r
+        except requests.RequestException as exc:
+            error=exc
+            if attempt<4:time.sleep(4*(attempt+1))
+    raise RuntimeError("Hub REST lookup retries exhausted "+url+" "+str(error))
 
 def getbrand():
     r=get_page(BASE+"/wp-json/wp/v2/car-reference-records",params={"slug":"mg","per_page":20})
