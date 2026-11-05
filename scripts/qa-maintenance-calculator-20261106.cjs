@@ -10,8 +10,32 @@ async function verifyAt(browser,width,model){
   const ctx=await browser.newContext({viewport:{width,height:860},locale:'ar-EG',deviceScaleFactor:1});
   const page=await ctx.newPage(),errs=[];
   page.on('pageerror',e=>errs.push(e.message));
-  await pageOk(page,BASE+'/maintenance-schedules/?vehicle_entity='+model+'&maintenance_qa='+width,'maintenance');
-  await page.locator('#a3ms-calculator').waitFor({timeout:18000});
+  // The server and CDN may serve different desktop/mobile archive cache variants.
+  // Wait for the actual event-handler initialization, not merely the HTML form.
+  // One fresh URL per attempt prevents a pre-rendered stale response from being
+  // mistaken for an application failure.
+  let ready=false, diagnostics=[];
+  for(let attempt=1;attempt<=3;attempt++){
+    const url=BASE+'/maintenance-schedules/?vehicle_entity='+model+
+      '&maintenance_qa='+width+'-'+attempt+'-'+Date.now();
+    await pageOk(page,url,'maintenance');
+    try{
+      await page.locator('#a3ms-calculator[data-ready="1"]').waitFor({timeout:10000});
+      ready=true;
+      break;
+    }catch(err){
+      const snapshot=await page.evaluate(()=>({
+        form:!!document.querySelector('#a3ms-calculator'),
+        ready:document.querySelector('#a3ms-calculator')?.dataset.ready||'',
+        script:!!document.querySelector('#a3ms-inline-script'),
+        summary:!!document.querySelector('#a3ms-summary'),
+        htmlLength:document.documentElement.outerHTML.length
+      }));
+      diagnostics.push({attempt,url,snapshot,errors:errs.slice(-3)});
+      console.warn('MAINTENANCE_CACHED_OR_UNINITIALIZED_PAGE',width,JSON.stringify(diagnostics[diagnostics.length-1]));
+    }
+  }
+  if(!ready)throw Error('Verified calculator never initialized at '+width+': '+JSON.stringify(diagnostics));
   if(await page.locator('.a3ms-item').count()<5)throw Error('Missing real schedule items '+width);
   await page.locator('#a3ms-current-km').fill('57000');
   await page.locator('#a3ms-calc-button').click();
