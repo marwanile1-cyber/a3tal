@@ -1,0 +1,44 @@
+name: Publish and browser-test A3tal smart fault diagnosis tool
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-fault-diagnoser-20261106.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-original-fault-diagnosis-tool-20261106
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 32
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate original template, safety engine and publisher
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          php -l theme-source/a3tal-global/page-fault-diagnosis.php
+          node --check theme-source/a3tal-global/assets/js/fault-diagnoser-20261106.js
+          node --check scripts/qa-fault-diagnoser-20261106.cjs
+          python3 -m py_compile scripts/deploy-fault-diagnoser-20261106.py
+      - name: Publish standalone SEO page with original deterministic fault rules via Direct Bridge
+        run: python3 -u scripts/deploy-fault-diagnoser-20261106.py
+      - name: Install Chromium test browser
+        run: |
+          npm install --prefix /tmp/a3tal-fault-browser --no-audit --no-fund playwright@1.56.1
+          /tmp/a3tal-fault-browser/node_modules/.bin/playwright install chromium
+      - name: Test 20-branch fault triage, risks, sourced links and actual calculations at 390px and 1440px
+        run: node scripts/qa-fault-diagnoser-20261106.cjs
+      - name: Keep QA screenshots as proof, excluding visitor details
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-fault-diagnoser-visual-qa
+          path: /tmp/a3tal-fault-*.png
+          if-no-files-found: ignore
+          retention-days: 7
