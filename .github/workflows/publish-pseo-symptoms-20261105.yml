@@ -1,0 +1,32 @@
+name: Publish 3 unique A3tal PSEO symptom diagnosis articles Nov 05
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-pseo-symptoms-20261105.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-pseo-three-symptoms-20261105
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install photo processing
+        run: python3 -m pip install --quiet Pillow
+      - name: Check draft files and script
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-pseo-symptoms-20261105.py
+          test -s data/editorial/pseo-20261105/nissan-sunny-n17-ac-weak-at-idle.html
+          test -s data/editorial/pseo-20261105/opel-astra-j-battery-drains-overnight-diagnosis.html
+          test -s data/editorial/pseo-20261105/hyundai-accent-rb-battery-light-when-ac-on.html
+      - name: Verify dedup then publish with individually created WebP visuals and SEO QA
+        run: python3 -u scripts/publish-pseo-symptoms-20261105.py
