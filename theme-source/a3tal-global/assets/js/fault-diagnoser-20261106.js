@@ -168,7 +168,8 @@ function renderSafety(){
   "أوقف المركبة في مكان آمن، وأطفئ المحرك عند وجود حرارة شديدة أو لمبة ضغط زيت حمراء أو تسريب وقود. لا تواصل القيادة أو تُجرّب التشغيل لتأكيد العطل. عند وجود دخان أو حريق ابتعد واتصل بالطوارئ أو المساعدة المختصة.":
   "لو ظهرت لمبة ضغط زيت حمراء أثناء تشغيل المحرك، أو سخونة شديدة، أو ضعف فرامل، أو تسريب وقود، تعامل معها كحالة توقف حتى لو اخترت عَرَضًا آخر."));
 }
-function allAnswered(c){return !!c&&c.questions.every((q,i)=>Number.isInteger(state.answers[i]));}\nfunction renderQuestions(){
+function allAnswered(c){return !!c&&c.questions.every((q,i)=>Number.isInteger(state.answers[i]));}
+function renderQuestions(){
  questionEl.replaceChildren();
  const c=getCase();
  if(!c){questionEl.append(make("p","a3fd-muted","اختَر العَرَض من فوق عشان تظهر أسئلة تضيق الاحتمالات."));return;}
