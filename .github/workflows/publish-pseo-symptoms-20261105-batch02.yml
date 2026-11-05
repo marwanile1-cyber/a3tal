@@ -1,0 +1,31 @@
+name: Publish A3tal PSEO batch02 Sportage camera and Elantra ABS Nov 05
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-pseo-symptoms-20261105-batch02.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-pseo-symptoms-20261105-batch02
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 34
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Pillow for source-attributed WebP photography
+        run: python3 -m pip install --quiet Pillow
+      - name: Preflight ensure unique articles and bridge
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-pseo-symptoms-20261105.py scripts/publish-pseo-symptoms-20261105-batch02.py
+          test -s data/editorial/pseo-20261105/kia-sportage-nq5-reverse-camera-black-screen.html
+          test -s data/editorial/pseo-20261105/hyundai-elantra-hd-abs-light-after-wheel-bearing.html
+      - name: Deduplicate then publish two independent model-specific repairs with SEO, WebP and OG checks
+        run: python3 -u scripts/publish-pseo-symptoms-20261105-batch02.py
