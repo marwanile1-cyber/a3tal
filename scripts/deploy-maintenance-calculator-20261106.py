@@ -40,7 +40,7 @@ def preflight(d):
  subprocess.run(["node","--check",str(ROOT/FILES[1])],check=True,timeout=30)
  if not all(s in src[ACTIVATE] for s in (
    "a3ms-available-count","a3ms-last-date","a3ms-usage","a3ms-last-km",
-   "g-maintenance-timeline","a3g_legacy_section","wp_enqueue_style","wp_enqueue_script")):
+   "g-maintenance-timeline","a3g_legacy_section","a3ms-inline-style","a3ms-inline-script")):
   raise RuntimeError("Reviewed maintenance archive incomplete")
  api=Bridge()
  originals={}
