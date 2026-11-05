@@ -1,0 +1,30 @@
+name: Publish A3tal original brake clunk diagnostic Nov 05
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-brake-clunk-first-stop-20261105.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-brake-clunk-20261105
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 26
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install image library
+        run: python3 -m pip install --quiet Pillow
+      - name: Validate guarded release
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-pseo-symptoms-20261105.py scripts/publish-brake-clunk-first-stop-20261105.py
+          test -s data/editorial/brake-clunk-first-stop-after-reversing-20261105.html
+      - name: Publish original brake-clunk article with credited photos and check live SEO
+        run: python3 -u scripts/publish-brake-clunk-first-stop-20261105.py
