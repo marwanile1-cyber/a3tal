@@ -1,0 +1,27 @@
+name: Add Torres 2027 update link to existing 2026 KGM review
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/link-kgm-torres-2027-from-2026-review-20261105.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-torres2026-to-2027-link
+  cancel-in-progress: false
+jobs:
+  link:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate protected scoped updater
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/link-kgm-torres-2027-from-2026-review-20261105.py
+      - name: Add non-cannibalizing model-year update note and verify live
+        run: python3 -u scripts/link-kgm-torres-2027-from-2026-review-20261105.py
