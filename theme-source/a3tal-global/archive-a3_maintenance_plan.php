@@ -1,7 +1,15 @@
 <?php
-// Only this archive receives calculator styles and behavior; no other pages change.
-wp_enqueue_style('a3tal-maintenance-calculator', get_template_directory_uri().'/maintenance-calculator-20261106.css', [], '20261106.1');
-wp_enqueue_script('a3tal-maintenance-calculator', get_template_directory_uri().'/assets/js/maintenance-calculator-20261106.js', [], '20261106.1', true);
+// Load the reviewed lightweight assets only on this archive. Some hosts strip
+// late template enqueues; print the audited, static file contents in head/footer
+// so users actually receive the calculator after the data-driven HTML has loaded.
+add_action('wp_head',static function(){
+  $path=get_template_directory().'/maintenance-calculator-20261106.css';
+  if(is_readable($path)){echo '<style id="a3ms-inline-style">';readfile($path);echo '</style>';}
+},40);
+add_action('wp_footer',static function(){
+  $path=get_template_directory().'/assets/js/maintenance-calculator-20261106.js';
+  if(is_readable($path)){echo '<script id="a3ms-inline-script">';readfile($path);echo '</script>';}
+},40);
 get_header();
 $selected=absint(get_query_var('vehicle_entity'));
 $plan_ids=get_posts([
