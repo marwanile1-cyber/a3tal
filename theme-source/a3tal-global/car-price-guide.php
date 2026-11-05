@@ -138,7 +138,11 @@ $cg_render_card = static function($car) {
   $year = (string)get_post_meta($id,'_a3_year',true);
   $price = function_exists('a3cp_vehicle_price') ? a3cp_vehicle_price($id) : '';
   $checked = get_post_meta($id,'_a3_source_checked_at',true);
-  $href = get_permalink($id);
+  // Fresh catalogue records can safely point at their one verified, indexable price article.
+  // Leave established car records' current permalink and SEO policy unchanged.
+  $primary_price_post=(int)get_post_meta($id,'_a3_primary_price_post_id',true);
+  $href=($primary_price_post && get_post_type($primary_price_post)==='post'
+    && get_post_status($primary_price_post)==='publish') ? get_permalink($primary_price_post) : get_permalink($id);
   ?>
   <article class="cg-car-card">
     <a class="cg-car-photo" href="<?php echo esc_url($href); ?>" aria-label="<?php echo esc_attr('عرض تفاصيل '.get_the_title($id)); ?>">
