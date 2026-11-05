@@ -25,7 +25,9 @@ $vehicles=$ready_vehicle_ids?get_posts([
   'orderby'=>'title',
   'order'=>'ASC',
 ]):[];
-$selected_post=$selected?get_post($selected):null;
+$selected_post=($selected && in_array($selected,$ready_vehicle_ids,true)) ? get_post($selected) : null;
+// Only a published vehicle with an actual maintenance record can be named here.
+if($selected_post && !in_array(get_post_type($selected_post),['a3_car','a3_motorcycle'],true)) $selected_post=null;
 ?>
 <section class="g-maintenance-hero"><div class="g-wrap g-maintenance-hero-grid">
   <div>
