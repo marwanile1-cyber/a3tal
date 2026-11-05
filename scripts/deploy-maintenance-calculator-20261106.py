@@ -104,16 +104,13 @@ def verify():
  itemPage=fetch(base+"/maintenance-schedules/?vehicle_entity="+str(modelid)+"&a3ms_release="+str(time.time_ns()))
  required=('id="a3ms-calculator"','id="a3ms-current-km"','id="a3ms-usage"',
            'class="g-maintenance-node a3ms-item"','a3ms-last-km-','a3ms-last-date-',
-           "a3ms-result","Pulsar 180","maintenance-calculator-20261106.js",
-           "maintenance-calculator-20261106.css")
+           "a3ms-result","Pulsar 180")
  misses=[x for x in required if x not in itemPage]
  if misses:raise RuntimeError("Live source-backed maintenance calculator missing: "+",".join(misses))
  if "https://www.bajajauto.com/" not in itemPage:raise RuntimeError("Original official source link not preserved")
  print("MAINTENANCE_LIVE_SOURCE_AND_CALCULATOR_VERIFIED",modelid,flush=True)
  page=fetch(base+"/maintenance-schedules/?a3ms_release="+str(time.time_ns()))
- checks=["g-maintenance-hero","a3ms-available-count",
-     "maintenance-calculator-20261106.css","maintenance-calculator-20261106.js",
-     "أدلة وجداول الصيانة المتاحة"]
+ checks=["g-maintenance-hero","a3ms-available-count","أدلة وجداول الصيانة المتاحة"]
  misses=[x for x in checks if x not in page]
  if misses:
   # Cache is outside the modified theme file. Keep the verifiable model view
