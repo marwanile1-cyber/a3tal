@@ -1,0 +1,171 @@
+{
+  "batch": "2026-11-05",
+  "platform": "a3tal.com",
+  "mode": "draft_only",
+  "notice": "No live publication authorized by manifest. Require independent topic-intent audit, exclusive image QA, verified OG/canonical/Yoast, and bridge publish verification.",
+  "review": {
+    "live_home_verified": "2026-11-05",
+    "sitemap": "tool_error; must retrieve before release",
+    "search_console": "GSC Wizard subscription_required; use attached GSC exports or direct GSC access before release",
+    "competition": "Partial public search audit only; deep competing SERP assessment pending",
+    "link_policy": "Only validated existing links; no invented internal URLs",
+    "publishing": "GitHub Actions + A3tal Direct Bridge only, never WPWriter",
+    "image_policy": "One original photographic featured image per article; WebP, responsive, hero/OG validated",
+    "indexation": "No bulk templated copies; one canonical search intent per URL."
+  },
+  "drafts": [
+    {
+      "slug": "nissan-sunny-n17-ac-weak-at-idle",
+      "file": "data/editorial/pseo-20261105/nissan-sunny-n17-ac-weak-at-idle.html",
+      "status": "draft",
+      "type": "pseo-model-symptom",
+      "primary_keyword": "تكييف نيسان صني ضعيف وهي واقفة",
+      "intent": "diagnose AC air-cooling loss during idle only",
+      "related_existing": "https://a3tal.com/%D8%B9%D9%8A%D9%88%D8%A8-%D9%86%D9%8A%D8%B3%D8%A7%D9%86-%D8%B5%D9%86%D9%8A-n17/",
+      "official_source": "https://ar.nissan.com.eg/vehicles/new/sunny/versions-and-specs.html",
+      "qa": "Verify car variant, cooling fan details by VIN; original image/OG not created"
+    },
+    {
+      "slug": "opel-astra-j-battery-drains-overnight-diagnosis",
+      "file": "data/editorial/pseo-20261105/opel-astra-j-battery-drains-overnight-diagnosis.html",
+      "status": "draft",
+      "type": "pseo-model-symptom",
+      "primary_keyword": "أوبل أسترا J البطارية بتفضى",
+      "intent": "parasitic drain while parked; module sleep/current",
+      "related_existing": "https://a3tal.com/opel-astra-j-maintenance-prices-market-guide-2026/",
+      "technical_source": "https://workshop-manuals.com/vauxhall/astra-j/engine/engine_electrical/diagnostic_information_and_procedures/miscellaneous/battery_electrical_drain/parasitic_load_test/",
+      "qa": "Astra J variants; verify original photo and on-page image/OG"
+    },
+    {
+      "slug": "hyundai-accent-rb-battery-light-when-ac-on",
+      "file": "data/editorial/pseo-20261105/hyundai-accent-rb-battery-light-when-ac-on.html",
+      "status": "draft",
+      "type": "pseo-model-symptom",
+      "primary_keyword": "لمبة البطارية أكسنت RB مع التكييف",
+      "intent": "charging lamp under AC load vs genuine battery wear",
+      "related_existing": "https://a3tal.com/car-hesitates-cold-start-fine-when-warm/",
+      "official_source": "https://ownersmanual.hyundai.com/docview/webhelp/Hyundai/b6495a43-8ab9-453a-96a1-645137803c3d/warning_indicator_lights.html",
+      "qa": "Exact Accent RB year owner manual needed before claiming model-specific components"
+    }
+  ],
+  "backlog": [
+    {
+      "priority": 1,
+      "type": "pseo-model-symptom",
+      "title": "نيسان صني N17 السلف بيلف والموتور مش بيدور: البنزين ولا الشرارة؟",
+      "focus": "صني N17 السلف بيلف ومش بتدور",
+      "intent": "crank-no-start root-cause decision tree",
+      "status": "research_required"
+    },
+    {
+      "priority": 1,
+      "type": "pseo-model-symptom",
+      "title": "أوبل أسترا J مروحة التبريد شغالة على العالي والمحرك بارد: قراءة الحساس والأكواد",
+      "focus": "مروحة أسترا J شغالة على طول",
+      "intent": "fan command on cold engine, temperature circuit",
+      "status": "research_required"
+    },
+    {
+      "priority": 1,
+      "type": "pseo-model-symptom",
+      "title": "هيونداي أكسنت RB بتنتش على D وR وهي واقفة: قواعد ولا فتيس ولا موتور؟",
+      "focus": "رجة أكسنت RB على D",
+      "intent": "stationary drivetrain vibration under gear load",
+      "status": "research_required"
+    },
+    {
+      "priority": 2,
+      "type": "pseo-model-symptom",
+      "title": "شيفروليه أوبترا 2026 تهتز وقت الفرملة: ديسكات ولا إطارات ولا جلب؟",
+      "focus": "رجة أوبترا مع الفرامل",
+      "intent": "braking-only vibration",
+      "status": "research_required"
+    },
+    {
+      "priority": 2,
+      "type": "pseo-model-symptom",
+      "title": "تويوتا كورولا 2014 إلى 2019 لمبة ABS بعد تغيير البلي: حلقة مغناطيسية أم حساس؟",
+      "focus": "ABS كورولا بعد تغيير البلي",
+      "intent": "post-bearing repair ABS issue; OEM variant check",
+      "status": "research_required"
+    },
+    {
+      "priority": 2,
+      "type": "pseo-model-symptom",
+      "title": "شيري تيجو 7 برو صوت طقطقة في الملفات: كوبلن ولا قاعدة أم عفشة؟",
+      "focus": "طقطقة تيجو 7 برو في الملفات",
+      "intent": "turning-only click diagnostics; variants first",
+      "status": "research_required"
+    },
+    {
+      "priority": 2,
+      "type": "pseo-model-symptom",
+      "title": "سوزوكي فان المحرك يسخن مع الزحمة: اختبار المروحة والردياتير",
+      "focus": "سوزوكي فان بتسخن في الزحمة",
+      "intent": "model-specific cooling diagnostic, distinguish generic already-published heat guide",
+      "status": "cannibalization_check_required"
+    },
+    {
+      "priority": 3,
+      "type": "pseo-model-symptom",
+      "title": "كيا سيراتو 2010 إلى 2013 RPM يعلى ويتأخر الغيار: طريقة فصل المحرك عن الفتيس",
+      "focus": "سيراتو RPM يعلى والفتيس بينقل متأخر",
+      "intent": "delayed shift vs flare, engine vs gearbox",
+      "status": "research_required"
+    },
+    {
+      "priority": 3,
+      "type": "pseo-model-symptom",
+      "title": "MG ZS بطارية 12 فولت بتضعف بعد الركنة: اختبار السحب والشحن حسب الفئة",
+      "focus": "بطارية MG ZS بتفضى",
+      "intent": "12V diagnosis, distinguish EV and petrol configurations",
+      "status": "model_scope_required"
+    },
+    {
+      "priority": 3,
+      "type": "pseo-model-symptom",
+      "title": "هيونداي إلنترا HD تكييفها يبرد مع الحركة ويضعف في الزحمة",
+      "focus": "تكييف إلنترا HD ضعيف في الوقوف",
+      "intent": "same symptom but requires proven model-specific facts rather than copy Sunny page",
+      "status": "distinctive_value_required"
+    },
+    {
+      "priority": 2,
+      "type": "editorial",
+      "title": "لمبة ضغط الزيت بتنور في السلانسيه وتختفي مع البنزين: فحص الضغط الحقيقي قبل تغيير الطرمبة",
+      "focus": "لمبة الزيت بتنور على السلانسيه",
+      "intent": "symptom diagnosis with safety stop",
+      "status": "cannibalization_check_required"
+    },
+    {
+      "priority": 2,
+      "type": "editorial",
+      "title": "العربية تفصل بعد تركيب جهاز تتبع أو شاشة: إثبات سحب الكهرباء بدون تغيير البطارية",
+      "focus": "جهاز التتبع بيفضي البطارية",
+      "intent": "aftermarket accessory drain comparison",
+      "status": "cannibalization_check_required"
+    },
+    {
+      "priority": 2,
+      "type": "motorcycle",
+      "title": "الموتوسيكل يفصل عند تعشيق الأول: سويتش الرجل الجانبية ولا كلتش؟",
+      "focus": "الموتوسيكل بيفصل عند تعشيق الاول",
+      "intent": "side stand/clutch interlock diagnostics",
+      "status": "research_required"
+    },
+    {
+      "priority": 3,
+      "type": "editorial",
+      "title": "أعراض فرامل محشورة بعد تغيير التيل: حرارة جنط ولا كاليبر ولا خرطوم؟",
+      "focus": "فرامل العربية محشورة بعد تغيير التيل",
+      "intent": "brake drag after service",
+      "status": "cannibalization_check_required"
+    }
+  ],
+  "avoid_existing_intent_pages": [
+    "https://a3tal.com/mg-5-cvt-transmission-problems-guide/",
+    "https://a3tal.com/p0700-transmission-control-system-malfunction/",
+    "https://a3tal.com/p0420-%D9%83%D9%88%D8%AF-%D8%B9%D8%B7%D9%84-%D8%A7%D9%84%D8%B4%D9%83%D9%85%D8%A7%D9%86-%D9%81%D9%8A-%D8%B3%D9%8A%D8%A7%D8%B1%D8%A7%D8%AA-%D9%87%D9%8A%D9%88%D9%86%D8%AF%D8%A7%D9%8A/",
+    "https://a3tal.com/car-hesitates-cold-start-fine-when-warm/"
+  ]
+}
