@@ -1,0 +1,37 @@
+name: Deploy A3tal stage1 working car tools and canonical model-card links
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/deploy-stage1-tools-and-car-links-20261105.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-20261105-stage1-catalog-and-tools
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate strict project source and secrets
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          php -l theme-source/a3tal-global/page-car-tools.php
+          php -l theme-source/a3tal-global/home-reference-20261104.php
+          php -l theme-source/a3tal-global/car-price-guide.php
+          python3 -m py_compile scripts/deploy-stage1-tools-and-car-links-20261105.py
+          node --check scripts/qa-stage1-tools-browser.cjs
+      - name: Publish working calculator page and patch only relevant live theme files
+        run: python3 -u scripts/deploy-stage1-tools-and-car-links-20261105.py
+      - name: Install Playwright for visual and functional QA
+        run: |
+          npm install --prefix /tmp/a3tal-stage1 --no-audit --no-fund playwright@1.56.1
+          /tmp/a3tal-stage1/node_modules/.bin/playwright install chromium
+      - name: Verify real calculations on desktop and mobile, and links from homepage and cars archive
+        run: node scripts/qa-stage1-tools-browser.cjs
