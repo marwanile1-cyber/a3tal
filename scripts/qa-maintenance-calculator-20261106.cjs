@@ -31,9 +31,9 @@ async function verifyAt(browser,width,model){
   await oil.locator('.a3ms-last-km').fill('58000');
   await page.locator('#a3ms-calc-button').click();
   if(!(await oil.locator('.a3ms-status').innerText()).includes('راجع الإدخال'))throw Error('Bad odometer input not blocked '+width);
-  const metrics=await page.evaluate(()=>({w:innerWidth,scroll:document.documentElement.scrollWidth,css:[...document.styleSheets].some(s=>String(s.href||'').includes('maintenance-calculator-20261106.css'))}));
+  const metrics=await page.evaluate(()=>({w:innerWidth,scroll:document.documentElement.scrollWidth,cardPadding:getComputedStyle(document.querySelector('.a3ms-card')).paddingTop}));
   if(metrics.scroll>metrics.w+3)throw Error('Mobile/desktop horizontal overflow '+JSON.stringify(metrics));
-  if(!metrics.css)throw Error('Maintenance CSS missing '+width);
+  if(!metrics.cardPadding || parseFloat(metrics.cardPadding)<10)throw Error('Maintenance styling did not apply '+width);
   if(errs.length)throw Error('JavaScript errors '+errs.join(' | '));
   console.log('MAINTENANCE_BROWSER_PASS',width,'items',await page.locator('.a3ms-item').count(),JSON.stringify(metrics));
   await ctx.close();
