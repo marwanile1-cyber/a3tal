@@ -36,7 +36,7 @@ jobs:
           name: a3tal-maintenance-20261106-predeploy-originals
           path: ${{ env.SNAPSHOT_DIR }}/snapshot.json
           retention-days: 14
-      # Archive cache may lag behind the verified uncached, source-specific model route.
+      # Browser verifies executed calculations and computed styling when front-end optimization rewrites asset filenames.
       - name: Deploy scoped maintenance calculator and verify live checksums and source schedule
         run: |
           set -euo pipefail
