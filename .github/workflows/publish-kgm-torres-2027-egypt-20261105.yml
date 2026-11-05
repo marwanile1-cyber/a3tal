@@ -1,0 +1,30 @@
+name: Publish KGM Torres 2027 Egypt official prices and new AISIN 8-speed review
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-kgm-torres-2027-egypt-20261105.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-kgm-torres-2027-price-launch
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 28
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Pillow for model-specific editorial WebP images
+        run: python3 -m pip install --quiet Pillow
+      - name: Validate Egyptian specifications, assets, article and bridge
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          test -s data/editorial/kgm-torres-2027-egypt-facelift-prices-20261105.html
+          python3 -m py_compile scripts/publish-kgm-torres-2027-egypt-20261105.py
+      - name: Deduplicate then publish original 2027 Egypt guide with manufacturer photos and live Yoast checks
+        run: python3 -u scripts/publish-kgm-torres-2027-egypt-20261105.py
