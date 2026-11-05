@@ -1,0 +1,29 @@
+name: Link verified smart fault diagnoser from A3tal homepage and faults menu
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/link-fault-diagnoser-home-20261106.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-fault-triage-navigation-20261106
+  cancel-in-progress: false
+jobs:
+  link:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 16
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate exact-reference home, existing menu and patch
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          php -l theme-source/a3tal-global/home-reference-20261104.php
+          php -l theme-source/a3tal-global/header.php
+          python3 -m py_compile scripts/link-fault-diagnoser-home-20261106.py
+      - name: Update only existing one-slot home tool and the DTC menu after checking tool URL
+        run: python3 -u scripts/link-fault-diagnoser-home-20261106.py
