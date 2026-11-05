@@ -59,7 +59,17 @@ def preflight(d):
         'a3g_legacy_section','_a3_interval_km')):
     raise RuntimeError("Unexpected maintenance archive source; refusing overwrite")
   elif current and current["content"]!=src[name]:
-   raise RuntimeError("Unexpected existing asset differs: "+name)
+   # The only approved asset migration is the original reviewed calculator JS
+   # to its readiness-signalling revision. Match the exact prior Git blob.
+   if name!="assets/js/maintenance-calculator-20261106.js":
+    raise RuntimeError("Unexpected existing asset differs: "+name)
+   previous=subprocess.check_output([
+     "git","show","4b5cbf5b2bea34e04b723bd03f26ec4bce68e8d5:"+
+     "theme-source/a3tal-global/assets/js/maintenance-calculator-20261106.js"
+   ],timeout=25).decode("utf8")
+   if current["content"]!=previous:
+    raise RuntimeError("Existing calculator JavaScript is not the reviewed prior release")
+   print("MAINTENANCE_APPROVED_JS_UPGRADE",flush=True)
  d.mkdir(parents=True,exist_ok=True)
  state={"files":FILES,"source":{k:sha(v) for k,v in src.items()},"originals":originals}
  (d/"snapshot.json").write_text(json.dumps(state,ensure_ascii=False),encoding="utf8")
