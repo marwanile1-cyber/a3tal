@@ -1,0 +1,27 @@
+name: Sync three latest verified A3tal car-price articles into model catalogue
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/sync-latest-car-price-records-20261105.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-20261105-stage1-catalog-and-tools
+  cancel-in-progress: false
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate scoped record creation script and secure credential
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/sync-latest-car-price-records-20261105.py
+      - name: Verify live editorial prices then create only missing, noindex model records via A3tal Direct Bridge
+        run: python3 -u scripts/sync-latest-car-price-records-20261105.py
