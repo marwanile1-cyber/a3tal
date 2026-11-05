@@ -1,0 +1,57 @@
+name: Deploy A3tal verified interactive maintenance schedules Nov 06
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/deploy-maintenance-calculator-20261106.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-maintenance-source-backed-20261106
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      SNAPSHOT_DIR: ${{ runner.temp }}/a3tal-maintenance-20261106
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate reviewed PHP JS and protected bridge access
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          php -l theme-source/a3tal-global/archive-a3_maintenance_plan.php
+          node --check theme-source/a3tal-global/assets/js/maintenance-calculator-20261106.js
+          node --check scripts/qa-maintenance-calculator-20261106.cjs
+          python3 -m py_compile scripts/deploy-maintenance-calculator-20261106.py
+      - name: Snapshot existing live maintenance theme files and inspect source compatibility
+        run: python3 -u scripts/deploy-maintenance-calculator-20261106.py prepare --state-dir "$SNAPSHOT_DIR"
+      - name: Retain originals for safe recovery
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-maintenance-20261106-predeploy-originals
+          path: ${{ env.SNAPSHOT_DIR }}/snapshot.json
+          retention-days: 14
+      - name: Deploy scoped maintenance calculator and verify live checksums and source schedule
+        run: |
+          set -euo pipefail
+          python3 -u scripts/deploy-maintenance-calculator-20261106.py deploy --state-dir "$SNAPSHOT_DIR"
+          python3 -u scripts/deploy-maintenance-calculator-20261106.py verify --state-dir "$SNAPSHOT_DIR"
+      - name: Install supported Chromium browser QA on Ubuntu 24.04
+        run: |
+          npm install --prefix /tmp/a3tal-maint-browser --no-audit --no-fund playwright@1.56.1
+          /tmp/a3tal-maint-browser/node_modules/.bin/playwright install chromium
+      - name: Test real source-backed maintenance due calculations at mobile and desktop widths
+        run: node scripts/qa-maintenance-calculator-20261106.cjs
+      - name: Roll back only our own exact live bytes if deployment or tests fail
+        if: failure()
+        run: |
+          if test -s "$SNAPSHOT_DIR/snapshot.json"; then
+            python3 -u scripts/deploy-maintenance-calculator-20261106.py rollback --state-dir "$SNAPSHOT_DIR"
+          else
+            echo "No deployment snapshot: nothing to revert"
+          fi
