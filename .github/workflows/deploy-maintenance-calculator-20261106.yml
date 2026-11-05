@@ -16,7 +16,7 @@ jobs:
     timeout-minutes: 35
     env:
       A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
-      SNAPSHOT_DIR: ${{ runner.temp }}/a3tal-maintenance-20261106
+      SNAPSHOT_DIR: /tmp/a3tal-maintenance-20261106
     steps:
       - uses: actions/checkout@v4
       - name: Validate reviewed PHP JS and protected bridge access
