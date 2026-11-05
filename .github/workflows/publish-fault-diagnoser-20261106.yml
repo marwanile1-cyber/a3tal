@@ -18,7 +18,7 @@ jobs:
       A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
     steps:
       - uses: actions/checkout@v4
-      - name: Validate original template, safety engine and publisher
+      - name: Validate original template and corrected safety engine before publishing
         run: |
           set -euo pipefail
           test -n "$A3TAL_API_KEY"
