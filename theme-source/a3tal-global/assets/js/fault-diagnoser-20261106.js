@@ -168,7 +168,7 @@ function renderSafety(){
   "أوقف المركبة في مكان آمن، وأطفئ المحرك عند وجود حرارة شديدة أو لمبة ضغط زيت حمراء أو تسريب وقود. لا تواصل القيادة أو تُجرّب التشغيل لتأكيد العطل. عند وجود دخان أو حريق ابتعد واتصل بالطوارئ أو المساعدة المختصة.":
   "لو ظهرت لمبة ضغط زيت حمراء أثناء تشغيل المحرك، أو سخونة شديدة، أو ضعف فرامل، أو تسريب وقود، تعامل معها كحالة توقف حتى لو اخترت عَرَضًا آخر."));
 }
-function renderQuestions(){
+function allAnswered(c){return !!c&&c.questions.every((q,i)=>Number.isInteger(state.answers[i]));}\nfunction renderQuestions(){
  questionEl.replaceChildren();
  const c=getCase();
  if(!c){questionEl.append(make("p","a3fd-muted","اختَر العَرَض من فوق عشان تظهر أسئلة تضيق الاحتمالات."));return;}
@@ -183,7 +183,7 @@ function renderQuestions(){
    input.checked=state.answers[i]===idx;
    input.addEventListener("change",()=>{
     state.answers[i]=idx;reportEl.hidden=true;renderQuestions();renderSafety();
-    if(state.answers.every(a=>Number.isInteger(a))&&state.answers.length===c.questions.length){
+    if(allAnswered(c)){
       const btn=questionEl.querySelector("#a3fd-show");
       if(btn)btn.focus({preventScroll:true});
     }
@@ -193,7 +193,7 @@ function renderQuestions(){
   questionEl.append(field);
  });
  const btn=make("button","a3fd-main-button","اعرض خطوات الفحص");
- btn.id="a3fd-show";btn.type="button";btn.disabled=!state.answers.every(a=>Number.isInteger(a))||state.answers.length!==c.questions.length;
+ btn.id="a3fd-show";btn.type="button";btn.disabled=!allAnswered(c);
  btn.addEventListener("click",showReport);questionEl.append(btn);
 }
 function ranked(c){
@@ -203,7 +203,7 @@ function ranked(c){
  }).sort((a,b)=>b.score-a.score||a.tier-b.tier||a.index-b.index);
 }
 function showReport(){
- const c=getCase();if(!c||state.answers.length!==c.questions.length)return;
+ const c=getCase();if(!c||!allAnswered(c))return;
  const dangerStop=stopReason(c);
  const urgency=dangerStop?"stop":state.danger==="unsure"||c.level==="urgent"?"urgent":"caution";
  reportEl.hidden=false;reportEl.replaceChildren();
@@ -269,7 +269,7 @@ function renderDanger(){
   input.addEventListener("change",()=>{
     state.danger=id;reportEl.hidden=true;renderSafety();renderDanger();
     const c=getCase();
-    if(c&&state.answers.length===c.questions.length&&state.answers.every(Number.isInteger))showReport();
+    if(c&&allAnswered(c))showReport();
   });
   el.append(input,make("span","",label));dangerEl.append(el);
  });
