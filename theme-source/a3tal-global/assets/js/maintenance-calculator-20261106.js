@@ -134,4 +134,7 @@
   rows.forEach(n=>n.querySelectorAll('input').forEach(el=>el.addEventListener('change',()=>{
     if(!summary.hidden)calculate();
   })));
+  // Browser QA and accessibility diagnostics must observe fully attached listeners,
+  // not just an HTML form that may arrive before deferred footer scripts.
+  root.dataset.ready='1';
 })();
