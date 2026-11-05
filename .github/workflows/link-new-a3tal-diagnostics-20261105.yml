@@ -1,0 +1,27 @@
+name: Link new A3tal PSEO and brake diagnostic articles from verified existing hubs
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/link-new-a3tal-diagnostics-20261105.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-link-new-diagnostics-20261105
+  cancel-in-progress: false
+jobs:
+  link:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate exact scoped updater
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/link-new-a3tal-diagnostics-20261105.py
+      - name: Add only contextual verified internal links using A3tal Direct Bridge
+        run: python3 -u scripts/link-new-a3tal-diagnostics-20261105.py
