@@ -44,8 +44,10 @@ if (post_type_exists('a3_car_ref')) {
 <?php while($home_ref_cards->have_posts()):$home_ref_cards->the_post();
 $home_car_img=get_the_post_thumbnail_url(get_the_ID(),'medium_large');
 if(!$home_car_img)$home_car_img=content_url('/uploads/2026/11/a3tal-ref-20261104-service-specs.webp');
+$home_main_post_id=(int)get_post_meta(get_the_ID(),'_a3_primary_price_post_id',true);
+$home_main_post_url=($home_main_post_id && get_post_type($home_main_post_id)==='post' && get_post_status($home_main_post_id)==='publish') ? get_permalink($home_main_post_id) : get_permalink();
 ?>
-<a class="carcard" href="<?php the_permalink(); ?>">
+<a class="carcard" href="<?php echo esc_url($home_main_post_url); ?>">
 <img loading="eager" decoding="async" width="320" height="180" src="<?php echo esc_url($home_car_img); ?>" alt="<?php echo esc_attr(get_the_title()); ?>">
 <strong><?php echo esc_html(get_the_title()); ?></strong>
 <small>أسعار ومواصفات • <?php echo esc_html(get_the_modified_date('Y/m/d')); ?></small>
@@ -55,7 +57,7 @@ if(!$home_car_img)$home_car_img=content_url('/uploads/2026/11/a3tal-ref-20261104
 <a class="carcard" href="https://a3tal.com/car-reference/mg/mg7-15-turbo-egypt/"><img width="320" height="180" loading="eager" src="<?php echo esc_url(content_url('/uploads/2026/11/a3tal-ref-20261104-model-mg7.webp')); ?>" alt="تصميم توضيحي لسيارة MG7"><strong>MG7</strong><small>دليل المواصفات</small><span class="btn">عرض المواصفات ←</span></a>
 <a class="carcard" href="https://a3tal.com/car-reference/chevrolet/captiva-2026-egypt/"><img width="320" height="180" loading="eager" src="<?php echo esc_url(content_url('/uploads/2026/11/a3tal-ref-20261104-model-chevrolet-captiva.webp')); ?>" alt="تصميم توضيحي لشيفروليه كابتيفا"><strong>شيفروليه كابتيفا</strong><small>دليل المواصفات</small><span class="btn">عرض المواصفات ←</span></a>
 <?php endif; ?>
-</div></div><aside class="panel tools-panel"><h2>⚒ أدوات مهمة لكل مالك سيارة</h2><div class="toolgrid"><a href="https://a3tal.com/dtc/"><span>⚙</span>معرفة كود العطل</a><a href="https://a3tal.com/?s=صيانة"><span>▦</span>معلومات تكلفة الصيانة</a><a href="https://a3tal.com/?s=استهلاك+الوقود"><span>⛽</span>معلومات استهلاك الوقود</a><a href="https://a3tal.com/?s=مقاسات+الإطارات"><span>◉</span>مقاسات الإطارات</a><a href="https://a3tal.com/parts/"><span>⚙</span>دليل قطع الغيار</a><a href="https://a3tal.com/maintenance-schedules/"><span>▣</span>جدول الصيانة</a></div></aside></section>
+</div></div><aside class="panel tools-panel"><h2>⚒ أدوات مهمة لكل مالك سيارة</h2><div class="toolgrid"><a href="https://a3tal.com/dtc/"><span>⚙</span>معرفة كود العطل</a><a href="https://a3tal.com/car-tools/#maintenance-cost"><span>▦</span>احسب تكلفة الصيانة</a><a href="https://a3tal.com/car-tools/#fuel-use"><span>⛽</span>احسب استهلاك البنزين</a><a href="https://a3tal.com/car-tires-prices-egypt-2026/"><span>◉</span>دليل مقاسات الكاوتش</a><a href="https://a3tal.com/parts/"><span>⚙</span>دليل قطع الغيار</a><a href="https://a3tal.com/maintenance-schedules/"><span>▣</span>جدول الصيانة</a></div></aside></section>
 <section class="lower"><div class="panel maint-feature"><h2>▮ دليل الصيانة الدورية</h2><a href="https://a3tal.com/maintenance-schedules/"><img src="<?php echo esc_url(content_url('/uploads/2026/11/a3tal-ref-20261104-maintenance-feature.webp')); ?>" alt="صيانة سيارة كما في التصميم المرجعي"></a></div><div class="panel"><h2>▮ أحدث المقالات والتحليلات</h2><div class="article-list">
 <?php if($home_latest_guides->have_posts()): ?>
 <?php while($home_latest_guides->have_posts()):$home_latest_guides->the_post();
