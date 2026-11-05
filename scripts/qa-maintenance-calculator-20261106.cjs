@@ -15,8 +15,12 @@ async function verifyAt(browser,width,model){
   if(await page.locator('.a3ms-item').count()<5)throw Error('Missing real schedule items '+width);
   await page.locator('#a3ms-current-km').fill('57000');
   await page.locator('#a3ms-calc-button').click();
-  const summary=await page.locator('#a3ms-summary').innerText();
-  if(!summary.includes('نتائج الحساب'))throw Error('No actual calculation '+width);
+  await page.waitForTimeout(600);
+  const state=await page.evaluate(()=>({hidden:document.querySelector('#a3ms-summary').hidden,
+    text:document.querySelector('#a3ms-summary').textContent,
+    inlineScript:!!document.querySelector('#a3ms-inline-script'),
+    inlineStyle:!!document.querySelector('#a3ms-inline-style')}));
+  if(state.hidden || !state.text.includes('نتائج الحساب'))throw Error('No actual calculation '+width+' '+JSON.stringify(state)+' page errors='+errs.join(' | '));
   const oil=page.locator('.a3ms-item').filter({hasText:'تغيير زيت المحرك الدوري'}).first();
   if(await oil.count()!==1)throw Error('Source-backed oil service missing '+width);
   await oil.locator('.a3ms-last-km').fill('47000');
