@@ -1,0 +1,68 @@
+name: Publish PSEO batch 21 - Nissan Sentra Egypt editorial quality
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-car-reference-batch21-sentra-quality.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-pseo-sentra-b21
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 54
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3CR_FAMILY: nissan-sentra-premium
+      A3CR_LIMIT: '7'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate content quality, intent uniqueness, links, and official sources
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-car-reference-batch21-sentra-quality.py
+          python3 - <<'PY'
+          import json, re, html
+          d=json.load(open("data/car-reference/batch-21-nissan-sentra-premium-quality-20261107.json",encoding="utf8"))
+          assert len(d["clusters"])==1
+          g=d["clusters"][0]
+          assert g["brand"]=="nissan" and len(g["specs"])==5
+          pages=[g["model"]]+g["specs"]
+          assert len({p["slug"] for p in pages})==6
+          assert len({p["rich_html"] for p in pages})==6
+          assert len(g["photos"])==6 and len(set(g["photos"]))==6
+          for row in pages:
+              body=html.unescape(re.sub(r"<[^>]*>"," ",row["rich_html"]))
+              assert len(body.split())>=380, (row["slug"],len(body.split()))
+              assert row["rich_html"].count("<h2>")>=4
+              assert row["rich_html"].count("<table>")==1
+              assert "nissan.com.eg" in row["rich_html"]
+              assert "a3tal.com/car-reference/nissan/" in row["rich_html"]
+              assert 70<=len(row["meta_description"])<=160
+          for row in g["specs"]:
+              assert len(row["facts"])>=10 and row["category"]
+          assert all(x.startswith("https://www-europe.nissan-cdn.net/content/dam/Nissan/eg/vehicles/sentra/") for x in g["photos"])
+          print("EDITORIAL_QA_PASS__SIX_DISTINCT_REAL_SENTRA_PAGES")
+          PY
+      - name: Prepare photography and bridge dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-dejavu-core
+          python3 -m pip install --quiet pillow requests
+      - name: Confirm healthy production PSEO custom engine before publishing
+        run: |
+          curl -fsSL --retry 3 https://a3tal.com/wp-json/a3tal-car-reference/v1/health | python3 -c 'import json,sys;x=json.load(sys.stdin);assert x.get("ok") and x.get("version")=="1.0.0" and x.get("published",0)>=271'
+      - name: Publish one model hub and five detailed specific technical guides
+        run: python3 -u scripts/publish-car-reference-batch21-sentra-quality.py
+      - name: Preserve independent URL photo canonical and og-image verification
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-pseo-sentra-quality-b21-${{ github.run_id }}
+          path: car-reference-batch21-nissan-sentra-premium-audit.json
+          if-no-files-found: warn
+          retention-days: 30
