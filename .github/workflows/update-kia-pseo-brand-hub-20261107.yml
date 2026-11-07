@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/update-kia-pseo-brand-hub-20261107.yml'
+      - 'scripts/update-kia-pseo-brand-hub-20261107.py'
   workflow_dispatch:
 permissions:
   contents: read
