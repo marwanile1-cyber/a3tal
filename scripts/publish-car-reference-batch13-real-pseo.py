@@ -23,6 +23,8 @@ change('MARK_NAMES={"captiva":"CHEVROLET CAPTIVA 2026","mg-gt":"MG GT 1.5T","mg7
        'MARK_NAMES={"elantra-lamps":"HYUNDAI ELANTRA CN7","tucson-fuses":"HYUNDAI TUCSON NX4e","sunny-equipment":"NISSAN SUNNY N17","magnite-equipment":"NISSAN MAGNITE","optra-equipment":"CHEVROLET OPTRA"}')
 change('assert len(DB["clusters"])==3 and len(ITEMS)==6',
        'assert len(DB["clusters"])==5 and 2<=len(ITEMS)<=4')
+change('assert len({p["slug"] for _,p,_ in ITEMS})==6',
+       'assert len({p["slug"] for _,p,_ in ITEMS})==len(ITEMS)')
 change('cap=max(1,min(6,int(os.getenv("A3CR_LIMIT","1"))))',
        'cap=min(len(ITEMS),max(1,int(os.getenv("A3CR_LIMIT","6"))))')
 change('"a3tal-b12-"+FAMILY+"-"+slug+".webp"',
