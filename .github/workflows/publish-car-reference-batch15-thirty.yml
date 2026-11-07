@@ -1,0 +1,61 @@
+name: Publish 30 original source-backed real PSEO car-reference facts batch15
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-car-reference-batch15-thirty.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 43
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        family: [cerato-bd-technical, seltos-sp2-technical, sportage-nq5-technical, elantra-cn7-technical, tucson-nx4e-technical]
+    concurrency:
+      group: a3tal-real-pseo-b15-${{ matrix.family }}
+      cancel-in-progress: false
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3CR_FAMILY: ${{ matrix.family }}
+      A3CR_LIMIT: '8'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify 30 source-backed distinct intent records and scoped official evidence
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-car-reference-batch12-18-pages.py scripts/publish-car-reference-batch15-official-30.py
+          python3 - <<'PY'
+          import json
+          x=json.load(open('data/car-reference/batch-15-technical-specs-official-20261107.json'))
+          rows=[s for g in x['clusters'] for s in g['specs']]
+          assert len(x['clusters'])==5 and len(rows)==30
+          assert len({r['slug'] for r in rows})==30
+          assert all(len(r['facts'])>=8 and len(r['intro'])>180 and len(r['detail'])>250 and len(r['warning'])>120 for r in rows)
+          assert all(r['sources'] and all(u.startswith(('https://ownersmanual.kia.com/','https://ownersmanual.hyundai.com/')) for u in r['sources']) for r in rows)
+          assert all(g['photos'] and all(p.startswith('https://a3tal.com/wp-content/uploads/') for p in g['photos']) for g in x['clusters'])
+          print('VERIFIED_THIRTY_DIFFERENT_SPEC_INTENTS_AND_OFFICIAL_SOURCES')
+          PY
+      - name: Install image tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-dejavu-core
+          python3 -m pip install --quiet pillow requests
+      - name: Confirm actual dedicated car reference engine
+        run: |
+          curl -fsSL --retry 3 https://a3tal.com/wp-json/a3tal-car-reference/v1/health | python3 -c 'import sys,json; x=json.load(sys.stdin); assert x.get("ok") and x.get("version")=="1.0.0" and x.get("published",0)>=133'
+      - name: Publish only new original intents, verify exact technical URLs WebP and Google SEO
+        run: python3 -u scripts/publish-car-reference-batch15-official-30.py
+      - name: Preserve URL and image proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: real-pseo-b15-${{ matrix.family }}-${{ github.run_id }}
+          path: car-reference-batch15-${{ matrix.family }}-audit.json
+          if-no-files-found: warn
+          retention-days: 30
