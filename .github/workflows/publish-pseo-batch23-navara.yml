@@ -1,0 +1,68 @@
+name: Publish Nissan Navara Double Cab Egypt - seven quality reference guides
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-pseo-batch23-navara.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-pseo-b23-navara
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3CR_FAMILY: nissan-navara-doublecab
+      A3CR_LIMIT: '8'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check useful original explanations, variant comparisons and real Nissan photographs
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-car-reference-batch23-navara-quality.py
+          python3 - <<'PY'
+          import json,re,html
+          d=json.load(open("data/car-reference/batch-23-nissan-navara-doublecab-20261107.json",encoding="utf8"))
+          assert len(d["clusters"])==1
+          g=d["clusters"][0]
+          assert g["brand"]=="nissan" and len(g["specs"])==6
+          pages=[g["model"]]+g["specs"]
+          assert len({p["slug"] for p in pages})==7
+          assert len({p["rich_html"] for p in pages})==7
+          assert len(g["photos"])==7 and len(set(g["photos"]))==7
+          for p in pages:
+              words=html.unescape(re.sub(r"<[^>]+>"," ",p["rich_html"])).split()
+              assert len(words)>=375,(p["slug"],len(words))
+              assert p["rich_html"].count("<h2>")>=4
+              assert p["rich_html"].count("<table>")==1
+              assert "nissan.com.eg" in p["rich_html"]
+              assert "a3tal.com/car-reference/nissan/" in p["rich_html"]
+              assert 70<=len(p["meta_description"])<=160
+          assert len({p["category"] for p in g["specs"]})>=5
+          assert all(len(p["facts"])>=10 for p in g["specs"])
+          assert all(u.startswith("https://www-europe.nissan-cdn.net/content/dam/Nissan/eg/vehicles/Navara/DC/") for u in g["photos"])
+          print("SEVEN_NAVARA_EDITORIAL_INTENTS_VERIFIED")
+          PY
+      - name: Prepare original Nissan manufacturer photographs and Direct Bridge client
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-dejavu-core
+          python3 -m pip install --quiet pillow requests
+      - name: Check production PSEO engine
+        run: |
+          curl -fsSL --retry 3 https://a3tal.com/wp-json/a3tal-car-reference/v1/health | python3 -c 'import json,sys;x=json.load(sys.stdin);assert x.get("ok") and x.get("version")=="1.0.0" and x.get("published",0)>=285'
+      - name: Publish model and six source-checked specific guides
+        run: python3 -u scripts/publish-car-reference-batch23-navara-quality.py
+      - name: Save full publication audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-navara-b23-${{ github.run_id }}
+          path: car-reference-batch23-nissan-navara-doublecab-audit.json
+          if-no-files-found: warn
+          retention-days: 30
