@@ -1,0 +1,27 @@
+name: Link four A3tal Nov07 published guides from existing hubs
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/link-a3tal-nov07-four-sections-pseo.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-nov07-four-inbound-links
+  cancel-in-progress: false
+jobs:
+  link:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate scoped direct bridge and link identities
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/link-a3tal-nov07-four-sections-pseo.py
+      - name: Link four new public posts from existing indexable topic/model hubs
+        run: python3 -u scripts/link-a3tal-nov07-four-sections-pseo.py
