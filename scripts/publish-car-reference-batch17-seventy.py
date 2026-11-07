@@ -138,8 +138,8 @@ def model_content():
       "بدون تحويلها إلى صفحات سعر أو مراجعات مكررة.</p>"
       "<h2>قبل شراء الإطار أو تنفيذ الصيانة</h2>"
       "<p>"+escape(MODE["warning"])+"</p>"
-      "<p>مصدر الشركة: <a href='"+escape(MODE["sources"][0],quote=True)+
-      "' rel='noopener noreferrer nofollow'>المواصفات الرسمية للموديل</a>.</p>"
+      "<p>المصدر الفني: <a href='"+escape(MODE["sources"][0],quote=True)+
+      "' rel='noopener noreferrer nofollow'>المواصفات المنشورة لهذا الموديل</a>.</p>"
     )
 
 def spec_content(row):
@@ -167,13 +167,13 @@ def payload(kind,row,parent,photo_id):
       "excerpt":"مواصفات فنية موثقة من المصدر الرسمي للموديل المصري، مع اختلاف الفئات وتنبيهات الصيانة.",
       "meta_title":row["title"]+" | أعطال.كوم",
       "meta_description":("دليل "+row["title"]+" بالمواصفات الرسمية والجداول الفنية والتنبيهات المهمة قبل شراء القطع أو صيانة السيارة.")[:155],
-      "data":{"kind":kind,"market":"مصر - مرجع الشركة المصنعة الرسمي",
-        "years":"نسخة النشرة الرسمية المحفوظة وموديل العنوان",
+      "data":{"kind":kind,"market":"مصر - مرجع مُحدد المصدر والفئة",
+        "years":"إصدار المرجع وتاريخ المراجعة 2026-11-07",
         "engine":row.get("engine",MODE["engine"]),
         "category":row.get("category",""),
         "reviewed_at":"2026-11-07",
         "facts":[{"label":a,"value":b} for a,b in row.get("facts",[])],
-        "sources":[{"title":"المصدر الرسمي للموديل","url":u} for u in src]}}
+        "sources":[{"title":"المرجع الفني المنشور","url":u} for u in src]}}
 
 def verify(url,filename,title):
     failure=None
@@ -206,7 +206,7 @@ def main():
     try:
         for i,(kind,row,parent) in enumerate(ITEMS[:cap]):
             slug=row["slug"]
-            url=BASE+"/car-reference/"+parent+"/"+slug+"/"
+            url=BASE+"/car-reference/"+(parent+"/" if parent else "")+slug+"/"
             old=records(slug)
             if old:
                 if len(old)!=1 or old[0].get("link","").rstrip("/")!=url.rstrip("/"):
