@@ -1,0 +1,63 @@
+name: Publish REAL PSEO Car Reference batch14 16 manufacturer-backed specs
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-car-reference-batch14-sixteen.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 42
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        family: [kia-cerato-lamps, kia-seltos-lamps, kia-sportage-lamps, hyundai-cn7-fuses, hyundai-tucson-engine-fuses, chevrolet-captiva-equipment, chevrolet-optra-cabin, mg-gt-exterior, mg7-suspension, nissan-sunny-convenience, nissan-magnite-exterior]
+    concurrency:
+      group: a3tal-real-pseo-b14-${{ matrix.family }}
+      cancel-in-progress: false
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3CR_FAMILY: ${{ matrix.family }}
+      A3CR_LIMIT: '4'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate exactly sixteen differentiated sourced spec intents and protected bridge
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-car-reference-batch12-18-pages.py scripts/publish-car-reference-batch14-real-pseo-16.py
+          python3 - <<'PY'
+          import json
+          d=json.load(open('data/car-reference/batch-14-sixteen-model-specific-specs-20261107.json'))
+          assert len(d['clusters'])==11
+          rows=[s for g in d['clusters'] for s in g['specs']]
+          assert len(rows)==16
+          assert len({x['slug'] for x in rows})==16
+          assert all(x['slug'].isascii() for x in rows)
+          assert all(len(x['facts'])>=8 and len(x['intro'])>140 and len(x['detail'])>190 and len(x['warning'])>110 for x in rows)
+          assert all(x['sources'] and all(s.startswith('https://') for s in x['sources']) for x in rows)
+          assert all(g['photos'] and all(u.startswith('https://a3tal.com/wp-content/uploads/') for u in g['photos']) for g in d['clusters'])
+          print('BATCH14_SIXTEEN_DISTINCT_REAL_PSEO_INTENTS_VALIDATED')
+          PY
+      - name: Install photo composition tooling
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-dejavu-core
+          python3 -m pip install --quiet pillow requests
+      - name: Confirm live standalone car-reference engine and original section
+        run: |
+          curl -fsSL --retry 3 https://a3tal.com/wp-json/a3tal-car-reference/v1/health | python3 -c 'import json,sys; x=json.load(sys.stdin); assert x.get("ok") and x.get("version")=="1.0.0" and x.get("published",0)>=117'
+      - name: Publish independently, protect existing parents, and verify canonical featured image and OG
+        run: python3 -u scripts/publish-car-reference-batch14-real-pseo-16.py
+      - name: Archive exact URL photo proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: real-pseo-b14-${{ matrix.family }}-${{ github.run_id }}
+          path: car-reference-batch14-${{ matrix.family }}-audit.json
+          if-no-files-found: warn
+          retention-days: 30
