@@ -32,7 +32,7 @@ for url,_,_ in links:
     r.raise_for_status()
     assert r.url.split("?")[0].rstrip("/")==url.rstrip("/"),("Wrong model link",url)
 old_content=old["content"]["rendered"]
-assert "دليل كيا" in old_content and "دليل المالك" in old_content
+assert "دليل كيا" in old_content and "الصيانة" in old_content
 if "/sorento-hev-topline-egypt/" in old_content:
     print("KIA_HUB_ALREADY_LINKS_SORENTO_VERIFIED")
     REPORT.write_text(json.dumps({"ok":True,"already_updated":True,"id":old["id"],"photo_id":old["featured_media"]},ensure_ascii=False),encoding="utf8")
