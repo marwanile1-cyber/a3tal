@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/update-nissan-pseo-brand-hub-20261107.yml'
+      - 'scripts/update-nissan-pseo-brand-hub-20261107.py'
   workflow_dispatch:
 permissions:
   contents: read
