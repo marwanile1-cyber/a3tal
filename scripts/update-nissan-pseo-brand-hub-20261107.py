@@ -20,7 +20,8 @@ MODELS=[
  ("juke-10-digt-dct-egypt","جوك 1.0 تيربو","محرك DIG-T وناقل DCT ومقاسات الإطارات والأمان."),
  ("xtrail-epower-e4orce-egypt","إكس تريل e-POWER","مقارنة القوة والدفع بين Acenta Premium وTekna e-4ORCE."),
  ("sentra-16-xtronic-premium-egypt","سنترا 1.6 Premium","محرك 1598 سي سي وفتيس Xtronic CVT والكاوتش والأبعاد والفرامل."),
- ("patrol-y63-egypt","باترول Y63","فرق محرك V6 3.8 عن V6TT 3.5، وأنظمة التعليق والجنوط والشاشات والأمان.")
+ ("patrol-y63-egypt","باترول Y63","فرق محرك V6 3.8 عن V6TT 3.5، وأنظمة التعليق والجنوط والشاشات والأمان."),
+ ("navara-double-cab-25d-egypt","نافارا دبل كاب 2.5 ديزل","محركات 161 و187 حصان والحمولة والسحب والصندوق والكاوتش والعفشة.")
 ]
 URLS=[(BASE+"/car-reference/nissan/"+slug+"/",title,summary) for slug,title,summary in MODELS]
 REST=BASE+"/wp-json/wp/v2/car-reference-records"
@@ -42,7 +43,7 @@ for url,title,summary in URLS:
     rows.append("<tr><th scope='row'><a href='"+escape(url,quote=True)+"'>"+escape(title)+"</a></th><td>"+escape(summary)+"</td></tr>")
 content=(
  "<p>يضم دليل نيسان في أعطال.كوم الموديلات التي تتوفر لها بيانات فنية محددة للسوق المصري، "
- "من صني وسنترا إلى ماجنايت وقشقاي وجوك وإكس تريل وباترول. لا تنطبق مواصفات أي موديل على الآخر تلقائيًا؛ "
+ "من صني وسنترا إلى ماجنايت وقشقاي وجوك وإكس تريل وباترول ونافارا. لا تنطبق مواصفات أي موديل على الآخر تلقائيًا؛ "
  "كما تختلف الأرقام داخل الاسم الواحد عند تغير المحرك أو الجيل أو الفئة. اختر الطراز أولًا، "
  "ثم انتقل إلى صفحة المحرك أو الكاوتش أو الأمان أو السعات التي تجيب عن سؤالك.</p>"
  "<h2>اختر موديل نيسان والمعلومة المطلوبة</h2>"
@@ -71,7 +72,7 @@ payload={
  "status":"publish","parent_path":"","featured_image_id":old["featured_media"],
  "content":content,
  "excerpt":"دليل مواصفات نيسان في مصر: صني وسنترا وماجنايت وقشقاي وجوك وإكس تريل، مع روابط المحرك والكاوتش والأبعاد والأمان لكل موديل.",
- "meta_title":"مواصفات سيارات نيسان في مصر: 7 موديلات | أعطال.كوم",
+ "meta_title":"مواصفات سيارات نيسان في مصر: 8 موديلات | أعطال.كوم",
  "meta_description":"دليل فني لسيارات نيسان مصر: صني وسنترا وماجنايت وقشقاي وجوك وإكس تريل وباترول. روابط مواصفات المحركات والكاوتش والأبعاد والفرامل حسب الموديل.",
  "data":{"kind":"brand","market":"مصر","years":"بحسب الموديل والفئة","engine":"موديلات نيسان المصرية","reviewed_at":"2026-11-07","sources":[{"title":"نيسان مصر - السيارات الجديدة","url":"https://en.nissan.com.eg/vehicles/new.html"}]}
 }
@@ -91,4 +92,4 @@ assert success,"Hub updated but six direct model links not yet visible"
 now=S.get(REST,params={"slug":"nissan","per_page":2},timeout=45).json()
 assert len(now)==1 and now[0]["id"]==old["id"] and now[0]["featured_media"]==old["featured_media"]
 REPORT.write_text(json.dumps({"ok":True,"brand_url":old["link"],"brand_id":old["id"],"preserved_image_id":old["featured_media"],"models":[u for u,_,_ in URLS]},ensure_ascii=False,indent=2),encoding="utf8")
-print("SEVEN_NISSAN_MODEL_HUB_LINKS_LIVE_AND_MEDIA_PRESERVED",flush=True)
+print("EIGHT_NISSAN_MODEL_HUB_LINKS_LIVE_AND_MEDIA_PRESERVED",flush=True)
