@@ -1,0 +1,31 @@
+name: Publish A3tal Nov07 blown fuse guide and Tucson NX4 PSEO
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-a3tal-editorial-pseo-20261107-batch01.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-20261107-editorial-pseo-batch01
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install image processor
+        run: python3 -m pip install --quiet Pillow
+      - name: Validate bridge credentials, source files and publishing script
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-pseo-symptoms-20261105.py scripts/publish-a3tal-editorial-pseo-20261107-batch01.py
+          test -s data/editorial/car-fuse-keeps-blowing-short-circuit-diagnosis-20261107.html
+          test -s data/editorial/pseo-20261107/hyundai-tucson-nx4-dual-zone-ac-one-side-hot.html
+      - name: Publish and verify duplicate guard, licensed photographs, Yoast OG canonical, featured images
+        run: python3 -u scripts/publish-a3tal-editorial-pseo-20261107-batch01.py
