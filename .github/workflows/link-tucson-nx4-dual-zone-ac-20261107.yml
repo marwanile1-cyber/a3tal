@@ -1,0 +1,27 @@
+name: Link Tucson NX4 PSEO diagnostics bidirectionally in existing model guides Nov07
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/link-tucson-nx4-dual-zone-ac-20261107.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-tucson-nx4-ac-context-20261107
+  cancel-in-progress: false
+jobs:
+  link:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate safe contextual updater
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/link-tucson-nx4-dual-zone-ac-20261107.py
+      - name: Add verified contextual links without changing content identity or photos
+        run: python3 -u scripts/link-tucson-nx4-dual-zone-ac-20261107.py
