@@ -1,0 +1,35 @@
+name: Update Nissan PSEO brand hub with six verified model links
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/update-nissan-pseo-brand-hub-20261107.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-nissan-brand-hub
+  cancel-in-progress: false
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate Python script and bridge key
+        run: |
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/update-nissan-pseo-brand-hub-20261107.py
+          python3 -m pip install --quiet requests
+      - name: Update existing brand content without changing its URL or featured photo
+        run: python3 -u scripts/update-nissan-pseo-brand-hub-20261107.py
+      - name: Archive readback and unchanged media
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nissan-brand-hub-link-audit-${{ github.run_id }}
+          path: car-reference-b21-nissan-brand-hub-update-audit.json
+          if-no-files-found: warn
+          retention-days: 30
