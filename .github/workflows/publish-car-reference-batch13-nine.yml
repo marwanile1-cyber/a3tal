@@ -1,0 +1,61 @@
+name: PSEO Car Reference batch13 9 verified specs Nov07
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-car-reference-batch13-nine.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 39
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        family: [elantra-lamps, tucson-fuses, sunny-equipment, magnite-equipment, optra-equipment]
+    concurrency:
+      group: a3tal-pseo-b13-${{ matrix.family }}
+      cancel-in-progress: false
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3CR_FAMILY: ${{ matrix.family }}
+      A3CR_LIMIT: '6'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check 9 independent /car-reference hierarchical intents and citations
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-car-reference-batch12-18-pages.py scripts/publish-car-reference-batch13-real-pseo.py
+          python3 - <<'PY'
+          import json
+          x=json.load(open('data/car-reference/batch-13-nine-specific-technical-pages-20261107.json'))
+          assert len(x['clusters'])==5
+          specs=[item for g in x['clusters'] for item in g['specs']]
+          assert len(specs)==9
+          assert len(set(s['slug'] for s in specs))==9
+          assert all(len(s['facts'])>=7 and len(s['intro'])>=170 and len(s['detail'])>=210 and len(s['warning'])>=105 for s in specs)
+          assert all(len(s['sources'])>=1 and all(u.startswith('https://') for u in s['sources']) for s in specs)
+          print('NINE_INDEPENDENT_CAR_REFERENCE_INTENTS_VERIFIED')
+          PY
+      - name: Install source image processing dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-dejavu-core
+          python3 -m pip install --quiet Pillow requests
+      - name: Check actual dedicated PSEO engine online
+        run: |
+          curl -fsSL --retry 3 https://a3tal.com/wp-json/a3tal-car-reference/v1/health | python3 -c 'import json,sys; x=json.load(sys.stdin); assert x.get("ok") and x.get("version")=="1.0.0" and x.get("published",0)>=108'
+      - name: Publish only missing model-specific technical specs and verify canonical OG photos
+        run: python3 -u scripts/publish-car-reference-batch13-real-pseo.py
+      - name: Save verifiable links and photo proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-real-pseo-b13-${{ matrix.family }}-${{ github.run_id }}
+          path: car-reference-batch13-${{ matrix.family }}-audit.json
+          if-no-files-found: warn
+          retention-days: 30
