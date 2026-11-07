@@ -1,0 +1,33 @@
+name: Publish 4 A3tal articles Nov07 AC engine motorcycle and Elantra AD PSEO
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-a3tal-nov07-four-sections-pseo.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-nov07-four-sections-pseo
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 43
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install WebP imaging library
+        run: python3 -m pip install --quiet Pillow
+      - name: Validate protected A3tal Direct Bridge and four articles
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-pseo-symptoms-20261105.py scripts/publish-a3tal-nov07-four-sections-pseo.py
+          test -s data/editorial/20261107/car-ac-musty-smell-first-start-diagnosis.html
+          test -s data/editorial/20261107/car-stalls-after-throttle-body-cleaning-idle-relearn.html
+          test -s data/editorial/20261107/motorcycle-hard-gear-shifting-clutch-cable-diagnosis.html
+          test -s data/editorial/pseo-20261107/hyundai-elantra-ad-eps-warning-heavy-steering.html
+      - name: Deduplicate and publish four differentiated articles including PSEO; verify media OG canonical and taxonomy
+        run: python3 -u scripts/publish-a3tal-nov07-four-sections-pseo.py
