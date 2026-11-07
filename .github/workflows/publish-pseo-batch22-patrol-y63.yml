@@ -1,0 +1,70 @@
+name: Publish Nissan Patrol Y63 Egypt - eight editorial technical references
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-pseo-batch22-patrol-y63.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-pseo-b22-patrol-y63
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3CR_FAMILY: nissan-patrol-y63
+      A3CR_LIMIT: '9'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check eight differentiated original Arabic technical guides and manufacturer images
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-car-reference-batch22-patrol-y63-quality.py
+          python3 - <<'PY'
+          import json, re, html
+          p="data/car-reference/batch-22-nissan-patrol-y63-editorial-20261107.json"
+          d=json.load(open(p,encoding="utf8"))
+          assert len(d["clusters"])==1
+          g=d["clusters"][0]
+          assert g["brand"]=="nissan" and len(g["specs"])==7
+          pages=[g["model"]]+g["specs"]
+          assert len({r["slug"] for r in pages})==8
+          assert len({r["title"] for r in pages})==8
+          assert len({r["rich_html"] for r in pages})==8
+          assert len(g["photos"])==8 and len(set(g["photos"]))==8
+          for r in pages:
+              body=html.unescape(re.sub(r"<[^>]+>"," ",r["rich_html"]))
+              assert len(body.split())>=400,(r["slug"],len(body.split()))
+              assert r["rich_html"].count("<h2>")>=4
+              assert r["rich_html"].count("<table>")==1
+              assert "nissan.com.eg" in r["rich_html"]
+              assert "a3tal.com/car-reference/nissan/" in r["rich_html"]
+              assert 75<=len(r["meta_description"])<=160,(r["slug"],len(r["meta_description"]))
+          assert len({r["category"] for r in g["specs"]})>=5
+          assert all(len(r["facts"])>=10 for r in g["specs"])
+          assert all("nissan_middle_east/vehicles/patrol/Y63/VLP/" in u for u in g["photos"])
+          print("EIGHT_DISTINCT_PATROL_EDITORIAL_PSEO_PAGES_QA_OK")
+          PY
+      - name: Install dependencies for real photos and publication bridge
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-dejavu-core
+          python3 -m pip install --quiet pillow requests
+      - name: Verify live custom car reference publisher health
+        run: |
+          curl -fsSL --retry 3 https://a3tal.com/wp-json/a3tal-car-reference/v1/health | python3 -c 'import json,sys;x=json.load(sys.stdin);assert x.get("ok") and x.get("version")=="1.0.0" and x.get("published",0)>=277'
+      - name: Publish one model and seven distinct technical pages with photographic and SEO readbacks
+        run: python3 -u scripts/publish-car-reference-batch22-patrol-y63-quality.py
+      - name: Save exact publication and image audits
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-patrol-y63-pseo-b22-${{ github.run_id }}
+          path: car-reference-batch22-nissan-patrol-y63-audit.json
+          if-no-files-found: warn
+          retention-days: 30
