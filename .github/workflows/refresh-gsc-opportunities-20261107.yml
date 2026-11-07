@@ -1,0 +1,27 @@
+name: Refresh 3 A3tal high-impression GSC pages PCV P0342 P0011 Nov07
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/refresh-gsc-opportunities-20261107.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-gsc-conservative-20261107
+  cancel-in-progress: false
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Preflight
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/refresh-gsc-opportunities-20261107.py
+      - name: Add measured-query diagnostic answers and check preservation of Yoast index canonical featured image
+        run: python3 -u scripts/refresh-gsc-opportunities-20261107.py
