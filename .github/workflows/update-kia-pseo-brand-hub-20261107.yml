@@ -1,0 +1,35 @@
+name: Safely add Sorento to Kia PSEO brand hub with verified links
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/update-kia-pseo-brand-hub-20261107.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-kia-pseo-brand-hub
+  cancel-in-progress: false
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate safe brand hub updater
+        run: |
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/update-kia-pseo-brand-hub-20261107.py
+          python3 -m pip install --quiet requests
+      - name: Preserve original manufacturer brand page and append verified links
+        run: python3 -u scripts/update-kia-pseo-brand-hub-20261107.py
+      - name: Keep proof of link verification and unchanged photo ID
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-kia-hub-qa-${{ github.run_id }}
+          path: car-reference-b24-kia-hub-update-audit.json
+          if-no-files-found: warn
+          retention-days: 30
