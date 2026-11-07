@@ -66,7 +66,7 @@ content=(
  "<p><a href='https://en.nissan.com.eg/vehicles/new.html' rel='nofollow noopener'>مصدر الشركة: نيسان مصر</a></p>"
 )
 payload={
- "kind":"brand","slug":"nissan","title":"دليل المواصفات الفنية لسيارات نيسان",
+ "kind":"brand","slug":"nissan","allow_update_published":True,"title":"دليل المواصفات الفنية لسيارات نيسان",
  "status":"publish","parent_path":"","featured_image_id":old["featured_media"],
  "content":content,
  "excerpt":"دليل مواصفات نيسان في مصر: صني وسنترا وماجنايت وقشقاي وجوك وإكس تريل، مع روابط المحرك والكاوتش والأبعاد والأمان لكل موديل.",
@@ -74,7 +74,7 @@ payload={
  "meta_description":"دليل فني لسيارات نيسان مصر: صني وسنترا وماجنايت وقشقاي وجوك وإكس تريل. روابط مواصفات المحركات والكاوتش والأبعاد والفرامل حسب الموديل.",
  "data":{"kind":"brand","market":"مصر","years":"بحسب الموديل والفئة","engine":"موديلات نيسان المصرية","reviewed_at":"2026-11-07","sources":[{"title":"نيسان مصر - السيارات الجديدة","url":"https://en.nissan.com.eg/vehicles/new.html"}]}
 }
-r=S.post(UPSERT,headers={"X-A3tal-Key":KEY,"Content-Type":"application/json"},json={"items":[payload]},timeout=180)
+r=S.post(UPSERT,headers={"X-A3tal-Key":KEY,"Content-Type":"application/json"},json={"items":[payload],"allow_update_published":True},timeout=180)
 r.raise_for_status()
 ans=r.json(); res=ans.get("results") or []
 assert len(res)==1 and res[0].get("ok") and res[0].get("status")=="publish",ans
