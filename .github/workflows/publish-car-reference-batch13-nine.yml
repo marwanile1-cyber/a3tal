@@ -49,7 +49,7 @@ jobs:
       - name: Check actual dedicated PSEO engine online
         run: |
           curl -fsSL --retry 3 https://a3tal.com/wp-json/a3tal-car-reference/v1/health | python3 -c 'import json,sys; x=json.load(sys.stdin); assert x.get("ok") and x.get("version")=="1.0.0" and x.get("published",0)>=108'
-      - name: Publish only missing model-specific technical specs and verify canonical OG photos (corrected worker)
+      - name: Publish only missing model-specific technical specs and verify canonical OG photos (corrected cluster-size guards)
         run: python3 -u scripts/publish-car-reference-batch13-real-pseo.py
       - name: Save verifiable links and photo proof
         if: always()
