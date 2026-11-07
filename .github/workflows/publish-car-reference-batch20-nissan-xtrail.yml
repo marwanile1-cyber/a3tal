@@ -3,7 +3,7 @@ on:
   push:
     branches: [main]
     paths:
-      - '.github/workflows/publish-car-reference-batch20-nissan-xtrail-epower.yml'
+      - '.github/workflows/publish-car-reference-batch20-nissan-xtrail.yml'
   workflow_dispatch:
 permissions:
   contents: read
