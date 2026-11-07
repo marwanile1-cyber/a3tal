@@ -21,7 +21,7 @@
         "https://www-europe.nissan-cdn.net/content/dam/Nissan/eg/vehicles/Navara/DC/DSCF6309LRLRRAW_NEW-BADGE-with-Roofrails-T.jpg",
         "https://www-europe.nissan-cdn.net/content/dam/Nissan/eg/vehicles/Navara/DC/DSCF6309LRLRRAW_NEW-BADGE-with-Roofrails-M.jpg",
         "https://www-europe.nissan-cdn.net/content/dam/Nissan/eg/vehicles/Navara/DC/DC-interior-T.jpg",
-        "https://www-europe.nissan-cdn.net/content/dam/Nissan/eg/vehicles/Navara/DC/DC-interior-M.jpg"
+        "https://www-europe.nissan-cdn.net/content/dam/Nissan/eg/vehicles/Navara/DC/DSCF6309LRLRRAW_NEW-BADGE-with-Roofrails-D-EN.jpg.ximg.l_full_h.smart.jpg"
       ],
       "model": {
         "slug": "navara-double-cab-25d-egypt",
@@ -378,5 +378,6 @@
         }
       ]
     }
-  ]
+  ],
+  "quality_note": "Last photographic variant switched from low-resolution mobile image to verified high-resolution official model hero variant. Unique 1600x900 composited WebP per page."
 }
