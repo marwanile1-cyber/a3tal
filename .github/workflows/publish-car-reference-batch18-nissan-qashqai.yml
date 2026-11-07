@@ -1,0 +1,101 @@
+name: Publish A3tal car-reference batch 18 Nissan Qashqai official specifications
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-car-reference-batch18-nissan-qashqai.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-pseo-batch18-nissan-qashqai
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 54
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3CR_FAMILY: nissan-qashqai-j12
+      A3CR_LIMIT: '8'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate new intents and official sources
+        run: |
+          test -n "$A3TAL_API_KEY"
+          python3 - <<'PY'
+          import json
+          d=json.load(open("data/car-reference/batch-18-nissan-qashqai-j12-20261107.json"))
+          assert len(d["clusters"])==1
+          x=d["clusters"][0]
+          assert len(x["specs"])==6
+          assert len({p["slug"] for p in x["specs"]})==6
+          assert all(p["sources"][0].startswith("https://en.nissan.com.eg/") and len(p["facts"])>=10 for p in x["specs"])
+          print("SIX_UNIQUE_OFFICIAL_NISSAN_EGYPT_INTENTS_OK")
+          PY
+      - name: Install image and network dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-dejavu-core
+          python3 -m pip install --quiet pillow requests
+      - name: Adapt guarded publisher to official Nissan Qashqai source
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path("scripts/publish-car-reference-batch17-seventy.py")
+          s=p.read_text()
+          s=s.replace('batch-17-seventy-new-brands-models-specs-20261107.json','batch-18-nissan-qashqai-j12-20261107.json')
+          s=s.replace('assert len(DB["clusters"])==6 and 11<=len(ITEMS)<=12','assert len(DB["clusters"])==1 and len(ITEMS)==8')
+          s=s.replace('REPORT=ROOT/("car-reference-batch17-"+FAMILY+"-audit.json")','REPORT=ROOT/("car-reference-batch18-"+FAMILY+"-audit.json")')
+          s=s.replace('ACCENTS={','ACCENTS={"nissan-qashqai-j12":(96,156,185),')
+          s=s.replace('MARK_NAMES={','MARK_NAMES={"nissan-qashqai-j12":"NISSAN QASHQAI J12 EGYPT",')
+          s=s.replace('filename="a3tal-b17-"+FAMILY','filename="a3tal-b18-"+FAMILY')
+          a=s.index('def download_photo():')
+          b=s.index('def render(photo,i,row):')
+          s=s[:a]+'''def download_photo():
+              import urllib.parse, html as htmlmod
+              from html.parser import HTMLParser
+              class ImageFinder(HTMLParser):
+                  def __init__(self):
+                      super().__init__(); self.og=[]; self.images=[]
+                  def handle_starttag(self,tag,attrs):
+                      d=dict(attrs)
+                      if tag=="meta" and d.get("property") in ("og:image","og:image:secure_url"):
+                          self.og.append(d.get("content",""))
+                      if tag=="img":
+                          alt=d.get("alt","").lower()
+                          if "qashqai" in alt or "قشقاي" in alt:
+                              self.images.append(d.get("src") or d.get("data-src") or "")
+              page="https://en.nissan.com.eg/vehicles/new/qashqai.html"
+              response=get(page)
+              finder=ImageFinder(); finder.feed(response.text)
+              urls=[urllib.parse.urljoin(page,htmlmod.unescape(u)) for u in finder.og+finder.images if u]
+              for url in urls:
+                  try:
+                      raw=get(url).content
+                      if len(raw)<28000:continue
+                      photo=Image.open(io.BytesIO(raw)).convert("RGB")
+                      if min(photo.size)<550 or max(photo.size)<1000:continue
+                      print("VERIFIED_MANUFACTURER_QASHQAI_PHOTO",url,photo.size,flush=True)
+                      return photo,url
+                  except Exception as exc:
+                      print("PHOTO_CANDIDATE_FAILED",str(exc)[:140],flush=True)
+              raise RuntimeError("No verified actual Qashqai manufacturer photograph: stop without publishing")
+              
+          '''+s[b:]
+          Path("scripts/a3tal-batch18-runtime.py").write_text(s)
+          PY
+          python3 -m py_compile scripts/a3tal-batch18-runtime.py
+      - name: Confirm production custom publisher health
+        run: |
+          curl -fsSL --retry 3 https://a3tal.com/wp-json/a3tal-car-reference/v1/health | python3 -c 'import json,sys;x=json.load(sys.stdin);assert x.get("ok") and x.get("published",0)>=250'
+      - name: Publish one new model and six independent technical specifications
+        run: python3 -u scripts/a3tal-batch18-runtime.py
+      - name: Retain exact URL and image SEO audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-pseo-batch18-${{ github.run_id }}
+          path: car-reference-batch18-nissan-qashqai-j12-audit.json
+          if-no-files-found: warn
+          retention-days: 30
