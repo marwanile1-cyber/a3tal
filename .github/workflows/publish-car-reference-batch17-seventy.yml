@@ -1,0 +1,63 @@
+name: Real PSEO to 250 - batch17 brand model and 59 source-backed technical specifications
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-car-reference-batch17-seventy.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 54
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        family: [mg-newzs, geely-starray, jetour-t2-idm-4wd, chery-tiggo9-phev, renault-boreal, opel-frontera]
+    concurrency:
+      group: a3tal-real-pseo-b17-${{ matrix.family }}
+      cancel-in-progress: false
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3CR_FAMILY: ${{ matrix.family }}
+      A3CR_LIMIT: '12'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate 70 hierarchical brand/model/spec intents with differentiated sources
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-car-reference-batch17-seventy.py
+          python3 - <<'PY'
+          import json
+          d=json.load(open('data/car-reference/batch-17-seventy-new-brands-models-specs-20261107.json'))
+          assert len(d['clusters'])==6
+          rows=[s for g in d['clusters'] for s in g['specs']]
+          assert len(rows)==59 and len({s['slug'] for s in rows})==59
+          assert 59+6+5==70
+          assert len({g['model']['slug'] for g in d['clusters']})==6
+          assert len({g['brand'] for g in d['clusters']})==6
+          assert all(len(x['facts'])>=9 and len(x['intro'])>=200 and len(x['detail'])>=300 and len(x['warning'])>=170 for x in rows)
+          assert all(g['photos'] and all(p.startswith('https://a3tal.com/wp-content/uploads/') for p in g['photos']) for g in d['clusters'])
+          print('SEVENTY_SEPARATE_REAL_PSEO_RECORDS_PREFLIGHT_OK')
+          PY
+      - name: Prepare photographic WebP source and service dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-dejavu-core
+          python3 -m pip install --quiet pillow requests
+      - name: Confirm production custom PSEO engine and parent counts
+        run: |
+          curl -fsSL --retry 3 https://a3tal.com/wp-json/a3tal-car-reference/v1/health | python3 -c 'import json,sys; x=json.load(sys.stdin); assert x.get("ok") and x.get("version")=="1.0.0" and x.get("published",0)>=180'
+      - name: Publish correct brand then model then specific references, with strict canonical and og:image readback
+        run: python3 -u scripts/publish-car-reference-batch17-seventy.py
+      - name: Retain exact URLs and independent verification
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: real-pseo-b17-${{ matrix.family }}-${{ github.run_id }}
+          path: car-reference-batch17-${{ matrix.family }}-audit.json
+          if-no-files-found: warn
+          retention-days: 30
