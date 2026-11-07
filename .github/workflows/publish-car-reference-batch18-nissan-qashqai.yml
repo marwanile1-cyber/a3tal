@@ -82,7 +82,7 @@ jobs:
                       print("PHOTO_CANDIDATE_FAILED",str(exc)[:140],flush=True)
               raise RuntimeError("No verified actual Qashqai manufacturer photograph: stop without publishing")
               
-          '''+s[b:]
+          '''.rstrip()+"\n\n"+s[b:]
           Path("scripts/a3tal-batch18-runtime.py").write_text(s)
           PY
           python3 -m py_compile scripts/a3tal-batch18-runtime.py
