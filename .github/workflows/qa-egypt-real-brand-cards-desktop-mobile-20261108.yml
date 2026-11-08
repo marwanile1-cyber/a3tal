@@ -1,7 +1,7 @@
 name: Verify Egypt real logos desktop and mobile
 on:
   workflow_run:
-    workflows: ["Deploy Egypt brand emblems V2 scoped CSS"]
+    workflows: ["Deploy Egypt brand emblems V2 scoped CSS", "Deploy Egypt brand emblems V3 root CSS"]
     types: [completed]
 permissions:
   contents: read
