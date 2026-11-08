@@ -1,0 +1,35 @@
+name: Link EV5 EV6 EV9 to Kia brand hub while preserving old media
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/link-kia-electric-models-20261108.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-kia-brand-hub
+  cancel-in-progress: false
+jobs:
+  link:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate non-destructive Kia hub linker
+        run: |
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/link-kia-ev5-ev6-ev9-pseo-hub-20261108.py
+          python3 -m pip install --quiet requests
+      - name: Link three published Kia electric hubs via authenticated Direct Bridge
+        run: python3 -u scripts/link-kia-ev5-ev6-ev9-pseo-hub-20261108.py
+      - name: Store actual links and preserved brand media audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kia-ev5-ev6-ev9-link-audit-${{ github.run_id }}
+          path: data/car-reference/kia-electric-ev5-ev6-ev9-hub-audit.json
+          retention-days: 30
+          if-no-files-found: warn
