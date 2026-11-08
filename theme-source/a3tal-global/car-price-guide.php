@@ -37,6 +37,40 @@ $cg_brand_directory = [
  'chevrolet'=>['name'=>'شيفروليه','search'=>'شيفروليه','reference'=>'/car-reference/chevrolet/'],
  'byd'=>['name'=>'BYD','search'=>'BYD','reference'=>''],
 ];
+// Current Egypt-market brand aliases, for published-article title discovery.
+// All links stay under the existing /cars/?brand= archive (no duplicate SEO pages).
+$cg_brand_directory=array_merge($cg_brand_directory,[
+ 'geely'=>['name'=>'جيلي','search'=>'جيلي','aliases'=>['جيلي','Geely','كول راي','Coolray','EX5','امجراند']],
+ 'toyota'=>['name'=>'تويوتا','search'=>'تويوتا','aliases'=>['تويوتا','Toyota']],
+ 'kia'=>['name'=>'كيا','search'=>'كيا','aliases'=>['كيا','Kia']],
+ 'hyundai'=>['name'=>'هيونداي','search'=>'هيونداي','aliases'=>['هيونداي','Hyundai','النترا','Elantra','أكسنت','Accent','توسان','Tucson']],
+ 'nissan'=>['name'=>'نيسان','search'=>'نيسان','aliases'=>['نيسان','Nissan','صني','Sunny','قشقاي','Qashqai']],
+ 'mg'=>['name'=>'إم جي','search'=>'إم جي','aliases'=>['إم جي','MG','ام جي']],
+ 'chevrolet'=>['name'=>'شيفروليه','search'=>'شيفروليه','aliases'=>['شيفروليه','شفروليه','Chevrolet','أوبترا','Optra']],
+ 'byd'=>['name'=>'بي واي دي','search'=>'بي واي دي','aliases'=>['بي واي دي','BYD']],
+ 'chery'=>['name'=>'شيري','search'=>'شيري','aliases'=>['شيري','Chery','تيجو','Tiggo','أريزو','Arrizo']],
+ 'jetour'=>['name'=>'جيتور','search'=>'جيتور','aliases'=>['جيتور','Jetour','داشينج','Dashing']],
+ 'jaecoo'=>['name'=>'جايكو','search'=>'جايكو','aliases'=>['جايكو','Jaecoo']],
+ 'renault'=>['name'=>'رينو','search'=>'رينو','aliases'=>['رينو','Renault','داستر','Duster','تاليانت','Taliant']],
+ 'opel'=>['name'=>'أوبل','search'=>'أوبل','aliases'=>['أوبل','Opel','أسترا','Astra','كورسا','Corsa']],
+ 'suzuki'=>['name'=>'سوزوكي','search'=>'سوزوكي','aliases'=>['سوزوكي','Suzuki']],
+ 'skoda'=>['name'=>'سكودا','search'=>'سكودا','aliases'=>['سكودا','Skoda']],
+ 'changan'=>['name'=>'شانجان','search'=>'شانجان','aliases'=>['شانجان','Changan']],
+ 'haval'=>['name'=>'هافال','search'=>'هافال','aliases'=>['هافال','Haval']],
+ 'gac'=>['name'=>'جي إيه سي','search'=>'GAC','aliases'=>['GAC','جي إيه سي','ترامبشي','Trumpchi']],
+ 'deepal'=>['name'=>'ديبال','search'=>'ديبال','aliases'=>['ديبال','Deepal']],
+ 'soueast'=>['name'=>'سوإيست','search'=>'SOUEAST','aliases'=>['SOUEAST','سوايست','سوإيست']],
+ 'dongfeng'=>['name'=>'دونج فينج','search'=>'دونج فينج','aliases'=>['دونج فينج','Dongfeng']],
+ 'baic'=>['name'=>'بايك','search'=>'بايك','aliases'=>['بايك','BAIC']],
+ 'kgm'=>['name'=>'KGM','search'=>'KGM','aliases'=>['KGM','توريس','Torres']],
+ 'ford'=>['name'=>'فورد','search'=>'فورد','aliases'=>['فورد','Ford']],
+ 'mazda'=>['name'=>'مازدا','search'=>'مازدا','aliases'=>['مازدا','Mazda']],
+ 'mitsubishi'=>['name'=>'ميتسوبيشي','search'=>'ميتسوبيشي','aliases'=>['ميتسوبيشي','Mitsubishi']],
+ 'peugeot'=>['name'=>'بيجو','search'=>'بيجو','aliases'=>['بيجو','Peugeot']],
+ 'citroen'=>['name'=>'سيتروين','search'=>'سيتروين','aliases'=>['سيتروين','Citroen','Citroën']],
+ 'jac'=>['name'=>'جاك','search'=>'JAC','aliases'=>['JAC','جاك']],
+ 'forthing'=>['name'=>'فورثينج','search'=>'Forthing','aliases'=>['Forthing','فورثينج']],
+]);
 $cg_brand_selected=$cg_brand_directory[$cg_brand_slug]??null;
 $cg_market = get_query_var('market');
 $cg_body = get_query_var('vehicle_type');
@@ -236,27 +270,14 @@ get_header();
           <div class="cg-section-heading"><div><span class="cg-kicker">موديلات منشورة ومعلومات فعلية</span><h2 id="cg-popular-title"><?php echo $cg_brand_selected ? esc_html("سيارات ومعلومات ".$cg_brand_selected["name"]) : "أحدث السيارات في الدليل"; ?></h2></div><span class="cg-total"><?php echo esc_html($cg_related_guides && !$cg_top ? "أدلة منشورة" : number_format_i18n((int)$cg_listing->found_posts)." نتيجة"); ?></span></div>
           <?php if($cg_top): ?>
             <div class="cg-cars-grid"><?php foreach($cg_top as $car){$cg_render_card($car);} ?></div>
-          <?php elseif($cg_brand_selected && $cg_related_guides): ?>
-            <div class="cg-brand-discovery">
-              <h3><?php echo esc_html("كل ما يخص سيارات ".$cg_brand_selected["name"]); ?></h3>
-              <p>لا توجد موديلات مسجلة لهذه الماركة في قاعدة الأسعار حاليًا. هذه أدلة ومقالات منشورة بالفعل، وليست أسعارًا أو مواصفات لم يتم التحقق منها.</p>
-              <?php if($cg_brand_selected['reference']): ?>
-                <p><a class="cg-secondary-link" href="<?php echo esc_url(home_url($cg_brand_selected['reference'])); ?>">دليل المواصفات الفنية لهذه الماركة ←</a></p>
-              <?php endif; ?>
-              <?php if($cg_related_guides->have_posts()): ?>
-                <div class="cg-guide-links">
-                  <?php while($cg_related_guides->have_posts()):$cg_related_guides->the_post(); ?>
-                    <a href="<?php the_permalink(); ?>"><b><?php echo esc_html(get_the_title()); ?></b><span>اقرأ الدليل المنشور ←</span></a>
-                  <?php endwhile;wp_reset_postdata(); ?>
-                </div>
-              <?php else: ?>
-                <p class="cg-empty">لم تُنشر بعد أدلة كافية لهذه الماركة. تابع دليل السيارات والماركات المتاحة.</p>
-              <?php endif; ?>
-            </div>
+          <?php elseif($cg_brand_selected): ?>
+            <p class="cg-empty">لا توجد موديلات مسجلة بأسعار في قاعدة السيارات لهذه الماركة حاليًا. تصفح المقالات والأعطال والمواصفات المنشورة في القسم التالي.</p>
           <?php else: ?><p class="cg-empty">مفيش موديلات مطابقة للفلاتر دي حاليًا. جرّب مسح الفلاتر أو اسم موديل تاني.</p><?php endif; ?>
         </section>
       </div>
     </div>
+
+    <?php if($cg_brand_selected) require get_template_directory().'/brand-collection-20261108.php'; ?>
 
     <section class="cg-benefits" aria-label="مميزات دليل السيارات">
       <div><span class="cg-benefit-symbol">↗</span><strong>تحديثات السوق</strong><small>مقالات الأسعار المنشورة</small></div>
