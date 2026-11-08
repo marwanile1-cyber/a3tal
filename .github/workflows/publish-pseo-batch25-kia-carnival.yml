@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/publish-pseo-batch25-kia-carnival.yml'
+      - 'scripts/publish-car-reference-batch25-kia-carnival-quality.py'
   workflow_dispatch:
 permissions:
   contents: read
