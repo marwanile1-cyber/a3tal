@@ -228,12 +228,12 @@ get_header();
   <div class="cg-container">
     <section class="cg-brands cg-surface" id="cg-brands" aria-labelledby="cg-brands-title">
       <div class="cg-section-heading"><div><span class="cg-kicker">تصفح السيارات</span><h2 id="cg-brands-title">تصفح حسب الماركة</h2></div><a href="#cg-filters">كل الماركات والفلاتر ←</a></div>
-      <?php if ($cg_brands): ?>
+      <?php if ($cg_brand_directory): ?>
       <div class="cg-brands-grid">
-        <?php foreach(array_slice($cg_brands,0,18) as $term): ?>
-          <a class="cg-brand" data-brand-name="<?php echo esc_attr($term->name); ?>" href="<?php echo esc_url(add_query_arg('brand',$term->slug,$cg_url)); ?>">
-            <span class="cg-brand-icon" aria-hidden="true"><?php echo esc_html(function_exists('mb_substr') ? mb_substr($term->name,0,2) : substr($term->name,0,2)); ?></span>
-            <span class="cg-brand-name"><?php echo esc_html($term->name); ?></span>
+        <?php foreach($cg_brand_directory as $brand_slug=>$brand_info): ?>
+          <a class="cg-brand" data-brand-name="<?php echo esc_attr($brand_info['name']); ?>" href="<?php echo esc_url(add_query_arg('brand',$brand_slug,$cg_url)); ?>">
+            <span class="cg-brand-icon" aria-hidden="true"><?php echo esc_html(strtoupper($brand_slug)); ?></span>
+            <span class="cg-brand-name"><?php echo esc_html($brand_info['name']); ?></span>
           </a>
         <?php endforeach; ?>
       </div>
@@ -291,7 +291,7 @@ get_header();
       <div class="cg-section-heading"><div><span class="cg-kicker">قائمة الموديلات</span><h2 id="cg-all-title">كل السيارات والفئات المتاحة</h2><p>استخدم الفلاتر لتضييق النتائج. روابط السيارات القديمة محفوظة بدون تعديل.</p></div><a href="<?php echo esc_url($cg_url); ?>">إعادة ضبط البحث ←</a></div>
       <form class="cg-filter" id="cg-filters" method="get" action="<?php echo esc_url($cg_url); ?>">
         <label>اسم السيارة<input name="car_search" type="search" maxlength="85" value="<?php echo esc_attr($cg_search); ?>" placeholder="موديل أو ماركة"></label>
-        <label>الماركة<select name="brand"><option value="">كل الماركات</option><?php foreach($cg_brands as $t): ?><option value="<?php echo esc_attr($t->slug); ?>" <?php selected($cg_brand,$t->slug); ?>><?php echo esc_html($t->name); ?></option><?php endforeach; ?></select></label>
+        <label>الماركة<select name="brand"><option value="">كل الماركات</option><?php foreach($cg_brand_directory as $slug=>$brand): ?><option value="<?php echo esc_attr($slug); ?>" <?php selected($cg_brand_slug,$slug); ?>><?php echo esc_html($brand['name']); ?></option><?php endforeach; ?></select></label>
         <label>السوق<select name="market"><option value="">كل الأسواق</option><?php foreach($cg_markets as $t): ?><option value="<?php echo esc_attr($t->slug); ?>" <?php selected($cg_market,$t->slug); ?>><?php echo esc_html($t->name); ?></option><?php endforeach; ?></select></label>
         <label>الهيكل<select name="vehicle_type"><option value="">كل الأنواع</option><?php foreach($cg_bodies as $t): ?><option value="<?php echo esc_attr($t->slug); ?>" <?php selected($cg_body,$t->slug); ?>><?php echo esc_html($t->name); ?></option><?php endforeach; ?></select></label>
         <label>سنة الموديل<input type="number" name="car_year" min="1950" max="2100" value="<?php echo esc_attr($cg_year ? absint($cg_year) : ''); ?>" placeholder="2027"></label>
