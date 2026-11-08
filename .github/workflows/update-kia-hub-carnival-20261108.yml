@@ -1,0 +1,35 @@
+name: Add Carnival HEV to Kia PSEO hub without duplication
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/update-kia-hub-carnival-20261108.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-kia-brand-hub
+  cancel-in-progress: false
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate guarded incremental Kia brand hub update
+        run: |
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/update-kia-pseo-hub-carnival-20261108.py
+          python3 -m pip install --quiet requests
+      - name: Add verified live Carnival URL to original Kia hub model table and preserve media
+        run: python3 -u scripts/update-kia-pseo-hub-carnival-20261108.py
+      - name: Save proof of unchanged media and internal links
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-kia-carnival-hub-${{ github.run_id }}
+          path: car-reference-b25-kia-hub-update-audit.json
+          if-no-files-found: warn
+          retention-days: 30
