@@ -192,7 +192,11 @@ def main():
     desired={}
     desired[PARTIAL]=source(PARTIAL)
     if originals[PARTIAL] and originals[PARTIAL]["content"]!=desired[PARTIAL]:
-        raise RuntimeError("Existing live brand partial differs; no overwrite")
+        # Allow only the immediately preceding reviewed (but overly complex) version
+        # from this same release to be upgraded to safer native WP title queries.
+        preceding=originals[PARTIAL]["content"]
+        if "A3tal Egypt car-brand overview" not in preceding or "a3tal_brand_title_filter" not in preceding:
+            raise RuntimeError("Unexpected live brand partial changed independently; stop")
     desired[PRICE_CSS]=append_scoped(originals[PRICE_CSS]["content"],source(PRICE_CSS),BEGIN_PRICE_CSS,END_PRICE_CSS)
     desired[PRICE]=patch_price(originals[PRICE]["content"])
     desired[HOME_CSS]=append_scoped(originals[HOME_CSS]["content"],source(HOME_CSS),BEGIN_CSS,END_CSS)
