@@ -19,16 +19,11 @@ $home_latest_review = new WP_Query([
  'posts_per_page'=>1,'orderby'=>'date','order'=>'DESC','ignore_sticky_posts'=>true,'no_found_rows'=>true
 ]);
 
-$home_price_articles = new WP_Query([
- 'post_type'=>'post','post_status'=>'publish','cat'=>374,'posts_per_page'=>6,
- 'orderby'=>'date','order'=>'DESC','no_found_rows'=>true,'ignore_sticky_posts'=>true
-]);
-$home_new_reference = post_type_exists('a3_car_ref') ? new WP_Query([
- 'post_type'=>'a3_car_ref','post_status'=>'publish','posts_per_page'=>6,
- 'post_parent__not_in'=>[0],'orderby'=>'modified','order'=>'DESC',
- 'no_found_rows'=>true,'ignore_sticky_posts'=>true
-]) : null;
-
+// Reuse existing, already stable homepage car query; avoid extra home data scans.
+$home_new_reference = post_type_exists('a3_car_ref') ? get_posts([
+ 'post_type'=>'a3_car_ref','post_status'=>'publish','numberposts'=>6,
+ 'orderby'=>'modified','order'=>'DESC'
+]) : [];
 if (post_type_exists('a3_car_ref')) {
     $ref_stats = wp_count_posts('a3_car_ref');
     $ref_count = isset($ref_stats->publish) ? (int) $ref_stats->publish : 0;
@@ -86,13 +81,20 @@ if (post_type_exists('a3_car_ref')) {
  <div class="wrap">
   <div class="a3egy-section-heading"><div><small>دليل الشراء في مصر</small><h2 id="a3egy-price-heading">أسعار السيارات الجديدة في مصر</h2><p>آخر مقالات الأسعار المنشورة، مع بيانات الموديل والفئات وتاريخ التحديث داخل كل مقال.</p></div><a class="a3egy-all" href="https://a3tal.com/cars/">عرض كل الأسعار ←</a></div>
   <div class="a3egy-price-grid">
-  <?php if($home_price_articles->have_posts()): ?>
-    <?php while($home_price_articles->have_posts()):$home_price_articles->the_post(); ?>
-    <article class="a3egy-price-card"><a href="<?php the_permalink(); ?>">
-    <?php if(has_post_thumbnail()):echo get_the_post_thumbnail(get_the_ID(),'medium_large',['loading'=>'lazy','decoding'=>'async','alt'=>get_the_title()]); else: ?><div class="a3egy-photo-placeholder">دليل أسعار السيارات</div><?php endif; ?>
-    <span class="a3egy-price-copy"><strong><?php echo esc_html(get_the_title()); ?></strong><small><?php echo esc_html(get_the_date('j F Y')); ?> · السعر والفئات والمواصفات ←</small></span>
+  <?php if($home_ref_cards && $home_ref_cards->posts): ?>
+    <?php foreach($home_ref_cards->posts as $car):
+      $car_id=(int)$car->ID;
+      $car_img=get_the_post_thumbnail_url($car_id,'medium_large');
+      $price_post_id=(int)get_post_meta($car_id,'_a3_primary_price_post_id',true);
+      $price_href=($price_post_id && get_post_status($price_post_id)==='publish') ? get_permalink($price_post_id) : get_permalink($car_id);
+      $price_display=function_exists('a3cp_vehicle_price') ? a3cp_vehicle_price($car_id) : '';
+    ?>
+    <article class="a3egy-price-card"><a href="<?php echo esc_url($price_href); ?>">
+      <?php if($car_img): ?><img loading="lazy" decoding="async" src="<?php echo esc_url($car_img); ?>" alt="<?php echo esc_attr(get_the_title($car_id)); ?>"><?php else: ?><div class="a3egy-photo-placeholder">دليل أسعار السيارات</div><?php endif; ?>
+      <span class="a3egy-price-copy"><strong><?php echo esc_html(get_the_title($car_id)); ?></strong>
+      <small><?php echo $price_display ? esc_html($price_display).' · ' : ''; ?>السعر والفئات والمواصفات ←</small></span>
     </a></article>
-    <?php endwhile;wp_reset_postdata(); ?>
+    <?php endforeach; ?>
   <?php else: ?><p>تصفح جميع موديلات وأسعار السيارات المنشورة في الدليل.</p><?php endif; ?>
   </div>
   <div class="a3egy-market-quick">
@@ -114,14 +116,11 @@ if (post_type_exists('a3_car_ref')) {
  <div class="wrap">
   <div class="a3egy-section-heading"><div><small>موسوعة المواصفات الفنية</small><h2 id="a3egy-reference-heading"><?php echo esc_html(number_format_i18n($ref_count)); ?> صفحة مواصفات فنية منشورة</h2><p>المحركات والفتيس والمقاسات والعفشة والأمان، حسب الماركة والموديل والفئة.</p></div><a class="a3egy-all" href="https://a3tal.com/car-reference/">الدليل الفني كاملًا ←</a></div>
   <div class="a3egy-reference-grid">
-  <?php if($home_new_reference && $home_new_reference->have_posts()): ?>
-    <?php while($home_new_reference->have_posts()):$home_new_reference->the_post(); ?>
-    <a class="a3egy-reference-card" href="<?php the_permalink(); ?>">
-    <?php if(has_post_thumbnail()):echo get_the_post_thumbnail(get_the_ID(),'medium',['loading'=>'lazy','decoding'=>'async','alt'=>get_the_title()]);endif; ?>
-    <strong><?php echo esc_html(get_the_title()); ?></strong><span>عرض المواصفات ←</span></a>
-    <?php endwhile;wp_reset_postdata(); ?>
-  <?php endif; ?>
-  </div>
+  <?php foreach($home_new_reference as $ref_entry): ?>
+    <a class="a3egy-reference-card" href="<?php echo esc_url(get_permalink($ref_entry)); ?>">
+    <?php $img=get_the_post_thumbnail_url($ref_entry->ID,'medium');if($img): ?><img loading="lazy" decoding="async" src="<?php echo esc_url($img); ?>" alt="<?php echo esc_attr(get_the_title($ref_entry)); ?>"><?php endif; ?>
+    <strong><?php echo esc_html(get_the_title($ref_entry)); ?></strong><span>عرض المواصفات ←</span></a>
+  <?php endforeach; ?>
  </div>
 </section>
 <!-- A3TAL-EGYPT-HOME-PSEO-20261108-END -->
