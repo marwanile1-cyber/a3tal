@@ -117,3 +117,70 @@ body.home .a3r-production-home .g-platform-grid img{background:#e2e9f2}
 @media(max-width:350px){
   .a3tal-reference-page .a3tal-hub-tiles .hub-card-visual .hub-visual{height:70px}
 }
+
+
+/* A3TAL EGYPT HOMEPAGE BRANDS PRICES PSEO - approved 2026-11-08 */
+.a3tal-reference-page .a3egy-brands{padding:26px 0!important;background:#f4f7fb;border-block:1px solid #dce4ef}
+.a3tal-reference-page .a3egy-section-heading{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:17px}
+.a3tal-reference-page .a3egy-section-heading small{display:block;font-weight:900;color:#d20824;font-size:12px;margin-bottom:4px}
+.a3tal-reference-page .a3egy-section-heading h2{color:#10233c;font-size:clamp(21px,2.6vw,29px);line-height:1.4;font-weight:900;margin:0}
+.a3tal-reference-page .a3egy-section-heading p{color:#506078;line-height:1.8;font-size:12px;margin:3px 0 0}
+.a3tal-reference-page .a3egy-all{display:inline-flex;gap:7px;align-items:center;border-radius:10px;background:linear-gradient(120deg,#081c3a,#173e75);color:#fff;padding:11px 17px;font-size:12px;font-weight:900;white-space:nowrap}
+.a3tal-reference-page .a3egy-all:hover,.a3tal-reference-page .a3egy-all:focus-visible{background:#d30724;color:#fff}
+.a3tal-reference-page .a3egy-brands-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+.a3tal-reference-page .a3egy-brand{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0;min-height:91px;padding:13px 7px 12px;text-align:center;background:linear-gradient(155deg,#fff,#f8fafc);border:1px solid #d0dbe7;border-radius:13px;box-shadow:0 3px 8px #102d4e13;position:relative;overflow:hidden}
+.a3tal-reference-page .a3egy-brand:after{content:"";position:absolute;inset:auto 22% 0;height:3px;background:#d80a27;border-radius:4px 4px 0 0}
+.a3tal-reference-page .a3egy-brand strong{font:900 clamp(16px,1.7vw,21px)/1.3 Arial,Tahoma,sans-serif;color:#091c3b;letter-spacing:-.025em;overflow-wrap:anywhere}
+.a3tal-reference-page .a3egy-brand span{font-size:12px;font-weight:850;color:#273b5a;line-height:1.4}
+.a3tal-reference-page .a3egy-brand:hover,.a3tal-reference-page .a3egy-brand:focus-visible{border-color:#e20826;transform:translateY(-2px);box-shadow:0 7px 18px #102d4e26;outline:none}
+.a3tal-reference-page .a3egy-price-section{padding:27px 0 23px;background:#fff}
+.a3tal-reference-page .a3egy-price-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.a3tal-reference-page .a3egy-price-card{background:#fff;border-radius:14px;border:1px solid #dde6ef;overflow:hidden;box-shadow:0 3px 12px #15304f12}
+.a3tal-reference-page .a3egy-price-card>a{display:block;min-width:0}
+.a3tal-reference-page .a3egy-price-card img{display:block;width:100%;height:158px;object-fit:cover}
+.a3tal-reference-page .a3egy-photo-placeholder{display:grid;place-items:center;height:158px;color:#35536f;background:linear-gradient(135deg,#d8e4f0,#f1f5fa);font-weight:800}
+.a3tal-reference-page .a3egy-price-copy{display:flex;flex-direction:column;gap:8px;padding:13px}
+.a3tal-reference-page .a3egy-price-copy strong{font-size:13px;font-weight:900;line-height:1.65;color:#122342}
+.a3tal-reference-page .a3egy-price-copy small{font-size:10px;font-weight:850;line-height:1.7;color:#c90c28}
+.a3tal-reference-page .a3egy-price-card:hover{border-color:#e1273f;box-shadow:0 7px 20px #17304e25}
+.a3tal-reference-page .a3egy-market-quick{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-top:15px;font-size:11px}
+.a3tal-reference-page .a3egy-market-quick strong{color:#11213a;font-weight:900}
+.a3tal-reference-page .a3egy-market-quick a{padding:6px 11px;background:#f0f4fa;border:1px solid #dce5ed;border-radius:999px;color:#244260;font-weight:800}
+.a3tal-reference-page .a3egy-market-quick a:hover{color:#fff;background:#be0e28}
+.a3tal-reference-page .a3egy-reference-section{padding:27px 0 28px;background:linear-gradient(135deg,#edf3fa,#f8fbff);border-block:1px solid #dce6f0}
+.a3tal-reference-page .a3egy-reference-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+.a3tal-reference-page .a3egy-reference-card{display:flex;align-items:center;min-height:100px;gap:12px;padding:11px;background:#fff;border:1px solid #d6e1ed;border-radius:13px;box-shadow:0 3px 9px #1633520a}
+.a3tal-reference-page .a3egy-reference-card img{width:96px;height:69px;object-fit:cover;border-radius:8px;flex:none}
+.a3tal-reference-page .a3egy-reference-card strong{flex:1;font-size:12px;line-height:1.7;font-weight:900;color:#132a46}
+.a3tal-reference-page .a3egy-reference-card span{display:block;font-size:10px;font-weight:800;color:#c90c28}
+.a3tal-reference-page .a3egy-reference-card:hover{border-color:#d9152d}
+@media(max-width:1020px){
+.a3tal-reference-page .a3egy-brands-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+.a3tal-reference-page .a3egy-reference-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:720px){
+.a3tal-reference-page .a3egy-brands{padding:18px 0!important}
+.a3tal-reference-page .a3egy-section-heading{align-items:flex-start;gap:10px}
+.a3tal-reference-page .a3egy-section-heading h2{font-size:19px}
+.a3tal-reference-page .a3egy-section-heading p{font-size:11px}
+.a3tal-reference-page .a3egy-all{padding:8px 9px;font-size:10px}
+.a3tal-reference-page .a3egy-brands-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.a3tal-reference-page .a3egy-brand{min-height:74px;padding:8px 4px}
+.a3tal-reference-page .a3egy-brand strong{font-size:15px}
+.a3tal-reference-page .a3egy-brand span{font-size:11px}
+.a3tal-reference-page .a3egy-price-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.a3tal-reference-page .a3egy-price-card img,.a3tal-reference-page .a3egy-photo-placeholder{height:109px}
+.a3tal-reference-page .a3egy-price-copy{padding:9px;gap:4px}
+.a3tal-reference-page .a3egy-price-copy strong{font-size:11px}
+.a3tal-reference-page .a3egy-price-copy small{font-size:9px}
+.a3tal-reference-page .a3egy-reference-section,.a3tal-reference-page .a3egy-price-section{padding:19px 0}
+.a3tal-reference-page .a3egy-reference-card{min-height:88px;gap:7px;padding:8px}
+.a3tal-reference-page .a3egy-reference-card img{width:65px;height:62px}
+.a3tal-reference-page .a3egy-reference-card strong{font-size:10px}
+}
+@media(max-width:390px){
+.a3tal-reference-page .a3egy-brands-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.a3tal-reference-page .a3egy-reference-grid{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){.a3tal-reference-page .a3egy-brand{transition:none}}
+/* END A3TAL EGYPT HOMEPAGE BRANDS PRICES PSEO 2026-11-08 */
