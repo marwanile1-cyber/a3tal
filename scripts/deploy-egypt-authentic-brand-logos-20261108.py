@@ -105,8 +105,10 @@ def verify():
     for x in ["toyota","kia","chery","geely","jetour","jaecoo","ford","byd"]:
         if 'data-brand="'+x+'"' not in html:raise RuntimeError("Brand missing: "+x)
     if html.count("<h1")!=1:raise RuntimeError("Homepage H1 changed")
-    if 'a3tal-ref-20261104-brand-toyota.webp' in html.split(BEGIN,1)[1].split(NEXT,1)[0]:
-        raise RuntimeError("Original unsatisfactory logo crop still in badge row")
+    # WordPress normally strips source HTML comments from its public output.
+    # Test the rendered brand cards, not private template comment markers.
+    if '<a class="brand" href="https://a3tal.com/cars/?brand=toyota"' in html:
+        raise RuntimeError("Original photographic-logo tile still present")
     asset=session.get(BASE+"/wp-content/themes/a3tal-global/"+LOGOS,timeout=40)
     if asset.status_code!=200 or "data:image/webp;base64" not in asset.text:
         raise RuntimeError("Local real-brand-logo dataset not accessible")
