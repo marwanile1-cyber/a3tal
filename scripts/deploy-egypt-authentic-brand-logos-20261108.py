@@ -16,7 +16,7 @@ module=types.ModuleType("a3tal_egypt_brand_bridge")
 SourceFileLoader(module.__name__,"scripts/deploy-dtc-library.py").exec_module(module)
 Bridge=module.Bridge
 HOME="home-reference-20261104.php"
-STYLE="home-reference-20261104.css"
+STYLE="assets/css/egypt-home-brand-logos-20261108.css"
 LOGOS="assets/js/egypt-home-brand-logos-20261108.js"
 FUN="functions.php"
 BEGIN="<!-- A3TAL-EGYPT-BRANDS-20261108-BEGIN -->"
@@ -51,11 +51,10 @@ def patch_home(live):
             raise RuntimeError("Live brand badges differ from reviewed asset; abort")
         live=live.replace(old_segment,source_segment,1)
     if SCRIPT_MARKER not in live:
-        insertion=src[src.index(SCRIPT_MARKER):]
-        insertion=insertion.split("\n",2)
-        if len(insertion)<2 or "egypt-home-brand-logos-20261108.js" not in insertion[1]:
-            raise RuntimeError("Reviewed brand logo script include missing")
-        live=live.replace(PSEO_END,PSEO_END+"\n"+insertion[0]+"\n"+insertion[1],1)
+        insertion=src[src.index(SCRIPT_MARKER):].split("\n",3)
+        if len(insertion)<3 or "egypt-home-brand-logos-20261108.css" not in insertion[1] or "egypt-home-brand-logos-20261108.js" not in insertion[2]:
+            raise RuntimeError("Reviewed scoped CSS and pinned logos include missing")
+        live=live.replace(PSEO_END,PSEO_END+"\n"+"\n".join(insertion[:3]),1)
     elif live.count(SCRIPT_MARKER)!=1:
         raise RuntimeError("Duplicate brand logo script")
     if live.count('class="a3egy-brand-logo"')!=24:raise RuntimeError("Actual logo img count differs")
@@ -124,14 +123,15 @@ def main():
     info=bridge.request({"op":"site_info"})
     if info.get("active_theme")!="a3tal-global":raise RuntimeError("Live active theme mismatch")
     originals={}
-    for name in (LOGOS,STYLE,HOME,FUN):
-        originals[name]=bridge.read(name,missing=(name==LOGOS))
+    for name in (LOGOS,STYLE,HOME):
+        originals[name]=bridge.read(name,missing=(name in (LOGOS,STYLE)))
     desired={LOGOS:source(LOGOS),
-             STYLE:patch_css(originals[STYLE]["content"]),
-             HOME:patch_home(originals[HOME]["content"]),
-             FUN:patch_functions(originals[FUN]["content"])}
+             STYLE:source(STYLE),
+             HOME:patch_home(originals[HOME]["content"])}
     if originals[LOGOS] and originals[LOGOS]["content"]!=desired[LOGOS]:
         raise RuntimeError("An unrelated live logo JS asset exists at reserved name")
+    if originals[STYLE] and originals[STYLE]["content"]!=desired[STYLE]:
+        raise RuntimeError("An unrelated live scoped CSS asset exists")
     (OUT/"restore.json").write_text(json.dumps({
         k:{"sha256":v["sha256"],"content":v["content"]} if v else None
         for k,v in originals.items()
@@ -139,7 +139,7 @@ def main():
     print("SAFE_LOGO_DEPLOY_PREFLIGHT_24_MARKS_NO_PAGE_CONTENT_MUTATION",flush=True)
     changes=[]
     try:
-        for name in (LOGOS,STYLE,HOME,FUN):
+        for name in (LOGOS,STYLE,HOME):
             old=originals[name]
             if old and old["content"]==desired[name]:
                 print("UNCHANGED",name,flush=True);continue
