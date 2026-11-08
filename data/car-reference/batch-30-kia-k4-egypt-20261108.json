@@ -1,0 +1,446 @@
+{
+  "batch": 30,
+  "date": "2026-11-08",
+  "purpose": "Kia K4 Egypt technical model hub and seven independent specifications, source-backed EX vs GT motors, transmissions, suspension and equipment; avoid price intent",
+  "photo_license": "Kia Egypt image copyright remains with manufacturer; non-exclusive",
+  "clusters": [
+    {
+      "key": "kia-k4",
+      "brand": "kia",
+      "brand_title": "دليل المواصفات الفنية لسيارات كيا",
+      "brand_sources": [
+        "https://www.kia.com.eg/ar/models/specifications/The_K4",
+        "https://www.kia.com.eg/models/The_K4"
+      ],
+      "brand_intro": "مواصفات كيا مصر",
+      "brand_detail": "حدد الفئة والجيل",
+      "brand_warning": "راجع رقم الشاسيه",
+      "photos": [
+        "https://www.kia.com.eg/uploads/models/68a1df8b8fe931755438987.jpg",
+        "https://www.kia.com.eg/uploads/models/68a1df8b91f171755438987.jpg",
+        "https://www.kia.com.eg/uploads/models/68a1df8b936f11755438987.jpg",
+        "https://www.kia.com.eg/uploads/models/68908f7f293f91754304383.jpg",
+        "https://www.kia.com.eg/uploads/gallery/68ac6a7031e251756129904.png",
+        "https://www.kia.com.eg/uploads/gallery/687e2f0e95ede1753100046.jpg",
+        "https://www.kia.com.eg/uploads/gallery/687e384f706ef1753102415.jpg",
+        "https://www.kia.com.eg/uploads/gallery/68a1dfd1808841755439057.jpg",
+        "https://www.kia.com.eg/uploads/gallery/687cd81ecba951753012254.jpg",
+        "https://www.kia.com.eg/uploads/gallery/687cd82981c5b1753012265.jpg",
+        "https://www.kia.com.eg/uploads/gallery/687cd8399b7061753012281.jpg",
+        "https://www.kia.com.eg/uploads/gallery/687cd847558d11753012295.jpg"
+      ],
+      "model": {
+        "slug": "k4-16-ex-gt-egypt",
+        "title": "دليل مواصفات كيا K4 في مصر: الفرق بين EX وGT وGT-line Black Edition",
+        "engine": "Kia K4 Egypt EX 1.6 Gamma 123hp 6AT / GT 1.6 T-GDI 190hp 8AT",
+        "sources": [
+          "https://www.kia.com.eg/ar/models/specifications/The_K4",
+          "https://www.kia.com.eg/models/The_K4"
+        ],
+        "meta_description": "دليل كيا K4 في مصر: محرك EX ‏123 حصان و6AT مقابل GT تيربو190 حصان و8AT، الأبعاد والخلوص والعفشة والجنوط والأمان وتجهيز Black Edition.",
+        "rich_html": "<p>كيا K4 في مصر متاحة بفئات تحمل اختلافات حقيقية في المحرك والفتيس والعفشة، وليست مجرد تسميات شكلية. فئة EX الموجودة في جدول كيا تعتمد محرك Gamma سعة1591 سي سي بقوة123 حصانًا وناقل6AT، بينما تستخدم GT وGT-line Black Edition محرك1.6 T-GDI بقوة190 حصانًا وناقل8AT. وتختلف العفشة الخلفية بين Torsion Beam في EX وMulti-Link في نسخ التيربو. هذا الدليل يربط كل مواصفة بصفحة متخصصة ويجنب الخلط بين محركات الفئات.</p><h2>جدول مختصر لمواصفات كيا K4 المصرية</h2><div class=\"a3tal-responsive-table\" style=\"overflow-x:auto\"><table><tbody><tr><th scope=\"row\">الفئات</th><td>EX / GT / GT-line Black Edition</td></tr><tr><th scope=\"row\">المحرك EX</th><td>1591 سي سي Gamma بقوة123 حصان</td></tr><tr><th scope=\"row\">الفتيس EX</th><td>6AT</td></tr><tr><th scope=\"row\">المحرك GT وGT-line</th><td>1598 سي سي T-GDI بقوة190 حصان</td></tr><tr><th scope=\"row\">العزم GT وGT-line</th><td>264 نيوتن متر</td></tr><tr><th scope=\"row\">الفتيس GT وGT-line</th><td>8AT</td></tr><tr><th scope=\"row\">الدفع</th><td>FWD لكل الفئات</td></tr><tr><th scope=\"row\">العفشة الخلفية EX</th><td>Torsion Beam</td></tr><tr><th scope=\"row\">العفشة الخلفية GT</th><td>Multi-Link</td></tr><tr><th scope=\"row\">الطول / العرض</th><td>4710 /1850 مم</td></tr><tr><th scope=\"row\">الخلوص</th><td>140 مم</td></tr><tr><th scope=\"row\">خزان الوقود</th><td>47 لترًا</td></tr></tbody></table></div><h2>اختيار صفحة المواصفة المناسبة</h2><ul><li><a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-ex-1591-123hp-151nm-6at/\">محرك K4 EX 1591 سي سي و6AT</a>، لتوضيح الأرقام واختلاف تجهيز الفئة.</li><li><a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-gt-1598-tgdi-190hp-264nm-8at/\">محرك K4 GT تيربو و8AT</a>، لتوضيح الأرقام واختلاف تجهيز الفئة.</li><li><a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-ex-vs-gt-torsion-multilink-suspension/\">مقارنة العفشة الخلفية EX وGT</a>، لتوضيح الأرقام واختلاف تجهيز الفئة.</li><li><a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-dimensions-4710-1850-1435-clearance140/\">الأبعاد والخلوص الأرضي</a>، لتوضيح الأرقام واختلاف تجهيز الفئة.</li><li><a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-wheels-17-vs-18-led-trims/\">الجنوط والفوانيس حسب الفئة</a>، لتوضيح الأرقام واختلاف تجهيز الفئة.</li><li><a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-safety-abs-esc-tpms-blindspot/\">أنظمة الأمان والنقطة العمياء</a>، لتوضيح الأرقام واختلاف تجهيز الفئة.</li><li><a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-gtline-black-vs-gt-panoramic-seat/\">تجهيزات GT-line Black Edition</a>، لتوضيح الأرقام واختلاف تجهيز الفئة.</li></ul><h2>هل EX هي نفسها Highline في صفحة الوكيل؟</h2><p>الجدول العربي الفني على موقع كيا مصر يسمي الفئة الأساسية EX، بينما تعرض صفحة الموديل التجارية نسخة Highline بمحرك1.6 MPI وفتيس6AT. نوضح هذا الاختلاف في أسماء العرض بدل استنتاج أنهما موديلان بمحركين مختلفين. الأفضل عند شراء سيارة جديدة أو مستعملة مطابقة اسم الفئة والكود الموجود في مستندات السيارة للتأكد من المقصود، خاصة إذا تغير الاسم التجاري خلال السنة أو بين مواد الوكيل.</p><h2>لماذا لا ننقل مواصفات K4 من الأسواق الخارجية؟</h2><p>بعض أسواق كيا توفر محركات أو تجهيزات تختلف عن مصر. إذا أدخل القارئ رقم حصان مستورد أو نوع تعليق مختلف دون تحديد البلد، قد يطلب قطعة غير مطابقة. لذلك نلتزم بالجدول المحلي الذي ينص على محرك123 حصانًا للفئة الأساسية ومحرك190 للفئات الأعلى، مع التفريق بين6AT و8AT ونظام التعليق الخلفي. كذلك لا نضع مواصفات زيت ناقل الحركة أو كمية زيت المحرك لم تثبت من دليل الصيانة.</p><h2>الفحص والصيانة قبل اتخاذ القرار</h2><p>دليل المواصفات ليس تشخيصًا للأعطال؛ فعند ملاحظة ضعف سحب أو نتشة ناقل أو صوت في الخلف يلزم فحص مهني للسيارة المعنية. يجب مراجعة رقم الشاسيه والمحرك والسنة قبل شراء قطع غيار، والتأكد من الحالة الفنية للإطارات والمكابح. والأبعاد المذكورة لا تضمن ملاءمة السيارة لكل جراج أو مطب، لأن شكل المدخل والحمولة ومقاسات الإطار تؤثر في المرور.</p><h2>الأسئلة الشائعة</h2><h3>K4 EX كام حصان؟</h3><p>123 حصانًا بمحرك Gamma الطبيعي 1591 سي سي.</p><h3>K4 GT كام حصان؟</h3><p>190 حصانًا من محرك1.6 T-GDI، مع ناقل8AT.</p><h3>أي فئة عفشتها Multi-Link؟</h3><p>GT وGT-line Black Edition وفق جدول كيا مصر.</p><h2>المراجع الفنية الأخرى لكيا K4</h2><p><a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/\">المواصفات الأساسية لكيا K4 في مصر</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-ex-1591-123hp-151nm-6at/\">محرك K4 EX 1591 سي سي و6AT</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-gt-1598-tgdi-190hp-264nm-8at/\">محرك K4 GT تيربو و8AT</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-ex-vs-gt-torsion-multilink-suspension/\">مقارنة العفشة الخلفية EX وGT</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-dimensions-4710-1850-1435-clearance140/\">الأبعاد والخلوص الأرضي</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-wheels-17-vs-18-led-trims/\">الجنوط والفوانيس حسب الفئة</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-safety-abs-esc-tpms-blindspot/\">أنظمة الأمان والنقطة العمياء</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-gtline-black-vs-gt-panoramic-seat/\">تجهيزات GT-line Black Edition</a> · <a href=\"https://a3tal.com/car-reference/kia/\">دليل كيا مصر</a></p><p>المعلومات من <a href=\"https://www.kia.com.eg/ar/models/specifications/The_K4\" rel=\"nofollow noopener\">جدول كيا K4 الرسمي</a> و<a href=\"https://www.kia.com.eg/models/The_K4\" rel=\"nofollow noopener\">صفحة الفئات لدى كيا مصر</a>. أي اختلاف في سنة الإنتاج أو النسخة أو تركيب القطع يستدعي مراجعة رقم الشاسيه وكتالوج الخدمة.</p>"
+      },
+      "specs": [
+        {
+          "slug": "k4-ex-1591-123hp-151nm-6at",
+          "title": "محرك كيا K4 EX في مصر: 1591 سي سي و123 حصان وعزم151 وفتيس6AT",
+          "category": "engine-specs",
+          "engine": "Kia K4 Egypt EX 1.6 Gamma 123hp 6AT / GT 1.6 T-GDI 190hp 8AT",
+          "facts": [
+            [
+              "الفئة",
+              "EX في جدول مصر (Highline في صفحة البيع)"
+            ],
+            [
+              "المحرك",
+              "Gamma سعة1.6 لتر"
+            ],
+            [
+              "السعة الفعلية",
+              "1591 سي سي"
+            ],
+            [
+              "القوة",
+              "123 حصانًا عند6300 دورة"
+            ],
+            [
+              "العزم",
+              "151 نيوتن متر عند4850 دورة"
+            ],
+            [
+              "الفتيس",
+              "6 سرعات أوتوماتيك 6AT"
+            ],
+            [
+              "الدفع",
+              "أمامي FWD"
+            ],
+            [
+              "العفشة الخلفية",
+              "Coupled Torsion Beam"
+            ],
+            [
+              "الخزان",
+              "47 لترًا"
+            ],
+            [
+              "الجنوط",
+              "17 بوصة"
+            ]
+          ],
+          "sources": [
+            "https://www.kia.com.eg/ar/models/specifications/The_K4",
+            "https://www.kia.com.eg/models/The_K4"
+          ],
+          "intro": "محرك كيا K4 EX في مصر: 1591 سي سي و123 حصان وعزم151 وفتيس6AT حسب جدول كيا مصر وفئة السيارة.",
+          "detail": "لا. تعتمد كيا K4 في فئتها الأساسية EX على محرك Gamma سعة1591 سي سي بقوة123 حصانًا عند6300 دورة في الدقيقة وعزم151 نيوتن متر عند4850 دورة. أما فئتا GT وGT-line Black Edition فتستخدمان محرك1.6 تيربو بحقن مباشر بقوة190 حصانًا وعزم264 نيوتن متر. التمييز ضروري قبل الشراء والصيانة، لأن وجود شعار K4 وحده لا يحدد قطع المحرك أو الفتيس أو طريقة التبريد. كذلك تسمي صفحة البيع الفئة الأساسية Highline بينما يسميها جدول المواصفات EX.",
+          "warning": "يرجى مطابقة رقم الشاسيه والفئة قبل شراء القطع. لا تخمن كميات سوائل الصيانة من صفحة تسويقية.",
+          "meta_description": "محرك كيا K4 EX في مصر: 1591 سي سي و123 حصان وعزم151 وفتيس6AT وفق جدول كيا مصر الرسمي، مع الفروق المهمة ونصائح الفحص والصيانة.",
+          "rich_html": "<p>محرك كيا K4 EX في مصر: 1591 سي سي و123 حصان وعزم151 وفتيس6AT. يوضح المرجع ما تنص عليه المواصفات المصرية، مع شرح عملي للفروق دون خلط بين الفئات أو نسخ الخارج.</p><h2>هل K4 EX نفس محرك GT؟</h2><p>لا. تعتمد كيا K4 في فئتها الأساسية EX على محرك Gamma سعة1591 سي سي بقوة123 حصانًا عند6300 دورة في الدقيقة وعزم151 نيوتن متر عند4850 دورة. أما فئتا GT وGT-line Black Edition فتستخدمان محرك1.6 تيربو بحقن مباشر بقوة190 حصانًا وعزم264 نيوتن متر. التمييز ضروري قبل الشراء والصيانة، لأن وجود شعار K4 وحده لا يحدد قطع المحرك أو الفتيس أو طريقة التبريد. كذلك تسمي صفحة البيع الفئة الأساسية Highline بينما يسميها جدول المواصفات EX.</p><div class=\"a3tal-responsive-table\" style=\"overflow-x:auto\"><table><tbody><tr><th scope=\"row\">الفئة</th><td>EX في جدول مصر (Highline في صفحة البيع)</td></tr><tr><th scope=\"row\">المحرك</th><td>Gamma سعة1.6 لتر</td></tr><tr><th scope=\"row\">السعة الفعلية</th><td>1591 سي سي</td></tr><tr><th scope=\"row\">القوة</th><td>123 حصانًا عند6300 دورة</td></tr><tr><th scope=\"row\">العزم</th><td>151 نيوتن متر عند4850 دورة</td></tr><tr><th scope=\"row\">الفتيس</th><td>6 سرعات أوتوماتيك 6AT</td></tr><tr><th scope=\"row\">الدفع</th><td>أمامي FWD</td></tr><tr><th scope=\"row\">العفشة الخلفية</th><td>Coupled Torsion Beam</td></tr><tr><th scope=\"row\">الخزان</th><td>47 لترًا</td></tr><tr><th scope=\"row\">الجنوط</th><td>17 بوصة</td></tr></tbody></table></div><h2>ما نوع فتيس K4 EX في مصر؟</h2><p>يذكر جدول الوكيل ناقل حركة أوتوماتيك بست سرعات 6AT ودفعًا أماميًا FWD في الفئة EX. لا ينبغي نقل بيانات فتيس8AT الموجود في فئات التيربو إلى السيارة الأساسية، ولا استخدام أسماء DCT أو CVT لمجرد أنها موجودة في موديلات كيا أخرى. عدد النقلات ليس دليلًا على نوع أو كمية زيت الفتيس، ويجب الرجوع إلى دليل الخدمة الخاص برمز الناقل وسنة الإنتاج الفعلية قبل أي تغيير للسوائل.</p><h2>هل القوة123 حصان تكفي لأي حمولة؟</h2><p>قوة123 حصانًا وعزم151 نيوتن متر قيم قصوى معلنة عند عدد دورات معين، ولا يمكن استنتاج استهلاك البنزين أو زمن التسارع في الشوارع المصرية منها وحدها. الأداء الفعلي يتأثر بوزن الركاب والأمتعة وتكييف الهواء وحالة الإطارات وطبيعة الطريق. كما أن فرق القوة لا يعني تلقائيًا أن فئة EX أقل اعتمادية أو أن التيربو أغلى صيانة في كل الظروف؛ هذه أحكام تحتاج بيانات تجربة وتكاليف معتمدة.</p><h2>نقاط الفحص قبل شراء K4 مستعملة</h2><p>اطلب مطابقة رقم الشاسيه مع فئة EX وسنة الإنتاج، وتأكد من وجود محرك Gamma الطبيعي وفتيس6AT وليس نسخة تيربو مستوردة. راجع سجل الصيانة وعمل المحرك وناقل الحركة في فحص متخصص، ولا تبدأ بتغيير رشاش أو حساس لمجرد ملاحظة ضعف عزم. ومقاس الجنط17 بوصة في الفئة الأساسية لا يعطي مقاس الكاوتش كاملًا؛ يُقرأ من الملصق الأصلي للسيارة عند طلب الإطارات.</p><h2>الأسئلة الشائعة</h2><h3>كيا K4 EX كام حصان؟</h3><p>123 حصانًا عند6300 دورة وفق كيا مصر.</p><h3>فتيس K4 EX كام نقلة؟</h3><p>6 سرعات أوتوماتيك 6AT، مع دفع أمامي.</p><h2>المراجع الفنية الأخرى لكيا K4</h2><p><a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/\">المواصفات الأساسية لكيا K4 في مصر</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-gt-1598-tgdi-190hp-264nm-8at/\">محرك K4 GT تيربو و8AT</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-ex-vs-gt-torsion-multilink-suspension/\">مقارنة العفشة الخلفية EX وGT</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-dimensions-4710-1850-1435-clearance140/\">الأبعاد والخلوص الأرضي</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-wheels-17-vs-18-led-trims/\">الجنوط والفوانيس حسب الفئة</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-safety-abs-esc-tpms-blindspot/\">أنظمة الأمان والنقطة العمياء</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-gtline-black-vs-gt-panoramic-seat/\">تجهيزات GT-line Black Edition</a> · <a href=\"https://a3tal.com/car-reference/kia/\">دليل كيا مصر</a></p><p>المعلومات من <a href=\"https://www.kia.com.eg/ar/models/specifications/The_K4\" rel=\"nofollow noopener\">جدول كيا K4 الرسمي</a> و<a href=\"https://www.kia.com.eg/models/The_K4\" rel=\"nofollow noopener\">صفحة الفئات لدى كيا مصر</a>. أي اختلاف في سنة الإنتاج أو النسخة أو تركيب القطع يستدعي مراجعة رقم الشاسيه وكتالوج الخدمة.</p>"
+        },
+        {
+          "slug": "k4-gt-1598-tgdi-190hp-264nm-8at",
+          "title": "محرك كيا K4 GT ‏1.6 تيربو في مصر: 190 حصان و264 نيوتن متر وفتيس8AT",
+          "category": "engine-specs",
+          "engine": "Kia K4 Egypt EX 1.6 Gamma 123hp 6AT / GT 1.6 T-GDI 190hp 8AT",
+          "facts": [
+            [
+              "الفئة",
+              "GT وGT-line Black Edition"
+            ],
+            [
+              "المحرك",
+              "1.6 T-GDI"
+            ],
+            [
+              "السعة",
+              "1598 سي سي"
+            ],
+            [
+              "القوة",
+              "190 حصانًا عند6000 دورة"
+            ],
+            [
+              "العزم",
+              "264 نيوتن متر عند4500 دورة حسب المصدر"
+            ],
+            [
+              "الفتيس",
+              "8AT أوتوماتيك"
+            ],
+            [
+              "الدفع",
+              "FWD"
+            ],
+            [
+              "التعليق الخلفي",
+              "Multi-Link"
+            ],
+            [
+              "الجنوط",
+              "18 بوصة"
+            ],
+            [
+              "الخزان",
+              "47 لترًا"
+            ]
+          ],
+          "sources": [
+            "https://www.kia.com.eg/ar/models/specifications/The_K4",
+            "https://www.kia.com.eg/models/The_K4"
+          ],
+          "intro": "محرك كيا K4 GT ‏1.6 تيربو في مصر: 190 حصان و264 نيوتن متر وفتيس8AT حسب جدول كيا مصر وفئة السيارة.",
+          "detail": "لا، فئة GT في كيا K4 المصرية بمحرك1.6 T-GDI تيربو سعة1598 سي سي، وقوة190 حصانًا عند6000 دورة وعزم264 نيوتن متر عند4500 دورة بحسب الجدول. هذه منظومة مختلفة عن EX ذات المحرك الطبيعي123 حصانًا. لا يكفي وجود طقم خارجي رياضي أو جنط18 بوصة لإثبات وجود التيربو؛ يجب التأكد من رمز المحرك وبيانات الفئة ورقم الشاسيه. كذلك تحمل GT-line Black Edition قوة المحرك نفسها في المصدر المصري.",
+          "warning": "يرجى مطابقة رقم الشاسيه والفئة قبل شراء القطع. لا تخمن كميات سوائل الصيانة من صفحة تسويقية.",
+          "meta_description": "محرك كيا K4 GT ‏1.6 تيربو في مصر: 190 حصان و264 نيوتن متر وفتيس8AT وفق جدول كيا مصر الرسمي، مع الفروق المهمة ونصائح الفحص والصيانة.",
+          "rich_html": "<p>محرك كيا K4 GT ‏1.6 تيربو في مصر: 190 حصان و264 نيوتن متر وفتيس8AT. يوضح المرجع ما تنص عليه المواصفات المصرية، مع شرح عملي للفروق دون خلط بين الفئات أو نسخ الخارج.</p><h2>هل GT تختلف عن EX في مجرد الشكل؟</h2><p>لا، فئة GT في كيا K4 المصرية بمحرك1.6 T-GDI تيربو سعة1598 سي سي، وقوة190 حصانًا عند6000 دورة وعزم264 نيوتن متر عند4500 دورة بحسب الجدول. هذه منظومة مختلفة عن EX ذات المحرك الطبيعي123 حصانًا. لا يكفي وجود طقم خارجي رياضي أو جنط18 بوصة لإثبات وجود التيربو؛ يجب التأكد من رمز المحرك وبيانات الفئة ورقم الشاسيه. كذلك تحمل GT-line Black Edition قوة المحرك نفسها في المصدر المصري.</p><div class=\"a3tal-responsive-table\" style=\"overflow-x:auto\"><table><tbody><tr><th scope=\"row\">الفئة</th><td>GT وGT-line Black Edition</td></tr><tr><th scope=\"row\">المحرك</th><td>1.6 T-GDI</td></tr><tr><th scope=\"row\">السعة</th><td>1598 سي سي</td></tr><tr><th scope=\"row\">القوة</th><td>190 حصانًا عند6000 دورة</td></tr><tr><th scope=\"row\">العزم</th><td>264 نيوتن متر عند4500 دورة حسب المصدر</td></tr><tr><th scope=\"row\">الفتيس</th><td>8AT أوتوماتيك</td></tr><tr><th scope=\"row\">الدفع</th><td>FWD</td></tr><tr><th scope=\"row\">التعليق الخلفي</th><td>Multi-Link</td></tr><tr><th scope=\"row\">الجنوط</th><td>18 بوصة</td></tr><tr><th scope=\"row\">الخزان</th><td>47 لترًا</td></tr></tbody></table></div><h2>فتيس8AT وليس DCT</h2><p>تحدد كيا مصر ناقلًا أوتوماتيكيًا بثماني سرعات 8AT لفئات K4 التيربو GT وGT-line Black Edition، وليس ناقل DCT سبع سرعات المألوف في بعض سيارات أخرى للعلامة. لا يجوز استنتاج نوع زيت الفتيس أو كميته من عبارة8AT وحدها، ولا استخدام إجراء صيانة ناقل EX ذي الست سرعات. عند ظهور نتشة أو تأخير نقل، يلزم فحص حالة السيارة والبرمجيات ومستوى السائل بالطريقة المعتمدة بدل افتراض تلف وحدة التحكم فورًا.</p><h2>هل التيربو يزيد العزم في كل وقت؟</h2><p>تذكر الشركة أقصى عزم264 نيوتن متر عند4500 دورة في الدقيقة وفق الجدول المعروض، لكنه لا يعني توافر هذا الرقم عند كل سرعة أو حالة تحميل. القدرة الفعلية تتأثر بحرارة الهواء وحالة تبريد المحرك وطبيعة الوقود وحالة الصيانة. لا نفترض هنا تسارعًا ثابتًا أو معدل استهلاك مضمونًا لأن جدول المواصفات المستخدم لا يقدم نتائج محلية قابلة للربط بهذه الفئة؛ نشر أرقام من اختبارات دول أخرى قد يضلل الباحث.</p><h2>متى تحتاج التأكد من رمز القطعة؟</h2><p>إذا كنت تشتري فلترًا أو بوجيهات أو قطع تبريد أو صيانة فتيس، فطابق السعة1598 ومحرك T-GDI مع رقم الشاسيه. لا تتعامل مع محرك EX ‏1591 سي سي على أنه مطابق رغم قرب السعتين؛ فاختلاف أسلوب حقن الوقود والشحن التوربيني قد يغير مكونات التشغيل. وعند شراء سيارة مستعملة، راجع آثار الإصلاحات السابقة وبرامج الصيانة والتسريبات في فحص متخصص قبل الحكم على جودة الماكينة.</p><h2>الأسئلة الشائعة</h2><h3>K4 GT كام حصان؟</h3><p>190 حصانًا عند6000 دورة في فئتي GT وGT-line Black Edition.</p><h3>K4 GT فتيس كام نقلة؟</h3><p>8 سرعات أوتوماتيك 8AT بحسب كيا مصر.</p><h2>المراجع الفنية الأخرى لكيا K4</h2><p><a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/\">المواصفات الأساسية لكيا K4 في مصر</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-ex-1591-123hp-151nm-6at/\">محرك K4 EX 1591 سي سي و6AT</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-ex-vs-gt-torsion-multilink-suspension/\">مقارنة العفشة الخلفية EX وGT</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-dimensions-4710-1850-1435-clearance140/\">الأبعاد والخلوص الأرضي</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-wheels-17-vs-18-led-trims/\">الجنوط والفوانيس حسب الفئة</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-safety-abs-esc-tpms-blindspot/\">أنظمة الأمان والنقطة العمياء</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-gtline-black-vs-gt-panoramic-seat/\">تجهيزات GT-line Black Edition</a> · <a href=\"https://a3tal.com/car-reference/kia/\">دليل كيا مصر</a></p><p>المعلومات من <a href=\"https://www.kia.com.eg/ar/models/specifications/The_K4\" rel=\"nofollow noopener\">جدول كيا K4 الرسمي</a> و<a href=\"https://www.kia.com.eg/models/The_K4\" rel=\"nofollow noopener\">صفحة الفئات لدى كيا مصر</a>. أي اختلاف في سنة الإنتاج أو النسخة أو تركيب القطع يستدعي مراجعة رقم الشاسيه وكتالوج الخدمة.</p>"
+        },
+        {
+          "slug": "k4-ex-vs-gt-torsion-multilink-suspension",
+          "title": "عفشة كيا K4: تورشن بيم في EX أم Multi-Link في GT وGT-line؟",
+          "category": "chassis-specs",
+          "engine": "Kia K4 Egypt EX 1.6 Gamma 123hp 6AT / GT 1.6 T-GDI 190hp 8AT",
+          "facts": [
+            [
+              "تعليق EX الأمامي",
+              "MacPherson Strut"
+            ],
+            [
+              "تعليق GT الأمامي",
+              "MacPherson Strut"
+            ],
+            [
+              "تعليق GT-line الأمامي",
+              "MacPherson Strut"
+            ],
+            [
+              "تعليق EX الخلفي",
+              "Coupled Torsion Beam Axle"
+            ],
+            [
+              "تعليق GT الخلفي",
+              "Multi-Link"
+            ],
+            [
+              "تعليق GT-line الخلفي",
+              "Multi-Link"
+            ],
+            [
+              "فئة EX",
+              "محرك123 حصان"
+            ],
+            [
+              "فئة GT",
+              "محرك190 حصان"
+            ],
+            [
+              "خلوص الهيكل",
+              "140 مم"
+            ],
+            [
+              "مصدر المقارنة",
+              "كيا مصر"
+            ]
+          ],
+          "sources": [
+            "https://www.kia.com.eg/ar/models/specifications/The_K4",
+            "https://www.kia.com.eg/models/The_K4"
+          ],
+          "intro": "عفشة كيا K4: تورشن بيم في EX أم Multi-Link في GT وGT-line؟ حسب جدول كيا مصر وفئة السيارة.",
+          "detail": "تستخدم K4 EX في مصر تعليقًا خلفيًا من نوع Coupled Torsion Beam، بينما تحصل فئتا GT وGT-line Black Edition على نظام Multi-Link خلفي. أما الأمام فيعتمد MacPherson Strut في الفئات الثلاث. هذه فروق في هندسة العفشة وليست مجرد اختلاف في نوع المساعد أو مقاس الجنط. لذلك لا يصح شراء قطع تعليق خلفية من GT لسيارة EX دون مطابقة كود القطعة، حتى لو تطابقت أبعاد الهيكل الخارجية.",
+          "warning": "يرجى مطابقة رقم الشاسيه والفئة قبل شراء القطع. لا تخمن كميات سوائل الصيانة من صفحة تسويقية.",
+          "meta_description": "عفشة كيا K4: تورشن بيم في EX أم Multi-Link في GT وGT-line؟ وفق جدول كيا مصر الرسمي، مع الفروق المهمة ونصائح الفحص والصيانة.",
+          "rich_html": "<p>عفشة كيا K4: تورشن بيم في EX أم Multi-Link في GT وGT-line؟. يوضح المرجع ما تنص عليه المواصفات المصرية، مع شرح عملي للفروق دون خلط بين الفئات أو نسخ الخارج.</p><h2>أهم فرق غير المحرك في كيا K4</h2><p>تستخدم K4 EX في مصر تعليقًا خلفيًا من نوع Coupled Torsion Beam، بينما تحصل فئتا GT وGT-line Black Edition على نظام Multi-Link خلفي. أما الأمام فيعتمد MacPherson Strut في الفئات الثلاث. هذه فروق في هندسة العفشة وليست مجرد اختلاف في نوع المساعد أو مقاس الجنط. لذلك لا يصح شراء قطع تعليق خلفية من GT لسيارة EX دون مطابقة كود القطعة، حتى لو تطابقت أبعاد الهيكل الخارجية.</p><div class=\"a3tal-responsive-table\" style=\"overflow-x:auto\"><table><tbody><tr><th scope=\"row\">تعليق EX الأمامي</th><td>MacPherson Strut</td></tr><tr><th scope=\"row\">تعليق GT الأمامي</th><td>MacPherson Strut</td></tr><tr><th scope=\"row\">تعليق GT-line الأمامي</th><td>MacPherson Strut</td></tr><tr><th scope=\"row\">تعليق EX الخلفي</th><td>Coupled Torsion Beam Axle</td></tr><tr><th scope=\"row\">تعليق GT الخلفي</th><td>Multi-Link</td></tr><tr><th scope=\"row\">تعليق GT-line الخلفي</th><td>Multi-Link</td></tr><tr><th scope=\"row\">فئة EX</th><td>محرك123 حصان</td></tr><tr><th scope=\"row\">فئة GT</th><td>محرك190 حصان</td></tr><tr><th scope=\"row\">خلوص الهيكل</th><td>140 مم</td></tr><tr><th scope=\"row\">مصدر المقارنة</th><td>كيا مصر</td></tr></tbody></table></div><h2>ما وظيفة Torsion Beam؟</h2><p>يستخدم نظام التورشن بيم ذراعًا خلفيًا متصلًا بعنصر ملتوي يربط حركتي العجلتين هندسيًا بدرجة ما، وهو تصميم شائع في بعض فئات السيدان. لا يعني بالضرورة سوء الراحة أو ضعف الثبات؛ الأداء يعتمد على ضبط النظام والمساعدين والإطارات والحمولة. وقد يظن مالك السيارة أن أي صوت في الخلف يعني انتهاء التورشن نفسه، بينما قد يرتبط الصوت بالجلب أو وصلات أو جسم مثبت يحتاج فحصًا.</p><h2>وماذا يقدم نظام Multi-Link؟</h2><p>يعتمد Multi-Link على عدة وصلات تتيح ضبط حركة العجلة الخلفية ضمن هندسة أكثر تعقيدًا. لا يضمن الاسم وحده راحة مطلقة أو تفوقًا في كل طريق؛ فحالة الجنوط والكاوتش والمساعدين ومقاس الإطارات تؤثر في الإحساس بالمطبات. كذلك قد يكون إصلاح أحد الأذرع مختلفًا عن عملية صيانة نسخة التورشن، ولهذا يجب مطابقة المكونات من دليل قطع الغيار الأصلي عند الشراء.</p><h2>قبل تغيير المساعدين أو تعديل الارتفاع</h2><p>ابدأ بفحص الإطارات وضغطها والتآكل وزوايا العجلات والجلب والتسريبات، ثم حدد موضع الصوت أو الميل في اختبار مهني. لا تزداد الحمولة المسموحة بتغيير المساعد أو تركيب سوستة قاسية، ولا ينبغي استخدام قطع تعديل لتخفيض السيارة دون حساب تأثيرها على مسافة الحركة والخلوص والفرامل. كيا تذكر خلوص140 مم للنسخة المصرية، لكن المرور من مطب يعتمد أيضًا على الحمولة وطول قاعدة العجلات.</p><h2>الأسئلة الشائعة</h2><h3>K4 EX عفشتها الخلفية إيه؟</h3><p>Torsion Beam طبقًا لجدول كيا مصر.</p><h3>K4 GT عفشتها الخلفية Multi-Link؟</h3><p>نعم، في GT وGT-line Black Edition، مع MacPherson أمامي.</p><h2>المراجع الفنية الأخرى لكيا K4</h2><p><a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/\">المواصفات الأساسية لكيا K4 في مصر</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-ex-1591-123hp-151nm-6at/\">محرك K4 EX 1591 سي سي و6AT</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-gt-1598-tgdi-190hp-264nm-8at/\">محرك K4 GT تيربو و8AT</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-dimensions-4710-1850-1435-clearance140/\">الأبعاد والخلوص الأرضي</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-wheels-17-vs-18-led-trims/\">الجنوط والفوانيس حسب الفئة</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-safety-abs-esc-tpms-blindspot/\">أنظمة الأمان والنقطة العمياء</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-gtline-black-vs-gt-panoramic-seat/\">تجهيزات GT-line Black Edition</a> · <a href=\"https://a3tal.com/car-reference/kia/\">دليل كيا مصر</a></p><p>المعلومات من <a href=\"https://www.kia.com.eg/ar/models/specifications/The_K4\" rel=\"nofollow noopener\">جدول كيا K4 الرسمي</a> و<a href=\"https://www.kia.com.eg/models/The_K4\" rel=\"nofollow noopener\">صفحة الفئات لدى كيا مصر</a>. أي اختلاف في سنة الإنتاج أو النسخة أو تركيب القطع يستدعي مراجعة رقم الشاسيه وكتالوج الخدمة.</p>"
+        },
+        {
+          "slug": "k4-dimensions-4710-1850-1435-clearance140",
+          "title": "أبعاد كيا K4 في مصر: طول4710 مم وقاعدة2720 وخلوص أرضي140 مم",
+          "category": "dimensions",
+          "engine": "Kia K4 Egypt EX 1.6 Gamma 123hp 6AT / GT 1.6 T-GDI 190hp 8AT",
+          "facts": [
+            [
+              "الطول",
+              "4710 مم"
+            ],
+            [
+              "العرض",
+              "1850 مم"
+            ],
+            [
+              "الارتفاع",
+              "1435 مم"
+            ],
+            [
+              "قاعدة العجلات",
+              "2720 مم"
+            ],
+            [
+              "الخلوص الأرضي",
+              "140 مم"
+            ],
+            [
+              "سعة خزان الوقود",
+              "47 لترًا"
+            ],
+            [
+              "نوع الهيكل",
+              "سيدان"
+            ],
+            [
+              "الفئات",
+              "EX وGT وGT-line Black Edition"
+            ],
+            [
+              "الدفع",
+              "أمامي"
+            ],
+            [
+              "مصدر القياسات",
+              "جدول كيا مصر"
+            ]
+          ],
+          "sources": [
+            "https://www.kia.com.eg/ar/models/specifications/The_K4",
+            "https://www.kia.com.eg/models/The_K4"
+          ],
+          "intro": "أبعاد كيا K4 في مصر: طول4710 مم وقاعدة2720 وخلوص أرضي140 مم حسب جدول كيا مصر وفئة السيارة.",
+          "detail": "يبلغ طول كيا K4 المصرية4710 مم، وعرضها1850 مم، وارتفاعها1435 مم، وقاعدة عجلاتها2720 مم. أرقام القياس تصلح للمقارنة مع سيدان أخرى بعد التأكد من أن كل شركة تقيس العرض بالمرايا أو بدونها بالطريقة نفسها. لا نضع هنا مقاسات سيراتو جيل آخر دون الرجوع إلى وثيقته الرسمية، لأن مقارنة جيلين مختلفين قد تبدو دقيقة بالأرقام لكنها تخلط بين بيانات أسواق وإصدارات غير متجانسة.",
+          "warning": "يرجى مطابقة رقم الشاسيه والفئة قبل شراء القطع. لا تخمن كميات سوائل الصيانة من صفحة تسويقية.",
+          "meta_description": "أبعاد كيا K4 في مصر: طول4710 مم وقاعدة2720 وخلوص أرضي140 مم وفق جدول كيا مصر الرسمي، مع الفروق المهمة ونصائح الفحص والصيانة.",
+          "rich_html": "<p>أبعاد كيا K4 في مصر: طول4710 مم وقاعدة2720 وخلوص أرضي140 مم. يوضح المرجع ما تنص عليه المواصفات المصرية، مع شرح عملي للفروق دون خلط بين الفئات أو نسخ الخارج.</p><h2>هل كيا K4 أطول من كيا سيراتو؟</h2><p>يبلغ طول كيا K4 المصرية4710 مم، وعرضها1850 مم، وارتفاعها1435 مم، وقاعدة عجلاتها2720 مم. أرقام القياس تصلح للمقارنة مع سيدان أخرى بعد التأكد من أن كل شركة تقيس العرض بالمرايا أو بدونها بالطريقة نفسها. لا نضع هنا مقاسات سيراتو جيل آخر دون الرجوع إلى وثيقته الرسمية، لأن مقارنة جيلين مختلفين قد تبدو دقيقة بالأرقام لكنها تخلط بين بيانات أسواق وإصدارات غير متجانسة.</p><div class=\"a3tal-responsive-table\" style=\"overflow-x:auto\"><table><tbody><tr><th scope=\"row\">الطول</th><td>4710 مم</td></tr><tr><th scope=\"row\">العرض</th><td>1850 مم</td></tr><tr><th scope=\"row\">الارتفاع</th><td>1435 مم</td></tr><tr><th scope=\"row\">قاعدة العجلات</th><td>2720 مم</td></tr><tr><th scope=\"row\">الخلوص الأرضي</th><td>140 مم</td></tr><tr><th scope=\"row\">سعة خزان الوقود</th><td>47 لترًا</td></tr><tr><th scope=\"row\">نوع الهيكل</th><td>سيدان</td></tr><tr><th scope=\"row\">الفئات</th><td>EX وGT وGT-line Black Edition</td></tr><tr><th scope=\"row\">الدفع</th><td>أمامي</td></tr><tr><th scope=\"row\">مصدر القياسات</th><td>جدول كيا مصر</td></tr></tbody></table></div><h2>هل خلوص140 مم مناسب للمطبات؟</h2><p>الخلوص المعلن هو140 مم أو14 سم وفق الجدول المصري. هذا لا يضمن أن مقدمة السيارة أو أسفلها لن يلمسا مطبًا مرتفعًا، لأن زاوية المنحدر وطول قاعدة العجلات والحمولة والضغط في الإطارات تؤثر في النتيجة. في الجراجات ذات الرامب الحاد ينبغي قياس المدخل وتجربة المرور بحذر بدلاً من اعتبار رقم الخلوص تصريحًا بعبور كل المطبات، خصوصًا عندما تكون السيارة بكامل الركاب.</p><h2>خزان47 لتر: هل يدخل47 لترًا عند كل تفويلة؟</h2><p>تورد كيا سعة اسمية لخزان الوقود تبلغ47 لترًا في الفئات الثلاث. لا يمثل الرقم الكمية التي ستدخل أثناء أي تفويلة؛ فقد يبقى جزء من البنزين في الخزان عند إضاءة التحذير، كما يؤثر مستوى السيارة وطريقة المضخة في الكمية المسجلة. لا تستخدم رقم السعة وحده لاستخراج مدى قيادة مضمون أو استهلاك مؤكد، لأن معدل الوقود يختلف بحسب ظروف الحركة والمحرك والتكييف.</p><h2>ما علاقة قاعدة العجلات بمساحة المقصورة؟</h2><p>قاعدة2720 مم هي المسافة بين المحورين وليست طول مساحة أقدام الركاب. تؤثر قاعدة العجلات في نسب تصميم الهيكل، لكن حيز الأرجل الداخلي يرتبط أيضًا بسماكة المقاعد والتابلوه وتصميم الأرضية. عند الشراء الأفضل تجربة المقعد الأمامي والخلفي وتحميل شنطة حقيقية بدل الاستنتاج من رقم القاعدة فقط. كما ينبغي ترك مسافة إضافية للأبواب والمرايا عند ركن السيارة في جراج ضيق.</p><h2>الأسئلة الشائعة</h2><h3>كيا K4 طولها كام؟</h3><p>4710 مم، أي4.71 متر.</p><h3>خلوص K4 الأرضي كام؟</h3><p>140 مم وفق الوكيل المصري.</p><h2>المراجع الفنية الأخرى لكيا K4</h2><p><a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/\">المواصفات الأساسية لكيا K4 في مصر</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-ex-1591-123hp-151nm-6at/\">محرك K4 EX 1591 سي سي و6AT</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-gt-1598-tgdi-190hp-264nm-8at/\">محرك K4 GT تيربو و8AT</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-ex-vs-gt-torsion-multilink-suspension/\">مقارنة العفشة الخلفية EX وGT</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-wheels-17-vs-18-led-trims/\">الجنوط والفوانيس حسب الفئة</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-safety-abs-esc-tpms-blindspot/\">أنظمة الأمان والنقطة العمياء</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-gtline-black-vs-gt-panoramic-seat/\">تجهيزات GT-line Black Edition</a> · <a href=\"https://a3tal.com/car-reference/kia/\">دليل كيا مصر</a></p><p>المعلومات من <a href=\"https://www.kia.com.eg/ar/models/specifications/The_K4\" rel=\"nofollow noopener\">جدول كيا K4 الرسمي</a> و<a href=\"https://www.kia.com.eg/models/The_K4\" rel=\"nofollow noopener\">صفحة الفئات لدى كيا مصر</a>. أي اختلاف في سنة الإنتاج أو النسخة أو تركيب القطع يستدعي مراجعة رقم الشاسيه وكتالوج الخدمة.</p>"
+        },
+        {
+          "slug": "k4-wheels-17-vs-18-led-trims",
+          "title": "مقاس جنوط كيا K4 في مصر: 17 بوصة EX و18 GT واختلاف فوانيس LED",
+          "category": "exterior-specs",
+          "engine": "Kia K4 Egypt EX 1.6 Gamma 123hp 6AT / GT 1.6 T-GDI 190hp 8AT",
+          "facts": [
+            [
+              "EX",
+              "جنوط17 بوصة"
+            ],
+            [
+              "GT",
+              "جنوط18 بوصة"
+            ],
+            [
+              "GT-line Black Edition",
+              "جنوط18 بوصة سوداء"
+            ],
+            [
+              "المصابيح النهارية",
+              "LED لكل الفئات"
+            ],
+            [
+              "مرايا الطي الكهربائي",
+              "لكل الفئات"
+            ],
+            [
+              "الفوانيس الأمامية الرباعية",
+              "GT-line Black Edition"
+            ],
+            [
+              "فتحة سقف واسعة",
+              "GT-line Black Edition"
+            ],
+            [
+              "السقف الخارجي",
+              "يختلف بالتجهيز"
+            ],
+            [
+              "الخلوص المعلن",
+              "140 مم"
+            ],
+            [
+              "كود الإطار الكامل",
+              "يُراجع على ملصق السيارة"
+            ]
+          ],
+          "sources": [
+            "https://www.kia.com.eg/ar/models/specifications/The_K4",
+            "https://www.kia.com.eg/models/The_K4"
+          ],
+          "intro": "مقاس جنوط كيا K4 في مصر: 17 بوصة EX و18 GT واختلاف فوانيس LED حسب جدول كيا مصر وفئة السيارة.",
+          "detail": "تنشر كيا مصر تجهيز الفئة EX بجنوط ألمنيوم17 بوصة، بينما GT وGT-line Black Edition بجنوط18 بوصة مع اختلاف تصميم اللون. قطر الجنط لا يحدد وحده عرض الإطار أو نسبة ارتفاع الجنب أو مؤشرات السرعة والحمولة، لذلك لا نذكر كود كاوتش كاملًا لم يظهر في النشرة. إذا استبدل مالك سابق الجنوط، فلا يكفي الشكل الخارجي لإثبات الفئة أو اختيار إطارات جديدة دون الرجوع إلى ملصق الصانع.",
+          "warning": "يرجى مطابقة رقم الشاسيه والفئة قبل شراء القطع. لا تخمن كميات سوائل الصيانة من صفحة تسويقية.",
+          "meta_description": "مقاس جنوط كيا K4 في مصر: 17 بوصة EX و18 GT واختلاف فوانيس LED وفق جدول كيا مصر الرسمي، مع الفروق المهمة ونصائح الفحص والصيانة.",
+          "rich_html": "<p>مقاس جنوط كيا K4 في مصر: 17 بوصة EX و18 GT واختلاف فوانيس LED. يوضح المرجع ما تنص عليه المواصفات المصرية، مع شرح عملي للفروق دون خلط بين الفئات أو نسخ الخارج.</p><h2>ليه في K4 جنط17 و18 بوصة؟</h2><p>تنشر كيا مصر تجهيز الفئة EX بجنوط ألمنيوم17 بوصة، بينما GT وGT-line Black Edition بجنوط18 بوصة مع اختلاف تصميم اللون. قطر الجنط لا يحدد وحده عرض الإطار أو نسبة ارتفاع الجنب أو مؤشرات السرعة والحمولة، لذلك لا نذكر كود كاوتش كاملًا لم يظهر في النشرة. إذا استبدل مالك سابق الجنوط، فلا يكفي الشكل الخارجي لإثبات الفئة أو اختيار إطارات جديدة دون الرجوع إلى ملصق الصانع.</p><div class=\"a3tal-responsive-table\" style=\"overflow-x:auto\"><table><tbody><tr><th scope=\"row\">EX</th><td>جنوط17 بوصة</td></tr><tr><th scope=\"row\">GT</th><td>جنوط18 بوصة</td></tr><tr><th scope=\"row\">GT-line Black Edition</th><td>جنوط18 بوصة سوداء</td></tr><tr><th scope=\"row\">المصابيح النهارية</th><td>LED لكل الفئات</td></tr><tr><th scope=\"row\">مرايا الطي الكهربائي</th><td>لكل الفئات</td></tr><tr><th scope=\"row\">الفوانيس الأمامية الرباعية</th><td>GT-line Black Edition</td></tr><tr><th scope=\"row\">فتحة سقف واسعة</th><td>GT-line Black Edition</td></tr><tr><th scope=\"row\">السقف الخارجي</th><td>يختلف بالتجهيز</td></tr><tr><th scope=\"row\">الخلوص المعلن</th><td>140 مم</td></tr><tr><th scope=\"row\">كود الإطار الكامل</th><td>يُراجع على ملصق السيارة</td></tr></tbody></table></div><h2>ما الفرق في الفوانيس بين الفئات؟</h2><p>تضم الفئات الثلاث مصابيح نهارية LED وحساس إضاءة ومرايا طي كهربائي، لكن GT-line Black Edition تتميز بفوانيس LED أمامية ذات عدسة رباعية الإضاءة وفق الجدول، وتجهيزات إضاءة خلفية مختلفة عن بعض النسخ الأقل. لا يعني وجود لمبة LED نهارية أن كل مجموعات الإضاءة الرئيسية متماثلة، ولهذا قد تختلف رموز الفوانيس ووحدات التحكم عند طلب قطع غيار بعد حادث.</p><h2>هل فتحة السقف موجودة في GT؟</h2><p>تظهر فتحة السقف الواسعة ضمن تجهيز GT-line Black Edition في القائمة المصرية، بينما تحمل خانتا EX وGT علامة عدم توفر. لذلك إعلان «كيا K4 GT بسقف بانورامي» يحتاج تحققًا من النسخة المعروضة أو وجود تعديل، ولا يصح افتراضه من اسم GT وحده. ونفس المبدأ يطبق على الشحن اللاسلكي والكراسي الكهربائية وتجهيزات الفئة الأعلى.</p><h2>مخاطر تحويل الجنط والفانوس</h2><p>تعديل الجنط من17 إلى18 أو تركيب فانوس يختلف عن الأصلي يتطلب فحص مقاس الإطار الخارجي وتوافق الفرامل والحساسات والكابلات. وقد يؤثر تغيير وزن العجلة أو ضغط الإطار في الراحة والاستهلاك والتآكل. لا نشجع تعديلات توصيل كهربائي عشوائية لوحدات LED الحديثة؛ فالقطع المناسبة تُحدد برقم الشاسيه ونوع الفئة ومراجع الصيانة الأصلية.</p><h2>الأسئلة الشائعة</h2><h3>K4 EX جنط كام؟</h3><p>17 بوصة في الوكيل المصري.</p><h3>هل GT-line فيها فتحة سقف؟</h3><p>نعم، فتحة سقف واسعة ضمن تجهيز Black Edition حسب جدول كيا.</p><h2>المراجع الفنية الأخرى لكيا K4</h2><p><a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/\">المواصفات الأساسية لكيا K4 في مصر</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-ex-1591-123hp-151nm-6at/\">محرك K4 EX 1591 سي سي و6AT</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-gt-1598-tgdi-190hp-264nm-8at/\">محرك K4 GT تيربو و8AT</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-ex-vs-gt-torsion-multilink-suspension/\">مقارنة العفشة الخلفية EX وGT</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-dimensions-4710-1850-1435-clearance140/\">الأبعاد والخلوص الأرضي</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-safety-abs-esc-tpms-blindspot/\">أنظمة الأمان والنقطة العمياء</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-gtline-black-vs-gt-panoramic-seat/\">تجهيزات GT-line Black Edition</a> · <a href=\"https://a3tal.com/car-reference/kia/\">دليل كيا مصر</a></p><p>المعلومات من <a href=\"https://www.kia.com.eg/ar/models/specifications/The_K4\" rel=\"nofollow noopener\">جدول كيا K4 الرسمي</a> و<a href=\"https://www.kia.com.eg/models/The_K4\" rel=\"nofollow noopener\">صفحة الفئات لدى كيا مصر</a>. أي اختلاف في سنة الإنتاج أو النسخة أو تركيب القطع يستدعي مراجعة رقم الشاسيه وكتالوج الخدمة.</p>"
+        },
+        {
+          "slug": "k4-safety-abs-esc-tpms-blindspot",
+          "title": "أمان كيا K4: ABS وESC وTPMS والوسائد والنقطة العمياء حسب الفئة",
+          "category": "safety-specs",
+          "engine": "Kia K4 Egypt EX 1.6 Gamma 123hp 6AT / GT 1.6 T-GDI 190hp 8AT",
+          "facts": [
+            [
+              "ABS",
+              "في الفئات الثلاث"
+            ],
+            [
+              "EBD",
+              "في الفئات الثلاث"
+            ],
+            [
+              "ESC",
+              "في الفئات الثلاث"
+            ],
+            [
+              "Hill Assist",
+              "في الفئات الثلاث"
+            ],
+            [
+              "TPMS",
+              "في الفئات الثلاث"
+            ],
+            [
+              "حساسات الركن الأمامية والخلفية",
+              "في الفئات الثلاث"
+            ],
+            [
+              "فرامل اليد الإلكترونية",
+              "في الفئات الثلاث"
+            ],
+            [
+              "Auto Hold",
+              "في الفئات الثلاث"
+            ],
+            [
+              "وسائد أمامية وجانبية وستائر",
+              "في الفئات الثلاث"
+            ],
+            [
+              "تجنب اصطدام النقطة العمياء خلفيًا",
+              "GT-line Black Edition فقط"
+            ]
+          ],
+          "sources": [
+            "https://www.kia.com.eg/ar/models/specifications/The_K4",
+            "https://www.kia.com.eg/models/The_K4"
+          ],
+          "intro": "أمان كيا K4: ABS وESC وTPMS والوسائد والنقطة العمياء حسب الفئة حسب جدول كيا مصر وفئة السيارة.",
+          "detail": "تدرج كيا مصر أنظمة ABS وEBD والتحكم الإلكتروني بالثبات ESC ومساعدة بدء الحركة على المرتفعات ومراقبة ضغط الإطارات TPMS وحساسات الركن وفرامل اليد الإلكترونية مع Auto Hold ضمن تجهيزات الفئات الثلاث. كما تذكر وسائد أمامية وجانبية وستائرية. هذا لا يعني أن جميع وسائل مساعدة السائق المتقدمة قياسية؛ فالنقطة العمياء الخلفية لها خانة مستقلة تختلف بين الفئات. يجب قراءة جدول التوفر بندًا بندًا دون الاكتفاء بعبارة «كاملة الأمان».",
+          "warning": "يرجى مطابقة رقم الشاسيه والفئة قبل شراء القطع. لا تخمن كميات سوائل الصيانة من صفحة تسويقية.",
+          "meta_description": "أمان كيا K4: ABS وESC وTPMS والوسائد والنقطة العمياء حسب الفئة وفق جدول كيا مصر الرسمي، مع الفروق المهمة ونصائح الفحص والصيانة.",
+          "rich_html": "<p>أمان كيا K4: ABS وESC وTPMS والوسائد والنقطة العمياء حسب الفئة. يوضح المرجع ما تنص عليه المواصفات المصرية، مع شرح عملي للفروق دون خلط بين الفئات أو نسخ الخارج.</p><h2>هل فئة EX فيها وسائل أمان كافية؟</h2><p>تدرج كيا مصر أنظمة ABS وEBD والتحكم الإلكتروني بالثبات ESC ومساعدة بدء الحركة على المرتفعات ومراقبة ضغط الإطارات TPMS وحساسات الركن وفرامل اليد الإلكترونية مع Auto Hold ضمن تجهيزات الفئات الثلاث. كما تذكر وسائد أمامية وجانبية وستائرية. هذا لا يعني أن جميع وسائل مساعدة السائق المتقدمة قياسية؛ فالنقطة العمياء الخلفية لها خانة مستقلة تختلف بين الفئات. يجب قراءة جدول التوفر بندًا بندًا دون الاكتفاء بعبارة «كاملة الأمان».</p><div class=\"a3tal-responsive-table\" style=\"overflow-x:auto\"><table><tbody><tr><th scope=\"row\">ABS</th><td>في الفئات الثلاث</td></tr><tr><th scope=\"row\">EBD</th><td>في الفئات الثلاث</td></tr><tr><th scope=\"row\">ESC</th><td>في الفئات الثلاث</td></tr><tr><th scope=\"row\">Hill Assist</th><td>في الفئات الثلاث</td></tr><tr><th scope=\"row\">TPMS</th><td>في الفئات الثلاث</td></tr><tr><th scope=\"row\">حساسات الركن الأمامية والخلفية</th><td>في الفئات الثلاث</td></tr><tr><th scope=\"row\">فرامل اليد الإلكترونية</th><td>في الفئات الثلاث</td></tr><tr><th scope=\"row\">Auto Hold</th><td>في الفئات الثلاث</td></tr><tr><th scope=\"row\">وسائد أمامية وجانبية وستائر</th><td>في الفئات الثلاث</td></tr><tr><th scope=\"row\">تجنب اصطدام النقطة العمياء خلفيًا</th><td>GT-line Black Edition فقط</td></tr></tbody></table></div><h2>ما الفرق بين ABS وESC؟</h2><p>يساعد ABS في الحد من انغلاق العجلات أثناء الفرملة القوية في ظروف محددة، بينما يساعد ESC في التحكم بثبات مسار السيارة عند رصد حالات فقدان تماسك. ويقوم EBD بتوزيع قوة الفرامل إلكترونيًا وفق تصميم النظام. لا يضمن أي منها منع حادث على طريق مبلل أو إيقاف السيارة في مسافة ثابتة؛ فحالة الإطارات والسرعة والحمولة من العوامل المؤثرة.</p><h2>أين يتوفر نظام النقطة العمياء؟</h2><p>الجدول المصري يوضح تجهيز تجنب الاصطدام بالنقطة العمياء الخلفية في GT-line Black Edition، ولا يدرجه ضمن EX أو GT العادية. وجود إشارات في المرايا أو حساسات ركن لا يعني وجود منظومة النقطة العمياء نفسها، فالأنظمة مختلفة في حساسات الرصد ووظائف المساعدة. عند شراء سيارة مستعملة افحص الفئة الأصلية ورقم الشاسيه وتاريخ إصلاح الصدامات والحساسات.</p><h2>متى يحتاج نظام الأمان لفحص مختص؟</h2><p>إذا ظهرت لمبة ABS أو ESC أو TPMS ينبغي التأكد من حالة الإطارات والضغط الحقيقي، ثم قراءة رموز الأعطال عند الحاجة عبر فني مناسب. قد تكون المشكلة في حساس أو تغذية أو معايرة، فلا تُستبدل وحدة الفرامل تلقائيًا لمجرد رسالة تحذير. وبعد حادث أو تغيير صدام قد تتطلب الحساسات فحصًا ومعايرة وفق الشركة، ولا يجوز اختبار تجنب الاصطدام عمدًا بتعريض أي شخص أو جسم للخطر.</p><h2>الأسئلة الشائعة</h2><h3>هل K4 EX فيها ESC؟</h3><p>نعم، التحكم الإلكتروني بالثبات مدرج لكل الفئات حسب كيا مصر.</p><h3>في أي فئة موجود نظام النقطة العمياء؟</h3><p>GT-line Black Edition وفق خانة تجهيز تجنب الاصطدام بالنقطة العمياء الخلفية.</p><h2>المراجع الفنية الأخرى لكيا K4</h2><p><a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/\">المواصفات الأساسية لكيا K4 في مصر</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-ex-1591-123hp-151nm-6at/\">محرك K4 EX 1591 سي سي و6AT</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-gt-1598-tgdi-190hp-264nm-8at/\">محرك K4 GT تيربو و8AT</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-ex-vs-gt-torsion-multilink-suspension/\">مقارنة العفشة الخلفية EX وGT</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-dimensions-4710-1850-1435-clearance140/\">الأبعاد والخلوص الأرضي</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-wheels-17-vs-18-led-trims/\">الجنوط والفوانيس حسب الفئة</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-gtline-black-vs-gt-panoramic-seat/\">تجهيزات GT-line Black Edition</a> · <a href=\"https://a3tal.com/car-reference/kia/\">دليل كيا مصر</a></p><p>المعلومات من <a href=\"https://www.kia.com.eg/ar/models/specifications/The_K4\" rel=\"nofollow noopener\">جدول كيا K4 الرسمي</a> و<a href=\"https://www.kia.com.eg/models/The_K4\" rel=\"nofollow noopener\">صفحة الفئات لدى كيا مصر</a>. أي اختلاف في سنة الإنتاج أو النسخة أو تركيب القطع يستدعي مراجعة رقم الشاسيه وكتالوج الخدمة.</p>"
+        },
+        {
+          "slug": "k4-gtline-black-vs-gt-panoramic-seat",
+          "title": "كيا K4 GT-line Black Edition مقابل GT: السقف والجلد والكراسي والشحن اللاسلكي",
+          "category": "trim-features",
+          "engine": "Kia K4 Egypt EX 1.6 Gamma 123hp 6AT / GT 1.6 T-GDI 190hp 8AT",
+          "facts": [
+            [
+              "محرك GT وGT-line",
+              "190 حصان1.6 T-GDI"
+            ],
+            [
+              "الفتيس",
+              "8AT"
+            ],
+            [
+              "جنوط GT",
+              "18 بوصة ثنائي اللون"
+            ],
+            [
+              "جنوط Black Edition",
+              "18 بوصة سوداء"
+            ],
+            [
+              "فتحة السقف",
+              "Black Edition فقط في الجدول"
+            ],
+            [
+              "شحن لاسلكي",
+              "Black Edition"
+            ],
+            [
+              "تحكم كهربائي في المقاعد الأمامية",
+              "Black Edition"
+            ],
+            [
+              "تكييف أوتوماتيك ثنائي",
+              "GT وBlack Edition"
+            ],
+            [
+              "شاشتان12.3 بوصة",
+              "GT وBlack Edition"
+            ],
+            [
+              "Paddle Shifters",
+              "GT وBlack Edition"
+            ]
+          ],
+          "sources": [
+            "https://www.kia.com.eg/ar/models/specifications/The_K4",
+            "https://www.kia.com.eg/models/The_K4"
+          ],
+          "intro": "كيا K4 GT-line Black Edition مقابل GT: السقف والجلد والكراسي والشحن اللاسلكي حسب جدول كيا مصر وفئة السيارة.",
+          "detail": "تتشارك فئتا K4 GT وGT-line Black Edition في مصر المحرك1.6 T-GDI بقوة190 حصانًا وعزم264 نيوتن متر وناقل8AT ودفع أمامي، بحسب جدول كيا. لا تزيد القوة المعلنة لمجرد وجود شارة Black Edition. الفارق الذي تعرضه الشركة أساسًا في التجهيزات الداخلية والخارجية، مثل لون الجنط والسقف والجلد وبعض ميزات الراحة. عند مقارنة السعر ينبغي فصل فرق الأجهزة عن مجموعة الحركة لتحديد ما يحتاجه المشتري فعلًا.",
+          "warning": "يرجى مطابقة رقم الشاسيه والفئة قبل شراء القطع. لا تخمن كميات سوائل الصيانة من صفحة تسويقية.",
+          "meta_description": "كيا K4 GT-line Black Edition مقابل GT: السقف والجلد والكراسي والشحن اللاسلكي وفق جدول كيا مصر الرسمي، مع الفروق المهمة ونصائح الفحص والصيانة.",
+          "rich_html": "<p>كيا K4 GT-line Black Edition مقابل GT: السقف والجلد والكراسي والشحن اللاسلكي. يوضح المرجع ما تنص عليه المواصفات المصرية، مع شرح عملي للفروق دون خلط بين الفئات أو نسخ الخارج.</p><h2>هل Black Edition أقوى من GT؟</h2><p>تتشارك فئتا K4 GT وGT-line Black Edition في مصر المحرك1.6 T-GDI بقوة190 حصانًا وعزم264 نيوتن متر وناقل8AT ودفع أمامي، بحسب جدول كيا. لا تزيد القوة المعلنة لمجرد وجود شارة Black Edition. الفارق الذي تعرضه الشركة أساسًا في التجهيزات الداخلية والخارجية، مثل لون الجنط والسقف والجلد وبعض ميزات الراحة. عند مقارنة السعر ينبغي فصل فرق الأجهزة عن مجموعة الحركة لتحديد ما يحتاجه المشتري فعلًا.</p><div class=\"a3tal-responsive-table\" style=\"overflow-x:auto\"><table><tbody><tr><th scope=\"row\">محرك GT وGT-line</th><td>190 حصان1.6 T-GDI</td></tr><tr><th scope=\"row\">الفتيس</th><td>8AT</td></tr><tr><th scope=\"row\">جنوط GT</th><td>18 بوصة ثنائي اللون</td></tr><tr><th scope=\"row\">جنوط Black Edition</th><td>18 بوصة سوداء</td></tr><tr><th scope=\"row\">فتحة السقف</th><td>Black Edition فقط في الجدول</td></tr><tr><th scope=\"row\">شحن لاسلكي</th><td>Black Edition</td></tr><tr><th scope=\"row\">تحكم كهربائي في المقاعد الأمامية</th><td>Black Edition</td></tr><tr><th scope=\"row\">تكييف أوتوماتيك ثنائي</th><td>GT وBlack Edition</td></tr><tr><th scope=\"row\">شاشتان12.3 بوصة</th><td>GT وBlack Edition</td></tr><tr><th scope=\"row\">Paddle Shifters</th><td>GT وBlack Edition</td></tr></tbody></table></div><h2>التجهيزات التي تنفرد بها Black Edition</h2><p>تضيف نسخة Black Edition فتحة سقف واسعة وشاحن هاتف لاسلكيًا وتحكمًا كهربائيًا للمقاعد الأمامية وتجهيزات دعم إضافية، فضلًا عن اختلاف التصميم الخارجي للفوانيس وبعض الخامات. بينما تتيح GT العادية بالفعل شاشة عدادات رقمية12.3 بوصة وشاشة لمس12.3 بوصة وتكييفًا أوتوماتيكيًا ثنائي المنطقة وأذرع نقل خلف المقود. لذلك لا يصح وصف GT بأنها نسخة بلا شاشات أو تجهيزات أساسية.</p><h2>هل الشاشتان مقاس24.6 بوصة؟</h2><p>الأرقام12.3 بوصة التي تذكرها كيا تخص مقاس كل شاشة قطريًا، ولا تُجمع تلقائيًا لتصبح شاشة واحدة بقياس24.6 بوصة. ويمكن أن يتغير أسلوب عرض العدادات والترفيه عبر البرمجيات، لكن حجم الشاشة الرسمي يظل مرتبطًا بالجزء الفعلي. إذا تعطلت شاشة أو وحدة تكييف، يجب التأكد من سبب الخلل قبل استبدال المجموعة بكاملها، وخاصة في سيارة حديثة ذات وحدات إلكترونية مترابطة.</p><h2>قبل دفع فرق الفئة أو شراء مستعملة</h2><p>اطلب ورقة فئة السيارة الأصلية وتأكد أن فتحة السقف والمقاعد الكهربائية والشاحن اللاسلكي تجهيزات مصنع وليست تعديلات لاحقة. اختبر عمل كل جزء واحتمال وجود تلف في مصارف السقف أو آلية المقاعد، وراجع حالة الوسائد الهوائية بعد الحوادث. كما يجب ألا يتحول اختيار لون جنط أو شاشة إلى دليل وحيد على سلامة السيارة ميكانيكيًا؛ الفحص الفني وسجل الصيانة أكثر أهمية.</p><h2>الأسئلة الشائعة</h2><h3>Black Edition كام حصان؟</h3><p>190 حصانًا، مثل GT العادية وفق كيا مصر.</p><h3>هل GT العادية فيها شاحن لاسلكي؟</h3><p>الشحن اللاسلكي مدرج لفئة Black Edition في الجدول المصري.</p><h2>المراجع الفنية الأخرى لكيا K4</h2><p><a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/\">المواصفات الأساسية لكيا K4 في مصر</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-ex-1591-123hp-151nm-6at/\">محرك K4 EX 1591 سي سي و6AT</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-gt-1598-tgdi-190hp-264nm-8at/\">محرك K4 GT تيربو و8AT</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-ex-vs-gt-torsion-multilink-suspension/\">مقارنة العفشة الخلفية EX وGT</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-dimensions-4710-1850-1435-clearance140/\">الأبعاد والخلوص الأرضي</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-wheels-17-vs-18-led-trims/\">الجنوط والفوانيس حسب الفئة</a> · <a href=\"https://a3tal.com/car-reference/kia/k4-16-ex-gt-egypt/k4-safety-abs-esc-tpms-blindspot/\">أنظمة الأمان والنقطة العمياء</a> · <a href=\"https://a3tal.com/car-reference/kia/\">دليل كيا مصر</a></p><p>المعلومات من <a href=\"https://www.kia.com.eg/ar/models/specifications/The_K4\" rel=\"nofollow noopener\">جدول كيا K4 الرسمي</a> و<a href=\"https://www.kia.com.eg/models/The_K4\" rel=\"nofollow noopener\">صفحة الفئات لدى كيا مصر</a>. أي اختلاف في سنة الإنتاج أو النسخة أو تركيب القطع يستدعي مراجعة رقم الشاسيه وكتالوج الخدمة.</p>"
+        }
+      ]
+    }
+  ]
+}
