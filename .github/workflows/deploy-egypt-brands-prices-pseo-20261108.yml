@@ -1,0 +1,43 @@
+name: Deploy Egypt brand hubs, car prices and PSEO homepage 20261108
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/deploy-egypt-brands-prices-pseo-20261108.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-egypt-production-home-brands-prices-20261108
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 42
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate source integrity, PHP and Python without mutating live
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          for p in home-reference-20261104.php home-reference-header-20261104.php car-price-guide.php brand-collection-20261108.php; do
+            php -l "theme-source/a3tal-global/$p"
+          done
+          python3 -m py_compile scripts/deploy-egypt-brands-prices-pseo-20261108.py
+          grep -q 'A3TAL-EGYPT-BRANDS-20261108-BEGIN' theme-source/a3tal-global/home-reference-20261104.php
+          grep -q 'A3TAL EGYPT BRAND COLLECTION 20261108' theme-source/a3tal-global/car-price-guide.css
+          grep -q "brand-collection-20261108.php" theme-source/a3tal-global/car-price-guide.php
+      - name: Install HTTP dependency
+        run: python3 -m pip install -q requests
+      - name: Scoped theme deployment with checksum readback and guarded rollback
+        run: python3 -u scripts/deploy-egypt-brands-prices-pseo-20261108.py
+      - name: Preserve rollback and visible QA evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-egypt-brand-prices-pseo-live-proof
+          path: reports/egypt-home-brands-prices-pseo-20261108/
+          if-no-files-found: ignore
+          retention-days: 30
