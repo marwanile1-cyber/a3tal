@@ -1,3 +1,4 @@
+# Native WP brand search, serialized deploy, no overlapping production writes.
 name: Deploy Egypt brand hubs, car prices and PSEO homepage 20261108
 on:
   push:
