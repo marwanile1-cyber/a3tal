@@ -1,0 +1,36 @@
+name: Add EV3 to Kia manufacturer PSEO hub without duplicate intent
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/update-kia-hub-ev3-20261108.yml'
+      - 'scripts/update-kia-pseo-hub-ev3-20261108.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-kia-brand-hub
+  cancel-in-progress: false
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate non-destructive EV3 hub update
+        run: |
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/update-kia-pseo-hub-ev3-20261108.py
+          python3 -m pip install --quiet requests
+      - name: Add EV3 verified model URL to Kia hub, preserve image and all existing links
+        run: python3 -u scripts/update-kia-pseo-hub-ev3-20261108.py
+      - name: Save proof of media and canonical preservation
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-kia-ev3-hub-${{ github.run_id }}
+          path: car-reference-b26-kia-hub-update-audit.json
+          if-no-files-found: warn
+          retention-days: 30
