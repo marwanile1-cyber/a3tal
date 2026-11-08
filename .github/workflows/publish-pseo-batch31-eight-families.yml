@@ -1,0 +1,96 @@
+name: Publish batch 31 - 57 Egyptian OEM-source car technical guides in 8 families
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-pseo-batch31-eight-families.yml'
+      - 'scripts/compile-car-reference-batch31-editorial.py'
+      - 'scripts/publish-car-reference-batch31-eight-families.py'
+      - 'data/car-reference/batch31-editorial-seeds/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-pseo-b31-eight-families
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        include:
+          - family: mg-new-hs
+            limit: '9'
+          - family: mg-one
+            limit: '8'
+          - family: mg-rx5plus
+            limit: '8'
+          - family: renault-duster-new
+            limit: '8'
+          - family: renault-kardian
+            limit: '8'
+          - family: renault-taliant
+            limit: '8'
+          - family: renault-megane
+            limit: '8'
+          - family: renault-austral
+            limit: '8'
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3CR_FAMILY: ${{ matrix.family }}
+      A3CR_LIMIT: ${{ matrix.limit }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Source-grounded editorial QA and compile 57 independently authored pages
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/compile-car-reference-batch31-editorial.py scripts/publish-car-reference-batch31-eight-families.py
+          python3 -u scripts/compile-car-reference-batch31-editorial.py
+          python3 - <<'PY'
+          import json,re,html
+          d=json.load(open("data/car-reference/batch-31-eight-real-models-composed.json",encoding="utf8"))
+          assert len(d["clusters"])==8
+          assert len({g["key"] for g in d["clusters"]})==8
+          assert sum(len(g["specs"])+1 for g in d["clusters"])==57
+          seen=set()
+          for g in d["clusters"]:
+              assert len(g["brand_sources"])>=1 and g["brand"] in ("mg","renault")
+              assert len(g["photos"])>=2
+              assert all("mgmotor.com.eg" in u or "renault.com.eg" in u for u in g["photos"])
+              assert len(g["specs"])==(7 if g["key"]=="mg-new-hs" else 6)
+              assert len({p["category"] for p in g["specs"]})>=5
+              for p in [g["model"]]+g["specs"]:
+                  u=g["brand"]+"/"+g["model"]["slug"]+("/"+p["slug"] if p!=g["model"] else "")
+                  assert u not in seen,(u,"duplicate intent path")
+                  seen.add(u)
+                  words=html.unescape(re.sub(r"<[^>]+>"," ",p["rich_html"])).split()
+                  assert len(words)>=290,(g["key"],p["slug"],len(words))
+                  assert p["rich_html"].count("<h2>")>=4
+                  assert p["rich_html"].count("<table>")==1
+                  assert p["rich_html"].count("<a href")>=7
+                  assert "a3tal.com/car-reference/" in p["rich_html"]
+                  assert 65<=len(p["meta_description"])<=155
+          print("B31_EDITORIAL_QA_PASS_57_UNIQUE_EGYPT_MARKET_TECHNICAL_PAGES",flush=True)
+          PY
+      - name: Install manufacturer photography WebP and Direct Bridge dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-dejavu-core
+          python3 -m pip install --quiet pillow requests
+      - name: Verify live custom PSEO engine before publishing
+        run: |
+          curl -fsSL --retry 3 https://a3tal.com/wp-json/a3tal-car-reference/v1/health | python3 -c 'import json,sys;x=json.load(sys.stdin);assert x.get("ok") and x.get("version")=="1.0.0" and x.get("published",0)>=343'
+      - name: Publish one high-quality model and 6 or 7 specific owner guides
+        run: python3 -u scripts/publish-car-reference-batch31-eight-families.py
+      - name: Retain each family publication photo canonical and OG audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-b31-${{ matrix.family }}-${{ github.run_id }}
+          path: car-reference-batch31-${{ matrix.family }}-audit.json
+          if-no-files-found: warn
+          retention-days: 90
