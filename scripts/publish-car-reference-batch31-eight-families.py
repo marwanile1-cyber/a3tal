@@ -85,15 +85,15 @@ def download_photo(index=0):
                 continue
         else:
             continue
-            continue
         if url.rsplit(".",1)[-1].lower() not in ("jpg","jpeg","png","webp"):
             continue
         try:
             raw=get(url).content
-            if len(raw)<10000:raise RuntimeError("Invalid or tiny photographic file "+str(len(raw)))
+            if len(raw)<12000:raise RuntimeError("Invalid or tiny photographic file "+str(len(raw)))
             image=Image.open(io.BytesIO(raw)).convert("RGB")
             print("SOURCE_PHOTO_AUDIT",index,len(raw),image.size,url,flush=True)
-            if min(image.size)<550 or max(image.size)<900:
+            min_native=800 if GROUP["brand"]=="mg" else 900
+            if min(image.size)<550 or max(image.size)<min_native:
                 raise RuntimeError("Source below real-photograph dimensions "+str(image.size))
             stat=ImageStat.Stat(image.resize((64,64)))
             if max(stat.stddev)<18:
@@ -107,7 +107,7 @@ def download_photo(index=0):
     # If an official image is below the publication threshold, use the already verified
     # official hero rather than turning a low-resolution thumbnail into an artificial 4K file.
     for cached in _PHOTO_CHOICE.values():
-        if cached[0].width>=1000:
+        if max(cached[0].size)>=(800 if GROUP["brand"]=="mg" else 900):
             print("OFFICIAL_BATCH31_HERO_REUSED_WITH_DISTINCT_COMPOSITION",index,flush=True)
             _PHOTO_CHOICE[index]=cached
             return cached
