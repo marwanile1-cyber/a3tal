@@ -1,3 +1,4 @@
+# Scoped logo CSS/JS deployment after independent homepage style mismatch.
 name: Deploy Egypt genuine car brand emblems (Saudi-style)
 on:
   push:
