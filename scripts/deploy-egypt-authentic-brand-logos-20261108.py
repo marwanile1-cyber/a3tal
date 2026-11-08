@@ -16,7 +16,7 @@ module=types.ModuleType("a3tal_egypt_brand_bridge")
 SourceFileLoader(module.__name__,"scripts/deploy-dtc-library.py").exec_module(module)
 Bridge=module.Bridge
 HOME="home-reference-20261104.php"
-STYLE="assets/css/egypt-home-brand-logos-20261108.css"
+STYLE="egypt-home-brand-logos-20261108.css"
 LOGOS="assets/js/egypt-home-brand-logos-20261108.js"
 FUN="functions.php"
 BEGIN="<!-- A3TAL-EGYPT-BRANDS-20261108-BEGIN -->"
@@ -25,7 +25,7 @@ PSEO_END="<!-- A3TAL-EGYPT-HOME-PSEO-20261108-END -->"
 SCRIPT_MARKER="<!-- A3TAL-EGYPT-BRAND-LOGO-ASSET-20261108 -->"
 CSS_START="/* A3TAL EGYPT AUTHENTIC LOGO CARDS 20261108 */"
 CSS_END="/* END A3TAL EGYPT AUTHENTIC LOGO CARDS */"
-VERSION="20261108.2"
+VERSION="20261108.3"
 
 def digest(s):return hashlib.sha256(s.encode("utf-8")).hexdigest()
 def php_lint(s):
