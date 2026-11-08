@@ -1,0 +1,38 @@
+name: Publish Egypt genuine logos direct WebP
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-egypt-brand-webp-direct-20261108.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-theme
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 42
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate pinned source and safe browser-independent homepage
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          php -l theme-source/a3tal-global/home-reference-20261104.php
+          python3 -m py_compile scripts/deploy-egypt-brand-webp-direct-20261108.py
+          grep -q 'a3tal-egypt-brand-emblem-20261108-ford.webp' theme-source/a3tal-global/home-reference-20261104.php
+      - run: python3 -m pip install -q pillow requests
+      - name: Upload 23 real-brand WebP images and update only Egyptian homepage
+        run: python3 -u scripts/deploy-egypt-brand-webp-direct-20261108.py
+      - name: Preserve source backup and public QA proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-egypt-direct-brand-webp-evidence
+          path: reports/egypt-brand-real-webp-20261108/
+          retention-days: 14
+          if-no-files-found: ignore
