@@ -1,0 +1,30 @@
+name: Hotfix A3tal Egypt Geely brand safe query
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hotfix-egypt-brand-query-20261108.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-geely-scoped-brand-query-hotfix
+  cancel-in-progress: false
+jobs:
+  hotfix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate reviewed native brand query
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          php -l theme-source/a3tal-global/brand-collection-20261108.php
+          python3 -m py_compile scripts/hotfix-egypt-brand-query-20261108.py
+      - name: Install HTTP client
+        run: python3 -m pip install -q requests
+      - name: Hotfix ONLY the live brand partial and prove public Geely 200
+        run: python3 -u scripts/hotfix-egypt-brand-query-20261108.py
