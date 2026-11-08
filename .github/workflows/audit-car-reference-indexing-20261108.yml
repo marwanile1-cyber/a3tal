@@ -1,0 +1,31 @@
+name: Audit full car-reference XML sitemap and export indexing URL manifest
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/audit-car-reference-indexing-20261108.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install requests and validate indexing-manifest script
+        run: |
+          python3 -m pip install -q requests
+          python3 -m py_compile scripts/audit-car-reference-indexing-manifest-20261108.py
+      - name: Verify live sitemap, Google-discoverable index, all published URLs and representative canonicals
+        run: python3 -u scripts/audit-car-reference-indexing-manifest-20261108.py
+      - name: Download CSV and JSON audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-car-reference-indexing-urls-${{ github.run_id }}
+          path: |
+            data/car-reference/a3tal-car-reference-indexing-manifest-live.csv
+            data/car-reference/a3tal-car-reference-indexing-audit-live.json
+          if-no-files-found: warn
+          retention-days: 90
