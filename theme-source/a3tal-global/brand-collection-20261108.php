@@ -7,29 +7,18 @@
  */
 defined('ABSPATH') || exit;
 if (empty($cg_brand_selected) || empty($cg_brand_slug)) return;
-$brand_terms = $cg_brand_selected['aliases'] ?? [$cg_brand_selected['search']];
-$brand_terms = array_values(array_unique(array_filter(array_map('trim',(array)$brand_terms))));
-if (!$brand_terms) return;
+// Use WordPress native title search; avoid intrusive SQL filters on live archives.
 $brand_page = 1;
 if (isset($_GET['brand_articles_page']) && is_scalar($_GET['brand_articles_page'])) {
     $brand_page = min(500,max(1,absint(wp_unslash($_GET['brand_articles_page']))));
 }
-$brand_title_where = static function($where,$query) use($brand_terms) {
-    if ((int)$query->get('a3tal_brand_title_filter')!==1) return $where;
-    global $wpdb;
-    $parts = [];
-    foreach ($brand_terms as $term) {
-        $parts[] = $wpdb->prepare("{$wpdb->posts}.post_title LIKE %s",'%'.$wpdb->esc_like($term).'%');
-    }
-    return $parts ? $where.' AND ('.implode(' OR ',$parts).')' : $where;
-};
-add_filter('posts_where',$brand_title_where,10,2);
 $brand_editorial = new WP_Query([
-    'post_type'=>'post','post_status'=>'publish','posts_per_page'=>12,
-    'paged'=>$brand_page,'orderby'=>'date','order'=>'DESC',
-    'a3tal_brand_title_filter'=>1,'ignore_sticky_posts'=>true
+    'post_type'=>'post','post_status'=>'publish',
+    's'=>$cg_brand_selected['search'],
+    'search_columns'=>['post_title'],
+    'posts_per_page'=>12,'paged'=>$brand_page,'orderby'=>'date','order'=>'DESC',
+    'ignore_sticky_posts'=>true
 ]);
-remove_filter('posts_where',$brand_title_where,10);
 $brand_ref_root = null;
 if (post_type_exists('a3_car_ref')) {
     $found=get_page_by_path($cg_brand_slug,OBJECT,'a3_car_ref');
