@@ -1,0 +1,49 @@
+{
+  "verified_at_utc": "2026-11-08T14:37:16.851745+00:00",
+  "site": "https://a3tal.com",
+  "published": 327,
+  "sitemap": "https://a3tal.com/a3_car_ref-sitemap.xml",
+  "sitemap_in_main_index": true,
+  "sitemap_urls": 328,
+  "reference_urls": 327,
+  "sample_checks": [
+    {
+      "url": "https://a3tal.com/car-reference/",
+      "canonical": "https://a3tal.com/car-reference/",
+      "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+    },
+    {
+      "url": "https://a3tal.com/car-reference/mg/zs-legacy-4at-egypt/",
+      "canonical": "https://a3tal.com/car-reference/mg/zs-legacy-4at-egypt/",
+      "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+    },
+    {
+      "url": "https://a3tal.com/car-reference/kia/cerato-bd-2023/cerato-bd-2023-20-mpi-engine-bore-stroke-specs/",
+      "canonical": "https://a3tal.com/car-reference/kia/cerato-bd-2023/cerato-bd-2023-20-mpi-engine-bore-stroke-specs/",
+      "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+    },
+    {
+      "url": "https://a3tal.com/car-reference/chery/tiggo9-phev-2026-egypt/tiggo9-egypt-123screen-eight-speakers-carplay/",
+      "canonical": "https://a3tal.com/car-reference/chery/tiggo9-phev-2026-egypt/tiggo9-egypt-123screen-eight-speakers-carplay/",
+      "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+    },
+    {
+      "url": "https://a3tal.com/car-reference/kia/ev6-longrange-egypt/ev6-earth-gtline-meridian-hud-adas/",
+      "canonical": "https://a3tal.com/car-reference/kia/ev6-longrange-egypt/ev6-earth-gtline-meridian-hud-adas/",
+      "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+    },
+    {
+      "url": "https://a3tal.com/car-reference/kia/ev5-longrange-egypt/",
+      "canonical": "https://a3tal.com/car-reference/kia/ev5-longrange-egypt/",
+      "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+    },
+    {
+      "url": "https://a3tal.com/car-reference/kia/ev5-longrange-egypt/ev5-battery-881-lfp-voltage-weight/",
+      "canonical": "https://a3tal.com/car-reference/kia/ev5-longrange-egypt/ev5-battery-881-lfp-voltage-weight/",
+      "robots": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+    }
+  ],
+  "google_indexed": "UNKNOWN - sitemap inclusion is NOT indexing",
+  "robots_has_sitemap": true,
+  "csv": "data/car-reference/a3tal-car-reference-indexing-manifest-live.csv"
+}
