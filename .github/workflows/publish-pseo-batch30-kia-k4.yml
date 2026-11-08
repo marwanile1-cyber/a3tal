@@ -1,0 +1,73 @@
+name: Publish Kia K4 Egypt - seven quality original technical pages
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-pseo-batch30-kia-k4.yml'
+      - 'scripts/publish-car-reference-batch30-k4-quality.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-pseo-b30-kia-k4
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3CR_FAMILY: kia-k4
+      A3CR_LIMIT: '9'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Editorial QA - independent buyer and owner intent, no invented specifications
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-car-reference-batch30-k4-quality.py
+          python3 - <<'PY'
+          import json, re, html
+          d=json.load(open("data/car-reference/batch-30-kia-k4-egypt-20261108.json",encoding="utf8"))
+          assert len(d["clusters"])==1
+          g=d["clusters"][0]
+          assert g["brand"]=="kia" and len(g["specs"])==7
+          pages=[g["model"]]+g["specs"]
+          assert len({x["slug"] for x in pages})==8
+          assert len({x["rich_html"] for x in pages})==8
+          assert len({x["category"] for x in g["specs"]})>=5
+          assert len(g["photos"])>=9 and len(set(g["photos"]))==len(g["photos"])
+          assert all(u.startswith("https://www.kia.com.eg/uploads/") for u in g["photos"])
+          for row in pages:
+              words=html.unescape(re.sub(r"<[^>]*>"," ",row["rich_html"])).split()
+              assert len(words)>=400,(row["slug"],len(words))
+              assert row["rich_html"].count("<h2>")>=4
+              assert row["rich_html"].count("<table>")==1
+              assert row["rich_html"].count("<a href=")>=7
+              assert "kia.com.eg" in row["rich_html"]
+              assert "a3tal.com/car-reference/kia/" in row["rich_html"]
+              assert 75<=len(row["meta_description"])<=155
+          assert all(len(x["facts"])>=10 for x in g["specs"])
+          assert "123" in g["model"]["rich_html"] and "190" in g["model"]["rich_html"]
+          assert "190" in g["specs"][1]["rich_html"] and "8AT" in g["specs"][1]["rich_html"]
+          assert all("high voltage" not in str(x["rich_html"]).lower() for x in pages)
+          print("SEVEN_KIA_K4_SIX_DISTINCT_TECHNICAL_INTENTS_QA_OK")
+          PY
+      - name: Install photographic WebP and bridge dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-dejavu-core
+          python3 -m pip install --quiet pillow requests
+      - name: Check published site PSEO system
+        run: |
+          curl -fsSL --retry 3 https://a3tal.com/wp-json/a3tal-car-reference/v1/health | python3 -c 'import json,sys;x=json.load(sys.stdin);assert x.get("ok") and x.get("version")=="1.0.0" and x.get("published",0)>=335'
+      - name: Publish Kia K4 model hub and six distinct specs with visible WebP and canonical checks
+        run: python3 -u scripts/publish-car-reference-batch30-k4-quality.py
+      - name: Save full independent publication audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-kia-k4-b30-${{ github.run_id }}
+          path: car-reference-batch30-kia-k4-audit.json
+          if-no-files-found: warn
+          retention-days: 30
