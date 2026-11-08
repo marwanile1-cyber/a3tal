@@ -1,0 +1,39 @@
+name: Deploy Egypt brand emblems V2 scoped CSS
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/deploy-egypt-authentic-brand-logos-v2-20261108.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-theme
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate production-safe logo CSS and PHP
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          php -l theme-source/a3tal-global/home-reference-20261104.php
+          node --check theme-source/a3tal-global/assets/js/egypt-home-brand-logos-20261108.js
+          python3 -m py_compile scripts/deploy-egypt-authentic-brand-logos-20261108.py
+          test -s theme-source/a3tal-global/assets/css/egypt-home-brand-logos-20261108.css
+      - run: python3 -m pip install -q requests
+      - name: Guarded live update of brand logos only and public verification
+        run: python3 -u scripts/deploy-egypt-authentic-brand-logos-20261108.py
+      - name: Preserve public QA and rollback evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-egypt-authentic-brand-logo-v2-evidence
+          path: reports/egypt-home-exact-brand-logos-20261108/
+          retention-days: 14
+          if-no-files-found: ignore
