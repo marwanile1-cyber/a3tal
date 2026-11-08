@@ -182,3 +182,36 @@
 .cg-filter{grid-template-columns:repeat(4,minmax(0,1fr))}
 @media(max-width:1100px){.cg-budget-strip{align-items:stretch;flex-direction:column}.cg-budget-links{justify-content:flex-start}.cg-filter{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:480px){.cg-budget-strip{padding:13px 11px;gap:11px}.cg-budget-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.cg-budget-links a{justify-content:space-between;font-size:10px;padding:9px 8px}.cg-filter{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+
+/* A3TAL EGYPT BRAND COLLECTION 20261108: existing archive, real posts and PSEO */
+.cg-brand-icon{width:auto;max-width:100%;height:auto;font:900 clamp(11px,1.2vw,15px)/1.4 Arial,Tahoma,sans-serif;letter-spacing:-.02em;overflow-wrap:anywhere}
+.cg-brand{min-height:78px;gap:6px}
+.cg-brand-collection{padding:22px;margin:22px 0 24px}
+.cg-brand-collection .cg-section-heading{margin-bottom:14px}
+.cg-brand-reference{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:16px 20px;margin-bottom:17px;background:linear-gradient(110deg,#edf5ff,#f9fcff);border:1px solid #d4e4f5;border-radius:14px}
+.cg-brand-reference span{font-size:10px;font-weight:900;color:#c41534}
+.cg-brand-reference h3{font-size:17px;line-height:1.5;margin:4px 0;color:#142c47}
+.cg-brand-reference p{font-size:12px;line-height:1.7;color:#4b6179;margin:0}
+.cg-brand-reference>a{padding:10px 13px;background:#122a46;color:#fff;border-radius:8px;font-size:12px;font-weight:900;text-align:center}
+.cg-brand-model-links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:21px}
+.cg-brand-model-links a{padding:12px;border-radius:10px;background:#f7f9fc;border:1px solid #e4ebf4;font-size:11px;line-height:1.6;font-weight:850;color:#243c55}
+.cg-brand-model-links a span{color:#d01836}
+.cg-brand-model-links a:hover{border-color:#d01836}
+.cg-brand-editorial-heading{display:flex;justify-content:space-between;flex-wrap:wrap;gap:9px;margin:14px 0}
+.cg-brand-editorial-heading h3{font-size:17px;margin:0}
+.cg-brand-editorial-heading span{font-size:11px;color:#667b90}
+.cg-brand-editorial-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+.cg-brand-editorial-list article{border:1px solid #e1e9f1;border-radius:12px;overflow:hidden;background:#fff}
+.cg-brand-editorial-list article a{display:flex;align-items:center;gap:11px;padding:11px;color:#19314c}
+.cg-brand-editorial-list article img{width:84px;height:72px;object-fit:cover;border-radius:7px;flex-shrink:0}
+.cg-brand-editorial-list article strong{font-size:11px;line-height:1.65;display:block;font-weight:850}
+.cg-brand-editorial-list article small{font-size:10px;color:#77899e;display:block;margin-top:4px}
+.cg-brand-editorial-list article a:hover strong{color:#ca1731}
+.cg-brand-pagination{display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap;margin:22px 0}
+.cg-brand-pagination a{background:#132a44;color:#fff;font-size:11px;font-weight:850;padding:10px 14px;border-radius:8px}
+.cg-brand-pagination span{font-size:11px;color:#526c85}
+.cg-brand-note{border-top:1px solid #e1e9f1;padding-top:10px;margin-top:18px;font-size:10px;color:#74859a;line-height:1.8}
+@media(max-width:940px){.cg-brand-model-links,.cg-brand-editorial-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.cg-brand-collection{padding:14px 11px}.cg-brand-reference{padding:11px;display:block}.cg-brand-reference h3{font-size:14px}.cg-brand-reference>a{display:inline-block;margin-top:10px}.cg-brand-model-links,.cg-brand-editorial-list{grid-template-columns:1fr}.cg-brand-editorial-heading h3{font-size:14px}.cg-brand-editorial-list article img{width:75px;height:65px}.cg-brand-icon{font-size:11px}}
+/* END A3TAL EGYPT BRAND COLLECTION 20261108 */
