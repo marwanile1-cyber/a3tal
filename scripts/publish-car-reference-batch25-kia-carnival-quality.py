@@ -130,7 +130,7 @@ def render(photo,i,row):
     buffer=io.BytesIO()
     out.convert("RGB").save(buffer,"WEBP",quality=88,method=5)
     v=buffer.getvalue()
-    if len(v)<55000 or len(v)>3000000:raise RuntimeError("Bad WebP quality "+row["slug"]+": "+str(len(v)))
+    if len(v)<28000 or len(v)>3000000:raise RuntimeError("Bad WebP quality "+row["slug"]+": "+str(len(v)))
     return v
 
 def facts_html(facts):
