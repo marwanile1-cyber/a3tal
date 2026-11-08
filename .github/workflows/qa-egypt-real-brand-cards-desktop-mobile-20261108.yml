@@ -1,0 +1,66 @@
+name: Verify Egypt real logos desktop and mobile
+on:
+  workflow_run:
+    workflows: ["Deploy Egypt brand emblems V2 scoped CSS"]
+    types: [completed]
+permissions:
+  contents: read
+jobs:
+  visual-qa:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - name: Set up Playwright and Chromium
+        run: |
+          mkdir -p /tmp/a3tal-real-logos
+          npm install --prefix /tmp/a3tal-real-logos playwright@1.56.1 --no-audit --no-fund
+          /tmp/a3tal-real-logos/node_modules/.bin/playwright install chromium
+      - name: Verify 24 links, 23 real logos, price and PSEO sections on desktop and mobile
+        run: |
+          cat > /tmp/a3tal-real-logos/qa.cjs <<'JS'
+          const { chromium }=require('playwright');
+          const fs=require('fs');
+          const assert=require('assert');
+          (async()=>{
+            const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
+            for(const [name,width,height,expectedCols] of [['desktop',1440,980,8],['mobile',390,844,3]]){
+              const page=await browser.newPage({viewport:{width,height},deviceScaleFactor:1});
+              await page.goto('https://a3tal.com/?brand_icons_qa='+Date.now(),{timeout:60000,waitUntil:'domcontentloaded'});
+              await page.waitForSelector('.a3egy-brand[data-brand="toyota"]',{timeout:25000});
+              await page.waitForFunction(() => {
+                const cards=[...document.querySelectorAll('.a3egy-brand[data-brand]')];
+                return cards.length===24 && cards.filter(x=>x.classList.contains('has-brand-logo')&&x.querySelector('img')?.naturalWidth>0).length>=22;
+              },{timeout:30000}).catch(()=>{});
+              const result=await page.evaluate(()=>{
+                 const cards=[...document.querySelectorAll('.a3egy-brand[data-brand]')];
+                 const logos=cards.filter(x=>x.classList.contains('has-brand-logo')&&x.querySelector('img')?.naturalWidth>0).length;
+                 const grid=document.querySelector('.a3egy-brands-grid');
+                 const cols=getComputedStyle(grid).gridTemplateColumns.trim().split(/\s+/).length;
+                 const prices=!!document.querySelector('#egypt-car-prices');
+                 const pseo=!!document.querySelector('#egypt-pseo');
+                 return {cards:cards.length,realLogos:logos,cols,prices,pseo,missing:cards.filter(x=>!x.classList.contains('has-brand-logo')).map(x=>x.dataset.brand),brandScrollWidth:grid.scrollWidth,brandClientWidth:grid.clientWidth};
+              });
+              console.log(name.toUpperCase(),JSON.stringify(result));
+              assert.equal(result.cards,24);
+              assert.ok(result.realLogos>=22,'Real logo thumbnails were not rendered');
+              assert.equal(result.cols,expectedCols);
+              assert.ok(result.prices && result.pseo,'Price and PSEO sections remain visible');
+              assert.ok(result.brandScrollWidth<=result.brandClientWidth+4,'Brand grid horizontal overflow');
+              await page.locator('.a3egy-brands').screenshot({path:'/tmp/a3tal-real-logos/'+name+'-brand-cards.png'});
+              await page.screenshot({path:'/tmp/a3tal-real-logos/'+name+'-homepage-top.png',fullPage:false});
+              await page.close();
+            }
+            await browser.close();
+            console.log('A3TAL_EGYPT_REAL_BRAND_LOGOS_RESPONSIVE_VISUAL_QA_SUCCESS');
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS
+          node /tmp/a3tal-real-logos/qa.cjs
+      - name: Save real desktop and mobile screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: egypt-home-authentic-brand-cards-desktop-mobile
+          path: /tmp/a3tal-real-logos/*.png
+          if-no-files-found: ignore
+          retention-days: 14
