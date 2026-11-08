@@ -31,7 +31,16 @@ jobs:
             for(const [name,width,height,expectedCols] of [['desktop',1440,980,8],['mobile',390,844,3]]){
               const page=await browser.newPage({viewport:{width,height},deviceScaleFactor:1});
               await page.goto('https://a3tal.com/?brand_icons_qa='+Date.now(),{timeout:60000,waitUntil:'domcontentloaded'});
+              page.on('pageerror',e=>console.log('PAGE_ERROR',String(e).slice(0,500)));
+              page.on('requestfailed',r=>console.log('REQUEST_FAILED',r.url().slice(0,160),r.failure()?.errorText));
               await page.waitForSelector('.a3egy-brand[data-brand="toyota"]',{timeout:25000});
+              console.log('SCRIPT_DEBUG',JSON.stringify(await page.evaluate(()=>{
+                const js=[...document.scripts].filter(x=>String(x.src).includes('egypt-home-brand-logos'));
+                const css=[...document.querySelectorAll('link[rel="stylesheet"]')].filter(x=>x.href.includes('egypt-home-brand-logos'));
+                const image=document.querySelector('.a3egy-brand[data-brand="toyota"] img');
+                return {js:js.map(x=>({src:x.src,type:x.type,attrs:x.outerHTML.slice(0,400)})),css:css.map(x=>x.href),imageSrc:image?.src,classes:image?.closest('a')?.className,
+                resources:performance.getEntriesByType('resource').filter(x=>x.name.includes('egypt-home-brand-logos')).map(x=>({name:x.name,status:x.responseStatus,duration:x.duration}))};
+              })));
               await page.waitForFunction(() => {
                 const cards=[...document.querySelectorAll('.a3egy-brand[data-brand]')];
                 return cards.length===24 && cards.filter(x=>x.classList.contains('has-brand-logo')&&x.querySelector('img')?.naturalWidth>0).length>=22;
