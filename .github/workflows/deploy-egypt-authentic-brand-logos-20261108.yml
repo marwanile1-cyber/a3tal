@@ -1,0 +1,40 @@
+name: Deploy Egypt genuine car brand emblems (Saudi-style)
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/deploy-egypt-authentic-brand-logos-20261108.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-theme
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 28
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate PHP, Python and pinned genuine logo assets
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          php -l theme-source/a3tal-global/home-reference-20261104.php
+          node --check theme-source/a3tal-global/assets/js/egypt-home-brand-logos-20261108.js
+          python3 -m py_compile scripts/deploy-egypt-authentic-brand-logos-20261108.py
+          grep -q 'A3TAL EGYPT AUTHENTIC LOGO CARDS 20261108' theme-source/a3tal-global/home-reference-20261104.css
+      - name: Install HTTP client
+        run: python3 -m pip install -q requests
+      - name: Deploy only branded cards through A3tal Direct Bridge and verify public homepage
+        run: python3 -u scripts/deploy-egypt-authentic-brand-logos-20261108.py
+      - name: Preserve rollback evidence and public QA
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-egypt-authentic-brand-logo-qa
+          path: reports/egypt-home-exact-brand-logos-20261108/
+          if-no-files-found: ignore
+          retention-days: 14
