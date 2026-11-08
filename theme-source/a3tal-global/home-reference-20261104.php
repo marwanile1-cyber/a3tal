@@ -19,6 +19,16 @@ $home_latest_review = new WP_Query([
  'posts_per_page'=>1,'orderby'=>'date','order'=>'DESC','ignore_sticky_posts'=>true,'no_found_rows'=>true
 ]);
 
+$home_price_articles = new WP_Query([
+ 'post_type'=>'post','post_status'=>'publish','cat'=>374,'posts_per_page'=>6,
+ 'orderby'=>'date','order'=>'DESC','no_found_rows'=>true,'ignore_sticky_posts'=>true
+]);
+$home_new_reference = post_type_exists('a3_car_ref') ? new WP_Query([
+ 'post_type'=>'a3_car_ref','post_status'=>'publish','posts_per_page'=>6,
+ 'post_parent__not_in'=>[0],'orderby'=>'modified','order'=>'DESC',
+ 'no_found_rows'=>true,'ignore_sticky_posts'=>true
+]) : null;
+
 if (post_type_exists('a3_car_ref')) {
     $ref_stats = wp_count_posts('a3_car_ref');
     $ref_count = isset($ref_stats->publish) ? (int) $ref_stats->publish : 0;
@@ -38,7 +48,83 @@ if (post_type_exists('a3_car_ref')) {
     </nav>
   </div>
 </section>
-<section class="brands-bar"><div class="wrap brands-grid"><div class="brand-heading"><span>╱</span> تصفّح حسب<br>الماركة</div><a class="brand" href="https://a3tal.com/cars/?brand=geely" aria-label="جيلي"><img src="<?php echo esc_url(content_url('/uploads/2026/11/a3tal-ref-20261104-brand-geely.webp')); ?>" alt="جيلي"></a><a class="brand" href="https://a3tal.com/cars/?brand=toyota" aria-label="تويوتا"><img src="<?php echo esc_url(content_url('/uploads/2026/11/a3tal-ref-20261104-brand-toyota.webp')); ?>" alt="تويوتا"></a><a class="brand" href="https://a3tal.com/cars/?brand=kia" aria-label="كيا"><img src="<?php echo esc_url(content_url('/uploads/2026/11/a3tal-ref-20261104-brand-kia.webp')); ?>" alt="كيا"></a><a class="brand" href="https://a3tal.com/cars/?brand=hyundai" aria-label="هيونداي"><img src="<?php echo esc_url(content_url('/uploads/2026/11/a3tal-ref-20261104-brand-hyundai.webp')); ?>" alt="هيونداي"></a><a class="brand" href="https://a3tal.com/cars/?brand=nissan" aria-label="نيسان"><img src="<?php echo esc_url(content_url('/uploads/2026/11/a3tal-ref-20261104-brand-nissan.webp')); ?>" alt="نيسان"></a><a class="brand" href="https://a3tal.com/cars/?brand=mg" aria-label="إم جي"><img src="<?php echo esc_url(content_url('/uploads/2026/11/a3tal-ref-20261104-brand-mg.webp')); ?>" alt="MG"></a><a class="brand" href="https://a3tal.com/cars/?brand=chevrolet" aria-label="شيفروليه"><img src="<?php echo esc_url(content_url('/uploads/2026/11/a3tal-ref-20261104-brand-chevrolet.webp')); ?>" alt="شيفروليه"></a><a class="brand" href="https://a3tal.com/cars/?brand=byd" aria-label="بي واي دي"><img src="<?php echo esc_url(content_url('/uploads/2026/11/a3tal-ref-20261104-brand-byd.webp')); ?>" alt="BYD"></a><a class="allbrands" href="https://a3tal.com/cars/">عرض كل الماركات ‹</a></div></section>
+<!-- A3TAL-EGYPT-BRANDS-20261108-BEGIN -->
+<section class="brands-bar a3egy-brands" id="egypt-car-brands" aria-labelledby="a3egy-brands-heading">
+ <div class="wrap">
+  <div class="a3egy-section-heading"><div><small>اختار ماركتك</small><h2 id="a3egy-brands-heading">ابحث عن سيارتك</h2><p>افتح صفحة الماركة لتشوف الأسعار والموديلات والأعطال والمواصفات الفنية المنشورة عنها.</p></div><a class="a3egy-all" href="https://a3tal.com/cars/#cg-brands">كل الماركات ←</a></div>
+  <nav class="a3egy-brands-grid" aria-label="ماركات السيارات في مصر">
+   <a class="a3egy-brand" href="https://a3tal.com/cars/?brand=toyota"><strong dir="ltr" lang="en">TOYOTA</strong><span>تويوتا</span></a>
+   <a class="a3egy-brand" href="https://a3tal.com/cars/?brand=hyundai"><strong dir="ltr" lang="en">HYUNDAI</strong><span>هيونداي</span></a>
+   <a class="a3egy-brand" href="https://a3tal.com/cars/?brand=chevrolet"><strong dir="ltr" lang="en">CHEVROLET</strong><span>شيفروليه</span></a>
+   <a class="a3egy-brand" href="https://a3tal.com/cars/?brand=kia"><strong dir="ltr" lang="en">KIA</strong><span>كيا</span></a>
+   <a class="a3egy-brand" href="https://a3tal.com/cars/?brand=nissan"><strong dir="ltr" lang="en">NISSAN</strong><span>نيسان</span></a>
+   <a class="a3egy-brand" href="https://a3tal.com/cars/?brand=mg"><strong dir="ltr" lang="en">MG</strong><span>إم جي</span></a>
+   <a class="a3egy-brand" href="https://a3tal.com/cars/?brand=chery"><strong dir="ltr" lang="en">CHERY</strong><span>شيري</span></a>
+   <a class="a3egy-brand" href="https://a3tal.com/cars/?brand=geely"><strong dir="ltr" lang="en">GEELY</strong><span>جيلي</span></a>
+   <a class="a3egy-brand" href="https://a3tal.com/cars/?brand=jetour"><strong dir="ltr" lang="en">JETOUR</strong><span>جيتور</span></a>
+   <a class="a3egy-brand" href="https://a3tal.com/cars/?brand=jaecoo"><strong dir="ltr" lang="en">JAECOO</strong><span>جايكو</span></a>
+   <a class="a3egy-brand" href="https://a3tal.com/cars/?brand=byd"><strong dir="ltr" lang="en">BYD</strong><span>بي واي دي</span></a>
+   <a class="a3egy-brand" href="https://a3tal.com/cars/?brand=renault"><strong dir="ltr" lang="en">RENAULT</strong><span>رينو</span></a>
+   <a class="a3egy-brand" href="https://a3tal.com/cars/?brand=opel"><strong dir="ltr" lang="en">OPEL</strong><span>أوبل</span></a>
+   <a class="a3egy-brand" href="https://a3tal.com/cars/?brand=suzuki"><strong dir="ltr" lang="en">SUZUKI</strong><span>سوزوكي</span></a>
+   <a class="a3egy-brand" href="https://a3tal.com/cars/?brand=skoda"><strong dir="ltr" lang="en">SKODA</strong><span>سكودا</span></a>
+   <a class="a3egy-brand" href="https://a3tal.com/cars/?brand=changan"><strong dir="ltr" lang="en">CHANGAN</strong><span>شانجان</span></a>
+   <a class="a3egy-brand" href="https://a3tal.com/cars/?brand=haval"><strong dir="ltr" lang="en">HAVAL</strong><span>هافال</span></a>
+   <a class="a3egy-brand" href="https://a3tal.com/cars/?brand=gac"><strong dir="ltr" lang="en">GAC</strong><span>جي إيه سي</span></a>
+   <a class="a3egy-brand" href="https://a3tal.com/cars/?brand=deepal"><strong dir="ltr" lang="en">DEEPAL</strong><span>ديبال</span></a>
+   <a class="a3egy-brand" href="https://a3tal.com/cars/?brand=soueast"><strong dir="ltr" lang="en">SOUEAST</strong><span>سوإيست</span></a>
+   <a class="a3egy-brand" href="https://a3tal.com/cars/?brand=dongfeng"><strong dir="ltr" lang="en">DONGFENG</strong><span>دونج فينج</span></a>
+   <a class="a3egy-brand" href="https://a3tal.com/cars/?brand=baic"><strong dir="ltr" lang="en">BAIC</strong><span>بايك</span></a>
+   <a class="a3egy-brand" href="https://a3tal.com/cars/?brand=kgm"><strong dir="ltr" lang="en">KGM</strong><span>كي جي إم</span></a>
+   <a class="a3egy-brand" href="https://a3tal.com/cars/?brand=ford"><strong dir="ltr" lang="en">FORD</strong><span>فورد</span></a>
+  </nav>
+ </div>
+</section>
+<!-- A3TAL-EGYPT-BRANDS-20261108-END -->
+<!-- A3TAL-EGYPT-HOME-PRICES-20261108-BEGIN -->
+<section class="a3egy-price-section" id="egypt-car-prices" aria-labelledby="a3egy-price-heading">
+ <div class="wrap">
+  <div class="a3egy-section-heading"><div><small>دليل الشراء في مصر</small><h2 id="a3egy-price-heading">أسعار السيارات الجديدة في مصر</h2><p>آخر مقالات الأسعار المنشورة، مع بيانات الموديل والفئات وتاريخ التحديث داخل كل مقال.</p></div><a class="a3egy-all" href="https://a3tal.com/cars/">عرض كل الأسعار ←</a></div>
+  <div class="a3egy-price-grid">
+  <?php if($home_price_articles->have_posts()): ?>
+    <?php while($home_price_articles->have_posts()):$home_price_articles->the_post(); ?>
+    <article class="a3egy-price-card"><a href="<?php the_permalink(); ?>">
+    <?php if(has_post_thumbnail()):echo get_the_post_thumbnail(get_the_ID(),'medium_large',['loading'=>'lazy','decoding'=>'async','alt'=>get_the_title()]); else: ?><div class="a3egy-photo-placeholder">دليل أسعار السيارات</div><?php endif; ?>
+    <span class="a3egy-price-copy"><strong><?php echo esc_html(get_the_title()); ?></strong><small><?php echo esc_html(get_the_date('j F Y')); ?> · السعر والفئات والمواصفات ←</small></span>
+    </a></article>
+    <?php endwhile;wp_reset_postdata(); ?>
+  <?php else: ?><p>تصفح جميع موديلات وأسعار السيارات المنشورة في الدليل.</p><?php endif; ?>
+  </div>
+  <div class="a3egy-market-quick">
+  <strong>سيارات منتشرة في مصر:</strong>
+  <a href="https://a3tal.com/cars/?brand=nissan">نيسان صني</a>
+  <a href="https://a3tal.com/cars/?brand=hyundai">هيونداي أكسنت</a>
+  <a href="https://a3tal.com/cars/?brand=chevrolet">شيفروليه أوبترا</a>
+  <a href="https://a3tal.com/cars/?brand=mg">MG5</a>
+  <a href="https://a3tal.com/cars/?brand=chery">شيري أريزو 5</a>
+  <a href="https://a3tal.com/cars/?brand=byd">BYD F3</a>
+  <a href="https://a3tal.com/cars/?brand=geely">جيلي كول راي</a>
+  <a href="https://a3tal.com/cars/?brand=jetour">جيتور X70</a>
+  </div>
+ </div>
+</section>
+<!-- A3TAL-EGYPT-HOME-PRICES-20261108-END -->
+<!-- A3TAL-EGYPT-HOME-PSEO-20261108-BEGIN -->
+<section class="a3egy-reference-section" id="egypt-pseo" aria-labelledby="a3egy-reference-heading">
+ <div class="wrap">
+  <div class="a3egy-section-heading"><div><small>موسوعة المواصفات الفنية</small><h2 id="a3egy-reference-heading"><?php echo esc_html(number_format_i18n($ref_count)); ?> صفحة مواصفات فنية منشورة</h2><p>المحركات والفتيس والمقاسات والعفشة والأمان، حسب الماركة والموديل والفئة.</p></div><a class="a3egy-all" href="https://a3tal.com/car-reference/">الدليل الفني كاملًا ←</a></div>
+  <div class="a3egy-reference-grid">
+  <?php if($home_new_reference && $home_new_reference->have_posts()): ?>
+    <?php while($home_new_reference->have_posts()):$home_new_reference->the_post(); ?>
+    <a class="a3egy-reference-card" href="<?php the_permalink(); ?>">
+    <?php if(has_post_thumbnail()):echo get_the_post_thumbnail(get_the_ID(),'medium',['loading'=>'lazy','decoding'=>'async','alt'=>get_the_title()]);endif; ?>
+    <strong><?php echo esc_html(get_the_title()); ?></strong><span>عرض المواصفات ←</span></a>
+    <?php endwhile;wp_reset_postdata(); ?>
+  <?php endif; ?>
+  </div>
+ </div>
+</section>
+<!-- A3TAL-EGYPT-HOME-PSEO-20261108-END -->
 <div class="wrap"><section class="catalog"><div class="panel cars-panel"><div class="panel-title"><h2>أحدث موديلات السيارات</h2><a href="https://a3tal.com/cars/">عرض جميع الموديلات ←</a></div><div class="car-grid">
 <?php if($home_ref_cards && $home_ref_cards->have_posts()): ?>
 <?php while($home_ref_cards->have_posts()):$home_ref_cards->the_post();
