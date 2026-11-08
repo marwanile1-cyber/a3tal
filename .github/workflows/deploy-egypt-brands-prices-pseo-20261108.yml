@@ -8,7 +8,7 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: a3tal-egypt-production-home-brands-prices-20261108
+  group: a3tal-production-theme
   cancel-in-progress: false
 jobs:
   deploy:
