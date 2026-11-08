@@ -38,7 +38,32 @@ if (post_type_exists('a3_car_ref')) {
     </nav>
   </div>
 </section>
-<section class="brands-bar"><div class="wrap brands-grid"><div class="brand-heading"><span>╱</span> تصفّح حسب<br>الماركة</div><a class="brand" href="https://a3tal.com/cars/?brand=geely" aria-label="جيلي"><img src="<?php echo esc_url(content_url('/uploads/2026/11/a3tal-ref-20261104-brand-geely.webp')); ?>" alt="جيلي"></a><a class="brand" href="https://a3tal.com/cars/?brand=toyota" aria-label="تويوتا"><img src="<?php echo esc_url(content_url('/uploads/2026/11/a3tal-ref-20261104-brand-toyota.webp')); ?>" alt="تويوتا"></a><a class="brand" href="https://a3tal.com/cars/?brand=kia" aria-label="كيا"><img src="<?php echo esc_url(content_url('/uploads/2026/11/a3tal-ref-20261104-brand-kia.webp')); ?>" alt="كيا"></a><a class="brand" href="https://a3tal.com/cars/?brand=hyundai" aria-label="هيونداي"><img src="<?php echo esc_url(content_url('/uploads/2026/11/a3tal-ref-20261104-brand-hyundai.webp')); ?>" alt="هيونداي"></a><a class="brand" href="https://a3tal.com/cars/?brand=nissan" aria-label="نيسان"><img src="<?php echo esc_url(content_url('/uploads/2026/11/a3tal-ref-20261104-brand-nissan.webp')); ?>" alt="نيسان"></a><a class="brand" href="https://a3tal.com/cars/?brand=mg" aria-label="إم جي"><img src="<?php echo esc_url(content_url('/uploads/2026/11/a3tal-ref-20261104-brand-mg.webp')); ?>" alt="MG"></a><a class="brand" href="https://a3tal.com/cars/?brand=chevrolet" aria-label="شيفروليه"><img src="<?php echo esc_url(content_url('/uploads/2026/11/a3tal-ref-20261104-brand-chevrolet.webp')); ?>" alt="شيفروليه"></a><a class="brand" href="https://a3tal.com/cars/?brand=byd" aria-label="بي واي دي"><img src="<?php echo esc_url(content_url('/uploads/2026/11/a3tal-ref-20261104-brand-byd.webp')); ?>" alt="BYD"></a><a class="allbrands" href="https://a3tal.com/cars/">عرض كل الماركات ‹</a></div></section>
+<!-- A3TAL-HOME-BRAND-TEXT-CARDS-20261108:BEGIN -->
+<section class="brands-bar a3r-brand-name-section" aria-labelledby="a3r-brand-name-heading">
+ <div class="wrap a3r-brand-name-wrap">
+  <div class="a3r-brand-name-title">
+   <span class="a3r-brand-name-kicker">اختر ماركتك</span>
+   <h2 id="a3r-brand-name-heading">ابحث عن سيارتك حسب الماركة</h2>
+   <p>تصفح موديلات السيارات والأعطال والمواصفات المنشورة لكل علامة.</p>
+  </div>
+  <div class="a3r-brand-name-grid">
+   <a class="a3r-brand-name-card" href="https://a3tal.com/cars/?brand=toyota" aria-label="تصفح سيارات تويوتا"><strong dir="ltr" lang="en">TOYOTA</strong><span>تويوتا</span></a>
+   <a class="a3r-brand-name-card" href="https://a3tal.com/cars/?brand=hyundai" aria-label="تصفح سيارات هيونداي"><strong dir="ltr" lang="en">HYUNDAI</strong><span>هيونداي</span></a>
+   <a class="a3r-brand-name-card" href="https://a3tal.com/cars/?brand=chevrolet" aria-label="تصفح سيارات شيفروليه"><strong dir="ltr" lang="en">CHEVROLET</strong><span>شيفروليه</span></a>
+   <a class="a3r-brand-name-card" href="https://a3tal.com/cars/?brand=kia" aria-label="تصفح سيارات كيا"><strong dir="ltr" lang="en">KIA</strong><span>كيا</span></a>
+   <a class="a3r-brand-name-card" href="https://a3tal.com/cars/?brand=nissan" aria-label="تصفح سيارات نيسان"><strong dir="ltr" lang="en">NISSAN</strong><span>نيسان</span></a>
+   <a class="a3r-brand-name-card" href="https://a3tal.com/?s=%D9%81%D9%88%D8%B1%D8%AF" aria-label="تصفح سيارات فورد"><strong dir="ltr" lang="en">FORD</strong><span>فورد</span></a>
+   <a class="a3r-brand-name-card" href="https://a3tal.com/cars/?brand=mg" aria-label="تصفح سيارات إم جي"><strong dir="ltr" lang="en">MG</strong><span>إم جي</span></a>
+   <a class="a3r-brand-name-card" href="https://a3tal.com/cars/?brand=renault" aria-label="تصفح سيارات رينو"><strong dir="ltr" lang="en">RENAULT</strong><span>رينو</span></a>
+   <a class="a3r-brand-name-card" href="https://a3tal.com/cars/?brand=geely" aria-label="تصفح سيارات جيلي"><strong dir="ltr" lang="en">GEELY</strong><span>جيلي</span></a>
+   <a class="a3r-brand-name-card" href="https://a3tal.com/cars/?brand=byd" aria-label="تصفح سيارات بي واي دي"><strong dir="ltr" lang="en">BYD</strong><span>بي واي دي</span></a>
+   <a class="a3r-brand-name-card" href="https://a3tal.com/cars/?brand=opel" aria-label="تصفح سيارات أوبل"><strong dir="ltr" lang="en">OPEL</strong><span>أوبل</span></a>
+   <a class="a3r-brand-name-card" href="https://a3tal.com/cars/?brand=mazda" aria-label="تصفح سيارات مازدا"><strong dir="ltr" lang="en">MAZDA</strong><span>مازدا</span></a>
+  </div>
+  <a class="a3r-brand-name-more" href="https://a3tal.com/cars/">تصفح كل الماركات <span aria-hidden="true">←</span></a>
+ </div>
+</section>
+<!-- A3TAL-HOME-BRAND-TEXT-CARDS-20261108:END -->
 <div class="wrap"><section class="catalog"><div class="panel cars-panel"><div class="panel-title"><h2>أحدث موديلات السيارات</h2><a href="https://a3tal.com/cars/">عرض جميع الموديلات ←</a></div><div class="car-grid">
 <?php if($home_ref_cards && $home_ref_cards->have_posts()): ?>
 <?php while($home_ref_cards->have_posts()):$home_ref_cards->the_post();
