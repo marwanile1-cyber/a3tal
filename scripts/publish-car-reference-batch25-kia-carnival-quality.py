@@ -83,8 +83,9 @@ def download_photo(index=0):
             continue
         try:
             raw=get(url).content
-            if len(raw)<35000:raise RuntimeError("Low-byte photographic source")
+            if len(raw)<12000:raise RuntimeError("Invalid or tiny photographic file "+str(len(raw)))
             image=Image.open(io.BytesIO(raw)).convert("RGB")
+            print("SOURCE_PHOTO_AUDIT",index,len(raw),image.size,url,flush=True)
             if min(image.size)<550 or max(image.size)<1000:
                 raise RuntimeError("Source below real-photograph dimensions "+str(image.size))
             stat=ImageStat.Stat(image.resize((64,64)))
