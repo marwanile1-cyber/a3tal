@@ -1,0 +1,59 @@
+name: Publish A3tal PSEO batch38 Chery Tiggo 7 Pro 2026 with actual OEM model photos
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-car-reference-batch38-chery-tiggo7pro.yml'
+      - 'scripts/publish-car-reference-batch38-chery-tiggo7pro-20261109.py'
+      - 'data/car-reference/batch-38-chery-tiggo7pro-egypt.json'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-car-reference-pseo-serialized
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 85
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3CR_BATCH38_LIMIT: '5'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify 5 official-model photos, original useful content and pre-publish quality gates
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/publish-car-reference-batch38-chery-tiggo7pro-20261109.py
+          python3 - <<'PY'
+          import json,pathlib,re
+          rule=pathlib.Path('docs/pseo-featured-image-gate.md').read_text(encoding='utf8')
+          assert 'MANDATORY' in rule and 'real car photography' in rule
+          script=pathlib.Path('scripts/publish-car-reference-batch38-chery-tiggo7pro-20261109.py').read_text(encoding='utf8')
+          assert 'PRECHECK_PHOTOS=[exact_model_photo(url) for url in PHOTO_URLS[:CAP]]' in script
+          assert 'ImageOps.contain' in script and 'www.chery-eg.com' in script
+          assert script.count('https://www.chery-eg.com/media/')==5
+          assert not re.search(r'def vector_art|original technical vector|line drawing',script,re.I)
+          j=json.loads(pathlib.Path('data/car-reference/batch-38-chery-tiggo7pro-egypt.json').read_text(encoding='utf8'))
+          assert j['batch']==38 and j['brand']=='chery' and j['model_slug']=='tiggo7pro-15t-cvt-2026-egypt'
+          assert len(j['rows'])==5 and len({r['slug'] for r in j['rows']})==5
+          assert j['rows'][0]['kind']=='model'
+          for r in j['rows']:
+              assert len(r['facts'])>=5 and r['rich_html'].count('<h2>')>=3 and '<table' not in r['rich_html']
+              assert len(r['rich_html'])>2200
+              assert r['sources'][0]=='https://www.chery-eg.com/en/car/tiggo-7-pro'
+          print('BATCH38_UNIQUE_INTENT_OFFICIAL_SOURCE_AND_REAL_PHOTO_GATES_PASS')
+          PY
+          test -n "$A3TAL_API_KEY"
+      - name: Install photograph processing and HTTP libraries
+        run: python3 -m pip install -q requests Pillow
+      - name: Prevalidate all 5 official Tiggo 7 Pro photos and publish through A3tal Direct Bridge
+        run: python3 -u scripts/publish-car-reference-batch38-chery-tiggo7pro-20261109.py
+      - name: Preserve exact featured media, canonical and social OG QA results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-pseo-batch38-chery-tiggo7pro-published-real-photo-qa
+          path: reports/batch38-tiggo7pro-live-audit.json
+          retention-days: 30
+          if-no-files-found: ignore
