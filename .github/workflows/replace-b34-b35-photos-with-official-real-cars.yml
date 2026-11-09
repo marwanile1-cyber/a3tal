@@ -1,0 +1,48 @@
+name: Fix A3tal PSEO batch34-35 featured photos with official real car imagery
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/replace-b34-b35-photos-with-official-real-cars.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-car-reference-pseo-serialized
+  cancel-in-progress: false
+jobs:
+  repair-photos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check script and two source batches before changing site
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/replace-b34-b35-schematic-covers-with-official-car-photos-20261109.py
+          python3 - <<'PY'
+          import json
+          for b,path in [(34,'data/car-reference/batch-34-chery-arrizo5-egypt.json'),
+                         (35,'data/car-reference/batch-35-geely-emgrand-egypt.json')]:
+              d=json.load(open(path,encoding='utf8'))
+              assert d['batch']==b and len(d['rows'])==5
+              assert len(set(r['slug'] for r in d['rows']))==5
+              for r in d['rows']:
+                  assert '<h2>' in r['rich_html'] and len(r['rich_html'])>1100
+              print('VALID_EDITORIAL_SET',b)
+          PY
+          test -n "$A3TAL_API_KEY"
+      - name: Install photograph processing and HTTP libraries
+        run: python3 -m pip install -q Pillow requests
+      - name: Replace only old schematic featured media with real official car photos
+        run: python3 -u scripts/replace-b34-b35-schematic-covers-with-official-car-photos-20261109.py
+      - name: Preserve audited exact canonical and featured-photo results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-b34-b35-official-car-photo-fix
+          path: reports/batch34-batch35-real-car-photo-replacements.json
+          retention-days: 30
+          if-no-files-found: ignore
