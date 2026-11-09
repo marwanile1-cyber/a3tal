@@ -32,8 +32,8 @@ PHOTO_URLS=[
  "https://www.chery-eg.com/media/ModelsBanner/image00001.jpeg",
  "https://www.chery-eg.com/media/performanceBanners/Performance-Banner--1720--600-px.jpg",
  "https://www.chery-eg.com/media/intDesignImages/Large-interior-exterior-banner--1720--600-px.jpg",
- "https://www.chery-eg.com/media/car360images/CHERY_T19_Left_cam004-bronze.png",
- "https://www.chery-eg.com/media/extDesignImages/1Small-Interior-exterior-safety-tech-banner--550--300.jpg",
+ "https://www.chery-eg.com/media/ModelsBanner/Mobile_Banner_final_1.png",
+ "https://www.chery-eg.com/media/images/TIGGO_4_PRO_car_img_2026-09-03_133831.203775.png",
 ]
 assert len(PHOTO_URLS)==len(set(PHOTO_URLS))==5
 PROGRESS=[]
