@@ -1,0 +1,52 @@
+name: Publish A3tal PSEO batch33 Jetour X70 Plus Egypt five verified pages
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-car-reference-batch33-jetour-x70plus.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-car-reference-pseo-serialized
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 85
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3CR_BATCH33_LIMIT: '5'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify original source-grounded editorial records and Python syntax
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/publish-car-reference-batch33-jetour-x70plus-20261109.py
+          python3 - <<'PY'
+          import json
+          p='data/car-reference/batch-33-jetour-x70plus-egypt.json'
+          j=json.load(open(p,encoding='utf8'))
+          assert len(j['rows'])==5
+          assert j['rows'][0]['kind']=='model'
+          assert len({r['slug'] for r in j['rows']})==5
+          for r in j['rows']:
+            assert r['sources']==['https://jetouregypt.com/models/x70plus/']
+            assert len(r['facts'])>=4
+            assert '<h2>' in r['rich_html']
+            assert r['image'].startswith('https://jetouregypt.com/img/vehicle-overview/x70plus/')
+          print('BATCH33_EDITORIAL_AND_OEM_SOURCE_PREFLIGHT_OK')
+          PY
+          test -n "$A3TAL_API_KEY"
+      - name: Install image composition and HTTP libraries
+        run: python3 -m pip install -q requests Pillow
+      - name: Publish only missing Tiggo8 Egypt technical pages through direct bridge
+        run: python3 -u scripts/publish-car-reference-batch33-jetour-x70plus-20261109.py
+      - name: Preserve exact page URLs, official sources and OG QA evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-pseo-batch33-jetour-x70plus-pages
+          path: reports/batch33-x70plus-live-audit.json
+          retention-days: 30
+          if-no-files-found: ignore
