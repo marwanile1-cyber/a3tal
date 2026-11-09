@@ -32,8 +32,8 @@ PHOTO_URLS=[
  "https://www.chery-eg.com/media/ModelsBanner/image00001.jpeg",
  "https://www.chery-eg.com/media/performanceBanners/Performance-Banner--1720--600-px.jpg",
  "https://www.chery-eg.com/media/intDesignImages/Large-interior-exterior-banner--1720--600-px.jpg",
- "https://www.chery-eg.com/media/ModelsBanner/Mobile_Banner_final_1.png",
- "https://www.chery-eg.com/media/images/TIGGO_4_PRO_car_img_2026-09-03_133831.203775.png",
+ "https://www.chery-eg.com/media/extDesignImages/1Small-Interior-exterior-safety-tech-banner--550--300.jpg",
+ "https://www.chery-eg.com/media/extDesignImages/3Small-Interior-exterior-safety-tech-banner--550--300.jpg",
 ]
 assert len(PHOTO_URLS)==len(set(PHOTO_URLS))==5
 PROGRESS=[]
@@ -87,15 +87,35 @@ def exact_model_photo(url):
     print("CHERY_TIGGO4PRO_VERIFIED_REAL_PHOTO",url,str(im.size),flush=True)
     return im
 
-def cover(photo,index):
+def cover(photo,index,background=None):
     # Photo-first 1600x900 editorial crop, NEVER generic vector art or fake car.
     # Preserve the entire authentic car frame in the centered contain layer.
     W,H=1600,900
-    base=ImageOps.fit(photo,(W,H),method=Image.Resampling.LANCZOS)
-    base=base.filter(ImageFilter.GaussianBlur(28))
-    base=ImageEnhance.Brightness(base).enhance(0.8)
-    inset=ImageOps.contain(photo,(W-32,H-32),method=Image.Resampling.LANCZOS)
-    base.paste(inset,((W-inset.width)//2,(H-inset.height)//2))
+    if index>=3:
+        # Two official small gallery details stay near native resolution. The
+        # full-sized background remains a *different* real OEM photograph.
+        if background is None or background.width<1500:
+            raise RuntimeError("High-res official model photo background required")
+        large=background
+    else:
+        large=photo
+        if large.width<1500:raise RuntimeError("Reject blurry photo as main featured subject")
+    base=ImageOps.fit(large,(W,H),method=Image.Resampling.LANCZOS)
+    base=base.filter(ImageFilter.GaussianBlur(25))
+    base=ImageEnhance.Brightness(base).enhance(0.75)
+    big=ImageOps.contain(large,(W-30,H-30),method=Image.Resampling.LANCZOS)
+    base.paste(big,((W-big.width)//2,(H-big.height)//2))
+    if index>=3:
+        # Keep the 550px manufacturer detail near source size. No pixel blow-up.
+        detail=ImageOps.contain(photo,(525,285),method=Image.Resampling.LANCZOS)
+        if detail.width>photo.width or detail.height>photo.height:
+            raise RuntimeError("Gallery detail was enlarged beyond native source")
+        from PIL import ImageDraw
+        d=ImageDraw.Draw(base)
+        x,y=1050,560
+        d.rounded_rectangle((x-12,y-12,x+detail.width+12,y+detail.height+12),
+                            radius=15,fill=(240,244,247),outline=(230,233,238),width=3)
+        base.paste(detail,(x,y))
     overlay=Image.new("RGBA",(W,H),(0,0,0,0))
     d=ImageDraw.Draw(overlay)
     d.rounded_rectangle((1377,834,1574,874),radius=9,fill=(9,28,42,135))
@@ -160,7 +180,7 @@ def main():
             if len(model)!=1 or model[0]["link"].rstrip("/")!=ROOT_URL.rstrip("/"):
                 raise RuntimeError("Model hub not yet published")
         im=PRECHECK_PHOTOS[i]
-        picture=cover(im,i)
+        picture=cover(im,i,background=PRECHECK_PHOTOS[0] if i==3 else (PRECHECK_PHOTOS[1] if i==4 else None))
         fname="a3tal-pseo-b37-tiggo4pro-real-"+slug+".webp"
         media=post(UPLOAD,{"filename":fname,"image_base64":base64.b64encode(picture).decode(),
                            "convert_webp":False,"title":row["title"],"alt":row["title"]+" - أعطال.كوم"})
