@@ -1,0 +1,57 @@
+name: Publish A3tal PSEO batch36 Geely Coolray with exact real manufacturer photography
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-car-reference-batch36-geely-coolray.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-car-reference-pseo-serialized
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 85
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3CR_BATCH36_LIMIT: '5'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enforce real-photo-only A3tal PSEO rules and validate reference records
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/publish-car-reference-batch36-geely-coolray-20261109.py
+          python3 - <<'PY'
+          import json,re,pathlib,urllib.parse
+          rule=pathlib.Path('docs/pseo-featured-image-gate.md').read_text('utf8')
+          assert 'MANDATORY' in rule and 'real car photography' in rule
+          src=pathlib.Path('scripts/publish-car-reference-batch36-geely-coolray-20261109.py').read_text('utf8')
+          assert 'PHOTO_URLS=[' in src and 'exact_model_photo(PHOTO_URLS[i])' in src
+          assert 'cdngeely.cloudhosta.com' in src and 'ImageOps.contain' in src
+          assert not re.search(r'def vector_art|technical vector authored|def graphic_cover|synthetic car',src,re.I)
+          assert src.count('https://cdngeely.cloudhosta.com/')==5
+          data=json.loads(pathlib.Path('data/car-reference/batch-36-geely-coolray-egypt.json').read_text('utf8'))
+          assert data['batch']==36 and data['brand']=='geely' and len(data['rows'])==5
+          assert len({r['slug'] for r in data['rows']})==5
+          assert data['rows'][0]['kind']=='model'
+          for item in data['rows']:
+              assert item['sources']==['https://www.geely.com.eg/models/coolray']
+              assert len(item['facts'])>=3 and item['rich_html'].count('<h2>')>=3
+              assert len(item['rich_html'])>1800 and '<table' not in item['rich_html']
+          print('BATCH36_EXACT_REAL_CAR_OEM_IMAGE_GATE_AND_CONTENT_PASS')
+          PY
+          test -n "$A3TAL_API_KEY"
+      - name: Install photographic WebP and HTTP libraries
+        run: python3 -m pip install -q requests Pillow
+      - name: Publish only missing Coolray references through A3tal Direct Bridge with real model photographs
+        run: python3 -u scripts/publish-car-reference-batch36-geely-coolray-20261109.py
+      - name: Retain source photos, WordPress media and canonical OG QA report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-pseo-batch36-coolray-actual-car-photo-qc
+          path: reports/batch36-coolray-live-audit.json
+          retention-days: 30
+          if-no-files-found: ignore
