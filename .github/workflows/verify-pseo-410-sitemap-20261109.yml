@@ -1,0 +1,60 @@
+name: Verify PSEO 410 sitemap and batch32-33 live metadata
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/verify-pseo-410-sitemap-20261109.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install HTTP library
+        run: python3 -m pip install -q requests
+      - name: Audit full reference sitemap, canonicals, metadata and all new URLs
+        run: |
+          set -euo pipefail
+          python3 scripts/audit-car-reference-indexing-manifest-20261108.py > /tmp/a3tal-full-audit.txt
+          grep 'PSEO_INDEXING_SITEMAP_QA_PASS' /tmp/a3tal-full-audit.txt
+          python3 - <<'PY'
+          import json,requests,xml.etree.ElementTree as ET,re,time
+          b="https://a3tal.com"
+          S=requests.Session()
+          S.headers.update({"User-Agent":"A3tal-Batch32-33-Sitemap-QA/1.0"})
+          h=S.get(b+"/wp-json/a3tal-car-reference/v1/health",timeout=60).json()
+          assert h["published"]>=410 and h["drafts"]==0,h
+          xml=S.get(b+"/a3_car_ref-sitemap.xml",timeout=60).text
+          tree=ET.fromstring(xml)
+          found={x.text.strip().rstrip("/") for x in tree.iter() if x.tag.endswith("loc") and x.text}
+          all_urls=[]
+          for file in ["data/car-reference/batch-32-chery-tiggo8-egypt.json",
+                       "data/car-reference/batch-33-jetour-x70plus-egypt.json"]:
+            data=json.load(open(file,encoding="utf8"))
+            brand=data["brand"]; parent=data["model_slug"]
+            for row in data["rows"]:
+              url=b+"/car-reference/"+brand+"/"+(row["slug"] if row["kind"]=="model" else parent+"/"+row["slug"])+"/"
+              assert url.rstrip("/") in found,("Missing in sitemap",url)
+              all_urls.append(url)
+          assert len(all_urls)==10
+          for url in all_urls:
+            page=S.get(url,timeout=65).text
+            assert "<h1" in page and "canonical" in page and "og:image" in page,("SEO tags",url)
+            assert "noindex" not in page[:16000].lower(),("noindex",url)
+          print("A3TAL_410_PSEO_SITEMAP_ALL_TEN_NEW_URLS_VERIFIED",len(all_urls),h["published"],flush=True)
+          for u in all_urls:print("VERIFIED_URL",u)
+          PY
+      - name: Retain indexability manifest without claiming Google indexation
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-410-pseo-indexability-audit
+          path: |
+            data/car-reference/a3tal-car-reference-indexing-manifest-live.csv
+            data/car-reference/a3tal-car-reference-indexing-audit-live.json
+            /tmp/a3tal-full-audit.txt
+          if-no-files-found: ignore
+          retention-days: 30
