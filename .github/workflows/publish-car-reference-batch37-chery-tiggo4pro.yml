@@ -4,6 +4,8 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/publish-car-reference-batch37-chery-tiggo4pro.yml'
+      - 'scripts/publish-car-reference-batch37-chery-tiggo4pro-20261109.py'
+      - 'data/car-reference/batch-37-chery-tiggo4pro-turbo-egypt.json'
   workflow_dispatch:
 permissions:
   contents: read
