@@ -1,0 +1,57 @@
+name: Publish A3tal PSEO batch37 Chery Tiggo 4 Pro Turbo with exact-model photos
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-car-reference-batch37-chery-tiggo4pro.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-car-reference-pseo-serialized
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 85
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3CR_BATCH37_LIMIT: '5'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enforce A3tal mandatory official real-car image rule and source-grounded data
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/publish-car-reference-batch37-chery-tiggo4pro-20261109.py
+          python3 - <<'PY'
+          import json,pathlib,re
+          rule=pathlib.Path('docs/pseo-featured-image-gate.md').read_text('utf8')
+          assert 'MANDATORY' in rule and 'real car photography' in rule
+          p=pathlib.Path('scripts/publish-car-reference-batch37-chery-tiggo4pro-20261109.py').read_text('utf8')
+          assert 'exact_model_photo' in p and 'PRECHECK_PHOTOS' in p
+          assert 'ImageOps.contain' in p and 'Chery Tiggo 4 Pro' in p
+          assert p.count('https://www.chery-eg.com/media/')==5
+          assert not re.search(r'def vector_art|technical vector authored|def graphic_cover|fake car art.*return',p,re.I)
+          data=json.loads(pathlib.Path('data/car-reference/batch-37-chery-tiggo4pro-turbo-egypt.json').read_text('utf8'))
+          assert data['batch']==37 and data['brand']=='chery' and data['model_slug']=='tiggo4pro-15t-cvt-egypt'
+          assert len(data['rows'])==5 and len({r['slug'] for r in data['rows']})==5
+          assert data['rows'][0]['kind']=='model'
+          for r in data['rows']:
+              assert r['sources']==['https://www.chery-eg.com/en/car/tiggo-4-pro']
+              assert len(r['facts'])>=5 and r['rich_html'].count('<h2>')>=3
+              assert len(r['rich_html'])>2000 and '<table' not in r['rich_html']
+          print('BATCH37_EDITORIAL_UNIQUE_INTENT_AND_REAL_PHOTO_GATE_PASS')
+          PY
+          test -n "$A3TAL_API_KEY"
+      - name: Install real photograph WebP processing and HTTP client
+        run: python3 -m pip install -q requests Pillow
+      - name: Precheck all 5 official car photos and publish 5 real Chery Egypt reference pages through A3tal Direct Bridge
+        run: python3 -u scripts/publish-car-reference-batch37-chery-tiggo4pro-20261109.py
+      - name: Store resulting image source, canonical and OG audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-pseo-batch37-tiggo4pro-real-photo-qa
+          path: reports/batch37-tiggo4pro-live-audit.json
+          retention-days: 30
+          if-no-files-found: ignore
