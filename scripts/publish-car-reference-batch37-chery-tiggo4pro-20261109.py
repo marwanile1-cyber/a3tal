@@ -110,7 +110,6 @@ def cover(photo,index,background=None):
         detail=ImageOps.contain(photo,(525,285),method=Image.Resampling.LANCZOS)
         if detail.width>photo.width or detail.height>photo.height:
             raise RuntimeError("Gallery detail was enlarged beyond native source")
-        from PIL import ImageDraw
         d=ImageDraw.Draw(base)
         x,y=1050,560
         d.rounded_rectangle((x-12,y-12,x+detail.width+12,y+detail.height+12),
