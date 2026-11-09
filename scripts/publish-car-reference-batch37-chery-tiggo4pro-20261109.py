@@ -84,7 +84,7 @@ def exact_model_photo(url):
     else:
         im=orig.convert("RGB")
     if im.width<550 or im.height<280:raise RuntimeError("Too-small OEM image "+str(im.size)+" "+url)
-    print("COOLRAY_VERIFIED_OEM_PHOTO",url,str(im.size),flush=True)
+    print("CHERY_TIGGO4PRO_VERIFIED_REAL_PHOTO",url,str(im.size),flush=True)
     return im
 
 def cover(photo,index):
@@ -136,11 +136,13 @@ def audit_live(url,title,image):
 def main():
     health=get(BASE+"/wp-json/a3tal-car-reference/v1/health").json()
     if not health.get("ok") or health.get("published",0)<425:
-        raise RuntimeError("Existing 400 page reference corpus not healthy: "+repr(health))
+        raise RuntimeError("Existing 425-page reference corpus not healthy: "+repr(health))
     parent=existing(BRAND)
     if len(parent)!=1 or parent[0].get("link","").rstrip("/")!=BASE+"/car-reference/chery":
         raise RuntimeError("Existing Chery brand parent not uniquely verified")
     assert len(ROWS)==5 and len({r["slug"] for r in ROWS})==5
+    # Fail before publishing anything if any official photo cannot be verified.
+    PRECHECK_PHOTOS=[exact_model_photo(url) for url in PHOTO_URLS[:CAP]]
     for i,row in enumerate(ROWS[:CAP]):
         slug=row["slug"]
         kind=row["kind"]
@@ -157,7 +159,7 @@ def main():
             model=existing(MODEL)
             if len(model)!=1 or model[0]["link"].rstrip("/")!=ROOT_URL.rstrip("/"):
                 raise RuntimeError("Model hub not yet published")
-        im=exact_model_photo(PHOTO_URLS[i])
+        im=PRECHECK_PHOTOS[i]
         picture=cover(im,i)
         fname="a3tal-pseo-b37-tiggo4pro-real-"+slug+".webp"
         media=post(UPLOAD,{"filename":fname,"image_base64":base64.b64encode(picture).decode(),
