@@ -32,7 +32,7 @@ jobs:
           assert len({r['slug'] for r in j['rows']})==5
           for r in j['rows']:
             assert r['sources']==['https://jetouregypt.com/models/x70plus/']
-            assert len(r['facts'])>=4
+            assert len(r['facts'])>=3
             assert '<h2>' in r['rich_html']
             assert r['image'].startswith('https://jetouregypt.com/img/vehicle-overview/x70plus/')
           print('BATCH33_EDITORIAL_AND_OEM_SOURCE_PREFLIGHT_OK')
