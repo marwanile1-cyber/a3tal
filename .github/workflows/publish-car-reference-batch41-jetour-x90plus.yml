@@ -1,0 +1,63 @@
+name: Publish A3tal PSEO batch41 Jetour X90 Plus 2026 with exact official car photos
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-car-reference-batch41-jetour-x90plus.yml'
+      - 'scripts/publish-car-reference-batch41-jetour-x90plus-20261110.py'
+      - 'data/car-reference/batch-41-jetour-x90plus-egypt.json'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-car-reference-pseo-serialized
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 85
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3CR_BATCH41_LIMIT: '5'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enforce original Jetour X90 Plus 2026 photo and factual PSEO rules
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/publish-car-reference-batch41-jetour-x90plus-20261110.py
+          python3 - <<'PY'
+          import pathlib,json,re
+          rule=pathlib.Path('docs/pseo-featured-image-gate.md').read_text('utf8')
+          assert 'MANDATORY' in rule and 'real car photography' in rule
+          s=pathlib.Path('scripts/publish-car-reference-batch41-jetour-x90plus-20261110.py').read_text('utf8')
+          assert s.count('https://jetouregypt.com/models/x90-plus-1-6t/new_assets/images/')==5
+          assert 'PRECHECK_PHOTOS=[exact_model_photo(url) for url in PHOTO_URLS[:CAP]]' in s
+          assert 'Never upscale the Jetour model photograph' in s
+          assert '197HP / 275Nm / 7DCT Wet' in s and 'BRAND="jetour"' in s
+          assert not re.search(r'def vector_art|original technical vector|schematic',s,re.I)
+          d=json.loads(pathlib.Path('data/car-reference/batch-41-jetour-x90plus-egypt.json').read_text('utf8'))
+          assert d['batch']==41 and d['brand']=='jetour' and d['model_slug']=='x90plus-16tgdi-7dct-2026-egypt'
+          assert len(d['rows'])==5 and len({r['slug'] for r in d['rows']})==5
+          assert d['rows'][0]['kind']=='model'
+          for r in d['rows']:
+              assert r['sources']==[
+                'https://jetouregypt.com/models/x90-plus-1-6t/',
+                'https://jetouregypt.com/uploads/models/brochures/2026/X90PLUS-EG-072026.pdf'
+              ]
+              assert len(r['facts'])>=5 and r['rich_html'].count('<h2>')>=3
+              assert len(r['rich_html'])>2200 and '<table' not in r['rich_html']
+          print('BATCH41_EXACT_MODEL_REAL_PHOTO_AND_ORIGINAL_EDITORIAL_QUALITY_PASS')
+          PY
+          test -n "$A3TAL_API_KEY"
+      - name: Install photographic WebP processing dependencies
+        run: python3 -m pip install -q requests Pillow
+      - name: Validate five actual 1591px-plus Jetour photos then publish exact model references
+        run: python3 -u scripts/publish-car-reference-batch41-jetour-x90plus-20261110.py
+      - name: Retain canonical and og-image live audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-batch41-jetour-x90plus-2026-real-photo-qa
+          path: reports/batch41-jetour-x90plus-live-audit.json
+          retention-days: 30
+          if-no-files-found: ignore
