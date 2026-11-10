@@ -1,0 +1,17 @@
+name: Probe authentic Jetour X90 Plus image dimensions for A3tal PSEO batch41
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/probe-b41-jetour-x90plus-photos.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  images:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m pip install -q Pillow requests
+      - run: python3 -u scripts/probe-b41-jetour-x90plus-photos-20261110.py
