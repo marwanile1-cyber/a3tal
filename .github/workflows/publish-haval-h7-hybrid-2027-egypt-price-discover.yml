@@ -1,0 +1,54 @@
+name: Publish Haval H7 HEV 2027 Egypt November price article with Discover photography
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-haval-h7-hybrid-2027-egypt-price-discover.yml'
+      - 'scripts/publish-haval-h7-hybrid-2027-egypt-price-discover-20261110.py'
+      - 'data/editorial/haval-h7-hybrid-2027-egypt-prices-20261110.html'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-egypt-car-prices-editorial-publish
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enforce publication and real exact-model Discover cover image QA
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/publish-haval-h7-hybrid-2027-egypt-price-discover-20261110.py
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('scripts/publish-haval-h7-hybrid-2027-egypt-price-discover-20261110.py').read_text('utf8')
+          article=Path('data/editorial/haval-h7-hybrid-2027-egypt-prices-20261110.html').read_text('utf8')
+          assert 'duplicate_guard()' in s and 'CATEGORY=374' in s
+          assert 'greatwall.eg/media/car-performance-images/performance_black_edition_H7.jpg' in s
+          assert 'h7_black_edition_exterior_' in s
+          assert 'a3tal_image:detail' in article and '1,795,000' in article
+          assert article.count('<h2>')>=8 and article.count('<table>')>=2
+          assert article.count('href="https://a3tal.com/')>=3
+          assert len(re.findall(r'[\u0600-\u06FFA-Za-z0-9]+',re.sub(r'<[^>]+>',' ',article)))>1200
+          assert not re.search('def vector_art|generic-car|fake-vehicle',s,re.I)
+          print('HAVAL_H7_OFFICIAL_PRICE_UNIQUE_INTENT_DISCOVER_IMAGE_PRECHECK_PASS')
+          PY
+          test -n "$A3TAL_API_KEY"
+      - name: Install genuine photo processing
+        run: python3 -m pip install -q Pillow
+      - name: Publish one Haval H7 2027 HEV article with actual manufacturer photos and strict Yoast QA
+        run: python3 -u scripts/publish-haval-h7-hybrid-2027-egypt-price-discover-20261110.py
+      - name: Save public URL, canonical and OG audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: haval-h7-2027-egypt-discover-photo-and-public-seo-qa
+          path: reports/haval-h7-price-2027-20261110-publish-qa.json
+          retention-days: 30
+          if-no-files-found: ignore
