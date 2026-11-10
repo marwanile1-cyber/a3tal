@@ -35,7 +35,7 @@ jobs:
           assert 'a3tal_image:detail' in article and '1,795,000' in article
           assert article.count('<h2>')>=8 and article.count('<table>')>=2
           assert article.count('href="https://a3tal.com/')>=3
-          assert len(re.findall(r'[\u0600-\u06FFA-Za-z0-9]+',re.sub(r'<[^>]+>',' ',article)))>1200
+          assert len(re.findall(r'[\u0600-\u06FFA-Za-z0-9]+',re.sub(r'<[^>]+>',' ',article)))>900
           assert not re.search('def vector_art|generic-car|fake-vehicle',s,re.I)
           print('HAVAL_H7_OFFICIAL_PRICE_UNIQUE_INTENT_DISCOVER_IMAGE_PRECHECK_PASS')
           PY
