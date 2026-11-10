@@ -21,7 +21,7 @@ jobs:
       A3CR_BATCH40_LIMIT: '5'
     steps:
       - uses: actions/checkout@v4
-      - name: Validate authentic high-resolution RX9 PHEV photographs and source-grounded Arabic PSEO
+      - name: Validate 10 genuine RX9 PHEV photographs at unscaled 800x600 source and source-grounded Arabic PSEO
         run: |
           set -euo pipefail
           python3 -m py_compile scripts/publish-car-reference-batch40-mg-rx9-phev-20261110.py
@@ -30,9 +30,9 @@ jobs:
           rule=pathlib.Path('docs/pseo-featured-image-gate.md').read_text('utf8')
           assert 'MANDATORY' in rule and 'real car photography' in rule
           s=pathlib.Path('scripts/publish-car-reference-batch40-mg-rx9-phev-20261110.py').read_text('utf8')
-          assert 'PRECHECK_PHOTOS=[exact_model_photo(url) for url in PHOTO_URLS[:CAP]]' in s
-          assert 'Refusing to upscale' in s and 'ImageOps.contain' in s
-          assert s.count('https://www.mgmotor.com.eg/wp-content/uploads/2026/06/MG_RX9-High-Res-')==5
+          assert 'PRECHECK_PHOTOS=[exact_model_photo(url) for url in PHOTO_URLS[:2*CAP]]' in s
+          assert 'No upscaling of primary real-car photo' in s and 'photo_source_pair' in s
+          assert s.count('https://www.mgmotor.com.eg/wp-content/uploads/2026/06/MG_RX9-High-Res-')==10
           assert not re.search(r'def vector_art|original technical vector|line drawing',s,re.I)
           assert '295HP / 390Nm / DHT' in s and 'BRAND="mg"' in s
           d=json.loads(pathlib.Path('data/car-reference/batch-40-mg-rx9-phev-egypt.json').read_text('utf8'))
@@ -46,9 +46,9 @@ jobs:
           print('BATCH40_MG_RX9_PHEV_ORIGINAL_CONTENT_AND_ACTUAL_OEM_PHOTO_GATE_PASS')
           PY
           test -n "$A3TAL_API_KEY"
-      - name: Install exact-model photographic WebP processing and HTTP libraries
+      - name: Install exact-model no-upscale WebP photo-composition processing and HTTP libraries
         run: python3 -m pip install -q requests Pillow
-      - name: Preflight all five MG Motor Egypt RX9 photos then publish safely via A3tal Direct Bridge
+      - name: Preflight 10 genuine MG RX9 photographs and publish five no-upscale two-photo covers
         run: python3 -u scripts/publish-car-reference-batch40-mg-rx9-phev-20261110.py
       - name: Preserve image source featured attachment canonical and social OG audits
         if: always()
