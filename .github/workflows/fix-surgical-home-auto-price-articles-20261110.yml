@@ -1,0 +1,54 @@
+name: Surgical auto-update A3tal new car price cards without overwriting live homepage
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-surgical-home-auto-price-articles-20261110.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-theme
+  cancel-in-progress: false
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate reviewed PHP price cards, exact blocks and bridge
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          php -l theme-source/a3tal-global/home-reference-20261104.php
+          php -l theme-source/a3tal-global/car-price-guide.php
+          python3 -m py_compile scripts/deploy-surgical-car-prices-home-fix-20261110.py
+          python3 - <<'PY'
+          import json,pathlib
+          p=json.loads(pathlib.Path('data/repairs/auto-new-car-prices-home-section-20261110.json').read_text('utf-8'))
+          assert all(k in p for k in ('legacy_section','fixed_section','legacy_query','fixed_query'))
+          assert p['legacy_section'].count('$home_ref_cards')>=2
+          assert 'foreach($home_latest_price_posts->posts as $price_article)' in p['fixed_section']
+          assert "'cat'=>374" in p['fixed_query']
+          print('EXACT_SECTION_ONLY_SURGICAL_PATCH_PREFLIGHT_OK')
+          PY
+      - name: Read active live source, preserve other homepage changes and snapshot exact original
+        run: python3 -u scripts/deploy-surgical-car-prices-home-fix-20261110.py prepare --state-dir "$RUNNER_TEMP/price-section"
+      - name: Encrypt exact live backup before any writes
+        run: |
+          openssl enc -aes-256-cbc -salt -pbkdf2 -iter 200000 -pass env:A3TAL_API_KEY \
+            -in "$RUNNER_TEMP/price-section/snapshot.json" \
+            -out "$RUNNER_TEMP/price-section/rollback.enc"
+      - name: Preserve encrypted backup for exact recovery
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-live-home-price-section-surgical-rollback-${{ github.run_id }}
+          path: ${{ runner.temp }}/price-section/rollback.enc
+          retention-days: 7
+          if-no-files-found: error
+      - name: Replace only old price section and PHP query with expected-hash live guard
+        run: python3 -u scripts/deploy-surgical-car-prices-home-fix-20261110.py deploy --state-dir "$RUNNER_TEMP/price-section"
+      - name: Assert H7 link AND exact photo inside homepage and cars grid HTML (not sidebar)
+        run: python3 -u scripts/deploy-surgical-car-prices-home-fix-20261110.py qa
