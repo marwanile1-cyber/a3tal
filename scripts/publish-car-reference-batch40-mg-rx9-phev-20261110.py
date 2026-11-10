@@ -2,7 +2,7 @@
 """Batch40: publish five original MG RX9 PHEV Egypt technical-reference pages.
 
 Only A3tal Direct Bridge and the car-reference importer are used.
-Every article uses a distinct real manufacturer photograph from the MG Motor Egypt RX9 PHEV gallery.
+Every article uses a different pair of actual MG RX9 PHEV manufacturer photos at native source size; no blurry upscaling.
 Fail closed if official photo cannot be downloaded; never substitute vector or fake car art. Never overwrite existing posts, verify public canonical and OG.
 """
 import base64,hashlib,io,json,os,re,time
@@ -32,10 +32,15 @@ PHOTO_URLS=[
  "https://www.mgmotor.com.eg/wp-content/uploads/2026/06/MG_RX9-High-Res-55-1.webp",
  "https://www.mgmotor.com.eg/wp-content/uploads/2026/06/MG_RX9-High-Res-57-1.webp",
  "https://www.mgmotor.com.eg/wp-content/uploads/2026/06/MG_RX9-High-Res-58-1.webp",
+ "https://www.mgmotor.com.eg/wp-content/uploads/2026/06/MG_RX9-High-Res-59-1.webp",
+ "https://www.mgmotor.com.eg/wp-content/uploads/2026/06/MG_RX9-High-Res-60-1.webp",
+ "https://www.mgmotor.com.eg/wp-content/uploads/2026/06/MG_RX9-High-Res-84-1.webp",
+ "https://www.mgmotor.com.eg/wp-content/uploads/2026/06/MG_RX9-High-Res-34-1.webp",
+ "https://www.mgmotor.com.eg/wp-content/uploads/2026/06/MG_RX9-High-Res-42-1.webp",
  "https://www.mgmotor.com.eg/wp-content/uploads/2026/06/MG_RX9-High-Res-70-1.webp",
- "https://www.mgmotor.com.eg/wp-content/uploads/2026/06/MG_RX9-High-Res-73-1.webp",
+ "https://www.mgmotor.com.eg/wp-content/uploads/2026/06/MG_RX9-High-Res-71-1.webp",
 ]
-assert len(PHOTO_URLS)==len(set(PHOTO_URLS))==5
+assert len(PHOTO_URLS)==len(set(PHOTO_URLS))==10
 PROGRESS=[]
 
 def get(url,**kw):
@@ -83,36 +88,47 @@ def exact_model_photo(url):
         im=canvas.convert("RGB")
     else:
         im=orig.convert("RGB")
-    if im.width<1400 or im.height<650:raise RuntimeError("Too-small OEM image "+str(im.size)+" "+url)
+    if im.width<800 or im.height<600:raise RuntimeError("Too-small genuine OEM image "+str(im.size)+" "+url)
     print("MG_RX9_PHEV_VERIFIED_REAL_PHOTO",url,str(im.size),flush=True)
     return im
 
-def cover(photo,index):
-    # Real exact MG RX9 PHEV manufacturer photo is the visual focus.
+def cover(pair,index):
+    """1600x900 photo diptych: two different genuine MG RX9 PHEV pictures.
+    Each photo is downscaled or kept at native resolution. Never upscale.
+    The blurred atmospheric backdrop is decorative; photo panels stay sharp.
+    """
     W,H=1600,900
-    if photo.width<1400 or photo.height<650:
-        raise RuntimeError("Official RX9 PHEV photo source insufficient")
-    bg=ImageOps.fit(photo,(W,H),method=Image.Resampling.LANCZOS)
-    bg=ImageEnhance.Brightness(bg.filter(ImageFilter.GaussianBlur(28))).enhance(0.75)
-    inset=ImageOps.contain(photo,(W-24,H-24),method=Image.Resampling.LANCZOS)
-    if inset.width>photo.width or inset.height>photo.height:
-        raise RuntimeError("Refusing to upscale a real MG RX9 car photograph")
-    bg.paste(inset,((W-inset.width)//2,(H-inset.height)//2))
+    if len(pair)!=2:raise RuntimeError("Need two independent original MG photos")
+    left,right=pair
+    if left.width<800 or left.height<600 or right.width<800 or right.height<600:
+        raise RuntimeError("Manufacturer images must each be at least 800x600")
+    if hashlib.sha256(left.tobytes()).digest()==hashlib.sha256(right.tobytes()).digest():
+        raise RuntimeError("Two photos for a featured image must be different")
+    bg=ImageOps.fit(left,(W,H),method=Image.Resampling.LANCZOS)
+    bg=ImageEnhance.Brightness(bg.filter(ImageFilter.GaussianBlur(35))).enhance(.62)
+    frame_w,frame_h=776,582
+    for i,pic in enumerate(pair):
+        tile=ImageOps.fit(pic,(frame_w,frame_h),method=Image.Resampling.LANCZOS)
+        if pic.width<tile.width or pic.height<tile.height:
+            raise RuntimeError("No upscaling of primary real-car photo")
+        x=16+i*792
+        y=159
+        bg.paste(tile,(x,y))
     overlay=Image.new("RGBA",(W,H),(0,0,0,0))
     draw=ImageDraw.Draw(overlay)
-    draw.rounded_rectangle((1380,835,1575,875),radius=9,fill=(8,22,32,135))
-    for fp in ("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-               "/usr/share/fonts/truetype/liberation2/LiberationSans-Regular.ttf"):
-        if Path(fp).is_file():
-            draw.text((1401,841),"A3TAL.COM",font=ImageFont.truetype(fp,20),fill=(255,255,255,235))
+    draw.rounded_rectangle((1375,836,1578,874),radius=8,fill=(7,20,35,170))
+    for font_path in ("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+                      "/usr/share/fonts/truetype/liberation2/LiberationSans-Regular.ttf"):
+        if Path(font_path).exists():
+            draw.text((1393,841),"A3TAL.COM",font=ImageFont.truetype(font_path,20),fill=(255,255,255,240))
             break
     final=Image.alpha_composite(bg.convert("RGBA"),overlay).convert("RGB")
-    stream=io.BytesIO()
-    final.save(stream,"WEBP",quality=90,method=6)
-    result=stream.getvalue()
-    if len(result)<18000 or result[:4]!=b"RIFF" or result[8:12]!=b"WEBP":
-        raise RuntimeError("Authentic photo WebP cover validation failed")
-    return result
+    buf=io.BytesIO()
+    final.save(buf,"WEBP",quality=90,method=6)
+    data=buf.getvalue()
+    if len(data)<24000 or data[:4]!=b"RIFF" or data[8:12]!=b"WEBP":
+        raise RuntimeError("Featured true-WebP photo composition QA failed")
+    return data
 
 def audit_live(url,title,image):
     error=None
@@ -144,7 +160,7 @@ def main():
         raise RuntimeError("Existing MG brand parent not uniquely verified")
     assert len(ROWS)==5 and len({r["slug"] for r in ROWS})==5
     # Fail before publishing anything if any official photo cannot be verified.
-    PRECHECK_PHOTOS=[exact_model_photo(url) for url in PHOTO_URLS[:CAP]]
+    PRECHECK_PHOTOS=[exact_model_photo(url) for url in PHOTO_URLS[:2*CAP]]
     for i,row in enumerate(ROWS[:CAP]):
         slug=row["slug"]
         kind=row["kind"]
@@ -161,8 +177,8 @@ def main():
             model=existing(MODEL)
             if len(model)!=1 or model[0]["link"].rstrip("/")!=ROOT_URL.rstrip("/"):
                 raise RuntimeError("Model hub not yet published")
-        im=PRECHECK_PHOTOS[i]
-        picture=cover(im,i)
+        pair=PRECHECK_PHOTOS[2*i:2*i+2]
+        picture=cover(pair,i)
         fname="a3tal-pseo-b40-mg-rx9-phev-real-"+slug+".webp"
         media=post(UPLOAD,{"filename":fname,"image_base64":base64.b64encode(picture).decode(),
                            "convert_webp":False,"title":row["title"],"alt":row["title"]+" - أعطال.كوم"})
@@ -189,7 +205,7 @@ def main():
             raise RuntimeError("Canonical destination changed "+repr(outcomes))
         audit_live(url,row["title"],fname)
         PROGRESS.append({"slug":slug,"url":url,"image":media["url"],
-                         "image_file":fname,"photo_source":PHOTO_URLS[i],"visual_source":"original MG Motor Egypt RX9 PHEV photographic gallery image","status":"published",
+                         "image_file":fname,"photo_source_pair":PHOTO_URLS[2*i:2*i+2],"visual_source":"original MG Motor Egypt RX9 PHEV photographic gallery image","status":"published",
                          "og_verified":True,"canonical_verified":True})
         print("BATCH40_PUBLIC_ARTICLE_AND_OG_VERIFIED",url,flush=True)
     after=get(BASE+"/wp-json/a3tal-car-reference/v1/health").json()
