@@ -1,0 +1,19 @@
+name: Audit MG RX9 PHEV official gallery photo native sizes for A3tal PSEO
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/probe-b40-mg-rx9-photos.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install PIL requests
+        run: python3 -m pip install -q Pillow requests
+      - name: Inspect 18 official MG Motor RX9 model photographs without altering them
+        run: python3 -u scripts/probe-b40-mg-rx9-gallery-dimensions-20261110.py
