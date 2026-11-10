@@ -1,0 +1,55 @@
+name: Publish A3tal 3 original suspension electrical and engine fault articles
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-three-a3tal-fault-guides-20261110.yml'
+      - 'scripts/publish-a3tal-three-fault-guides-20261110.py'
+      - 'data/editorial/20261110-faults/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-editorial-repairs-three-faults-serialized
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify original Arabic technical quality, categories, references and no duplicate slugs
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/publish-a3tal-three-fault-guides-20261110.py
+          python3 - <<'PY'
+          import json,pathlib,re
+          root=pathlib.Path('data/editorial/20261110-faults')
+          slugs=['steering-wheel-off-center-after-wheel-alignment-causes-fix','power-window-rolls-back-down-when-closing-anti-pinch-reset','engine-oil-level-rising-fuel-dilution-coolant-diagnosis']
+          expected=[11,13,8]
+          for slug,cat in zip(slugs,expected):
+              p=json.loads((root/(slug+'.json')).read_text('utf8'))
+              body=p['html']
+              assert p['slug']==slug and p['category']==cat
+              assert len(re.findall(r'<h2>',body))>=7 and '<table>' in body
+              assert len(re.findall(r'[\u0600-\u06FF]+',re.sub('<[^>]*>',' ',body)))>=650
+              assert p['source'] in body and 'https://a3tal.com/fault-diagnosis/' in body
+              assert p['photo']['license'] in ('CC0 1.0','CC BY 2.0')
+              assert p['photo']['url'].startswith('https://commons.wikimedia.org/wiki/File:')
+          print('THREE_DIFFERENTIATED_TECHNICAL_EDITORIAL_ARTICLES_PRECHECK_PASS')
+          PY
+          test -n "$A3TAL_API_KEY"
+      - name: Install actual source-photo processing dependencies
+        run: python3 -m pip install -q Pillow
+      - name: Publish three SEO-differentiated articles with licensed original WebP editorial photo composition
+        run: python3 -u scripts/publish-a3tal-three-fault-guides-20261110.py
+      - name: Keep verified live URLs featured media and canonical image evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-three-technical-guides-20261110-published-audit
+          path: reports/three-technical-fault-articles-20261110.json
+          retention-days: 30
+          if-no-files-found: ignore
