@@ -266,8 +266,33 @@ get_header();
       </aside>
 
       <div class="cg-models-col">
+        <?php // Price editorial posts publish independently of vehicle catalogue records.
+        // Show the 3 newest real price stories prominently, automatically, without
+        // changing a3_car URLs, filters, brand taxonomy or verified price metadata.
+        if(!$cg_archive_filtered && !$cg_brand_selected && $cg_price_updates->posts): ?>
+        <section class="cg-surface cg-models-section" id="cg-latest-price-articles" aria-labelledby="cg-latest-price-title">
+          <div class="cg-section-heading"><div><span class="cg-kicker">تحديثات الأسعار المنشورة مباشرة</span><h2 id="cg-latest-price-title">أحدث مقالات أسعار السيارات الجديدة</h2></div><a class="cg-secondary-link" href="<?php echo esc_url(a3g_cat_link(374)); ?>">كل الأسعار ←</a></div>
+          <div class="cg-cars-grid">
+            <?php foreach(array_slice($cg_price_updates->posts,0,3) as $cg_editorial_post):
+              $cg_article_id=(int)$cg_editorial_post->ID;
+              $cg_article_href=get_permalink($cg_article_id);
+            ?>
+            <article class="cg-car-card">
+              <a class="cg-car-photo" href="<?php echo esc_url($cg_article_href); ?>" aria-label="<?php echo esc_attr(get_the_title($cg_article_id)); ?>">
+                <?php if(has_post_thumbnail($cg_article_id)) echo get_the_post_thumbnail($cg_article_id,'medium_large',['loading'=>'lazy','decoding'=>'async','alt'=>get_the_title($cg_article_id)]); else echo '<span class="cg-photo-empty">أسعار السيارات</span>'; ?>
+              </a>
+              <div class="cg-car-info">
+                <div class="cg-car-meta"><span>سعر جديد</span><span><?php echo esc_html(get_the_date('Y/m/d',$cg_article_id)); ?></span></div>
+                <h3><a href="<?php echo esc_url($cg_article_href); ?>"><?php echo esc_html(get_the_title($cg_article_id)); ?></a></h3>
+                <a class="cg-car-more" href="<?php echo esc_url($cg_article_href); ?>">السعر والفئات والمواصفات <span aria-hidden="true">←</span></a>
+              </div>
+            </article>
+            <?php endforeach; ?>
+          </div>
+        </section>
+        <?php endif; ?>
         <section class="cg-surface cg-models-section" id="cg-popular" aria-labelledby="cg-popular-title">
-          <div class="cg-section-heading"><div><span class="cg-kicker">موديلات منشورة ومعلومات فعلية</span><h2 id="cg-popular-title"><?php echo $cg_brand_selected ? esc_html("سيارات ومعلومات ".$cg_brand_selected["name"]) : "أحدث السيارات في الدليل"; ?></h2></div><span class="cg-total"><?php echo esc_html($cg_related_guides && !$cg_top ? "أدلة منشورة" : number_format_i18n((int)$cg_listing->found_posts)." نتيجة"); ?></span></div>
+          <div class="cg-section-heading"><div><span class="cg-kicker">موديلات منشورة ومعلومات فعلية</span><h2 id="cg-popular-title"><?php echo $cg_brand_selected ? esc_html("سيارات ومعلومات ".$cg_brand_selected["name"]) : "موديلات السيارات المسجلة في الدليل"; ?></h2></div><span class="cg-total"><?php echo esc_html($cg_related_guides && !$cg_top ? "أدلة منشورة" : number_format_i18n((int)$cg_listing->found_posts)." نتيجة"); ?></span></div>
           <?php if($cg_top): ?>
             <div class="cg-cars-grid"><?php foreach($cg_top as $car){$cg_render_card($car);} ?></div>
           <?php elseif($cg_brand_selected): ?>
