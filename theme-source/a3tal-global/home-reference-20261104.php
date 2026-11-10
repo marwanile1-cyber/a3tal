@@ -6,6 +6,12 @@
  */
 defined('ABSPATH') || exit;
 $ref_count = 0;
+// The public price section MUST always follow published editorial posts in category 374.
+// Car CPT catalogue records are separate and may be updated later; do not use them here.
+$home_latest_price_posts = new WP_Query([
+ 'post_type'=>'post','post_status'=>'publish','cat'=>374,'posts_per_page'=>4,
+ 'orderby'=>'date','order'=>'DESC','ignore_sticky_posts'=>true,'no_found_rows'=>true
+]);
 $home_ref_cards = post_type_exists('a3_car') ? new WP_Query([
  'post_type'=>'a3_car','post_status'=>'publish','posts_per_page'=>4,
  'orderby'=>'modified','order'=>'DESC','no_found_rows'=>true,'ignore_sticky_posts'=>true
@@ -81,21 +87,20 @@ if (post_type_exists('a3_car_ref')) {
  <div class="wrap">
   <div class="a3egy-section-heading"><div><small>دليل الشراء في مصر</small><h2 id="a3egy-price-heading">أسعار السيارات الجديدة في مصر</h2><p>آخر مقالات الأسعار المنشورة، مع بيانات الموديل والفئات وتاريخ التحديث داخل كل مقال.</p></div><a class="a3egy-all" href="https://a3tal.com/cars/">عرض كل الأسعار ←</a></div>
   <div class="a3egy-price-grid">
-  <?php if($home_ref_cards && $home_ref_cards->posts): ?>
-    <?php foreach($home_ref_cards->posts as $car):
-      $car_id=(int)$car->ID;
-      $car_img=get_the_post_thumbnail_url($car_id,'medium_large');
-      $price_post_id=(int)get_post_meta($car_id,'_a3_primary_price_post_id',true);
-      $price_href=($price_post_id && get_post_status($price_post_id)==='publish') ? get_permalink($price_post_id) : get_permalink($car_id);
-      $price_display=function_exists('a3cp_vehicle_price') ? a3cp_vehicle_price($car_id) : '';
+  <?php if($home_latest_price_posts->posts): ?>
+    <?php foreach($home_latest_price_posts->posts as $price_article):
+      $price_article_id=(int)$price_article->ID;
+      $price_article_url=get_permalink($price_article_id);
+      $price_article_image=get_the_post_thumbnail_url($price_article_id,'medium_large');
+      $price_article_date=get_the_date('Y/m/d',$price_article_id);
     ?>
-    <article class="a3egy-price-card"><a href="<?php echo esc_url($price_href); ?>">
-      <?php if($car_img): ?><img loading="lazy" decoding="async" src="<?php echo esc_url($car_img); ?>" alt="<?php echo esc_attr(get_the_title($car_id)); ?>"><?php else: ?><div class="a3egy-photo-placeholder">دليل أسعار السيارات</div><?php endif; ?>
-      <span class="a3egy-price-copy"><strong><?php echo esc_html(get_the_title($car_id)); ?></strong>
-      <small><?php echo $price_display ? esc_html($price_display).' · ' : ''; ?>السعر والفئات والمواصفات ←</small></span>
+    <article class="a3egy-price-card"><a href="<?php echo esc_url($price_article_url); ?>">
+      <?php if($price_article_image): ?><img loading="lazy" decoding="async" src="<?php echo esc_url($price_article_image); ?>" alt="<?php echo esc_attr(get_the_title($price_article_id)); ?>"><?php else: ?><div class="a3egy-photo-placeholder">أسعار السيارات الجديدة</div><?php endif; ?>
+      <span class="a3egy-price-copy"><strong><?php echo esc_html(get_the_title($price_article_id)); ?></strong>
+      <small><?php echo esc_html($price_article_date); ?> · السعر والفئات والمواصفات ←</small></span>
     </a></article>
     <?php endforeach; ?>
-  <?php else: ?><p>تصفح جميع موديلات وأسعار السيارات المنشورة في الدليل.</p><?php endif; ?>
+  <?php else: ?><p>لا توجد مقالات أسعار منشورة حاليًا.</p><?php endif; ?>
   </div>
   <div class="a3egy-market-quick">
   <strong>سيارات منتشرة في مصر:</strong>
