@@ -1,0 +1,60 @@
+name: Publish A3tal PSEO batch40 MG RX9 PHEV official real-model photos
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-car-reference-batch40-mg-rx9-phev.yml'
+      - 'scripts/publish-car-reference-batch40-mg-rx9-phev-20261110.py'
+      - 'data/car-reference/batch-40-mg-rx9-phev-egypt.json'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-car-reference-pseo-serialized
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 85
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3CR_BATCH40_LIMIT: '5'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate authentic high-resolution RX9 PHEV photographs and source-grounded Arabic PSEO
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/publish-car-reference-batch40-mg-rx9-phev-20261110.py
+          python3 - <<'PY'
+          import json,pathlib,re
+          rule=pathlib.Path('docs/pseo-featured-image-gate.md').read_text('utf8')
+          assert 'MANDATORY' in rule and 'real car photography' in rule
+          s=pathlib.Path('scripts/publish-car-reference-batch40-mg-rx9-phev-20261110.py').read_text('utf8')
+          assert 'PRECHECK_PHOTOS=[exact_model_photo(url) for url in PHOTO_URLS[:CAP]]' in s
+          assert 'Refusing to upscale' in s and 'ImageOps.contain' in s
+          assert s.count('https://www.mgmotor.com.eg/wp-content/uploads/2026/06/MG_RX9-High-Res-')==5
+          assert not re.search(r'def vector_art|original technical vector|line drawing',s,re.I)
+          assert '295HP / 390Nm / DHT' in s and 'BRAND="mg"' in s
+          d=json.loads(pathlib.Path('data/car-reference/batch-40-mg-rx9-phev-egypt.json').read_text('utf8'))
+          assert d['batch']==40 and d['brand']=='mg' and d['model_slug']=='rx9-phev-15t-dht-egypt'
+          assert len(d['rows'])==5 and len({r['slug'] for r in d['rows']})==5
+          assert d['rows'][0]['kind']=='model'
+          for r in d['rows']:
+              assert len(r['facts'])>=5 and r['rich_html'].count('<h2>')>=3
+              assert len(r['rich_html'])>2200 and '<table' not in r['rich_html']
+              assert r['sources']==['https://www.mgmotor.com.eg/model/mg-rx9/']
+          print('BATCH40_MG_RX9_PHEV_ORIGINAL_CONTENT_AND_ACTUAL_OEM_PHOTO_GATE_PASS')
+          PY
+          test -n "$A3TAL_API_KEY"
+      - name: Install exact-model photographic WebP processing and HTTP libraries
+        run: python3 -m pip install -q requests Pillow
+      - name: Preflight all five MG Motor Egypt RX9 photos then publish safely via A3tal Direct Bridge
+        run: python3 -u scripts/publish-car-reference-batch40-mg-rx9-phev-20261110.py
+      - name: Preserve image source featured attachment canonical and social OG audits
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-batch40-mg-rx9-phev-real-photos-public-qa
+          path: reports/batch40-mg-rx9-phev-live-audit.json
+          retention-days: 30
+          if-no-files-found: ignore
