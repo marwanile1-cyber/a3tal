@@ -95,7 +95,7 @@ def cover(photo,index):
         raise RuntimeError("Official model photo too small for a sharp editorial cover")
     background=ImageOps.fit(photo,(W,H),method=Image.Resampling.LANCZOS)
     background=ImageEnhance.Brightness(background.filter(ImageFilter.GaussianBlur(26))).enhance(0.72)
-    sharp=ImageOps.contain(photo,(W,H),method=Image.Resampling.LANCZOS)
+    sharp=ImageOps.contain(photo,(min(W,photo.width),min(H,photo.height)),method=Image.Resampling.LANCZOS)
     if sharp.width>photo.width or sharp.height>photo.height:
         raise RuntimeError("Never upscale the Jetour model photograph")
     background.paste(sharp,((W-sharp.width)//2,(H-sharp.height)//2))
