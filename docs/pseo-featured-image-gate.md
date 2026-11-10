@@ -18,3 +18,7 @@ The user explicitly prioritized this on 2026-11-09 after rejecting schematic/pla
 10. No batch is complete merely because GitHub Actions were committed or triggered; verify all target public pages and their image/og tags.
 
 User-facing images in ChatGPT found by image search are not proof of what has been uploaded to WordPress. Only verified site URLs prove replacement.
+
+## Source-resolution fallback for official galleries
+
+If the manufacturer's exact-model gallery supplies only 800x600px photographs (even with filenames containing "High-Res"), never enlarge an individual car photo to 1600x900 and pretend it has native detail. Instead, construct a 1600x900 WebP from **two different, model-verified 800x600 official photographs** presented side-by-side close to their native sizes. A blurred or dark atmospheric background may fill unused space, but the sharp featured photographs must not be upscaled and may not be replaced by generated or generic vehicle art. Record both original URLs in the batch photo audit. Each article must have a different pair and a separately uploaded true WordPress featured image and og:image. If there aren't enough suitable photos, fail closed.
