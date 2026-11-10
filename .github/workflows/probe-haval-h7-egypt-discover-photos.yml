@@ -1,0 +1,15 @@
+name: Probe exact Haval H7 Egypt source photos for Discover story
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/probe-haval-h7-egypt-discover-photos.yml'
+  workflow_dispatch:
+permissions: { contents: read }
+jobs:
+  photo-qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m pip install -q requests Pillow
+      - run: python3 -u scripts/probe-haval-h7-2027-discover-images-20261110.py
