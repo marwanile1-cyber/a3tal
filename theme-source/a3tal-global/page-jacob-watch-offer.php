@@ -246,7 +246,7 @@ body.admin-bar .jw-nav{top:46px}.jw-shell{width:min(100% - 28px,560px)}.jw-nav{h
   </div>
   <div class="jw-visual">
     <div class="jw-main-image">
-      <?php if ($steel) : ?><img id="jw-current-watch" src="<?php echo $steel; ?>" alt="صورة دعائية توضيحية عالية الجودة لساعة باللون الفضي مستوحاة من Oil Pump" width="760" height="760" fetchpriority="high"><?php endif; ?>
+      <?php if ($steel) : ?><img id="jw-current-watch" class="skip-lazy no-lazy" loading="eager" decoding="async" data-no-lazy="1" data-skip-lazy="true" src="<?php echo $steel; ?>" alt="صورة دعائية توضيحية عالية الجودة لساعة باللون الفضي مستوحاة من Oil Pump" width="760" height="760" fetchpriority="high"><?php endif; ?>
       <span class="jw-image-label" id="jw-current-label">صورة عرض فنية: التصميم الفضي</span>
     </div>
     <div class="jw-mini-pics">
@@ -386,7 +386,7 @@ body.admin-bar .jw-nav{top:46px}.jw-shell{width:min(100% - 28px,560px)}.jw-nav{h
 var images={steel:<?php echo wp_json_encode($steel); ?>,gold:<?php echo wp_json_encode($gold); ?>,box:<?php echo wp_json_encode($box); ?>};
 var img=document.getElementById('jw-current-watch'),label=document.getElementById('jw-current-label'),choice='steel';
 function waLink(name){return 'https://wa.me/201025036151?text='+encodeURIComponent('مرحبًا، أريد حجز ساعة '+(name==='gold'?'التصميم الذهبي الوردي':'التصميم الفضي')+' بسعر 24,000 جنيه من العرض محدود الكمية، برجاء تأكيد التوفر والتفاصيل.');}
-function select(name){if(!images[name]||!img)return;if(name==='steel'||name==='gold')choice=name;img.src=images[name];img.alt=name==='box'?'صورة علبة الساعة الخشبية الفعلية':('صورة ستوديو فنية توضيحية، التصميم '+(name==='gold'?'الذهبي الوردي':'الفضي'));label.textContent=name==='box'?'صورة العلبة الفعلية':(name==='gold'?'صورة عرض فنية: الذهبي الوردي':'صورة عرض فنية: الفضي');document.querySelectorAll('[data-watch-variant]').forEach(function(b){if(b.classList.contains('jw-variant'))b.setAttribute('aria-pressed',String(b.dataset.watchVariant===choice));});document.querySelectorAll('[data-watch-whatsapp]').forEach(function(a){a.href=waLink(choice);});}
+function select(name){if(!images[name]||!img)return;if(name==='steel'||name==='gold')choice=name;img.src=images[name];img.alt=name==='box'?'صورة علبة الساعة الخشبية الفعلية':('صورة ستوديو فنية توضيحية، التصميم '+(name==='gold'?'الذهبي الوردي':'الفضي'));['data-src','data-lazy-src','data-original','data-lazy-original'].forEach(function(attr){if(img.hasAttribute(attr))img.setAttribute(attr,images[name]);});label.textContent=name==='box'?'صورة العلبة الفعلية':(name==='gold'?'صورة عرض فنية: الذهبي الوردي':'صورة عرض فنية: الفضي');document.querySelectorAll('[data-watch-variant]').forEach(function(b){if(b.classList.contains('jw-variant'))b.setAttribute('aria-pressed',String(b.dataset.watchVariant===choice));});document.querySelectorAll('[data-watch-whatsapp]').forEach(function(a){a.href=waLink(choice);});}
 document.querySelectorAll('[data-watch-variant]').forEach(function(b){b.addEventListener('click',function(){select(b.dataset.watchVariant);});});
 var bx=document.getElementById('jw-show-box');if(bx)bx.addEventListener('click',function(){select('box');});select('steel');
 })();
