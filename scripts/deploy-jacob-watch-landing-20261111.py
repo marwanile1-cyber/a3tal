@@ -68,20 +68,25 @@ def admin_write(op: str, **params):
         raise RuntimeError(f"Admin {op} returned failure")
     return result.get("result", result)
 
-def optimized_image(filename: str):
+def optimized_image(filename: str, key: str):
     path = ASSETS / filename
     if not path.is_file():
-        raise FileNotFoundError(f"Missing original product image: {path}")
+        raise FileNotFoundError(f"Missing source image: {path}")
     with Image.open(path) as source:
         photo = source.convert("RGB")
-        if "box" in filename:
-            photo = ImageOps.fit(photo, (1000, 1000), method=Image.Resampling.LANCZOS)
+        if key == "hero":
+            photo.thumbnail((1600, 1080), resample=Image.Resampling.LANCZOS)
+        elif key in ("steel", "gold"):
+            w, h = photo.size
+            if key == "steel":
+                photo = photo.crop((0, 0, int(w * 0.492), h))
+            else:
+                photo = photo.crop((int(w * 0.508), 0, w, h))
+            photo.thumbnail((900, 1200), resample=Image.Resampling.LANCZOS)
         else:
-            photo = ImageOps.fit(photo, (900, 900),
-                                method=Image.Resampling.LANCZOS, centering=(0.5, 0.47))
-            photo = ImageEnhance.Contrast(photo).enhance(1.06)
+            photo = ImageOps.fit(photo, (1000, 1000), method=Image.Resampling.LANCZOS)
         output = io.BytesIO()
-        photo.save(output, "WEBP", quality=85, method=6)
+        photo.save(output, "WEBP", quality=88, method=6)
         return output.getvalue()
 
 def find_page():
@@ -139,12 +144,12 @@ def main():
 
         urls = {}
         for name, (source_name, dest_name, alt) in MEDIA.items():
-            raw = optimized_image(source_name)
+            raw = optimized_image(source_name, name)
             media = api("POST", "/upload-image-data", timeout=220, data={
                 "post_id": page_id, "filename": dest_name, "title": alt, "alt": alt,
                 "image_base64": base64.b64encode(raw).decode("ascii"),
                 "convert_webp": False,
-                "set_featured": name == "steel",
+                "set_featured": name == "hero",
             })
             url = str(media["url"])
             assert url.startswith("https://a3tal.com/"), url
