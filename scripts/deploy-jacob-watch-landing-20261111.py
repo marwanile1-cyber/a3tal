@@ -183,12 +183,18 @@ def main():
             checks = {
                 "http_200": res.status_code == 200,
                 "landing_template": 'a3tal-watch-landing' in body,
+                "seo_h1": "ساعة جاكوب اند كو هاي كوبي في مصر" in body,
                 "price_24000": '24,000' in body,
                 "stock_six": '6 قطع' in body,
                 "phone": '01025036151' in body,
                 "silver_image": urls["steel"] in body,
+                "premium_hero_image": urls["hero"] in body,
                 "gold_image": urls["gold"] in body,
                 "box_image": urls["box"] in body,
+                "video_section": "watch-videos" in body and body.count("<video ") >= 3,
+                "video_sources": all(f"assets/watch-offer/watch-{x}-real-video.mp4" in body for x in ("steel", "rose-gold", "box")),
+                "long_seo_article": "ساعة جاكوب اند كو هاي كوبي في مصر: دليل التصميم والسعر" in body,
+                "structured_data": "application/ld+json" in body and "QuantitativeValue" in body,
                 "contact_whatsapp": 'wa.me/201025036151' in body,
                 "mobile_style": "@media(max-width:720px)" in body,
             }
