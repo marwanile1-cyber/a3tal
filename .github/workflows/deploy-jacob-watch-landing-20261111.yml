@@ -16,7 +16,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     env:
       A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
