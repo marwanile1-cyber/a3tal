@@ -10,6 +10,64 @@ $gallery = is_array($gallery) ? $gallery : [];
 $steel = esc_url((string) ($gallery['steel'] ?? ''));
 $gold  = esc_url((string) ($gallery['gold'] ?? ''));
 $box   = esc_url((string) ($gallery['box'] ?? ''));
+$hero  = esc_url((string) ($gallery['hero'] ?? ''));
+$videos = [
+  'steel' => 'https://raw.githubusercontent.com/marwanile1-cyber/a3tal/main/assets/watch-offer/watch-steel-real-video.mp4',
+  'gold' => 'https://raw.githubusercontent.com/marwanile1-cyber/a3tal/main/assets/watch-offer/watch-rose-gold-real-video.mp4',
+  'box' => 'https://raw.githubusercontent.com/marwanile1-cyber/a3tal/main/assets/watch-offer/watch-box-real-video.mp4',
+];
+$product_schema = [
+  '@context' => 'https://schema.org',
+  '@graph' => [
+    [
+      '@type' => 'Product',
+      '@id' => get_permalink() . '#watch-offer',
+      'name' => 'ساعة جاكوب اند كو هاي كوبي في مصر - تصميم مستوحى من Oil Pump وOpera Godfather',
+      'description' => 'عرض ساعة هاي كوبي مستوحاة من تصميمات Jacob & Co، وليست ساعة أصلية من العلامة. تصميمان فضي وذهبي وردي، بسعر 24000 جنيه للقطعة، مع ست قطع فقط متاحة من المجموعة عند نشر العرض.',
+      'url' => get_permalink(),
+      'image' => array_values(array_filter([$hero, $steel, $gold, $box])),
+      'category' => 'Wristwatch inspired-design replica',
+      'offers' => [
+        '@type' => 'Offer',
+        'url' => get_permalink(),
+        'priceCurrency' => 'EGP',
+        'price' => '24000',
+        'availability' => 'https://schema.org/LimitedAvailability',
+        'inventoryLevel' => ['@type' => 'QuantitativeValue', 'value' => 6],
+      ],
+    ],
+    [
+      '@type' => 'VideoObject',
+      'name' => 'معاينة فعلية للساعة الفضية بتصميم Oil Pump',
+      'description' => 'فيديو حقيقي للقطعة الفضية المعروضة وليس فيديو للساعة الأصلية.',
+      'thumbnailUrl' => [$steel],
+      'uploadDate' => '2026-11-11T21:00:00+02:00',
+      'duration' => 'PT19S',
+      'contentUrl' => $videos['steel'],
+      'embedUrl' => get_permalink() . '#watch-videos',
+    ],
+    [
+      '@type' => 'VideoObject',
+      'name' => 'معاينة فعلية للساعة الذهبية بتصميم Opera Godfather',
+      'description' => 'فيديو حقيقي للتصميم الذهبي المعروض وليس للساعة الأصلية.',
+      'thumbnailUrl' => [$gold],
+      'uploadDate' => '2026-11-11T21:00:00+02:00',
+      'duration' => 'PT14S',
+      'contentUrl' => $videos['gold'],
+      'embedUrl' => get_permalink() . '#watch-videos',
+    ],
+    [
+      '@type' => 'VideoObject',
+      'name' => 'صندوق عرض الساعة الخشبي - فيديو حقيقي',
+      'description' => 'معاينة علبة الساعة الفعلية.',
+      'thumbnailUrl' => [$box],
+      'uploadDate' => '2026-11-11T22:00:00+02:00',
+      'duration' => 'PT10S',
+      'contentUrl' => $videos['box'],
+      'embedUrl' => get_permalink() . '#watch-videos',
+    ],
+  ],
+];
 $whatsapp = 'https://wa.me/201025036151?text=' . rawurlencode('مرحبًا، أرغب في حجز الساعة الفضية من عرض 24,000 جنيه، وأريد تأكيد التوفر والتفاصيل.');
 ?>
 <!doctype html>
@@ -19,6 +77,7 @@ $whatsapp = 'https://wa.me/201025036151?text=' . rawurlencode('مرحبًا، أ
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0e0e0f">
 <?php wp_head(); ?>
+<script type="application/ld+json"><?php echo wp_json_encode($product_schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?></script>
 <style id="jw-luxury-page">
 :root{--jw-bg:#080909;--jw-surface:#121314;--jw-stroke:rgba(223,187,108,.28);--jw-gold:#deb66b;--jw-gold-light:#ffe0a0;--jw-text:#f5f1e7;--jw-muted:#c9c1b3}
 html{scroll-behavior:smooth}
@@ -126,6 +185,35 @@ body.admin-bar .jw-nav{top:46px}.jw-shell{width:min(100% - 28px,560px)}.jw-nav{h
 .jw-bottom{padding:55px 0 35px}.jw-sticky{position:fixed;display:flex;align-items:center;justify-content:space-between;gap:11px;bottom:0;left:0;right:0;padding:10px 14px max(10px,env(safe-area-inset-bottom));z-index:999999;background:#0b0b0bef;border-top:1px solid #be9754;backdrop-filter:blur(14px);box-shadow:0 -8px 35px #0009}.jw-sticky .jw-btn{width:auto;min-height:43px;padding:7px 14px;font-size:13px}.jw-sticky .jw-sticky-price{font-size:20px;color:#fce0a6;font-weight:900;white-space:nowrap}.jw-sticky .jw-sticky-price small{font-size:10px;display:block;color:#d7c7ab;font-weight:400}
 }
 @media(prefers-reduced-motion:reduce){.jw *, .jw *:before,.jw *:after{scroll-behavior:auto!important;transition:none!important}}
+
+
+.jw-art-banner{background:#070707;padding:30px 0 26px;border-bottom:1px solid #352617}
+.jw-art-banner img{width:100%;height:auto;max-height:620px;object-fit:cover;border:1px solid #66502d;border-radius:16px;display:block}
+.jw-art-banner p{text-align:center;color:#aaa093;font-size:12px;margin:10px 0 0}
+.jw-videos{background:#0d0e0e;border-top:1px solid #40301d;border-bottom:1px solid #40301d}
+.jw-video-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.jw-video-card{background:#1a1917;border:1px solid #564026;border-radius:16px;overflow:hidden}
+.jw-video-card video{display:block;width:100%;aspect-ratio:9/13;object-fit:contain;background:#000;max-height:470px}
+.jw-video-card>div{padding:17px 17px 14px}
+.jw-video-card h3{font-size:17px;color:#f0d49b;margin:0 0 7px}
+.jw-video-card p{font-size:13px;color:#b8ad9e;margin:0}
+.jw-video-note{text-align:center;color:#cbbca3;font-size:12px;margin-top:25px}
+.jw-editorial{border-top:1px solid #342a19;background:linear-gradient(#121211,#0b0b0b)}
+.jw-article-body{max-width:970px;margin:auto;color:#e0d9cd;font-size:15px;line-height:2.12}
+.jw-article-body p{margin:0 0 20px}
+.jw-article-body h2{font-size:clamp(23px,2.6vw,31px);margin:39px 0 16px;line-height:1.5}
+.jw-article-body h3{color:#ebd09a;font-size:19px;margin:28px 0 12px}
+.jw-article-body strong{color:#f6d99c}
+.jw-article-body a{color:#f6d99c;text-decoration:underline;text-underline-offset:4px}
+.jw-table-scroller{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.jw-compare{width:100%;border-collapse:collapse;min-width:590px;font-size:14px;line-height:1.7}
+.jw-compare th,.jw-compare td{border:1px solid #4c3b24;padding:12px 14px;text-align:right}
+.jw-compare thead th{background:#372915;color:#fce5b1}
+.jw-compare tbody th{color:#e5c98e;background:#1c1915}
+.jw-compare tbody td{background:#151514}
+.jw-source-note{margin-top:28px!important;border-right:3px solid #ac8748;padding:14px 17px;background:#191711;color:#c9c0b2;font-size:12px}
+@media(max-width:720px){.jw-video-grid{grid-template-columns:1fr;gap:15px;max-width:430px;margin:auto}.jw-video-card video{max-height:480px}.jw-article-body{font-size:14px;line-height:2}.jw-art-banner img{border-radius:11px}.jw-editorial .jw-heading h2{font-size:25px}}
+
 </style>
 </head>
 <body <?php body_class('a3tal-watch-landing'); ?>>
@@ -141,8 +229,8 @@ body.admin-bar .jw-nav{top:46px}.jw-shell{width:min(100% - 28px,560px)}.jw-nav{h
 <div class="jw-shell jw-hero-grid">
   <div class="jw-hero-copy">
     <span class="jw-eyebrow">PRIVATE COLLECTION / LIMITED OFFER</span>
-    <h1 id="watch-title">ساعة تخطف الأنظار <span>تصميم مستوحى من Jacob &amp; Co</span></h1>
-    <p class="jw-lead">تفاصيل لافتة من أول نظرة، واجهة بتصميم مكشوف، وحزام أسود أنيق. اختار اللمسة الفضية أو الذهبية الوردية، واستلمها مع علبة العرض الخشبية الفاخرة الظاهرة بالصور.</p>
+    <h1 id="watch-title">ساعة جاكوب اند كو هاي كوبي في مصر <span>تصميمات مستوحاة من Oil Pump وOpera Godfather</span></h1>
+    <p class="jw-lead">اكتشف ساعة هاي كوبي بتصميم هيكلي لافت مستوحى من أشهر إبداعات Jacob &amp; Co. اختار التصميم الفضي أو الذهبي الوردي، وشاهد فيديوهات المنتج الحقيقي والبوكس قبل الحجز. سعر العرض 24,000 جنيه، والكمية المتاحة 6 قطع فقط.</p>
     <div class="jw-sale"><span class="jw-price">24,000 <small>جنيه مصري</small></span><span class="jw-promo">عرض سعر خاص</span></div>
     <div class="jw-stock">المتاح من المجموعة بالكامل: 6 قطع فقط</div>
     <p style="font-size:13px;color:#d7c9b4;margin-bottom:8px">اختار التصميم المفضل:</p>
@@ -158,18 +246,24 @@ body.admin-bar .jw-nav{top:46px}.jw-shell{width:min(100% - 28px,560px)}.jw-nav{h
   </div>
   <div class="jw-visual">
     <div class="jw-main-image">
-      <?php if ($steel) : ?><img id="jw-current-watch" src="<?php echo $steel; ?>" alt="الساعة الفضية الفعلية من تصوير المنتج" width="760" height="760" fetchpriority="high"><?php endif; ?>
-      <span class="jw-image-label" id="jw-current-label">التصميم الفضي</span>
+      <?php if ($steel) : ?><img id="jw-current-watch" src="<?php echo $steel; ?>" alt="صورة دعائية توضيحية عالية الجودة لساعة باللون الفضي مستوحاة من Oil Pump" width="760" height="760" fetchpriority="high"><?php endif; ?>
+      <span class="jw-image-label" id="jw-current-label">صورة عرض فنية: التصميم الفضي</span>
     </div>
     <div class="jw-mini-pics">
-      <button type="button" data-watch-variant="steel" aria-label="اعرض الساعة الفضية"><img src="<?php echo $steel; ?>" alt="لقطة حقيقية للساعة الفضية" width="400" height="400"></button>
-      <button type="button" data-watch-variant="gold" aria-label="اعرض الساعة الذهبية"><img src="<?php echo $gold; ?>" alt="لقطة حقيقية للساعة الذهبية الوردية" width="400" height="400"></button>
+      <button type="button" data-watch-variant="steel" aria-label="اعرض الساعة الفضية"><img src="<?php echo $steel; ?>" alt="تصوير دعائي توضيحي للنسخة الفضية" width="400" height="400"></button>
+      <button type="button" data-watch-variant="gold" aria-label="اعرض الساعة الذهبية"><img src="<?php echo $gold; ?>" alt="تصوير دعائي توضيحي للنسخة الذهبية الوردية" width="400" height="400"></button>
       <button type="button" id="jw-show-box" aria-label="اعرض صورة علبة الساعة"><img src="<?php echo $box; ?>" alt="علبة العرض الخشبية مع الساعة" width="400" height="400"></button>
     </div>
   </div>
 </div>
 </section>
-<div class="jw-reassure"><div><strong>صورة المنتج الفعلي</strong> من اللقطات المقدمة للساعة</div><div><strong>علبة عرض خشبية</strong> تصميم أنيق للتقديم والحفظ</div><div><strong>حجز مباشر</strong> واتساب واتصال على نفس الرقم</div></div>
+<div class="jw-reassure"><div><strong>صور ستوديو احترافية</strong> للتصميم مع تمييزها عن المنتج الفعلي</div><div><strong>3 فيديوهات حقيقية</strong> للساعة الفضية والذهبية والبوكس</div><div><strong>حجز مباشر</strong> عبر واتساب أو الاتصال</div></div>
+<?php if ($hero) : ?>
+<section class="jw-art-banner" aria-label="صورة عرض احترافية للتصميمين">
+ <div class="jw-shell"><img src="<?php echo $hero; ?>" width="1536" height="1024" loading="lazy" decoding="async" alt="صورة دعائية فنية عالية الجودة تعرض تصميمي الساعة الفضي والذهبي مع صندوق عرض خشبي">
+ <p>تصوير دعائي فني توضيحي للتصميمات. لمعاينة شكل القطع الحقيقية شاهد الفيديوهات الأصلية في القسم التالي.</p></div>
+</section>
+<?php endif; ?>
 <section class="jw-section" id="why">
  <div class="jw-shell">
   <div class="jw-heading"><span class="jw-eyebrow">THE DETAILS MATTER</span><h2>ليه الساعة دي مختلفة؟</h2><p>التفاصيل الصغيرة هي اللي بتعمل الانطباع الكبير.</p></div>
@@ -183,17 +277,28 @@ body.admin-bar .jw-nav{top:46px}.jw-shell{width:min(100% - 28px,560px)}.jw-nav{h
 </section>
 <section class="jw-section jw-gallery" id="collection">
  <div class="jw-shell">
-  <div class="jw-heading"><span class="jw-eyebrow">REAL PRODUCT GALLERY</span><h2>المجموعة على الطبيعة</h2><p>صور مقتطفة من الفيديوهات الفعلية وصورة العلبة المرفقة.</p></div>
+  <div class="jw-heading"><span class="jw-eyebrow">LUXURY WATCH GALLERY</span><h2>صور عالية الجودة للتصميمين</h2><p>صور ستوديو فنية لتوضيح الشكل العام؛ الفيديوهات التالية تصور القطع الحقيقية.</p></div>
   <div class="jw-gallery-grid">
-   <figure class="jw-gallery-card"><img src="<?php echo $steel; ?>" loading="lazy" decoding="async" alt="تصميم الساعة الفضية من الفيديو" width="760" height="760"><figcaption class="jw-caption">تصميم فضي بتفاصيل سوداء وذهبية</figcaption></figure>
-   <figure class="jw-gallery-card"><img src="<?php echo $gold; ?>" loading="lazy" decoding="async" alt="تصميم الساعة الذهبية الوردية من الفيديو" width="760" height="760"><figcaption class="jw-caption">تصميم ذهبي وردي وسوار أسود</figcaption></figure>
+   <figure class="jw-gallery-card"><img src="<?php echo $steel; ?>" loading="lazy" decoding="async" alt="تصميم الساعة الفضية من الفيديو" width="760" height="760"><figcaption class="jw-caption">التصميم الفضي: صورة عرض فنية توضيحية</figcaption></figure>
+   <figure class="jw-gallery-card"><img src="<?php echo $gold; ?>" loading="lazy" decoding="async" alt="تصميم الساعة الذهبية الوردية من الفيديو" width="760" height="760"><figcaption class="jw-caption">الذهبي الوردي: صورة عرض فنية توضيحية</figcaption></figure>
    <figure class="jw-gallery-card"><img src="<?php echo $box; ?>" loading="lazy" decoding="async" alt="صورة البوكس الخشبي الفعلي" width="760" height="760"><figcaption class="jw-caption">علبة العرض الخشبية</figcaption></figure>
   </div>
  </div>
 </section>
+<section class="jw-section jw-videos" id="watch-videos" aria-labelledby="watch-videos-title">
+<div class="jw-shell">
+ <div class="jw-heading"><span class="jw-eyebrow">WATCH THE REAL PRODUCT</span><h2 id="watch-videos-title">شاهد الساعة الحقيقية بالفيديو</h2><p>هذه الفيديوهات الثلاثة من القطع المرسلة بالفعل، عكس صور الاستوديو التوضيحية بالأعلى.</p></div>
+ <div class="jw-video-grid">
+  <article class="jw-video-card"><video controls playsinline preload="metadata" poster="<?php echo $steel; ?>" aria-label="فيديو الساعة الفضية الحقيقية"><source src="<?php echo esc_url($videos['steel']); ?>" type="video/mp4">متصفحك لا يدعم عرض الفيديو.</video><div><h3>الساعة الفضية</h3><p>معاينة الواجهة والسوار والتشطيب من التصوير الأصلي للقطعة.</p></div></article>
+  <article class="jw-video-card"><video controls playsinline preload="metadata" poster="<?php echo $gold; ?>" aria-label="فيديو الساعة الذهبية الوردية الحقيقية"><source src="<?php echo esc_url($videos['gold']); ?>" type="video/mp4">متصفحك لا يدعم عرض الفيديو.</video><div><h3>الساعة الذهبية الوردية</h3><p>شاهد التفاصيل والشكل على الطبيعة قبل اختيار اللون.</p></div></article>
+  <article class="jw-video-card"><video controls playsinline preload="metadata" poster="<?php echo $box; ?>" aria-label="فيديو العلبة الخشبية الحقيقية"><source src="<?php echo esc_url($videos['box']); ?>" type="video/mp4">متصفحك لا يدعم عرض الفيديو.</video><div><h3>العلبة الخشبية</h3><p>فيديو من البوكس الذي تم تقديمه مع الساعة لعرض اللون والتشطيب الداخلي.</p></div></article>
+ </div>
+ <p class="jw-video-note">الصور الدعائية مخصصة لعرض فكرة التصميم، أما هذه المقاطع فهي المرجع المرئي للمنتج الفعلي. تأكد من مواصفات النسخة المتوفرة عند الحجز.</p>
+</div>
+</section>
 <section class="jw-section" id="details">
  <div class="jw-shell jw-detail-layout">
-  <div><span class="jw-eyebrow">PRODUCT DETAILS</span><h2>تفاصيل العرض</h2>
+  <div><span class="jw-eyebrow">PRODUCT DETAILS</span><h2>مواصفات ساعة جاكوب اند كو هاي كوبي المعروضة</h2>
    <table class="jw-specs"><tbody>
     <tr><th scope="row">النوع</th><td>ساعة هاي كوبي بتصميم مستوحى من ساعات Jacob &amp; Co</td></tr>
     <tr><th scope="row">الألوان الظاهرة</th><td>فضي وأسود، أو ذهبي وردي وأسود</td></tr>
@@ -207,6 +312,50 @@ body.admin-bar .jw-nav{top:46px}.jw-shell{width:min(100% - 28px,560px)}.jw-nav{h
   </div>
   <div><img src="<?php echo $box; ?>" alt="صندوق الساعة الخشبي المصور مع المنتج" loading="lazy" decoding="async" width="760" height="760"></div>
  </div>
+</section>
+<section class="jw-section jw-editorial" id="watch-guide">
+<div class="jw-shell">
+  <div class="jw-heading"><span class="jw-eyebrow">BUYING GUIDE • EGYPT</span><h2>ساعة جاكوب اند كو هاي كوبي في مصر: دليل التصميم والسعر قبل الحجز</h2><p>معلومات واضحة تساعد على فهم التصميمين المعروضين واختيار المناسب.</p></div>
+  <div class="jw-article-body">
+   <p>عند البحث عن <strong>ساعة جاكوب اند كو هاي كوبي في مصر</strong> تظهر صور عديدة لساعات مختلفة جدًا رغم تشابه الأسماء المستخدمة في المتاجر. بعض الساعات لها واجهات مزدحمة بالتفاصيل الصناعية، وأخرى تتميز بأشكال أسطوانية وتروس ظاهرة. لذلك من المهم ألّا يعتمد الاختيار على اسم العلامة وحده، بل على شكل القطعة المصورة فعلًا وحجمها الظاهري وطريقة الحجز ومحتويات العلبة. تعرض هذه الصفحة تصميمين مستوحَيين من إبداعات Jacob &amp; Co، أحدهما فضي والآخر ذهبي وردي، بسعر موحد يبلغ 24,000 جنيه مصري للقطعة، مع ست قطع إجمالًا في المخزون وقت الإعلان عن العرض.</p>
+   <p>الساعة المعروضة هنا <strong>نسخة هاي كوبي وليست ساعة أصلية من Jacob &amp; Co</strong>، وبالتالي لا يصح نقل مواصفات الحركة السويسرية أو قيمة الأحجار أو مواد التصنيع من موقع الشركة الأصلية إليها. الصور الدعائية تمنح تصورًا جماليًا واضحًا، بينما الفيديوهات المرفقة أعلى الصفحة هي وسيلة المعاينة الفعلية المتاحة للتصميمين والبوكس.</p>
+   <h3>لماذا يلفت هذا النوع من الساعات الأنظار؟</h3>
+   <p>السبب الرئيسي هو أسلوب التصميم الذي يجعل الواجهة جزءًا من شخصية الساعة. بدل المينا التقليدية البسيطة، تظهر أجزاء وأشكال متعددة تشبه التروس والمؤشرات والأنابيب أو الأسطوانات الصغيرة. هذا التباين بين الخلفية الداكنة والعناصر المعدنية يمنح الساعة حضورًا قويًا، خاصة مع البدلة أو الملابس الرسمية الداكنة. والاختيار النهائي هنا يعتمد على درجة اللمعان التي يفضلها المشتري: الفضي أكثر هدوءًا من حيث الإطار، والذهبي الوردي أكثر دفئًا ووضوحًا.</p>
+   <h2>التصميم الفضي المستوحى من Jacob &amp; Co Oil Pump</h2>
+   <p>يتميز شكل <strong>Oil Pump</strong> بطابعه الصناعي المستوحى من معدات استخراج النفط. يظهر في تصميم الساعة الفضي المرسل ذراع معدني بارز باللون الذهبي، وعناصر دائرية صغيرة وتفاصيل حمراء فوق واجهة داكنة. يتفاعل لون الهيكل الفضي مع تلك الأجزاء، ولذلك يبدو المظهر متوازنًا رغم كثرة التفاصيل. هذا التصميم مناسب لمن يحب الساعات الفنية التي تُرى تفاصيلها بوضوح من مسافة قريبة، وفي الوقت نفسه يريد هيكلًا خارجيًا بلون محايد.</p>
+   <p>في الإصدارات الأصلية لدى Jacob &amp; Co توجد حركات وتقنيات معقدة مرتبطة بهذه الفكرة، لكن <strong>وجود الشكل نفسه في نسخة هاي كوبي لا يثبت وجود توربيون فعلي أو آلية مضخة متحركة</strong>. التأكد من الحركة ونوع الماكينة يكون من خلال فحص النسخة المعروضة أو الاستفسار المباشر عن مواصفاتها، وليس عبر نقل قائمة مواصفات الساعة الأصلية.</p>
+   <h2>التصميم الذهبي الوردي المستوحى من Opera Godfather</h2>
+   <p>التصميم الآخر يتميز بهيكل ذهبي وردي وحزام أسود وواجهة داكنة بتفاصيل لامعة، مع عناصر دائرية وأسطوانية مستوحاة من أسلوب ساعات <strong>Opera Godfather</strong>. اللون الذهبي الوردي أكثر بروزًا في الإضاءة، ولهذا يتجه إليه عادة من يريد ساعة تبدو قطعة إكسسوار أساسية لا مجرد أداة لمعرفة الوقت. ويمكن مشاهدة هيكلها الجانبي وطبيعة السوار بوضوح في الفيديو المخصص لها.</p>
+   <p>تشتهر بعض الساعات الأصلية من مجموعة Opera Godfather بخصائص موسيقية وآليات فائقة التعقيد؛ لكن هذه الخصائص لا تُنسب إلى الساعة المعروضة هنا، لأن التشابه هو في <strong>الطابع الشكلي للتصميم</strong> فقط. ومن الأفضل عند السؤال عن الساعة تحديد «التصميم الذهبي الوردي» لتسهيل تأكيد القطعة المقصودة وتوافرها.</p>
+   <h2>الفرق بين الساعة الفضية والذهبية الوردية</h2>
+   <div class="jw-table-scroller"><table class="jw-compare"><thead><tr><th>وجه المقارنة</th><th>الفضية</th><th>الذهبية الوردية</th></tr></thead><tbody>
+    <tr><th>فكرة التصميم</th><td>أجزاء صناعية مستوحاة من Oil Pump</td><td>تفاصيل زخرفية وأسطوانية مستوحاة من Opera Godfather</td></tr>
+    <tr><th>لون الهيكل الظاهر</th><td>فضي مع عناصر ذهبية</td><td>ذهبي وردي</td></tr>
+    <tr><th>لون السوار</th><td>أسود بنقشة جلدية</td><td>أسود بنقشة جلدية</td></tr>
+    <tr><th>الانطباع العام</th><td>ميكانيكي جريء مع لون خارجي هادئ</td><td>مظهر فاخر أكثر دفئًا ولمعانًا</td></tr>
+    <tr><th>سعر العرض للقطعة</th><td>24,000 جنيه</td><td>24,000 جنيه</td></tr>
+   </tbody></table></div>
+   <h2>مواصفات نسخة هاي كوبي: ما الذي نعرفه فعلًا؟</h2>
+   <p>هناك فرق بين المواصفات الظاهرة في التصوير والمواصفات الفنية التي تحتاج تأكيدًا من البائع. اللون العام للهيكل والواجهة السوداء وشكل السوار وتفاصيل البوكس يمكن ملاحظتها في الملفات المرفقة. أما نوع الحركة، وبلد تصنيع الماكينة، وقطر الهيكل الدقيق، ونوع الزجاج، ومقاومة الماء، ومدة الضمان، فلا يمكن إثباتها من الصور وحدها. لهذا لا تعرض هذه الصفحة أرقامًا تقنية منقولة من الموديلات الأصلية على أنها تخص النسخ المعروضة.</p>
+   <h3>الواجهة الهيكلية والتشطيب الخارجي</h3>
+   <p>أكثر ما يميز هذه الساعات هو توزيع العناصر على المينا بصورة غير تقليدية. في الشكل الفضي تبرز الأجزاء الذهبية والحمراء مقابل الخلفية الداكنة، بينما يعتمد الشكل الذهبي الوردي على حضور اللون المعدني حول الواجهة. عند معاينة الفيديو، يُفضل ملاحظة وضوح المؤشرات، وحواف الهيكل، والانعكاسات فوق الزجاج، وكيف يبدو التصميم عند تحريك الساعة أمام الإضاءة.</p>
+   <h3>السوار الأسود والراحة على المعصم</h3>
+   <p>تظهر النسختان بسوار أسود ذي نقشة جلدية. الملمس الحقيقي والمادة المستخدمة ودرجة المرونة لا يمكن حسمها من الفيديو وحده، ولذلك يُستحسن تأكيدها أثناء التواصل. ويمكن أيضًا السؤال عن طول السوار ومدى ملاءمته لمحيط المعصم، خصوصًا أن هذا النوع من التصاميم يبدو أكبر بصريًا من الساعات الكلاسيكية البسيطة.</p>
+   <h3>بوكس الساعة الخشبي</h3>
+   <p>العلبة الظاهرة في الصور والفيديو طويلة وداكنة اللون، بتصميم يشبه الخشب ولوحة معدنية في الغطاء، ومن الداخل بطانة سوداء لحفظ الساعة وعرضها. وجود بوكس أنيق يزيد جاذبية الساعة كهدية. ومع ذلك، ينبغي تأكيد محتويات طلب الشراء عند الحجز، بما في ذلك نوع التغليف وأي أوراق أو ملحقات تأتي مع القطعة المتوفرة.</p>
+   <h2>سعر ساعة جاكوب اند كو هاي كوبي في مصر: 24,000 جنيه</h2>
+   <p><strong>سعر العرض الحالي هو 24,000 جنيه مصري للساعة الواحدة</strong> سواء وقع الاختيار على الشكل الفضي أو الذهبي الوردي، حسب التوفر الفعلي. ويشمل الإعلان أن المخزون الإجمالي المتاح ست قطع عند طرح العرض. لا توجد في هذه الصفحة مقارنة موثقة تكفي للجزم بأن السعر هو الأقل في السوق المصري، كما لم يُعتمد سعر أصلي سابق لحساب نسبة خصم محددة. عند مقارنة عروض متاجر الساعات، ينبغي مقارنة نفس جودة النسخة ومحتويات البوكس والضمان وسياسة الاستبدال، لا رقم السعر وحده.</p>
+   <h2>كيف تستخدم الصور والفيديوهات قبل شراء الساعة؟</h2>
+   <p>ابدأ بصور الاستوديو لفهم الستايل العام الذي تختاره، ثم ارجع إلى <a href="#watch-videos">الفيديوهات الحقيقية للمنتج</a> وشاهد الواجهة والسوار من أكثر من زاوية. لا تعتبر أي تفصيل غير موجود في تصوير المنتج الحقيقي ميزة مضمونة في القطعة. إذا كان يهمك عنصر محدد، مثل حركة جزء داخل المينا أو نوع القفل أو سمك الساعة، اطلب تأكيده صراحة عند الحجز. هذه الطريقة أهم من الاعتماد على صور جذابة فقط، لأنها تقلل الفارق بين التوقعات والقطعة التي سيتم تسليمها.</p>
+   <h2>هل تصلح هذه الساعة كهدية؟</h2>
+   <p>قد تكون مناسبة كهدية لمحبي الساعات ذات الشكل الجريء والتصميمات غير التقليدية، وبخاصة من يفضلون الإكسسوارات اللافتة. النسخة الفضية تميل إلى مظهر محايد نسبيًا، والذهبية الوردية تمنح حضورًا أكثر وضوحًا. البوكس المصور يزيد جاذبية العرض، لكن محتوياته النهائية يتم تأكيدها قبل الحجز. ولمن يفضل ساعة بسيطة وخفيفة جدًا، قد يكون هذا النوع ذو التفاصيل الكثيرة أقل ملاءمة من الساعة التقليدية.</p>
+   <h2>نصائح للعناية بالساعة بعد الاستلام</h2>
+   <p>لتقليل ظهور آثار الاستخدام، امسح الساعة بقطعة قماش ناعمة وجافة بعد الارتداء، واحتفظ بها داخل علبتها عند عدم الاستخدام. تجنب المواد الكيميائية والمنظفات القوية والاحتكاك بالأجسام الصلبة. لا تتعامل مع الساعة باعتبارها مقاومة للماء حتى يتم تأكيد تصنيفها فعليًا، ولا تضغط على أي جزء زخرفي أو تحاول تحريكه بالقوة. وإذا ظهرت مشكلة في الضبط أو الحركة، تواصل مع البائع لمعرفة الإجراء المناسب بدل فتح الغطاء بنفسك.</p>
+   <h2>طريقة حجز ساعة جاكوب اند كو هاي كوبي</h2>
+   <p>اختر التصميم الفضي أو الذهبي الوردي من أعلى الصفحة، ثم اضغط على زر <a href="#reserve">احجز ساعتك الآن</a> لفتح واتساب برسالة جاهزة تتضمن التصميم وسعر العرض. ويمكن الاتصال مباشرة على <a href="tel:+201025036151" dir="ltr">01025036151</a> للاستفسار عن المواصفات الدقيقة والكمية الباقية وطريقة التسليم وأي تكاليف إضافية. عدد الست قطع يشير إلى المخزون المعلن وقت نشر العرض، ولا يُعد رقمًا لحظيًا يتناقص تلقائيًا بعد كل طلب.</p>
+   <p class="jw-source-note">للاطلاع على فكرة التصميم الأصلي فقط، يمكن مراجعة <a href="https://jacobandco.com/news/jacob-co-oil-pump-timepiece-modernized-masterpiece-for-a-new-era" target="_blank" rel="noopener noreferrer">وصف Oil Pump لدى الشركة المصنّعة</a> و<a href="https://jacobandco.com/timepieces/opera-godfather/rose-gold-diamond-barrels" target="_blank" rel="noopener noreferrer">مجموعة Opera Godfather الأصلية</a>. المواصفات المذكورة هناك تخص الساعات الأصلية، ولا تثبت مواصفات نسخ الهاي كوبي المعروضة للبيع هنا.</p>
+  </div>
+</div>
 </section>
 <section class="jw-scarcity" id="reserve"><div class="jw-shell">
  <span class="jw-eyebrow">LIMITED STOCK</span><h2>العدد المتاح محدود فعلًا</h2><div class="jw-qty">6 قطع فقط</div><p>السعر الخاص 24,000 جنيه. تأكد من توافر التصميم المفضل وقت الحجز.</p>
@@ -237,7 +386,7 @@ body.admin-bar .jw-nav{top:46px}.jw-shell{width:min(100% - 28px,560px)}.jw-nav{h
 var images={steel:<?php echo wp_json_encode($steel); ?>,gold:<?php echo wp_json_encode($gold); ?>,box:<?php echo wp_json_encode($box); ?>};
 var img=document.getElementById('jw-current-watch'),label=document.getElementById('jw-current-label'),choice='steel';
 function waLink(name){return 'https://wa.me/201025036151?text='+encodeURIComponent('مرحبًا، أريد حجز ساعة '+(name==='gold'?'التصميم الذهبي الوردي':'التصميم الفضي')+' بسعر 24,000 جنيه من العرض محدود الكمية، برجاء تأكيد التوفر والتفاصيل.');}
-function select(name){if(!images[name]||!img)return;if(name==='steel'||name==='gold')choice=name;img.src=images[name];img.alt=name==='box'?'صورة علبة الساعة الخشبية':('صورة المنتج الفعلي، التصميم '+(name==='gold'?'الذهبي الوردي':'الفضي'));label.textContent=name==='box'?'علبة الساعة':(name==='gold'?'التصميم الذهبي الوردي':'التصميم الفضي');document.querySelectorAll('[data-watch-variant]').forEach(function(b){if(b.classList.contains('jw-variant'))b.setAttribute('aria-pressed',String(b.dataset.watchVariant===choice));});document.querySelectorAll('[data-watch-whatsapp]').forEach(function(a){a.href=waLink(choice);});}
+function select(name){if(!images[name]||!img)return;if(name==='steel'||name==='gold')choice=name;img.src=images[name];img.alt=name==='box'?'صورة علبة الساعة الخشبية الفعلية':('صورة ستوديو فنية توضيحية، التصميم '+(name==='gold'?'الذهبي الوردي':'الفضي'));label.textContent=name==='box'?'صورة العلبة الفعلية':(name==='gold'?'صورة عرض فنية: الذهبي الوردي':'صورة عرض فنية: الفضي');document.querySelectorAll('[data-watch-variant]').forEach(function(b){if(b.classList.contains('jw-variant'))b.setAttribute('aria-pressed',String(b.dataset.watchVariant===choice));});document.querySelectorAll('[data-watch-whatsapp]').forEach(function(a){a.href=waLink(choice);});}
 document.querySelectorAll('[data-watch-variant]').forEach(function(b){b.addEventListener('click',function(){select(b.dataset.watchVariant);});});
 var bx=document.getElementById('jw-show-box');if(bx)bx.addEventListener('click',function(){select('box');});select('steel');
 })();
