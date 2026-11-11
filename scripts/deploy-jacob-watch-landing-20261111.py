@@ -30,18 +30,20 @@ S.headers.update({
     "User-Agent": "A3talWatchLandingDeploy/1.0",
 })
 MEDIA = {
-    "steel": ("watch-silver-original.jpg", "a3tal-watch-silver-real-video-frame-20261111.webp",
-              "صورة فعلية للساعة الفضية من فيديو المنتج"),
-    "gold": ("watch-gold-original.jpg", "a3tal-watch-rose-gold-real-video-frame-20261111.webp",
-             "صورة فعلية للساعة الذهبية الوردية من فيديو المنتج"),
-    "box": ("watch-box-original.jpg", "a3tal-watch-presentation-box-real-photo-20261111.webp",
-            "علبة تقديم الساعة الخشبية من صورة المنتج الفعلية"),
+    "hero": ("watch-premium-hero-master.png", "watch-skeleton-premium-design-20261111.webp",
+             "صورة دعائية فنية توضيحية للتصميمين"),
+    "steel": ("watch-studio-two-variants-master.png", "watch-oil-pump-inspired-steel-studio-20261111.webp",
+              "صورة ستوديو توضيحية للساعة الفضية"),
+    "gold": ("watch-studio-two-variants-master.png", "watch-opera-inspired-rose-gold-studio-20261111.webp",
+             "صورة ستوديو توضيحية للساعة الذهبية"),
+    "box": ("watch-box-original.jpg", "watch-original-wooden-presentation-box-20261111.webp",
+            "صورة فعلية للبوكس الخشبي"),
 }
-TITLE = "ساعات هاي كوبي بتصميم مستوحى من Jacob & Co | عرض 24,000 جنيه"
+TITLE = "ساعة جاكوب اند كو هاي كوبي في مصر | السعر والصور والفيديو"
 META = {
-    "_yoast_wpseo_title": "ساعات بتصميم مستوحى من Jacob & Co | عرض 24,000 جنيه",
-    "_yoast_wpseo_metadesc": "شاهد التصميم الفضي والذهبي الوردي لساعة هاي كوبي مستوحاة من Jacob & Co، مع صور المنتج والعلبة الفعلية. سعر العرض 24,000 جنيه، والمتاح 6 قطع فقط. للحجز 01025036151.",
-    "_yoast_wpseo_focuskw": "ساعة هاي كوبي جاكوب اند كو",
+    "_yoast_wpseo_title": "ساعة جاكوب اند كو هاي كوبي في مصر | سعر 24,000 جنيه",
+    "_yoast_wpseo_metadesc": "ساعة جاكوب اند كو هاي كوبي في مصر بتصميمي Oil Pump وOpera Godfather. صور احترافية و3 فيديوهات حقيقية، بسعر 24,000 جنيه والكمية 6 قطع فقط. للحجز 01025036151.",
+    "_yoast_wpseo_focuskw": "ساعة جاكوب اند كو هاي كوبي",
 }
 
 def api(method: str, path: str, *, params=None, data=None, timeout=150):
