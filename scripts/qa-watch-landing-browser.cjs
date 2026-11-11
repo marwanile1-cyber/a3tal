@@ -33,7 +33,13 @@ fs.mkdirSync(OUT, { recursive: true });
    await page.waitForFunction(old => { const img = document.querySelector('#jw-current-watch'); const btn = document.querySelector('.jw-variant[data-watch-variant="gold"]'); return !!img && img.getAttribute('src') !== old && btn?.getAttribute('aria-pressed') === 'true'; }, before, { timeout: 12000 }).catch(() => {});
    const after = await page.locator('#jw-current-watch').getAttribute('src');
    const aria = await page.locator('.jw-variant[data-watch-variant="gold"]').getAttribute('aria-pressed');
-   if (device === 'mobile') console.log('MOBILE_VARIANT_DEBUG', JSON.stringify({before,after,aria,steelLoaded:result.checks[device + '_visible_img']}));
+   if (device === 'mobile') {
+    const inspect = await page.locator('.jw-variant[data-watch-variant="gold"]').evaluate(el=>{const r=el.getBoundingClientRect(); return {html:el.outerHTML.slice(0,260), rect:{x:r.x,y:r.y,w:r.width,h:r.height},centerElement:document.elementFromPoint(r.x+r.width/2,r.y+r.height/2)?.outerHTML?.slice(0,200),readyState:document.readyState, goldStored:document.querySelector('.jw-gallery-card img:nth-child(1)')?.getAttribute('src')}; });
+    await page.locator('.jw-variant[data-watch-variant="gold"]').evaluate(el=>el.click());
+    const afterJs = await page.locator('#jw-current-watch').getAttribute('src');
+    const ariaJs = await page.locator('.jw-variant[data-watch-variant="gold"]').getAttribute('aria-pressed');
+    console.log('MOBILE_VARIANT_DEBUG', JSON.stringify({before,after,aria,afterJs,ariaJs,steelLoaded:result.checks[device + '_visible_img'],inspect}));
+   }
    result.checks[device + '_variant_switch'] = before !== after && aria === 'true';
    result.checks[device + '_no_overflow'] = await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 5);
    await page.locator('#watch-videos').scrollIntoViewIfNeeded();
