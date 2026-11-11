@@ -380,7 +380,7 @@ body.admin-bar .jw-nav{top:46px}.jw-shell{width:min(100% - 28px,560px)}.jw-nav{h
 <footer class="jw-bottom-footer jw-shell"><span>عرض ساعات مستقل عبر أعطال.كوم</span><a href="https://a3tal.com/">العودة إلى أعطال.كوم</a></footer>
 <div class="jw-sticky"><span class="jw-sticky-price">24,000 ج.م<small>6 قطع متاحة إجمالًا</small></span><a data-watch-whatsapp class="jw-btn jw-btn-primary" href="<?php echo esc_url($whatsapp); ?>" target="_blank" rel="noopener noreferrer">احجز واتساب</a></div>
 </div>
-<script id="jw-actions">
+<script id="jw-actions" type="text/javascript" class="litespeed-no-defer" data-no-defer="1" data-no-optimize="1" data-cfasync="false">
 (function(){
 'use strict';
 var images={steel:<?php echo wp_json_encode($steel); ?>,gold:<?php echo wp_json_encode($gold); ?>,box:<?php echo wp_json_encode($box); ?>};
