@@ -1,0 +1,48 @@
+name: Deploy Jacob Watch Limited Offer Landing Page
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/deploy-jacob-watch-landing-20261111.yml'
+      - 'scripts/deploy-jacob-watch-landing-20261111.py'
+      - 'theme-source/a3tal-global/page-jacob-watch-offer.php'
+      - 'assets/watch-offer/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-watch-landing-only-20261111
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate files and theme without altering automotive pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          php -l theme-source/a3tal-global/page-jacob-watch-offer.php
+          python3 -m py_compile scripts/deploy-jacob-watch-landing-20261111.py
+          test -s assets/watch-offer/watch-silver-original.jpg
+          test -s assets/watch-offer/watch-gold-original.jpg
+          test -s assets/watch-offer/watch-box-original.jpg
+          grep -q "24,000" theme-source/a3tal-global/page-jacob-watch-offer.php
+          grep -q "01025036151" theme-source/a3tal-global/page-jacob-watch-offer.php
+          grep -q "6 قطع" theme-source/a3tal-global/page-jacob-watch-offer.php
+      - name: Install image and WordPress transport dependencies
+        run: python3 -m pip install -q Pillow requests
+      - name: Upload customer product photos and publish page via A3tal Direct Bridge
+        run: python3 -u scripts/deploy-jacob-watch-landing-20261111.py
+      - name: Retain live page and media verification
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-jacob-watch-landing-public-proof
+          path: reports/watch-offer/publish-qa.json
+          retention-days: 30
+          if-no-files-found: ignore
