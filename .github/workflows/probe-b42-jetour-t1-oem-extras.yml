@@ -1,0 +1,16 @@
+name: Inspect extra T1 photo options to ensure 5 different real manufacturer photos
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/probe-b42-jetour-t1-oem-extras.yml'
+  workflow_dispatch:
+permissions: { contents: read }
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m pip install -q requests Pillow
+      - run: python3 -u scripts/probe-b42-jetour-t1-oem-photos-20261112.py
