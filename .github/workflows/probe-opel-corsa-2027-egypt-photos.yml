@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/probe-opel-corsa-2027-egypt-photos.yml'
+      - 'scripts/probe-opel-corsa-2027-egypt-discover-photos-20261112.py'
   workflow_dispatch:
 permissions:
   contents: read
