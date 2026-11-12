@@ -1,0 +1,17 @@
+name: Probe Opel Corsa Egypt original photo sizes
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/probe-opel-corsa-2027-egypt-photos.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  images:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m pip install -q Pillow requests
+      - run: python3 -u scripts/probe-opel-corsa-2027-egypt-discover-photos-20261112.py
