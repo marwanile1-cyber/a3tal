@@ -1,0 +1,59 @@
+name: Publish ten high-quality A3tal articles in ten undercovered categories
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-ten-undercovered-a3tal-categories-20261112.yml'
+      - 'scripts/publish-a3tal-ten-undercovered-20261112.py'
+      - 'data/editorial/20261112-weak-categories/bundle.json'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-editorial-weak-categories-20261112
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 85
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify unique search intent, section coverage, SEO and image-source policy
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/publish-a3tal-ten-undercovered-20261112.py
+          python3 - <<'PY'
+          import json,pathlib,re
+          data=json.loads(pathlib.Path('data/editorial/20261112-weak-categories/bundle.json').read_text('utf8'))
+          posts=data['posts']
+          assert len(posts)==10
+          assert [p['category'] for p in posts]==[17,6,2790,12,335,16,191,5,3,87]
+          assert len({p['slug'] for p in posts})==10
+          assert len({p['photo']['file'] for p in posts})==10
+          for p in posts:
+              assert p['html'].count('<h2>')>=6 and '<table' in p['html']
+              assert 350<=p['wordCount']<=1000
+              assert len(p['html'])>2700 and len(p['meta'])>60
+              assert p['photo']['license'].startswith('CC BY')
+              assert all(x[1].startswith('https://') for x in p['source'])
+          script=pathlib.Path('scripts/publish-a3tal-ten-undercovered-20261112.py').read_text('utf8')
+          assert 'ALL_TEN_AUTHENTIC_LICENSED_PHOTOS_PREFLIGHT_PASSED' in script
+          assert '1600,900' in script and 'publish-bundle' in script
+          assert not re.search(r'def vector_art|random vector|stock template',script,re.I)
+          print('TEN_ARTICLES_DIFFERENT_CATEGORIES_REAL_PHOTO_POLICY_PASS')
+          PY
+          test -n "$A3TAL_API_KEY"
+      - name: Install high-quality photographic WebP pipeline
+        run: python3 -m pip install -q requests Pillow
+      - name: Preflight all ten licensed photos then publish 10 unique articles via Direct Bridge
+        run: python3 -u scripts/publish-a3tal-ten-undercovered-20261112.py
+      - name: Preserve exact final URLs images and live canonical audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-ten-original-weak-category-photo-audits
+          path: reports/undercovered-ten-20261112-audit.json
+          retention-days: 30
+          if-no-files-found: ignore
