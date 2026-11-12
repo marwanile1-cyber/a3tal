@@ -1,0 +1,57 @@
+name: Publish new Opel Corsa 2027 Egypt price Discover image and verify homepage
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-opel-corsa-2027-discover-home-20261112.yml'
+      - 'scripts/publish-opel-corsa-2027-price-discover-home-20261112.py'
+      - 'data/editorial/opel-corsa-2027-egypt-price-after-october-increase-20261112.html'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-egypt-car-prices-editorial-publish
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Require original nonduplicate factual Arabic article, real exact-model image and correct price category
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/publish-opel-corsa-2027-price-discover-home-20261112.py
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('scripts/publish-opel-corsa-2027-price-discover-home-20261112.py').read_text('utf8')
+          body=Path('data/editorial/opel-corsa-2027-egypt-price-after-october-increase-20261112.html').read_text('utf8')
+          assert 'CATEGORY=374' in s and 'collision_guard()' in s
+          assert 'a3egy-price-grid' in s and 'cg-latest-price-articles' in s
+          assert '3e0749a2b0c3d63b' in s and '1624' not in s
+          assert '1600,900' in s and 'Refusing to upscale' in s
+          assert 'ellaithy.com.eg/wp-content/uploads/2026/11' in s
+          assert body.count('<h2>')>=8 and body.count('<h3>')>=5
+          assert body.count('<table>')==2
+          assert '1,300,000' in body and '1,250,000' in body
+          assert 'Topline+' in body and '{{a3tal_image:detail}}' in body
+          assert len(re.findall(r'[\u0600-\u06FFA-Za-z0-9]+',re.sub(r'<[^>]+>',' ',body)))>1050
+          assert not re.search(r'def vector_art|fake car|cartoon-car',s,re.I)
+          print('CORSА_2027_SEO_SOURCE_AND_REAL_CAR_PHOTO_PREFLIGHT_PASS')
+          PY
+          test -n "$A3TAL_API_KEY"
+      - name: Install real car editorial photo WebP processor
+        run: python3 -m pip install -q Pillow
+      - name: Publish in price category with exact MY2027 photo and verify homepage and cars sections
+        run: python3 -u scripts/publish-opel-corsa-2027-price-discover-home-20261112.py
+      - name: Save article featured media Yoast and homepage acceptance audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: opel-corsa-2027-price-discover-home-live-audit
+          path: reports/opel-corsa-2027-egypt-price-discover-20261112.json
+          retention-days: 30
+          if-no-files-found: ignore
