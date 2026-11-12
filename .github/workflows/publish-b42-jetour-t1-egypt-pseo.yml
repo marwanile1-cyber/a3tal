@@ -1,0 +1,62 @@
+name: Publish A3tal PSEO batch42 Jetour T1 Egyptian official technical specs and real photos
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-b42-jetour-t1-egypt-pseo.yml'
+      - 'scripts/publish-car-reference-batch42-jetour-t1-egypt-20261112.py'
+      - 'data/car-reference/batch-42-jetour-t1-egypt.json'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-car-reference-pseo-serialized
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 80
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+      A3CR_BATCH42_LIMIT: '5'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify five unique SEO intents and mandatory exact-model manufacturer photo gate
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/publish-car-reference-batch42-jetour-t1-egypt-20261112.py
+          python3 - <<'PY'
+          import json,pathlib,re
+          rule=pathlib.Path('docs/pseo-featured-image-gate.md').read_text('utf8')
+          assert 'MANDATORY' in rule and 'real car photography' in rule
+          db=json.loads(pathlib.Path('data/car-reference/batch-42-jetour-t1-egypt.json').read_text('utf8'))
+          assert db['batch']==42 and db['brand']=='jetour' and db['model_slug']=='t1-15t-7dct-egypt-2026'
+          rows=db['rows']
+          assert len(rows)==5 and rows[0]['kind']=='model'
+          assert len({r['slug'] for r in rows})==5 and all(len(r['facts'])>=5 for r in rows)
+          for row in rows:
+              assert row['sources']==[
+                'https://jetouregypt.com/models/T1/',
+                'https://jetouregypt.com/uploads/models/brochures/2026/T1-Product-072026.pdf']
+              assert row['rich_html'].count('<h2>')>=4 and len(row['rich_html'])>3000
+              assert '<table' not in row['rich_html'] and len(row['meta_description'])>=80
+          source=pathlib.Path('scripts/publish-car-reference-batch42-jetour-t1-egypt-20261112.py').read_text('utf8')
+          assert 'JETOUR_T1_SEVEN_EXACT_EGYPT_OEM_IMAGES_VALIDATED' in source
+          assert 'len(ROWS)!=5' in source and '7_1.jpg' in source and '7_2.jpg' in source
+          assert '1600,900' in source and 'Refusing to upscale car source' in source
+          assert not re.search(r'def vector_art|fake-car|generic car diagram',source,re.I)
+          print('JETOUR_T1_EGYPT_FIVE_PSEO_ORIGINAL_CONTENT_AND_EXACT_OEM_PHOTO_GATE_PASS')
+          PY
+          test -n "$A3TAL_API_KEY"
+      - name: Install source-photographic WebP and HTTP dependencies
+        run: python3 -m pip install -q Pillow requests
+      - name: Preflight all seven OEM T1 photos, publish five references and verify their public pages
+        run: python3 -u scripts/publish-car-reference-batch42-jetour-t1-egypt-20261112.py
+      - name: Retain live canonical OG and source-photo audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-batch42-jetour-t1-real-factory-gallery-photos-audit
+          path: reports/batch42-jetour-t1-live-audit.json
+          retention-days: 30
+          if-no-files-found: ignore
