@@ -107,11 +107,20 @@ def build(t,original):
     else:
         if len(original)<1500 or len(original)>17000:
             raise RuntimeError("Unexpected valves original content size")
-        if re.search(r"<(?:img|figure)\b",original,re.I):
-            raise RuntimeError("Original image would be removed; review media before rewrite")
+        # Preserve the original in-body educational image verbatim. It is distinct
+        # from the WP featured image and must not disappear during the rewrite.
+        imgs=re.findall(r'<img\b[^>]*>',original,re.I)
+        image_paras=re.findall(r'<p\b[^>]*>\s*<img\b[^>]*>\s*</p>',original,re.I|re.S)
+        if len(imgs)!=1 or len(image_paras)!=1:
+            raise RuntimeError("Unreviewed article media layout; stop to protect inline images")
         if "انقطاع سير الكاتينة" not in base.readable_markup(original) or "كاوتش الصباب" not in base.readable_markup(original):
             raise RuntimeError("Original valve themes differ; do not overwrite")
-        new=VALVES_HTML
+        anchor='<h2>إيه وظيفة صبابات السحب والعادم؟</h2>'
+        if VALVES_HTML.count(anchor)!=1:
+            raise RuntimeError("Editorial rewrite image slot changed")
+        new=VALVES_HTML.replace(anchor,image_paras[0]+'\n'+anchor,1)
+        if len(re.findall(r'<img\b',new,re.I))!=len(imgs):
+            raise RuntimeError("Original inline image not preserved")
     if new.count('id="'+marker+'"')!=1 or len(new)<3000 or new.count("<h2")<5:
         raise RuntimeError("Unsafe revised markup")
     return new
