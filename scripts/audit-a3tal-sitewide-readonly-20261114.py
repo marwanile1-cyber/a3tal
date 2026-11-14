@@ -44,7 +44,14 @@ def root_and_sitemaps():
                    "sample_urls":[],"all_urls":[]}
             if r.status_code==200:
                 tree=ET.fromstring(r.content)
-                locs=[x.text.strip() for x in tree.iter() if x.tag.endswith("loc") and x.text]
+                # Count ONLY page URL <url><loc>, never image:image/image:loc nested media.
+                locs=[]
+                for element in tree.iter():
+                    if element.tag.rsplit("}",1)[-1]!="url":continue
+                    for child in element:
+                        if child.tag.rsplit("}",1)[-1]=="loc" and child.text:
+                            locs.append(child.text.strip())
+                            break
                 entry["count"]=len(locs)
                 entry["all_urls"]=locs
             else:entry["error"]="HTTP "+str(r.status_code)
@@ -119,7 +126,7 @@ def inspect(u):
             "images":len(img),"images_missing_alt":sum(not x.has_attr("alt") for x in img),
             "scripts":len(scripts),"stylesheets":len(css),
             "estimated_words":len(main_text.split()),"schema_blocks":len(doc.select('script[type="application/ld+json"]'))}
-        a["canonical_self"]=bool(a["canonical"] and urllib.parse.urlsplit(a["canonical"]).path.rstrip("/") == urllib.parse.urlsplit(r.url).path.rstrip("/") and urllib.parse.urlsplit(a["canonical"]).hostname in ("www.a3tal.com","a3tal.com"))
+        a["canonical_self"]=bool(a["canonical"] and urllib.parse.unquote(urllib.parse.urlsplit(a["canonical"]).path).rstrip("/") == urllib.parse.unquote(urllib.parse.urlsplit(r.url).path).rstrip("/") and urllib.parse.urlsplit(a["canonical"]).hostname in ("www.a3tal.com","a3tal.com"))
         return a
     except Exception as exc:
         return {"url":u,"status":"error","error":str(exc)[:220]}
