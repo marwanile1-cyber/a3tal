@@ -201,3 +201,15 @@ body.home .a3r-production-home .g-platform-grid img{background:#e2e9f2}
 @media(max-width:720px){.a3tal-reference-page .a3egy-brands-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.a3tal-reference-page .a3egy-brand{min-height:94px;padding:8px 4px 10px}.a3tal-reference-page .a3egy-brand-logo-wrap{height:43px}.a3tal-reference-page .a3egy-brand-logo{max-width:86%;max-height:39px}.a3tal-reference-page .a3egy-brand .a3egy-brand-arabic{font-size:11px}}
 @media(max-width:390px){.a3tal-reference-page .a3egy-brands-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 /* END A3TAL EGYPT AUTHENTIC LOGO CARDS */
+
+/* A3TAL-CORE-WEB-VITALS-MOBILE-HERO-20261114:START
+   Real DOM image makes the mobile hero eligible for native preload/fetchpriority.
+   Keep the exact reviewed 125px crop and original CSS layout. */
+.a3tal-reference-page img.hero-mobile-scene{display:none}
+@media(max-width:720px){
+ .a3tal-reference-page img.hero-mobile-scene{
+  display:block;width:100%;height:125px;max-width:100%;object-fit:cover;object-position:center 51%;
+  background:none;border-radius:0;flex-shrink:0;
+ }
+}
+/* A3TAL-CORE-WEB-VITALS-MOBILE-HERO-20261114:END */
