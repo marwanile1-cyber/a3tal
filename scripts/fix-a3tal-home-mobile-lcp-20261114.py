@@ -85,6 +85,7 @@ def main():
         if lint.returncode:raise RuntimeError("PHP syntax broken "+lint.stdout+lint.stderr)
     br=Bridge()
     live={n:br.read(n) for n in FILES}
+    prepared={n:reviewed[n] for n in FILES}
     for n in FILES:
         if live[n]["content"]==reviewed[n]:
             print("ALREADY_DEPLOYED",n,flush=True)
@@ -101,7 +102,6 @@ def main():
             raise RuntimeError("LIVE_SOURCE_DRIFT_STOPPED_WITHOUT_WRITE "+n+" live="+sha(live[n]["content"])[:16]+" expected="+sha(before[n])[:16])
         else:
             print("SOURCE_PREPATCH_EXACT_CONFIRMED",n,flush=True)
-    prepared={n:reviewed[n] for n in FILES}
     changed=[]
     try:
         for n in FILES:
