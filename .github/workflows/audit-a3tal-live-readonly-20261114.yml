@@ -1,0 +1,63 @@
+name: Emergency A3tal read-only technical SEO and performance audit 2026-11-14
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/audit-a3tal-live-readonly-20261114.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 26
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read-only site-wide sitemap and sample URL diagnostic
+        run: |
+          set -euo pipefail
+          python3 -m pip install -q requests beautifulsoup4
+          python3 -m py_compile scripts/audit-a3tal-sitewide-readonly-20261114.py
+          python3 -u scripts/audit-a3tal-sitewide-readonly-20261114.py
+      - name: Read-only mobile Lighthouse audit of homepage
+        shell: bash
+        run: |
+          set +e
+          npx --yes lighthouse@12.8.2 https://a3tal.com/ \
+            --chrome-path=/usr/bin/google-chrome \
+            --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" \
+            --only-categories=performance --form-factor=mobile \
+            --screenEmulation.mobile=true --throttling-method=simulate \
+            --output=json --output-path=reports/a3tal-home-mobile-lighthouse-20261114.json --quiet
+          code=$?
+          echo "LIGHTHOUSE_EXIT_CODE=$code"
+          if [ "$code" = 0 ]; then
+            node - <<'JS'
+          const l=require('./reports/a3tal-home-mobile-lighthouse-20261114.json');
+          const a=l.audits;
+          console.log('MOBILE_LIGHTHOUSE_SCORE',Math.round(100*l.categories.performance.score));
+          for (const id of ['first-contentful-paint','largest-contentful-paint','speed-index','total-blocking-time','cumulative-layout-shift','server-response-time','render-blocking-resources','unused-javascript','unused-css-rules','image-delivery-insight','lcp-discovery-insight']){
+            const x=a[id];if(x)console.log('MOBILE_AUDIT',id,x.displayValue||x.numericValue,x.score);
+          }
+          JS
+          fi
+          exit 0
+      - name: Verify latest direct HTML basic noindex and sitemap endpoints with curl
+        run: |
+          set +e
+          for target in / /cars/ /car-reference/ /sitemap_index.xml /post-sitemap.xml /a3_dtc-sitemap.xml /a3_car_ref-sitemap.xml; do
+            curl --silent --show-error --location --output /dev/null --connect-timeout 9 --max-time 35 \
+              --write-out "LIVE_HTTP route=$target http=%{http_code} ttfb=%{time_starttransfer} total=%{time_total} bytes=%{size_download}\n" \
+              "https://a3tal.com$target"
+          done
+          exit 0
+      - name: Retain emergency read-only evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-emergency-sitewide-audit-20261114
+          path: |
+            reports/a3tal-sitewide-emergency-readonly-20261114.json
+            reports/a3tal-home-mobile-lighthouse-20261114.json
+          retention-days: 30
+          if-no-files-found: warn
