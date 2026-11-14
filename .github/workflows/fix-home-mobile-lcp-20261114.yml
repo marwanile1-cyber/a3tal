@@ -1,0 +1,70 @@
+name: Fix live A3tal mobile homepage LCP and responsive price card images
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-home-mobile-lcp-20261114.yml'
+      - 'scripts/fix-a3tal-home-mobile-lcp-20261114.py'
+      - 'theme-source/a3tal-global/home-reference-20261104.php'
+      - 'theme-source/a3tal-global/home-reference-20261104.css'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-home-performance-safe-cas
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 34
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate scoped fix against reviewed PHP and mobile style source
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/fix-a3tal-home-mobile-lcp-20261114.py
+          python3 - <<'PY'
+          import pathlib
+          s=pathlib.Path('theme-source/a3tal-global/home-reference-20261104.php').read_text()
+          css=pathlib.Path('theme-source/a3tal-global/home-reference-20261104.css').read_text()
+          assert s.count('class="hero-mobile-scene"')==1
+          assert 'fetchpriority="high"' in s and "get_the_post_thumbnail($price_article_id, 'medium_large'" in s
+          assert css.count('A3TAL-CORE-WEB-VITALS-MOBILE-HERO-20261114:END')==1
+          assert s.count('class="hub-visual" loading="lazy"')==6
+          print('SAFE_SOURCE_PERFORMANCE_PATCH_POLICY_OK')
+          PY
+      - name: Install HTTP and PHP code check
+        run: |
+          python3 -m pip install -q requests
+          php -v | head -1
+      - name: Deploy with exact live source checksum CAS, automatic rollback and public DOM verification
+        run: python3 -u scripts/fix-a3tal-home-mobile-lcp-20261114.py
+      - name: Run mobile Lighthouse evidence after live deploy
+        shell: bash
+        run: |
+          set +e
+          npx --yes lighthouse@12.8.2 https://a3tal.com/ --chrome-path=/usr/bin/google-chrome --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" --only-categories=performance --form-factor=mobile --screenEmulation.mobile=true --throttling-method=simulate --output=json --output-path=reports/a3tal-mobile-lighthouse-after-20261114.json --quiet
+          code=$?
+          echo "LIGHTHOUSE_EXIT=$code"
+          if [ "$code" = 0 ]; then node - <<'JS'
+          const j=require('./reports/a3tal-mobile-lighthouse-after-20261114.json');
+          console.log('POSTFIX_MOBILE_SCORE',Math.round(j.categories.performance.score*100));
+          console.log('POSTFIX_MOBILE_LCP',j.audits['largest-contentful-paint']?.displayValue);
+          const e=j.audits['largest-contentful-paint-element']?.details?.items;
+          console.log('POSTFIX_LCP_ELEMENT',JSON.stringify(e||[]).slice(0,700));
+          JS
+          fi
+          exit 0
+      - name: Preserve before-after QA and score for rollback accountability
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-mobile-lcp-20261114-live-audit
+          path: |
+            reports/a3tal-20261114-mobile-performance-fix.json
+            reports/a3tal-mobile-lighthouse-after-20261114.json
+          retention-days: 30
+          if-no-files-found: ignore
