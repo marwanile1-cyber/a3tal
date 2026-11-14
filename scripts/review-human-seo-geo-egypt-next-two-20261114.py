@@ -134,7 +134,24 @@ def main():
     for t in ROWS:
         live=base.bridge_post(t["id"]);pub=base.public_post(t["id"])
         if MARK+"-"+t["kind"] in live.get("content",""):
-            print("ALREADY_UPDATED",live.get("link"),flush=True)
+            # Post-publication human check: the old scooter article already
+            # answers fuel economy in its FAQ. Avoid repeating that question
+            # in the newly added section; use a distinct road-surface question.
+            if t["kind"]=="scooter" and "هل كل سكوتر أوفر في البنزين؟" in live["content"]:
+                old_faq="<h3>هل كل سكوتر أوفر في البنزين؟</h3>"
+                old_answer="<p>لأ. الاستهلاك يتغير حسب المحرك والوزن والسرعة وطريقة القيادة والحالة الفنية؛ قارن أرقام الطرازين وتكلفة الصيانة بدل الحكم من شكل الدراجة.</p>"
+                new_faq="<h3>هل السكوتر مناسب للشوارع المكسّرة؟</h3>"
+                new_answer="<p>يتوقف على خلوص الأرض ومقاس العجل والمساعدين والإطارات وحمولة الدراجة، وليس على اسم سكوتر وحده. قارن الطرازين على طريق آمن، وتجنب الحفر التي يمكن أن تتلف الجنط أو تسبب فقدان التحكم.</p>"
+                if live["content"].count(old_faq)!=1 or live["content"].count(old_answer)!=1:
+                    raise RuntimeError("Scooter FAQ differs since public review; stop")
+                if live.get("title")!=t["title"] or pub["yoast_head_json"].get("canonical")!=(
+                    base.SITE+"/"+t["slug"]+"/"):
+                    raise RuntimeError("Already-published scooter identity changed")
+                new=live["content"].replace(old_faq,new_faq,1).replace(old_answer,new_answer,1)
+                plans.append((t,live,pub,new))
+                print("SCOOTER_DUPLICATE_FAQ_REPLACED_IN_PLAN",flush=True)
+            else:
+                print("ALREADY_UPDATED",live.get("link"),flush=True)
             continue
         base.ensure_identity(t,live,pub)
         new=build(t,live["content"])
