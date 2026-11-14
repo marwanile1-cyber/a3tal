@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/audit-a3tal-live-readonly-20261114.yml'
+      - 'scripts/audit-a3tal-sitewide-readonly-20261114.py'
   workflow_dispatch:
 permissions:
   contents: read
