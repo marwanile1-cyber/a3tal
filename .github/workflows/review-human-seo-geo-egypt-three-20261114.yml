@@ -1,0 +1,37 @@
+name: Human SEO and GEO review - A3tal Egypt three existing articles (2026-11-14)
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/review-human-seo-geo-egypt-three-20261114.yml'
+      - 'scripts/review-human-seo-geo-egypt-three-20261114.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-egypt-editorial-content-write
+  cancel-in-progress: false
+jobs:
+  update-and-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate source and bridge
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY" || { echo "A3tal Bridge secret missing"; exit 1; }
+          python3 -m py_compile scripts/review-human-seo-geo-egypt-three-20261114.py
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/review-human-seo-geo-egypt-three-20261114.py').read_text()
+          for marker in ['ALL_HUMAN_PREFLIGHTS_PASSED','expected_modified_gmt',
+                         'featured_media','yoast_head_json','MARK','ensure_identity',
+                         'A3TAL_THREE_HUMAN_SEO_GEO_REVISIONS_DONE']:
+              assert marker in p,marker
+          assert 'wp_insert_post' not in p
+          PY
+      - name: Preflight each original article, update safely by revision and verify live Yoast/OG
+        run: python3 -u scripts/review-human-seo-geo-egypt-three-20261114.py
