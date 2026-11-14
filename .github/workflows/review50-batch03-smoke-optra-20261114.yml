@@ -1,0 +1,29 @@
+name: A3tal third human50 - exhaust smoke and Optra A/C diagnostic safety
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/review50-batch03-smoke-optra-20261114.yml'
+      - 'scripts/review50-batch03-smoke-optra-20261114.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-egypt-editorial-content-write
+  cancel-in-progress: false
+jobs:
+  verify-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Syntax validation and Bridge key
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY" || { echo "Direct Bridge key missing"; exit 1; }
+          python3 -m py_compile scripts/review50-batch03-smoke-optra-20261114.py
+          python3 -m py_compile scripts/review-human-seo-geo-egypt-three-20261114.py
+      - name: Safe factual rewrites with media and Yoast QA
+        run: python3 -u scripts/review50-batch03-smoke-optra-20261114.py
