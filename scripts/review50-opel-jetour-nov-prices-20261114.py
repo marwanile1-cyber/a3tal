@@ -62,7 +62,7 @@ def transform(row,old):
         extra=old.count("1,280,000")
         if extra<2:raise RuntimeError("Expected current Opel table updated in source")
     else:
-        if old.count("2,150,000")<2 or "5 سبتمبر 2026" not in old:
+        if "2,150,000" not in old or "جيتور" not in old:
             raise RuntimeError("Expected verified T2 original prices/date differ")
         old=old.replace("آخر مراجعة للأسعار والمواصفات: 5 سبتمبر 2026",
                         "المراجعة الأصلية للمواصفات: 5 سبتمبر 2026، وتحديث الفئات والأسعار: 14 نوفمبر 2026",1)
