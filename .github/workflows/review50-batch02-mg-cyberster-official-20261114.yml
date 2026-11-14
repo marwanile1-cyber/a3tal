@@ -1,0 +1,29 @@
+name: A3tal human50 batch02 - MG Cyberster official Egypt price
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/review50-batch02-mg-cyberster-official-20261114.yml'
+      - 'scripts/review50-batch02-mg-cyberster-official-20261114.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-egypt-editorial-content-write
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate script before write
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY" || { echo "A3tal Direct Bridge secret missing"; exit 1; }
+          python3 -m py_compile scripts/review50-batch02-mg-cyberster-official-20261114.py
+          python3 -m py_compile scripts/review-human-seo-geo-egypt-three-20261114.py
+      - name: Publish official local model facts with revision-lock and Yoast image checks
+        run: python3 -u scripts/review50-batch02-mg-cyberster-official-20261114.py
