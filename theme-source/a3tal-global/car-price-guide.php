@@ -153,6 +153,18 @@ $cg_price_updates = new WP_Query([
   'search_columns'=>['post_title'],
   'orderby'=>'date','order'=>'DESC','no_found_rows'=>true,'ignore_sticky_posts'=>true
 ]);
+// The vehicle catalogue and published price articles are separate data stores.
+// A title search must not tell visitors a model has no results when a verified
+// price article exists. Keep archive filters and vehicle records unchanged.
+$cg_matching_price_posts = null;
+if ($cg_search !== '' && !$cg_brand_selected) {
+  $cg_matching_price_posts = new WP_Query([
+    'post_type'=>'post','post_status'=>'publish','cat'=>374,
+    's'=>$cg_search,'search_columns'=>['post_title'],'posts_per_page'=>8,
+    'orderby'=>'date','order'=>'DESC','ignore_sticky_posts'=>true,
+    'no_found_rows'=>true
+  ]);
+}
 // Scoped assets: only the cars archive, never motorcycle, DTC or posts.
 wp_enqueue_style('a3tal-car-price-guide',get_template_directory_uri().'/car-price-guide.css',[], '1.1.1');
 wp_enqueue_script('a3tal-car-price-logos',get_template_directory_uri().'/car-price-brand-logos.js',[], '1.1.0',true);
@@ -266,6 +278,28 @@ get_header();
       </aside>
 
       <div class="cg-models-col">
+        <?php if ($cg_matching_price_posts && $cg_matching_price_posts->posts): ?>
+        <section class="cg-surface cg-models-section" id="cg-search-price-articles" aria-labelledby="cg-search-price-title">
+          <div class="cg-section-heading"><div><span class="cg-kicker">نتائج البحث في المقالات المنشورة</span><h2 id="cg-search-price-title">مقالات أسعار السيارات المطابقة</h2></div><a class="cg-secondary-link" href="<?php echo esc_url(a3g_cat_link(374)); ?>">كل مقالات الأسعار ←</a></div>
+          <div class="cg-cars-grid">
+            <?php foreach ($cg_matching_price_posts->posts as $cg_found_price_post):
+              $cg_found_price_id=(int)$cg_found_price_post->ID;
+              $cg_found_price_url=get_permalink($cg_found_price_id);
+            ?>
+            <article class="cg-car-card">
+              <a class="cg-car-photo" href="<?php echo esc_url($cg_found_price_url); ?>" aria-label="<?php echo esc_attr(get_the_title($cg_found_price_id)); ?>">
+                <?php if (has_post_thumbnail($cg_found_price_id)) echo get_the_post_thumbnail($cg_found_price_id,'medium_large',['loading'=>'lazy','decoding'=>'async','alt'=>get_the_title($cg_found_price_id)]); else echo '<span class="cg-photo-empty">أسعار السيارات</span>'; ?>
+              </a>
+              <div class="cg-car-info">
+                <div class="cg-car-meta"><span>مقال سعر منشور</span><span><?php echo esc_html(get_the_date('Y/m/d',$cg_found_price_id)); ?></span></div>
+                <h3><a href="<?php echo esc_url($cg_found_price_url); ?>"><?php echo esc_html(get_the_title($cg_found_price_id)); ?></a></h3>
+                <a class="cg-car-more" href="<?php echo esc_url($cg_found_price_url); ?>">عرض السعر والمواصفات <span aria-hidden="true">←</span></a>
+              </div>
+            </article>
+            <?php endforeach; ?>
+          </div>
+        </section>
+        <?php endif; ?>
         <?php // Price editorial posts publish independently of vehicle catalogue records.
         // Show the 3 newest real price stories prominently, automatically, without
         // changing a3_car URLs, filters, brand taxonomy or verified price metadata.
@@ -297,7 +331,7 @@ get_header();
             <div class="cg-cars-grid"><?php foreach($cg_top as $car){$cg_render_card($car);} ?></div>
           <?php elseif($cg_brand_selected): ?>
             <p class="cg-empty">لا توجد موديلات مسجلة بأسعار في قاعدة السيارات لهذه الماركة حاليًا. تصفح المقالات والأعطال والمواصفات المنشورة في القسم التالي.</p>
-          <?php else: ?><p class="cg-empty">مفيش موديلات مطابقة للفلاتر دي حاليًا. جرّب مسح الفلاتر أو اسم موديل تاني.</p><?php endif; ?>
+          <?php else: ?><p class="cg-empty"><?php echo $cg_matching_price_posts && $cg_matching_price_posts->posts ? 'لا توجد موديلات مسجلة بهذا الاسم في قاعدة السيارات، لكن توجد مقالات أسعار مطابقة بالأعلى.' : 'مفيش موديلات مطابقة للفلاتر دي حاليًا. جرّب مسح الفلاتر أو اسم موديل تاني.'; ?></p><?php endif; ?>
         </section>
       </div>
     </div>
