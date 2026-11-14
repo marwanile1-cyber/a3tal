@@ -1,0 +1,29 @@
+name: A3tal SEO GEO human50 - verified November prices
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/review50-verified-prices-nov14-2026.yml'
+      - 'scripts/review50-verified-prices-nov14-2026.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-egypt-editorial-content-write
+  cancel-in-progress: false
+jobs:
+  update-3-prices:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Syntax and Bridge secret
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY" || { echo "Bridge secret missing"; exit 1; }
+          python3 -m py_compile scripts/review50-verified-prices-nov14-2026.py
+          python3 -m py_compile scripts/review-human-seo-geo-egypt-three-20261114.py
+      - name: Verify old and new prices and revise existing 3 articles through Bridge
+        run: python3 -u scripts/review50-verified-prices-nov14-2026.py
