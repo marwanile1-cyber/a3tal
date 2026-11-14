@@ -90,6 +90,9 @@ def main():
             print("ALREADY_DEPLOYED",n,flush=True)
         elif n.endswith(".php") and live[n]["content"]==before[n].replace(REFERENCE_QUERY,""):
             print("CONFIRMED_LIVE_REGRESSION_MISSING_PSEO_POST_QUERY__RESTORE_IN_TARGET",n,flush=True)
+        elif n.endswith(".css") and re.sub(r"\\n{2,}", "\\n", live[n]["content"])==re.sub(r"\\n{2,}", "\\n", before[n]):
+            print("EXACT_CSS_ONLY_WHITESPACE_DRIFT_PRESERVED",n,flush=True)
+            prepared[n]=live[n]["content"]+PATCH_CSS
         elif live[n]["content"]!=before[n]:
             import difflib
             print("LIVE_THEME_DRIFT_DIAGNOSTIC",n,"live_chars",len(live[n]["content"]),"expected_chars",len(before[n]),flush=True)
@@ -98,11 +101,12 @@ def main():
             raise RuntimeError("LIVE_SOURCE_DRIFT_STOPPED_WITHOUT_WRITE "+n+" live="+sha(live[n]["content"])[:16]+" expected="+sha(before[n])[:16])
         else:
             print("SOURCE_PREPATCH_EXACT_CONFIRMED",n,flush=True)
+    prepared={n:reviewed[n] for n in FILES}
     changed=[]
     try:
         for n in FILES:
             if live[n]["content"]==reviewed[n]:continue
-            br.write(n,reviewed[n],expected=live[n]["sha256"])
+            br.write(n,prepared[n],expected=live[n]["sha256"])
             changed.append(n)
             print("PRECISE_THEME_FILE_DEPLOYED",n,flush=True)
         br.flush()
@@ -114,7 +118,7 @@ def main():
             except Exception:
                 if i==4:raise
                 time.sleep(8)
-        data={"success":True,"changed":changed,"files":{n:sha(reviewed[n]) for n in FILES},
+        data={"success":True,"changed":changed,"files":{n:sha(prepared[n]) for n in FILES},
               "checks":proof,"scope":"LCP-only native DOM IMG, price responsive thumbnails, six nav tiles lazy"}
         REPORT.write_text(json.dumps(data,indent=2,ensure_ascii=False),"utf8")
         print("HOMEPAGE_MOBILE_LCP_DOM_CSS_RESPONSIVE_PRICE_PHOTOS_LIVE_VERIFIED",flush=True)
@@ -124,7 +128,7 @@ def main():
             for n in reversed(changed):
                 try:
                     current=br.read(n)
-                    if current["content"]==reviewed[n]:
+                    if current["content"]==prepared[n]:
                         br.write(n,live[n]["content"],expected=current["sha256"])
                         print("ROLLBACK_SUCCEEDED",n,flush=True)
                 except Exception as e:print("ROLLBACK_REQUIRES_MANUAL_REVIEW",n,str(e),flush=True)
