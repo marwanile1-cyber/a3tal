@@ -91,7 +91,7 @@ def main():
             print("ALREADY_DEPLOYED",n,flush=True)
         elif n.endswith(".php") and live[n]["content"]==before[n].replace(REFERENCE_QUERY,""):
             print("CONFIRMED_LIVE_REGRESSION_MISSING_PSEO_POST_QUERY__RESTORE_IN_TARGET",n,flush=True)
-        elif n.endswith(".css") and re.sub(r"\\n{2,}", "\\n", live[n]["content"])==re.sub(r"\\n{2,}", "\\n", before[n]):
+        elif n.endswith(".css") and re.sub(r"\n{2,}", "\n", live[n]["content"])==re.sub(r"\n{2,}", "\n", before[n]):
             print("EXACT_CSS_ONLY_WHITESPACE_DRIFT_PRESERVED",n,flush=True)
             prepared[n]=live[n]["content"]+PATCH_CSS
         elif live[n]["content"]!=before[n]:
