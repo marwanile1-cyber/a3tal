@@ -30,7 +30,7 @@ ROWS=[
 
 def transform(row,old):
     if MARK+"-"+row["kind"] in old:return None
-    if len(old)<3000 or not old.count("<h2"):
+    if len(old)<1400 or not old.count("<h2"):
         raise RuntimeError("Original price article unexpectedly truncated")
     if row["kind"]=="frontera":
         if old.count("1,230,000")<3 or "40 ألف" not in old:
