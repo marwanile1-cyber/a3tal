@@ -1,0 +1,29 @@
+name: A3tal third human50 - fix 6-speed ATF and Sentra maintenance
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/review50-batch03-6speed-sentra-20261114.yml'
+      - 'scripts/review50-batch03-6speed-sentra-20261114.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-egypt-editorial-content-write
+  cancel-in-progress: false
+jobs:
+  review-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 19
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Static validation and Bridge secret
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY" || { echo "Direct Bridge secret missing"; exit 1; }
+          python3 -m py_compile scripts/review50-batch03-6speed-sentra-20261114.py
+          python3 -m py_compile scripts/review-human-seo-geo-egypt-three-20261114.py
+      - name: Validate both originals and publish with photos and Yoast protected
+        run: python3 -u scripts/review50-batch03-6speed-sentra-20261114.py
