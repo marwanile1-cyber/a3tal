@@ -50,6 +50,10 @@ def reverse(name,reviewed):
     # Six below-hero graphical nav tiles were changed from eager to lazy.
     assert before.count('class="hub-visual" loading="lazy"')==6
     return before.replace('class="hub-visual" loading="lazy"','class="hub-visual" loading="eager"')
+def only_blank_line_drift(a,b):
+    import difflib
+    changes=[item for item in difflib.ndiff(a.splitlines(),b.splitlines()) if item[:2] in ("+ ","- ")]
+    return 0<len(changes)<=3 and all(not item[2:].strip() for item in changes)
 def pub_verify():
     agent={"User-Agent":"Mozilla/5.0 (A3talLive-LCP-Fix-QA)","Cache-Control":"no-cache, no-store"}
     url=BASE+"/?a3tal_lcp_fix=20261114_"+str(time.time_ns())
@@ -91,8 +95,8 @@ def main():
             print("ALREADY_DEPLOYED",n,flush=True)
         elif n.endswith(".php") and live[n]["content"]==before[n].replace(REFERENCE_QUERY,""):
             print("CONFIRMED_LIVE_REGRESSION_MISSING_PSEO_POST_QUERY__RESTORE_IN_TARGET",n,flush=True)
-        elif n.endswith(".css") and re.sub(r"\n{2,}", "\n", live[n]["content"])==re.sub(r"\n{2,}", "\n", before[n]):
-            print("EXACT_CSS_ONLY_WHITESPACE_DRIFT_PRESERVED",n,flush=True)
+        elif n.endswith(".css") and only_blank_line_drift(before[n], live[n]["content"]):
+            print("EXACT_CSS_ONLY_BLANK_LINE_DRIFT_PRESERVED",n,flush=True)
             prepared[n]=live[n]["content"]+PATCH_CSS
         elif live[n]["content"]!=before[n]:
             import difflib
