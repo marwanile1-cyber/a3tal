@@ -1,0 +1,29 @@
+name: A3tal human50 batch02 - BMW fault codes and BYD November offer
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/review50-batch02-bmw-codes-byd-promo-20261114.yml'
+      - 'scripts/review50-batch02-bmw-codes-byd-promo-20261114.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-egypt-editorial-content-write
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate script and secure bridge
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY" || { echo "Missing direct Bridge"; exit 1; }
+          python3 -m py_compile scripts/review50-batch02-bmw-codes-byd-promo-20261114.py
+          python3 -m py_compile scripts/review-human-seo-geo-egypt-three-20261114.py
+      - name: Validate original revisions and write only checked human corrections
+        run: python3 -u scripts/review50-batch02-bmw-codes-byd-promo-20261114.py
