@@ -1,0 +1,29 @@
+name: A3tal Egypt human50 batch02 - BMW M3 M4 X7 XM evidence-backed
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/review50-batch02-bmw-20261114.yml'
+      - 'scripts/review50-batch02-bmw-20261114.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-egypt-editorial-content-write
+  cancel-in-progress: false
+jobs:
+  verify-and-revise:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate editorial script
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY" || { echo "Missing A3tal Bridge secret"; exit 1; }
+          python3 -m py_compile scripts/review50-batch02-bmw-20261114.py
+          python3 -m py_compile scripts/review-human-seo-geo-egypt-three-20261114.py
+      - name: Revision-lock and publish BMW corrections with live Yoast/OG QA
+        run: python3 -u scripts/review50-batch02-bmw-20261114.py
