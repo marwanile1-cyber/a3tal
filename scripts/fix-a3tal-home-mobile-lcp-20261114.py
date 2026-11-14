@@ -19,6 +19,12 @@ OLD_HERO='<div class="hero-mobile-scene" role="img" aria-label="صورة تصم�
 NEW_HERO='<img class="hero-mobile-scene" src="<?php echo esc_url(content_url(\'/uploads/2026/11/a3tal-ref-20261104-hero-mobile.webp\')); ?>" width="1200" height="440" loading="eager" fetchpriority="high" decoding="async" alt="سيارة حمراء في مدينة، الصورة الرئيسية لأعطال.كوم">'
 OLD_PRICE='<?php if($price_article_image): ?><img loading="lazy" decoding="async" src="<?php echo esc_url($price_article_image); ?>" alt="<?php echo esc_attr(get_the_title($price_article_id)); ?>"><?php else: ?>'
 NEW_PRICE='<?php if($price_article_image): ?><?php echo get_the_post_thumbnail($price_article_id, \'medium_large\', [\'loading\'=>\'lazy\',\'decoding\'=>\'async\',\'sizes\'=>\'(max-width:720px) 48vw, (max-width:1200px) 32vw, 380px\',\'alt\'=>get_the_title($price_article_id)]); ?><?php else: ?>'
+REFERENCE_QUERY="""// Reuse existing, already stable homepage car query; avoid extra home data scans.
+$home_new_reference = post_type_exists('a3_car_ref') ? get_posts([
+ 'post_type'=>'a3_car_ref','post_status'=>'publish','numberposts'=>6,
+ 'orderby'=>'modified','order'=>'DESC'
+]) : [];
+"""
 PATCH_CSS='''
 /* A3TAL-CORE-WEB-VITALS-MOBILE-HERO-20261114:START
    Real DOM image makes the mobile hero eligible for native preload/fetchpriority.
@@ -57,6 +63,7 @@ def pub_verify():
         "no_legacy_hero_div":OLD_HERO not in h,
         "real_prices":'id="egypt-car-prices"' in h and 'class="a3egy-price-grid"' in h,
         "pseo":'id="egypt-pseo"' in h,
+        "six_recovered_pseo_cards":bool(re.search(r'<div class="a3egy-reference-grid">(.*?)</div>',h,re.S) and re.search(r'<div class="a3egy-reference-grid">(.*?)</div>',h,re.S).group(1).count("a3egy-reference-card")>=5),
         "responsive_price_sizes":'sizes="(max-width:720px) 48vw' in h or "sizes=" in h[h.find("a3egy-price-grid"):h.find("a3egy-market-quick")],
     }
     if not all(checks.values()):raise RuntimeError("Homepage DOM QA failed "+repr(checks))
@@ -81,6 +88,8 @@ def main():
     for n in FILES:
         if live[n]["content"]==reviewed[n]:
             print("ALREADY_DEPLOYED",n,flush=True)
+        elif n.endswith(".php") and live[n]["content"]==before[n].replace(REFERENCE_QUERY,""):
+            print("CONFIRMED_LIVE_REGRESSION_MISSING_PSEO_POST_QUERY__RESTORE_IN_TARGET",n,flush=True)
         elif live[n]["content"]!=before[n]:
             import difflib
             print("LIVE_THEME_DRIFT_DIAGNOSTIC",n,"live_chars",len(live[n]["content"]),"expected_chars",len(before[n]),flush=True)
@@ -116,7 +125,7 @@ def main():
                 try:
                     current=br.read(n)
                     if current["content"]==reviewed[n]:
-                        br.write(n,before[n],expected=current["sha256"])
+                        br.write(n,live[n]["content"],expected=current["sha256"])
                         print("ROLLBACK_SUCCEEDED",n,flush=True)
                 except Exception as e:print("ROLLBACK_REQUIRES_MANUAL_REVIEW",n,str(e),flush=True)
             br.flush()
