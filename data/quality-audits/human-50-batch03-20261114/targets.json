@@ -1,0 +1,462 @@
+{
+  "site": "https://a3tal.com/",
+  "focus": "Egypt automotive editorial SEO/GEO, safety, links and dated pricing",
+  "batch_number": 3,
+  "completed_previously": 100,
+  "date": "2026-11-14",
+  "count": 50,
+  "exclude_previous_batches": true,
+  "source": "October screening selects only; live content and current sources govern decisions",
+  "targets": [
+    {
+      "n": 1,
+      "id": 80147,
+      "slug": "p0299-turbo-underboost-chinese-cars-fix-egypt-2026",
+      "url": "https://a3tal.com/p0299-turbo-underboost-chinese-cars-fix-egypt-2026/",
+      "title_as_of_oct2026": "كود P0299 في السيارات الصينية: أسباب Underboost وطريقة التشخيص",
+      "category": "مقالات عامة وأخبار",
+      "oct_audit_priority": 37
+    },
+    {
+      "n": 2,
+      "id": 80966,
+      "slug": "car-ac-compressor-types-and-maintenance",
+      "url": "https://a3tal.com/car-ac-compressor-types-and-maintenance/",
+      "title_as_of_oct2026": "أنواع كمبروسر تكييف السيارات: كيف يعمل وأجزاءه وأعراض التلف",
+      "category": "مقالات عامة وأخبار",
+      "oct_audit_priority": 37
+    },
+    {
+      "n": 3,
+      "id": 81155,
+      "slug": "6-speed-automatic-transmission-cars-dexron-vi-oil",
+      "url": "https://a3tal.com/6-speed-automatic-transmission-cars-dexron-vi-oil/",
+      "title_as_of_oct2026": "دليل الفتيس الـ 6 غيار: السيارات المتاحة والزيت المناسب لها | أعطال",
+      "category": "أعطال وإصلاح",
+      "oct_audit_priority": 37
+    },
+    {
+      "n": 4,
+      "id": 80126,
+      "slug": "mercedes-p0171-lean-code-fix-egypt-2026",
+      "url": "https://a3tal.com/mercedes-p0171-lean-code-fix-egypt-2026/",
+      "title_as_of_oct2026": "كود P0171 في مرسيدس: Fuel Trim وتسريب الهواء وطريقة التشخيص",
+      "category": "أعطال وإصلاح",
+      "oct_audit_priority": 37
+    },
+    {
+      "n": 5,
+      "id": 80097,
+      "slug": "%d8%aa%d8%af%d9%88%d9%8a%d8%b1-%d8%a7%d9%84%d9%83%d8%a7%d9%88%d8%aa%d8%b4-tire-rotation-%d8%a3%d9%87%d9%85%d9%8a%d8%aa%d9%87%d8%8c-%d8%b7%d8%b1%d9%82%d9%87-%d8%a7%d9%84%d8%b5%d8%ad%d9%8a%d8%ad",
+      "url": "https://a3tal.com/%d8%aa%d8%af%d9%88%d9%8a%d8%b1-%d8%a7%d9%84%d9%83%d8%a7%d9%88%d8%aa%d8%b4-tire-rotation-%d8%a3%d9%87%d9%85%d9%8a%d8%aa%d9%87%d8%8c-%d8%b7%d8%b1%d9%82%d9%87-%d8%a7%d9%84%d8%b5%d8%ad%d9%8a%d8%ad/",
+      "title_as_of_oct2026": "تدوير الكاوتش Tire Rotation: الموعد الصحيح وأنماط التبديل",
+      "category": "مقالات عامة وأخبار",
+      "oct_audit_priority": 36
+    },
+    {
+      "n": 6,
+      "id": 83244,
+      "slug": "p0135-o2-sensor-heater-bank1-sensor1",
+      "url": "https://a3tal.com/p0135-o2-sensor-heater-bank1-sensor1/",
+      "title_as_of_oct2026": "كود P0135: عطل سخان حساس الأكسجين Bank 1 Sensor 1 وطريقة الفحص",
+      "category": "مقالات عامة وأخبار",
+      "oct_audit_priority": 36
+    },
+    {
+      "n": 7,
+      "id": 80969,
+      "slug": "car-exhaust-smoke-colors-causes",
+      "url": "https://a3tal.com/car-exhaust-smoke-colors-causes/",
+      "title_as_of_oct2026": "ألوان دخان الشكمان: ماذا يعني الدخان الأبيض، الأسود، والأزرق؟ | أعطال.كوم",
+      "category": "أعطال وإصلاح",
+      "oct_audit_priority": 36
+    },
+    {
+      "n": 8,
+      "id": 80548,
+      "slug": "american-cars-dtc-codes-encyclopedia-part1",
+      "url": "https://a3tal.com/american-cars-dtc-codes-encyclopedia-part1/",
+      "title_as_of_oct2026": "أكواد أعطال السيارات الأمريكية: EVAP والخليط وVVT وMisfire",
+      "category": "اكواد وتشخيص",
+      "oct_audit_priority": 36
+    },
+    {
+      "n": 9,
+      "id": 80204,
+      "slug": "kia-cerato-throttle-body-coding-reset-guide",
+      "url": "https://a3tal.com/kia-cerato-throttle-body-coding-reset-guide/",
+      "title_as_of_oct2026": "تكويد بوابة كيا سيراتو: متى تحتاج Throttle Relearn بعد التنظيف؟",
+      "category": "مقالات عامة وأخبار",
+      "oct_audit_priority": 36
+    },
+    {
+      "n": 10,
+      "id": 80596,
+      "slug": "chevrolet-optra-suspension-steering-guide",
+      "url": "https://a3tal.com/chevrolet-optra-suspension-steering-guide/",
+      "title_as_of_oct2026": "أعطال عفشة شيفروليه أوبترا: الخبط والدركسيون والمساعدين",
+      "category": "أعطال وإصلاح",
+      "oct_audit_priority": 35
+    },
+    {
+      "n": 11,
+      "id": 81912,
+      "slug": "ford-f150-fuel-tank-recall",
+      "url": "https://a3tal.com/ford-f150-fuel-tank-recall/",
+      "title_as_of_oct2026": "استدعاء فورد F-150 بسبب خزان الوقود: ما الخطر وكيف تتأكد من سيارتك؟",
+      "category": "مقالات عامة وأخبار",
+      "oct_audit_priority": 35
+    },
+    {
+      "n": 12,
+      "id": 149,
+      "slug": "%d9%83%d9%88%d8%af-%d8%b9%d8%b7%d9%84-%d8%b1%d9%8a%d9%86%d9%88-p0000-%d8%b9%d9%86%d8%af%d9%85%d8%a7-%d9%84%d8%a7-%d9%8a%d8%b9%d9%86%d9%8a-%d8%a7%d9%84%d8%ae%d8%b7%d8%a3-%d9%88%d8%ac%d9%88%d8%af",
+      "url": "https://a3tal.com/%d9%83%d9%88%d8%af-%d8%b9%d8%b7%d9%84-%d8%b1%d9%8a%d9%86%d9%88-p0000-%d8%b9%d9%86%d8%af%d9%85%d8%a7-%d9%84%d8%a7-%d9%8a%d8%b9%d9%86%d9%8a-%d8%a7%d9%84%d8%ae%d8%b7%d8%a3-%d9%88%d8%ac%d9%88%d8%af/",
+      "title_as_of_oct2026": "P0000 OBD2: هل يعني عدم وجود عطل؟ معنى ISO/SAE Reserved",
+      "category": "مقالات عامة وأخبار",
+      "oct_audit_priority": 35
+    },
+    {
+      "n": 13,
+      "id": 80079,
+      "slug": "engine-oil-change-guide-egypt-2025",
+      "url": "https://a3tal.com/engine-oil-change-guide-egypt-2025/",
+      "title_as_of_oct2026": "تغيير زيت الموتور: اختيار اللزوجة والمواصفة والموعد الصحيح",
+      "category": "مقالات عامة وأخبار",
+      "oct_audit_priority": 35
+    },
+    {
+      "n": 14,
+      "id": 80059,
+      "slug": "clogged-fuel-filter-symptoms-causes",
+      "url": "https://a3tal.com/clogged-fuel-filter-symptoms-causes/",
+      "title_as_of_oct2026": "أعراض انسداد فلتر البنزين: ضعف السحب وصعوبة التشغيل وطريقة الفحص",
+      "category": "مقالات عامة وأخبار",
+      "oct_audit_priority": 35
+    },
+    {
+      "n": 15,
+      "id": 80016,
+      "slug": "%d8%a7%d9%84%d8%af%d9%84%d9%8a%d9%84-%d8%a7%d9%84%d8%b4%d8%a7%d9%85%d9%84-%d9%84%d8%ac%d8%af%d9%88%d9%84-%d8%b5%d9%8a%d8%a7%d9%86%d8%a9-%d8%b3%d8%a7%d9%88-%d8%a5%d9%8a%d8%b3%d8%aa-soueast-%d9%81",
+      "url": "https://a3tal.com/%d8%a7%d9%84%d8%af%d9%84%d9%8a%d9%84-%d8%a7%d9%84%d8%b4%d8%a7%d9%85%d9%84-%d9%84%d8%ac%d8%af%d9%88%d9%84-%d8%b5%d9%8a%d8%a7%d9%86%d8%a9-%d8%b3%d8%a7%d9%88-%d8%a5%d9%8a%d8%b3%d8%aa-soueast-%d9%81/",
+      "title_as_of_oct2026": "جدول صيانة SOUEAST في مصر: الضمان والخدمة وكيف تعرف موعد صيانة موديلك",
+      "category": "أعطال وإصلاح",
+      "oct_audit_priority": 35
+    },
+    {
+      "n": 16,
+      "id": 80551,
+      "slug": "american-cars-dtc-codes-encyclopedia-part2-transmission-abs",
+      "url": "https://a3tal.com/american-cars-dtc-codes-encyclopedia-part2-transmission-abs/",
+      "title_as_of_oct2026": "أكواد فتيس وABS في السيارات الأمريكية: P0700 وStabiliTrak وU-Codes",
+      "category": "اكواد وتشخيص",
+      "oct_audit_priority": 35
+    },
+    {
+      "n": 17,
+      "id": 79856,
+      "slug": "%d9%81%d9%83-%d9%84%d8%ba%d8%b2-%d9%83%d9%88%d8%af-%d8%a7%d9%84%d8%b9%d8%b7%d9%84-p0300-%d9%81%d9%8a-%d8%b4%d9%8a%d9%81%d8%b1%d9%88%d9%84%d9%8a%d9%87-%d8%af%d9%84%d9%8a%d9%84-%d8%a7%d9%84%d8%aa%d8%b4",
+      "url": "https://a3tal.com/%d9%81%d9%83-%d9%84%d8%ba%d8%b2-%d9%83%d9%88%d8%af-%d8%a7%d9%84%d8%b9%d8%b7%d9%84-p0300-%d9%81%d9%8a-%d8%b4%d9%8a%d9%81%d8%b1%d9%88%d9%84%d9%8a%d9%87-%d8%af%d9%84%d9%8a%d9%84-%d8%a7%d9%84%d8%aa%d8%b4/",
+      "title_as_of_oct2026": "DTC P0300 Chevrolet: Random Misfire وP0300-00 | التشخيص",
+      "category": "مقالات عامة وأخبار",
+      "oct_audit_priority": 35
+    },
+    {
+      "n": 18,
+      "id": 81329,
+      "slug": "p0300-random-misfire",
+      "url": "https://a3tal.com/p0300-random-misfire/",
+      "title_as_of_oct2026": "كود P0300: معنى اختلال الاحتراق العشوائي وأسباب ظهوره",
+      "category": "مقالات عامة وأخبار",
+      "oct_audit_priority": 35
+    },
+    {
+      "n": 19,
+      "id": 80491,
+      "slug": "iac-valve-symptoms-cleaning-price-egypt",
+      "url": "https://a3tal.com/iac-valve-symptoms-cleaning-price-egypt/",
+      "title_as_of_oct2026": "حساس الأيدل IAC: أعراض العطل وطريقة الفحص وهل موجود في كل السيارات؟",
+      "category": "أسعار ومقارنات",
+      "oct_audit_priority": 34
+    },
+    {
+      "n": 20,
+      "id": 80062,
+      "slug": "yaw-rate-sensor-symptoms-fix",
+      "url": "https://a3tal.com/yaw-rate-sensor-symptoms-fix/",
+      "title_as_of_oct2026": "حساس Yaw Rate وG-Sensor: وظيفته وأعراض العطل وطريقة الفحص",
+      "category": "مقالات عامة وأخبار",
+      "oct_audit_priority": 34
+    },
+    {
+      "n": 21,
+      "id": 80465,
+      "slug": "%d9%83%d9%88%d8%af-%d8%a7%d9%84%d8%b9%d8%b7%d9%84-p0171-%d9%86%d9%8a%d8%b3%d8%a7%d9%86-%d8%b5%d9%86%d9%8a",
+      "url": "https://a3tal.com/%d9%83%d9%88%d8%af-%d8%a7%d9%84%d8%b9%d8%b7%d9%84-p0171-%d9%86%d9%8a%d8%b3%d8%a7%d9%86-%d8%b5%d9%86%d9%8a/",
+      "title_as_of_oct2026": "كود P0171 في نيسان صني: Fuel Trim وMAF وتسريب الهواء",
+      "category": "أعطال وإصلاح",
+      "oct_audit_priority": 34
+    },
+    {
+      "n": 22,
+      "id": 80605,
+      "slug": "chevrolet-optra-dtc-codes-encyclopedia",
+      "url": "https://a3tal.com/chevrolet-optra-dtc-codes-encyclopedia/",
+      "title_as_of_oct2026": "أكواد أعطال شيفروليه أوبترا: Check Engine وHold والفتيس وكيف تشخّص",
+      "category": "اكواد وتشخيص",
+      "oct_audit_priority": 34
+    },
+    {
+      "n": 23,
+      "id": 80389,
+      "slug": "%d8%a7%d9%84%d8%b9%d8%b1%d8%a8%d9%8a%d8%a9-%d9%85%d8%ae%d9%86%d9%88%d9%82%d8%a9-%d8%a8%d8%b9%d8%af-%d9%85%d8%b4%d9%88%d8%a7%d8%b1-%d8%b7%d9%88%d9%8a%d9%84",
+      "url": "https://a3tal.com/%d8%a7%d9%84%d8%b9%d8%b1%d8%a8%d9%8a%d8%a9-%d9%85%d8%ae%d9%86%d9%88%d9%82%d8%a9-%d8%a8%d8%b9%d8%af-%d9%85%d8%b4%d9%88%d8%a7%d8%b1-%d8%b7%d9%88%d9%8a%d9%84/",
+      "title_as_of_oct2026": "العربية بتضعف بعد مشوار طويل: أسباب الخنقة مع السخونة وطريقة الفحص",
+      "category": "مقالات عامة وأخبار",
+      "oct_audit_priority": 34
+    },
+    {
+      "n": 24,
+      "id": 80590,
+      "slug": "chevrolet-optra-transmission-problems-guide",
+      "url": "https://a3tal.com/chevrolet-optra-transmission-problems-guide/",
+      "title_as_of_oct2026": "أعطال فتيس شيفروليه أوبترا: Hold والنتشة وCVT حسب الجيل",
+      "category": "أعطال وإصلاح",
+      "oct_audit_priority": 34
+    },
+    {
+      "n": 25,
+      "id": 80945,
+      "slug": "car-braking-system-parts-maintenance-faults-guide",
+      "url": "https://a3tal.com/car-braking-system-parts-maintenance-faults-guide/",
+      "title_as_of_oct2026": "دليل أعطال وصيانة فرامل السيارة: التشريح الكامل من الدواسة حتى التيل",
+      "category": "أعطال وإصلاح",
+      "oct_audit_priority": 33
+    },
+    {
+      "n": 26,
+      "id": 83248,
+      "slug": "ball-joint-symptoms-diagnosis",
+      "url": "https://a3tal.com/ball-joint-symptoms-diagnosis/",
+      "title_as_of_oct2026": "أعراض تلف بيضة المقص Ball Joint: الخبط واللعب وعدم الثبات وطريقة الفحص",
+      "category": "أعطال وإصلاح",
+      "oct_audit_priority": 33
+    },
+    {
+      "n": 27,
+      "id": 82854,
+      "slug": "adas-calibration-after-windshield-replacement",
+      "url": "https://a3tal.com/adas-calibration-after-windshield-replacement/",
+      "title_as_of_oct2026": "غيرت الزجاج الأمامي؟ سيارتك قد تحتاج معايرة ADAS قبل أن تثق بالكاميرا",
+      "category": "مقالات عامة وأخبار",
+      "oct_audit_priority": 33
+    },
+    {
+      "n": 28,
+      "id": 81905,
+      "slug": "geely-monjaro-em-i-guinness-sahara-egypt",
+      "url": "https://a3tal.com/geely-monjaro-em-i-guinness-sahara-egypt/",
+      "title_as_of_oct2026": "جيلي مونجارو EM-i تدخل جينيس من قلب الصحراء المصرية.. ماذا أثبت الاختبار؟",
+      "category": "مقالات عامة وأخبار",
+      "oct_audit_priority": 33
+    },
+    {
+      "n": 29,
+      "id": 80626,
+      "slug": "toyota-corolla-engine-common-faults",
+      "url": "https://a3tal.com/toyota-corolla-engine-common-faults/",
+      "title_as_of_oct2026": "أعطال محرك تويوتا كورولا: طرمبة المياه وVVT والميسفاير حسب الجيل",
+      "category": "أعطال وإصلاح",
+      "oct_audit_priority": 33
+    },
+    {
+      "n": 30,
+      "id": 80477,
+      "slug": "%d8%b9%d8%b7%d9%84-u0100-%d8%b4%d9%8a%d9%81%d8%b1%d9%88%d9%84%d9%8a%d8%a9-%d9%83%d8%b1%d9%88%d8%b2",
+      "url": "https://a3tal.com/%d8%b9%d8%b7%d9%84-u0100-%d8%b4%d9%8a%d9%81%d8%b1%d9%88%d9%84%d9%8a%d8%a9-%d9%83%d8%b1%d9%88%d8%b2/",
+      "title_as_of_oct2026": "كود U0100 في شيفروليه كروز: فقد الاتصال مع ECM وطريقة التشخيص",
+      "category": "مقالات عامة وأخبار",
+      "oct_audit_priority": 33
+    },
+    {
+      "n": 31,
+      "id": 80119,
+      "slug": "sohc-vs-dohc-vs-ohv-engine-differences-2026",
+      "url": "https://a3tal.com/sohc-vs-dohc-vs-ohv-engine-differences-2026/",
+      "title_as_of_oct2026": "الفرق بين DOHC وSOHC وOHV: الكامات والصبابات وأداء المحرك",
+      "category": "مواصفات ومراجعات",
+      "oct_audit_priority": 33
+    },
+    {
+      "n": 32,
+      "id": 80554,
+      "slug": "american-cars-dtc-codes-encyclopedia-part3-cooling-afm",
+      "url": "https://a3tal.com/american-cars-dtc-codes-encyclopedia-part3-cooling-afm/",
+      "title_as_of_oct2026": "أكواد حرارة وتكييف السيارات الأمريكية: P0128 وAFM/MDS وأعطال HVAC",
+      "category": "اكواد وتشخيص",
+      "oct_audit_priority": 33
+    },
+    {
+      "n": 33,
+      "id": 83472,
+      "slug": "el-dawly-car-service-zagazig",
+      "url": "https://a3tal.com/el-dawly-car-service-zagazig/",
+      "title_as_of_oct2026": "المركز الدولي لصيانة السيارات بالزقازيق | زيوت وفلاتر وقطع غيار",
+      "category": "أعطال وإصلاح",
+      "oct_audit_priority": 33
+    },
+    {
+      "n": 34,
+      "id": 81062,
+      "slug": "nissan-sentra-maintenance-schedule-service-centers",
+      "url": "https://a3tal.com/nissan-sentra-maintenance-schedule-service-centers/",
+      "title_as_of_oct2026": "الدليل الشامل لصيانة نيسان سنترا: جدول الصيانات، التكلفة، ومراكز الخدمة",
+      "category": "مراكز وخدمة",
+      "oct_audit_priority": 33
+    },
+    {
+      "n": 35,
+      "id": 79955,
+      "slug": "p0420-%d9%83%d9%88%d8%af-%d8%b9%d8%b7%d9%84-%d8%a7%d9%84%d8%b4%d9%83%d9%85%d8%a7%d9%86-%d9%81%d9%8a-%d8%b3%d9%8a%d8%a7%d8%b1%d8%a7%d8%aa-%d9%87%d9%8a%d9%88%d9%86%d8%af%d8%a7%d9%8a",
+      "url": "https://a3tal.com/p0420-%d9%83%d9%88%d8%af-%d8%b9%d8%b7%d9%84-%d8%a7%d9%84%d8%b4%d9%83%d9%85%d8%a7%d9%86-%d9%81%d9%8a-%d8%b3%d9%8a%d8%a7%d8%b1%d8%a7%d8%aa-%d9%87%d9%8a%d9%88%d9%86%d8%af%d8%a7%d9%8a/",
+      "title_as_of_oct2026": "كود P0420 في هيونداي: هل المشكلة علبة البيئة أم حساس الشكمان؟",
+      "category": "مقالات عامة وأخبار",
+      "oct_audit_priority": 33
+    },
+    {
+      "n": 36,
+      "id": 80036,
+      "slug": "%d8%a7%d9%84%d9%85%d9%88%d8%b3%d9%88%d8%b9%d8%a9-%d8%a7%d9%84%d8%b4%d8%a7%d9%85%d9%84%d8%a9-%d9%84%d9%83%d9%88%d8%b1%d8%b3%d8%a7%d8%aa-%d8%b5%d9%8a%d8%a7%d9%86%d8%a9-%d8%a7%d9%84%d8%b3%d9%8a%d8%a7",
+      "url": "https://a3tal.com/%d8%a7%d9%84%d9%85%d9%88%d8%b3%d9%88%d8%b9%d8%a9-%d8%a7%d9%84%d8%b4%d8%a7%d9%85%d9%84%d8%a9-%d9%84%d9%83%d9%88%d8%b1%d8%b3%d8%a7%d8%aa-%d8%b5%d9%8a%d8%a7%d9%86%d8%a9-%d8%a7%d9%84%d8%b3%d9%8a%d8%a7/",
+      "title_as_of_oct2026": "كورسات صيانة السيارات: خريطة تعلم من الميكانيكا إلى التشخيص وEV",
+      "category": "أعطال وإصلاح",
+      "oct_audit_priority": 33
+    },
+    {
+      "n": 37,
+      "id": 79967,
+      "slug": "%d8%ad%d8%b3%d8%a7%d8%b3-%d8%a7%d9%84%d9%83%d8%b1%d9%86%d9%83-%d8%a7%d9%84%d9%88%d8%b8%d9%8a%d9%81%d8%a9%d8%8c-%d8%a3%d8%b9%d8%b1%d8%a7%d8%b6-%d8%a7%d9%84%d8%aa%d9%84%d9%81-%d9%88%d8%b7%d8%b1%d9%8a",
+      "url": "https://a3tal.com/%d8%ad%d8%b3%d8%a7%d8%b3-%d8%a7%d9%84%d9%83%d8%b1%d9%86%d9%83-%d8%a7%d9%84%d9%88%d8%b8%d9%8a%d9%81%d8%a9%d8%8c-%d8%a3%d8%b9%d8%b1%d8%a7%d8%b6-%d8%a7%d9%84%d8%aa%d9%84%d9%81-%d9%88%d8%b7%d8%b1%d9%8a/",
+      "title_as_of_oct2026": "حساس الكرنك: أعراض التلف وطريقة الفحص قبل التغيير",
+      "category": "مقالات عامة وأخبار",
+      "oct_audit_priority": 33
+    },
+    {
+      "n": 38,
+      "id": 80959,
+      "slug": "suspension-control-arm-bushings-faults-guide",
+      "url": "https://a3tal.com/suspension-control-arm-bushings-faults-guide/",
+      "title_as_of_oct2026": "أعطال جلب المقصات (جلب العفشة): عندما تصرخ سيارتك من المطبات!",
+      "category": "أعطال وإصلاح",
+      "oct_audit_priority": 32
+    },
+    {
+      "n": 39,
+      "id": 83252,
+      "slug": "bad-shock-absorber-symptoms-diagnosis",
+      "url": "https://a3tal.com/bad-shock-absorber-symptoms-diagnosis/",
+      "title_as_of_oct2026": "أعراض تلف المساعدين: تسريب الزيت والارتداد والخبط وكيف تفرقها عن البطاحة والسوست",
+      "category": "أعطال وإصلاح",
+      "oct_audit_priority": 32
+    },
+    {
+      "n": 40,
+      "id": 82855,
+      "slug": "48v-mild-hybrid-how-it-works",
+      "url": "https://a3tal.com/48v-mild-hybrid-how-it-works/",
+      "title_as_of_oct2026": "ما هو 48V Mild Hybrid؟ BMW 3 Series الجديدة تشرح الفكرة عمليًا",
+      "category": "مقالات عامة وأخبار",
+      "oct_audit_priority": 32
+    },
+    {
+      "n": 41,
+      "id": 80593,
+      "slug": "chevrolet-optra-electrical-ac-problems",
+      "url": "https://a3tal.com/chevrolet-optra-electrical-ac-problems/",
+      "title_as_of_oct2026": "حساسات شيفروليه أوبترا: الأعطال والكهرباء والتكييف والبوابة",
+      "category": "أعطال وإصلاح",
+      "oct_audit_priority": 32
+    },
+    {
+      "n": 42,
+      "id": 80025,
+      "slug": "%d8%af%d9%84%d9%8a%d9%84-%d8%ac%d8%af%d9%88%d9%84-%d8%a7%d9%84%d8%b5%d9%8a%d8%a7%d9%86%d8%a9-%d8%a7%d9%84%d8%af%d9%88%d8%b1%d9%8a%d8%a9-%d9%84%d8%b3%d9%8a%d8%a7%d8%b1%d8%a9-%d9%87%d9%8a%d9%88%d9%86",
+      "url": "https://a3tal.com/%d8%af%d9%84%d9%8a%d9%84-%d8%ac%d8%af%d9%88%d9%84-%d8%a7%d9%84%d8%b5%d9%8a%d8%a7%d9%86%d8%a9-%d8%a7%d9%84%d8%af%d9%88%d8%b1%d9%8a%d8%a9-%d9%84%d8%b3%d9%8a%d8%a7%d8%b1%d8%a9-%d9%87%d9%8a%d9%88%d9%86/",
+      "title_as_of_oct2026": "جدول صيانة هيونداي إلنترا CN7: المواعيد الرسمية حتى 100 ألف كم",
+      "category": "أعطال وإصلاح",
+      "oct_audit_priority": 32
+    },
+    {
+      "n": 43,
+      "id": 82853,
+      "slug": "chery-arrizo-8-egypt-review-price-specs",
+      "url": "https://a3tal.com/chery-arrizo-8-egypt-review-price-specs/",
+      "title_as_of_oct2026": "مراجعة شيري أريزو 8 في مصر: 197 حصان وWet DCT مقابل 1.3 مليون",
+      "category": "أسعار ومقارنات",
+      "oct_audit_priority": 32
+    },
+    {
+      "n": 44,
+      "id": 80447,
+      "slug": "fiat-tipo-maintenance-schedule-prices-egypt",
+      "url": "https://a3tal.com/fiat-tipo-maintenance-schedule-prices-egypt/",
+      "title_as_of_oct2026": "جدول صيانة فيات تيبو: كيف تعرف الصيانة الصحيحة حتى 100 ألف كم",
+      "category": "أسعار ومقارنات",
+      "oct_audit_priority": 32
+    },
+    {
+      "n": 45,
+      "id": 80150,
+      "slug": "p0011-p0014-hyundai-kia-vvt-solenoid-fix-egypt-2026",
+      "url": "https://a3tal.com/p0011-p0014-hyundai-kia-vvt-solenoid-fix-egypt-2026/",
+      "title_as_of_oct2026": "كود P0014 في هيونداي وكيا: الأسباب وفحص VVT وCVVT",
+      "category": "مقالات عامة وأخبار",
+      "oct_audit_priority": 32
+    },
+    {
+      "n": 46,
+      "id": 79949,
+      "slug": "%d8%a3%d8%b3%d8%a8%d8%a7%d8%a8-%d8%b6%d8%b9%d9%81-%d8%a7%d9%84%d9%81%d8%b1%d8%a7%d9%85%d9%84-%d8%a7%d9%84%d9%85%d9%81%d8%a7%d8%ac%d8%a6-%d9%83%d9%84-%d9%85%d8%a7-%d8%aa%d8%ad%d8%aa%d8%a7%d8%ac",
+      "url": "https://a3tal.com/%d8%a3%d8%b3%d8%a8%d8%a7%d8%a8-%d8%b6%d8%b9%d9%81-%d8%a7%d9%84%d9%81%d8%b1%d8%a7%d9%85%d9%84-%d8%a7%d9%84%d9%85%d9%81%d8%a7%d8%ac%d8%a6-%d9%83%d9%84-%d9%85%d8%a7-%d8%aa%d8%ad%d8%aa%d8%a7%d8%ac/",
+      "title_as_of_oct2026": "ضعف الفرامل المفاجئ: بدال طري أم يغوص أم ناشف؟ الأسباب وطريقة الفحص",
+      "category": "مقالات عامة وأخبار",
+      "oct_audit_priority": 32
+    },
+    {
+      "n": 47,
+      "id": 80349,
+      "slug": "saeer-zayt-kastrol-5w30-masr-2026",
+      "url": "https://a3tal.com/saeer-zayt-kastrol-5w30-masr-2026/",
+      "title_as_of_oct2026": "سعر زيت كاسترول EDGE 5W-30 في مصر: المواصفات وهل يناسب سيارتك؟",
+      "category": "أسعار ومقارنات",
+      "oct_audit_priority": 31
+    },
+    {
+      "n": 48,
+      "id": 80274,
+      "slug": "mitsubishi-attrage-2026-price-specs-review",
+      "url": "https://a3tal.com/mitsubishi-attrage-2026-price-specs-review/",
+      "title_as_of_oct2026": "ميتسوبيشي أتراج في مصر: السعر الرسمي والمواصفات وما يجب فحصه قبل الشراء",
+      "category": "أسعار ومقارنات",
+      "oct_audit_priority": 30
+    },
+    {
+      "n": 49,
+      "id": 80085,
+      "slug": "chevrolet-optra-transmission-fluid-price-egypt",
+      "url": "https://a3tal.com/chevrolet-optra-transmission-fluid-price-egypt/",
+      "title_as_of_oct2026": "زيت فتيس نيو أوبترا أوتوماتيك: النوع الصحيح والسعر والفرق عن القديمة",
+      "category": "أسعار ومقارنات",
+      "oct_audit_priority": 30
+    },
+    {
+      "n": 50,
+      "id": 81091,
+      "slug": "car-license-renewal-costs-3-years-guide",
+      "url": "https://a3tal.com/car-license-renewal-costs-3-years-guide/",
+      "title_as_of_oct2026": "ترخيص السيارة 3 سنوات في مصر: المستندات والفحص وبنود التكلفة",
+      "category": "مقالات عامة وأخبار",
+      "oct_audit_priority": 32
+    }
+  ]
+}
