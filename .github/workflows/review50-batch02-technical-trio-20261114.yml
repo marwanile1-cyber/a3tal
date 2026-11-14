@@ -1,0 +1,29 @@
+name: A3tal Egypt human50 batch02 - Nissan fluids and oil viscosity
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/review50-batch02-technical-trio-20261114.yml'
+      - 'scripts/review50-batch02-technical-trio-20261114.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-egypt-editorial-content-write
+  cancel-in-progress: false
+jobs:
+  verify-and-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint revision-protected editorial code
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY" || { echo "A3tal Direct Bridge unavailable"; exit 1; }
+          python3 -m py_compile scripts/review50-batch02-technical-trio-20261114.py
+          python3 -m py_compile scripts/review-human-seo-geo-egypt-three-20261114.py
+      - name: Confirm originals and publish only validated corrections
+        run: python3 -u scripts/review50-batch02-technical-trio-20261114.py
