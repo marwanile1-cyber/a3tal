@@ -61,7 +61,7 @@ def pub_verify():
     if q.status_code!=200:raise RuntimeError("Homepage HTTP "+str(q.status_code))
     h=q.text
     checks={
-        "one_h1":len(re.findall(r"<h1\\b",h,re.I))==1,
+        "one_h1":len(re.findall("<h1",h,re.I))==1,
         "canonical":'<link rel="canonical" href="https://a3tal.com/"' in h or re.search(r'<link[^>]+rel=["\\\']canonical["\\\'][^>]+https://a3tal.com/',h,re.I) is not None,
         "hero_img":'class="hero-mobile-scene"' in h and 'fetchpriority="high"' in h,
         "no_legacy_hero_div":OLD_HERO not in h,
