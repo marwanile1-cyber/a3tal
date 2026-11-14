@@ -111,14 +111,18 @@ def build(t,original):
         # from the WP featured image and must not disappear during the rewrite.
         imgs=re.findall(r'<img\b[^>]*>',original,re.I)
         image_paras=re.findall(r'<p\b[^>]*>\s*<img\b[^>]*>\s*</p>',original,re.I|re.S)
-        if len(imgs)!=1 or len(image_paras)!=1:
-            raise RuntimeError("Unreviewed article media layout; stop to protect inline images")
+        if len(imgs)!=1 or len(image_paras)>1:
+            raise RuntimeError("Unreviewed article image count; stop to protect inline images")
+        # Some legacy WordPress versions wrap img in a linked paragraph, which
+        # the stricter figure/paragraph pattern does not match. Preserve the
+        # exact inline image tag even in that shape, never replace the src.
+        image_markup=image_paras[0] if image_paras else '<figure class="a3tal-legacy-inline-image">'+imgs[0]+'</figure>'
         if "انقطاع سير الكاتينة" not in base.readable_markup(original) or "كاوتش الصباب" not in base.readable_markup(original):
             raise RuntimeError("Original valve themes differ; do not overwrite")
         anchor='<h2>إيه وظيفة صبابات السحب والعادم؟</h2>'
         if VALVES_HTML.count(anchor)!=1:
             raise RuntimeError("Editorial rewrite image slot changed")
-        new=VALVES_HTML.replace(anchor,image_paras[0]+'\n'+anchor,1)
+        new=VALVES_HTML.replace(anchor,image_markup+'\n'+anchor,1)
         if len(re.findall(r'<img\b',new,re.I))!=len(imgs):
             raise RuntimeError("Original inline image not preserved")
     if new.count('id="'+marker+'"')!=1 or len(new)<3000 or new.count("<h2")<5:
