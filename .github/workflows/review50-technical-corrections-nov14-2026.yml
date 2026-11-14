@@ -1,0 +1,29 @@
+name: A3tal human50 technical corrections - ATF Sunny Elantra AD
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/review50-technical-corrections-nov14-2026.yml'
+      - 'scripts/review50-technical-corrections-nov14-2026.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-egypt-editorial-content-write
+  cancel-in-progress: false
+jobs:
+  update-and-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate protected content update
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY" || { echo "Missing A3tal Direct Bridge secret"; exit 1; }
+          python3 -m py_compile scripts/review50-technical-corrections-nov14-2026.py
+          python3 -m py_compile scripts/review-human-seo-geo-egypt-three-20261114.py
+      - name: Check originals and publish only verified technical revisions
+        run: python3 -u scripts/review50-technical-corrections-nov14-2026.py
