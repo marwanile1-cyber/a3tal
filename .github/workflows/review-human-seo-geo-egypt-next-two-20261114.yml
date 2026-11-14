@@ -1,0 +1,29 @@
+name: Human SEO GEO update - A3tal Egypt scooter and engine valves 20261114
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/review-human-seo-geo-egypt-next-two-20261114.yml'
+      - 'scripts/review-human-seo-geo-egypt-next-two-20261114.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-egypt-editorial-content-write
+  cancel-in-progress: false
+jobs:
+  publish-and-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Python lint and Bridge preconditions
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY" || { echo 'Missing A3tal Bridge secret'; exit 1; }
+          python3 -m py_compile scripts/review-human-seo-geo-egypt-next-two-20261114.py
+          python3 -m py_compile scripts/review-human-seo-geo-egypt-three-20261114.py
+      - name: Review both originals then publish and verify only existing articles
+        run: python3 -u scripts/review-human-seo-geo-egypt-next-two-20261114.py
