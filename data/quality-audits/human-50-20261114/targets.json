@@ -1,0 +1,458 @@
+{
+  "batch": "A3tal Egypt 50 separate published posts",
+  "date": "2026-11-14",
+  "caution": "Historical October priority is selection only, not current quality verdict. Review live content before any edit.",
+  "count": 50,
+  "targets": [
+    {
+      "sequence": 1,
+      "id": 80474,
+      "slug": "%d8%a7%d9%84%d9%81%d8%b1%d9%82-%d8%a8%d9%8a%d9%86-%d8%a7%d9%84%d8%a8%d9%88%d8%ac%d9%8a%d9%87%d8%a7%d8%aa-%d8%a7%d9%84%d8%b9%d8%a7%d8%af%d9%8a%d8%a9-%d9%88%d8%a7%d9%84%d9%84%d9%8a%d8%b2%d8%b1",
+      "url": "https://a3tal.com/%d8%a7%d9%84%d9%81%d8%b1%d9%82-%d8%a8%d9%8a%d9%86-%d8%a7%d9%84%d8%a8%d9%88%d8%ac%d9%8a%d9%87%d8%a7%d8%aa-%d8%a7%d9%84%d8%b9%d8%a7%d8%af%d9%8a%d8%a9-%d9%88%d8%a7%d9%84%d9%84%d9%8a%d8%b2%d8%b1/",
+      "previous_audit_priority": 54,
+      "category": "diagnostics",
+      "title_as_of_2026_10_20": "البوجيهات العادية والإيريديوم والبلاتين: الفرق الحقيقي واختيار النوع الصحيح"
+    },
+    {
+      "sequence": 2,
+      "id": 80456,
+      "slug": "%d9%86%d8%aa%d8%b4%d8%a9-%d8%a7%d9%84%d9%81%d8%aa%d9%8a%d8%b3-%d8%aa%d9%8a%d8%ac%d9%88-7",
+      "url": "https://a3tal.com/%d9%86%d8%aa%d8%b4%d8%a9-%d8%a7%d9%84%d9%81%d8%aa%d9%8a%d8%b3-%d8%aa%d9%8a%d8%ac%d9%88-7/",
+      "previous_audit_priority": 54,
+      "category": "diagnostics",
+      "title_as_of_2026_10_20": "نتشة فتيس تيجو 7: حدد نوع الناقل أولًا ثم ابدأ التشخيص"
+    },
+    {
+      "sequence": 3,
+      "id": 80488,
+      "slug": "%d8%b1%d8%b9%d8%b4%d8%a9-%d9%81%d9%8a-%d8%a7%d9%84%d9%85%d9%88%d8%aa%d9%88%d8%b1-%d9%88%d9%87%d9%88-%d9%88%d8%a7%d9%82%d9%81",
+      "url": "https://a3tal.com/%d8%b1%d8%b9%d8%b4%d8%a9-%d9%81%d9%8a-%d8%a7%d9%84%d9%85%d9%88%d8%aa%d9%88%d8%b1-%d9%88%d9%87%d9%88-%d9%88%d8%a7%d9%82%d9%81/",
+      "previous_audit_priority": 53,
+      "category": "diagnostics",
+      "title_as_of_2026_10_20": "رعشة المحرك على السلانسيه: كيف تفرق بين Misfire وقواعد المحرك وتسريب الهواء؟"
+    },
+    {
+      "sequence": 4,
+      "id": 80404,
+      "slug": "%d8%aa%d8%ba%d9%8a%d9%8a%d8%b1-%d8%b2%d9%8a%d8%aa-%d8%a7%d9%84%d9%81%d8%b1%d8%a7%d9%85%d9%84-%d8%aa%d9%86%d8%b8%d9%8a%d9%81-%d8%a7%d9%84%d8%af%d9%88%d8%b1%d8%a9",
+      "url": "https://a3tal.com/%d8%aa%d8%ba%d9%8a%d9%8a%d8%b1-%d8%b2%d9%8a%d8%aa-%d8%a7%d9%84%d9%81%d8%b1%d8%a7%d9%85%d9%84-%d8%aa%d9%86%d8%b8%d9%8a%d9%81-%d8%a7%d9%84%d8%af%d9%88%d8%b1%d8%a9/",
+      "previous_audit_priority": 53,
+      "category": "diagnostics",
+      "title_as_of_2026_10_20": "زيت الفرامل: متى يتغير وما الفرق بين DOT 3 وDOT 4 وDOT 5.1؟"
+    },
+    {
+      "sequence": 5,
+      "id": 80471,
+      "slug": "%d9%85%d9%83%d8%a7%d9%86-%d8%ad%d8%b3%d8%a7%d8%b3-%d8%a7%d9%84%d8%a7%d9%8a%d8%af%d9%84-%d9%88%d8%aa%d9%86%d8%b8%d9%8a%d9%81%d9%87",
+      "url": "https://a3tal.com/%d9%85%d9%83%d8%a7%d9%86-%d8%ad%d8%b3%d8%a7%d8%b3-%d8%a7%d9%84%d8%a7%d9%8a%d8%af%d9%84-%d9%88%d8%aa%d9%86%d8%b8%d9%8a%d9%81%d9%87/",
+      "previous_audit_priority": 52,
+      "category": "diagnostics",
+      "title_as_of_2026_10_20": "حساس الأيدل IAC: مكانه وأعراض تلفه وطريقة تنظيفه"
+    },
+    {
+      "sequence": 6,
+      "id": 80494,
+      "slug": "%d8%b5%d9%81%d9%8a%d8%b1-%d8%b3%d9%8a%d8%b1-%d8%a7%d9%84%d8%af%d9%8a%d9%86%d8%a7%d9%85%d9%88",
+      "url": "https://a3tal.com/%d8%b5%d9%81%d9%8a%d8%b1-%d8%b3%d9%8a%d8%b1-%d8%a7%d9%84%d8%af%d9%8a%d9%86%d8%a7%d9%85%d9%88/",
+      "previous_audit_priority": 52,
+      "category": "diagnostics",
+      "title_as_of_2026_10_20": "سير الدينامو بيصفر: الأسباب وفحص السير والشداد والبكرات"
+    },
+    {
+      "sequence": 7,
+      "id": 80424,
+      "slug": "%d8%b5%d9%8a%d8%a7%d9%86%d8%a9-%d8%af%d9%88%d8%b1%d8%a9-%d8%a7%d9%84%d8%aa%d8%a8%d8%b1%d9%8a%d8%af-%d8%a7%d9%84%d8%b3%d9%8a%d8%a7%d8%b1%d8%a9",
+      "url": "https://a3tal.com/%d8%b5%d9%8a%d8%a7%d9%86%d8%a9-%d8%af%d9%88%d8%b1%d8%a9-%d8%a7%d9%84%d8%aa%d8%a8%d8%b1%d9%8a%d8%af-%d8%a7%d9%84%d8%b3%d9%8a%d8%a7%d8%b1%d8%a9/",
+      "previous_audit_priority": 48,
+      "category": "diagnostics",
+      "title_as_of_2026_10_20": "صيانة دورة تبريد السيارة: السائل والثرموستات والمراوح وتشخيص السخونة"
+    },
+    {
+      "sequence": 8,
+      "id": 80976,
+      "slug": "automatic-car-poor-acceleration-causes",
+      "url": "https://a3tal.com/automatic-car-poor-acceleration-causes/",
+      "previous_audit_priority": 48,
+      "category": "diagnostics",
+      "title_as_of_2026_10_20": "أسباب ضعف سحب السيارة الأوتوماتيك: خريطة التشخيص قبل تغيير القطع"
+    },
+    {
+      "sequence": 9,
+      "id": 80392,
+      "slug": "car-stalls-wont-restart-diagnosis",
+      "url": "https://a3tal.com/car-stalls-wont-restart-diagnosis/",
+      "previous_audit_priority": 48,
+      "category": "diagnostics",
+      "title_as_of_2026_10_20": "العربية بتبطل ومترجعش تدور: أسباب العطل وخطوات التشخيص"
+    },
+    {
+      "sequence": 10,
+      "id": 82500,
+      "slug": "radiator-internal-blockage-flow-temperature-test",
+      "url": "https://a3tal.com/radiator-internal-blockage-flow-temperature-test/",
+      "previous_audit_priority": 48,
+      "category": "diagnostics",
+      "title_as_of_2026_10_20": "الردياتير مسدود من الداخل؟ علامات الانسداد واختبار فرق الحرارة"
+    },
+    {
+      "sequence": 11,
+      "id": 82502,
+      "slug": "radiator-internal-blockage-flow-temperature-test-2",
+      "url": "https://a3tal.com/radiator-internal-blockage-flow-temperature-test-2/",
+      "previous_audit_priority": 48,
+      "category": "diagnostics",
+      "title_as_of_2026_10_20": "الردياتير مسدود من الداخل؟ علامات الانسداد واختبار فرق الحرارة"
+    },
+    {
+      "sequence": 12,
+      "id": 80995,
+      "slug": "tps-sensor-symptoms-testing-guide",
+      "url": "https://a3tal.com/tps-sensor-symptoms-testing-guide/",
+      "previous_audit_priority": 47,
+      "category": "diagnostics",
+      "title_as_of_2026_10_20": "حساس TPS: أعراض التلف وطريقة الفحص بالـLive Data والملتيميتر"
+    },
+    {
+      "sequence": 13,
+      "id": 81088,
+      "slug": "egr-valve-failure-symptoms-guide",
+      "url": "https://a3tal.com/egr-valve-failure-symptoms-guide/",
+      "previous_audit_priority": 47,
+      "category": "diagnostics",
+      "title_as_of_2026_10_20": "أعراض تلف بلف EGR: ضعف السحب والأكواد وطريقة الفحص"
+    },
+    {
+      "sequence": 14,
+      "id": 81006,
+      "slug": "intake-manifold-gasket-symptoms-leak",
+      "url": "https://a3tal.com/intake-manifold-gasket-symptoms-leak/",
+      "previous_audit_priority": 46,
+      "category": "diagnostics",
+      "title_as_of_2026_10_20": "جوان مانفولد السحب: أعراض تسريب الهواء وطريقة التشخيص"
+    },
+    {
+      "sequence": 15,
+      "id": 81012,
+      "slug": "renault-sandero-common-fault-codes",
+      "url": "https://a3tal.com/renault-sandero-common-fault-codes/",
+      "previous_audit_priority": 46,
+      "category": "diagnostics",
+      "title_as_of_2026_10_20": "أكواد أعطال رينو سانديرو: المعاني وخطوات التشخيص قبل تغيير القطع"
+    },
+    {
+      "sequence": 16,
+      "id": 81118,
+      "slug": "rear-main-seal-leak-symptoms-cost",
+      "url": "https://a3tal.com/rear-main-seal-leak-symptoms-cost/",
+      "previous_audit_priority": 45,
+      "category": "diagnostics",
+      "title_as_of_2026_10_20": "أويل سيل الكرنك الخلفي: أعراض التلف والتغيير قبل فك الفتيس"
+    },
+    {
+      "sequence": 17,
+      "id": 79872,
+      "slug": "%d9%85%d8%a7-%d9%87%d9%88-%d9%86%d8%b8%d8%a7%d9%85-abs",
+      "url": "https://a3tal.com/%d9%85%d8%a7-%d9%87%d9%88-%d9%86%d8%b8%d8%a7%d9%85-abs/",
+      "previous_audit_priority": 45,
+      "category": "diagnostics",
+      "title_as_of_2026_10_20": "ما هو نظام ABS؟ طريقة العمل وأسباب اللمبة وخطوات التشخيص"
+    },
+    {
+      "sequence": 18,
+      "id": 81042,
+      "slug": "automatic-transmission-cooler-guide-problems-solutions",
+      "url": "https://a3tal.com/automatic-transmission-cooler-guide-problems-solutions/",
+      "previous_audit_priority": 45,
+      "category": "diagnostics",
+      "title_as_of_2026_10_20": "كولر الفتيس ومبرد زيت الفتيس: متى تحتاج مبردًا خارجيًا؟"
+    },
+    {
+      "sequence": 19,
+      "id": 81079,
+      "slug": "cruise-control-system-types-faults-encyclopedia",
+      "url": "https://a3tal.com/cruise-control-system-types-faults-encyclopedia/",
+      "previous_audit_priority": 45,
+      "category": "diagnostics",
+      "title_as_of_2026_10_20": "مثبت السرعة Cruise Control: طريقة العمل والأعطال والتشخيص"
+    },
+    {
+      "sequence": 20,
+      "id": 81167,
+      "slug": "automatic-transmission-fluid-change-guide-risks",
+      "url": "https://a3tal.com/automatic-transmission-fluid-change-guide-risks/",
+      "previous_audit_priority": 44,
+      "category": "diagnostics",
+      "title_as_of_2026_10_20": "دليل تغيير زيت الفتيس الأوتوماتيك: متى يتسبب التغيير في تفويت الفتيس؟ | أعطال"
+    },
+    {
+      "sequence": 21,
+      "id": 80502,
+      "slug": "mg-dct-gearbox-problems-solutions",
+      "url": "https://a3tal.com/mg-dct-gearbox-problems-solutions/",
+      "previous_audit_priority": 42,
+      "category": "diagnostics",
+      "title_as_of_2026_10_20": "عيوب فتيس DCT في MG: Wet وDry والسخونة والنتشة والتشخيص"
+    },
+    {
+      "sequence": 22,
+      "id": 71,
+      "slug": "%d9%85%d8%a7-%d9%87%d9%8a-%d8%a7%d9%84%d8%a3%d8%b3%d8%a8%d8%a7%d8%a8-%d8%a7%d9%84%d8%b4%d8%a7%d8%a6%d8%b9%d8%a9-%d9%84%d8%b3%d8%ae%d9%88%d9%86%d8%a9-%d9%85%d8%ad%d8%b1%d9%83-%d8%a7%d9%84%d8%b3%d9%8a",
+      "url": "https://a3tal.com/%d9%85%d8%a7-%d9%87%d9%8a-%d8%a7%d9%84%d8%a3%d8%b3%d8%a8%d8%a7%d8%a8-%d8%a7%d9%84%d8%b4%d8%a7%d8%a6%d8%b9%d8%a9-%d9%84%d8%b3%d8%ae%d9%88%d9%86%d8%a9-%d9%85%d8%ad%d8%b1%d9%83-%d8%a7%d9%84%d8%b3%d9%8a/",
+      "previous_audit_priority": 42,
+      "category": "diagnostics",
+      "title_as_of_2026_10_20": "سخونة محرك السيارة: الأسباب وطريقة التشخيص قبل تغيير أي قطعة"
+    },
+    {
+      "sequence": 23,
+      "id": 80468,
+      "slug": "%d8%a3%d8%b3%d8%a8%d8%a7%d8%a8-%d8%b6%d8%b9%d9%81-%d8%b9%d8%b2%d9%85-%d8%a7%d9%84%d8%b3%d9%8a%d8%a7%d8%b1%d8%a9",
+      "url": "https://a3tal.com/%d8%a3%d8%b3%d8%a8%d8%a7%d8%a8-%d8%b6%d8%b9%d9%81-%d8%b9%d8%b2%d9%85-%d8%a7%d9%84%d8%b3%d9%8a%d8%a7%d8%b1%d8%a9/",
+      "previous_audit_priority": 35,
+      "category": "diagnostics",
+      "title_as_of_2026_10_20": "أسباب ضعف عزم السيارة: كيف تفرق بين المحرك والفتيس قبل تغيير القطع"
+    },
+    {
+      "sequence": 24,
+      "id": 169,
+      "slug": "%d9%85%d8%b1%d9%83%d8%b2-%d8%ae%d8%af%d9%85%d8%a9-hyundai-egypt-ghabbour-auto",
+      "url": "https://a3tal.com/%d9%85%d8%b1%d9%83%d8%b2-%d8%ae%d8%af%d9%85%d8%a9-hyundai-egypt-ghabbour-auto/",
+      "previous_audit_priority": 53,
+      "category": "maintenance_services",
+      "title_as_of_2026_10_20": "مراكز صيانة هيونداي في مصر: الحجز والخط الساخن وفروع GB"
+    },
+    {
+      "sequence": 25,
+      "id": 80660,
+      "slug": "skoda-octavia-maintenance-prices-guide-2026",
+      "url": "https://a3tal.com/skoda-octavia-maintenance-prices-guide-2026/",
+      "previous_audit_priority": 44,
+      "category": "maintenance_services",
+      "title_as_of_2026_10_20": "صيانة سكودا أوكتافيا في مصر: جدول A8 الرسمي والزيوت والفتيس"
+    },
+    {
+      "sequence": 26,
+      "id": 80817,
+      "slug": "opel-insignia-maintenance-prices-market-guide-2026",
+      "url": "https://a3tal.com/opel-insignia-maintenance-prices-market-guide-2026/",
+      "previous_audit_priority": 43,
+      "category": "maintenance_services",
+      "title_as_of_2026_10_20": "صيانة أوبل إنسيجنيا: جدول الصيانة وتكلفة التشغيل وسعر المستعمل"
+    },
+    {
+      "sequence": 27,
+      "id": 80933,
+      "slug": "mitsubishi-xpander-maintenance-costs-resale-value-egypt",
+      "url": "https://a3tal.com/mitsubishi-xpander-maintenance-costs-resale-value-egypt/",
+      "previous_audit_priority": 20,
+      "category": "maintenance_services",
+      "title_as_of_2026_10_20": "صيانة ميتسوبيشي إكسباندر في مصر: الجدول والتكلفة وسعر المستعمل"
+    },
+    {
+      "sequence": 28,
+      "id": 80620,
+      "slug": "nissan-sunny-maintenance-spare-parts-guide",
+      "url": "https://a3tal.com/nissan-sunny-maintenance-spare-parts-guide/",
+      "previous_audit_priority": 36,
+      "category": "maintenance_services",
+      "title_as_of_2026_10_20": "صيانة نيسان صني (الجزء الخامس): جدول الصيانات الدورية، أفضل زيت محرك، ودليل قطع الغيار"
+    },
+    {
+      "sequence": 29,
+      "id": 80291,
+      "slug": "hyundai-elantra-ad-maintenance-schedule-prices-2026",
+      "url": "https://a3tal.com/hyundai-elantra-ad-maintenance-schedule-prices-2026/",
+      "previous_audit_priority": 35,
+      "category": "maintenance_services",
+      "title_as_of_2026_10_20": "جدول صيانة هيونداي النترا AD 2026: المرجع الكامل للأسعار والمواعيد"
+    },
+    {
+      "sequence": 30,
+      "id": 83153,
+      "slug": "delivery-motorcycle-buying-guide",
+      "url": "https://a3tal.com/delivery-motorcycle-buying-guide/",
+      "previous_audit_priority": 51,
+      "category": "motorcycles",
+      "title_as_of_2026_10_20": "اختيار موتوسيكل للدليفري: احسب التشغيل قبل سعر الشراء"
+    },
+    {
+      "sequence": 31,
+      "id": 83155,
+      "slug": "abs-cbs-disc-drum-motorcycle-brakes",
+      "url": "https://a3tal.com/abs-cbs-disc-drum-motorcycle-brakes/",
+      "previous_audit_priority": 51,
+      "category": "motorcycles",
+      "title_as_of_2026_10_20": "ABS وCBS وديسك وطنبورة: افهم فرامل الموتوسيكل قبل الشراء"
+    },
+    {
+      "sequence": 32,
+      "id": 83154,
+      "slug": "fuel-injection-vs-carburetor-motorcycle",
+      "url": "https://a3tal.com/fuel-injection-vs-carburetor-motorcycle/",
+      "previous_audit_priority": 51,
+      "category": "motorcycles",
+      "title_as_of_2026_10_20": "حقن إلكتروني ولا كربراتير في الموتوسيكل؟"
+    },
+    {
+      "sequence": 33,
+      "id": 83147,
+      "slug": "japanese-vs-indian-vs-chinese-motorcycle",
+      "url": "https://a3tal.com/japanese-vs-indian-vs-chinese-motorcycle/",
+      "previous_audit_priority": 50,
+      "category": "motorcycles",
+      "title_as_of_2026_10_20": "ياباني أم هندي أم صيني؟ اختر الموتوسيكل وفق الاستخدام لا بلد المنشأ"
+    },
+    {
+      "sequence": 34,
+      "id": 83149,
+      "slug": "motorcycle-engine-sizes-125-150-160-200-250",
+      "url": "https://a3tal.com/motorcycle-engine-sizes-125-150-160-200-250/",
+      "previous_audit_priority": 50,
+      "category": "motorcycles",
+      "title_as_of_2026_10_20": "125 أم 150 أم 160 أم 200 أم 250 سي سي؟ افهم السعة قبل الشراء"
+    },
+    {
+      "sequence": 35,
+      "id": 83151,
+      "slug": "motorcycle-maintenance-schedule-guide",
+      "url": "https://a3tal.com/motorcycle-maintenance-schedule-guide/",
+      "previous_audit_priority": 50,
+      "category": "motorcycles",
+      "title_as_of_2026_10_20": "جدول صيانة الموتوسيكل: ما البنود التي تحتاج مراجعة دورية؟"
+    },
+    {
+      "sequence": 36,
+      "id": 83146,
+      "slug": "chinese-motorcycles-egypt-guide",
+      "url": "https://a3tal.com/chinese-motorcycles-egypt-guide/",
+      "previous_audit_priority": 47,
+      "category": "motorcycles",
+      "title_as_of_2026_10_20": "الموتوسيكلات الصيني في مصر: من CFMOTO وQJMotor لحد Lifan وLoncin"
+    },
+    {
+      "sequence": 37,
+      "id": 80317,
+      "slug": "%d8%b3%d8%b9%d8%b1-%d8%aa%d9%88%d9%8a%d9%88%d8%aa%d8%a7-%d9%8a%d8%a7%d8%b1%d9%8a%d8%b3-2026",
+      "url": "https://a3tal.com/%d8%b3%d8%b9%d8%b1-%d8%aa%d9%88%d9%8a%d9%88%d8%aa%d8%a7-%d9%8a%d8%a7%d8%b1%d9%8a%d8%b3-2026/",
+      "previous_audit_priority": 54,
+      "category": "prices",
+      "title_as_of_2026_10_20": "تويوتا ياريس في مصر: هل ما زالت متاحة رسميًا وما البدائل الحالية؟"
+    },
+    {
+      "sequence": 38,
+      "id": 80321,
+      "slug": "vw-id4-crozz-2026-price-egypt",
+      "url": "https://a3tal.com/vw-id4-crozz-2026-price-egypt/",
+      "previous_audit_priority": 52,
+      "category": "prices",
+      "title_as_of_2026_10_20": "Volkswagen ID.4 Crozz في مصر: النسخة الصينية والشحن والضمان قبل الشراء"
+    },
+    {
+      "sequence": 39,
+      "id": 80325,
+      "slug": "jetour-t2-2026-price-egypt-review",
+      "url": "https://a3tal.com/jetour-t2-2026-price-egypt-review/",
+      "previous_audit_priority": 52,
+      "category": "prices",
+      "title_as_of_2026_10_20": "جيتور T2 في مصر: الأسعار الحالية والمواصفات وما يجب معرفته قبل الشراء"
+    },
+    {
+      "sequence": 40,
+      "id": 80334,
+      "slug": "kia-sportage-2026-hybrid-prices-egypt",
+      "url": "https://a3tal.com/kia-sportage-2026-hybrid-prices-egypt/",
+      "previous_audit_priority": 34,
+      "category": "prices",
+      "title_as_of_2026_10_20": "سعر كيا سبورتاج هايبرد 2026 في مصر: هل لها سعر رسمي؟"
+    },
+    {
+      "sequence": 41,
+      "id": 81034,
+      "slug": "baic-u5-plus-2026-price-specs-egypt",
+      "url": "https://a3tal.com/baic-u5-plus-2026-price-specs-egypt/",
+      "previous_audit_priority": 34,
+      "category": "prices",
+      "title_as_of_2026_10_20": "بايك U5 بلس في مصر: السعر والمواصفات والفئات"
+    },
+    {
+      "sequence": 42,
+      "id": 80358,
+      "slug": "shell-helix-ultra-5w30-price-egypt",
+      "url": "https://a3tal.com/shell-helix-ultra-5w30-price-egypt/",
+      "previous_audit_priority": 33,
+      "category": "prices",
+      "title_as_of_2026_10_20": "سعر Shell Helix Ultra X 5W-30 في مصر: الأحجام والمواصفات والاعتمادات"
+    },
+    {
+      "sequence": 43,
+      "id": 80368,
+      "slug": "xiaomi-su7-price-egypt-specs",
+      "url": "https://a3tal.com/xiaomi-su7-price-egypt-specs/",
+      "previous_audit_priority": 32,
+      "category": "prices",
+      "title_as_of_2026_10_20": "Xiaomi SU7 في مصر: سعر السوق وحقيقة الوكيل والمواصفات الحالية"
+    },
+    {
+      "sequence": 44,
+      "id": 82348,
+      "slug": "byd-f3-price-egypt",
+      "url": "https://a3tal.com/byd-f3-price-egypt/",
+      "previous_audit_priority": 32,
+      "category": "prices",
+      "title_as_of_2026_10_20": "سعر BYD F3 2026 في مصر: هل يوجد موديل 2026 رسميًا؟"
+    },
+    {
+      "sequence": 45,
+      "id": 82603,
+      "slug": "opel-frontera-price-specs-egypt",
+      "url": "https://a3tal.com/opel-frontera-price-specs-egypt/",
+      "previous_audit_priority": 24,
+      "category": "prices",
+      "title_as_of_2026_10_20": "أوبل فرونتيرا في مصر: السعر بعد الزيادة ومواصفات الـ7 مقاعد"
+    },
+    {
+      "sequence": 46,
+      "id": 81363,
+      "slug": "jetour-t1-2027-price-egypt",
+      "url": "https://a3tal.com/jetour-t1-2027-price-egypt/",
+      "previous_audit_priority": 23,
+      "category": "prices",
+      "title_as_of_2026_10_20": "سعر جيتور T1 2027 في مصر: الفئات والمواصفات وهل تستحق 1.7 مليون؟"
+    },
+    {
+      "sequence": 47,
+      "id": 81498,
+      "slug": "mg-zs-price-egypt",
+      "url": "https://a3tal.com/mg-zs-price-egypt/",
+      "previous_audit_priority": 20,
+      "category": "prices",
+      "title_as_of_2026_10_20": "سعر MG ZS في مصر بعد أحدث تحديث.. لماذا يشتريها المصريون بهذه القوة؟"
+    },
+    {
+      "sequence": 48,
+      "id": 81890,
+      "slug": "byd-atto-2-egypt-price-specs",
+      "url": "https://a3tal.com/byd-atto-2-egypt-price-specs/",
+      "previous_audit_priority": 18,
+      "category": "prices",
+      "title_as_of_2026_10_20": "سعر BYD ATTO 2 في مصر رسميًا: 1.35 مليون جنيه ومدى 430 كم"
+    },
+    {
+      "sequence": 49,
+      "id": 81359,
+      "slug": "hyundai-elantra-ad-2027-price-egypt",
+      "url": "https://a3tal.com/hyundai-elantra-ad-2027-price-egypt/",
+      "previous_audit_priority": 12,
+      "category": "prices",
+      "title_as_of_2026_10_20": "سعر هيونداي إلنترا AD 2027 في مصر: 1.020–1.235 مليون جنيه"
+    },
+    {
+      "sequence": 50,
+      "id": 81836,
+      "slug": "nissan-magnite-price-egypt",
+      "url": "https://a3tal.com/nissan-magnite-price-egypt/",
+      "previous_audit_priority": 8,
+      "category": "prices",
+      "title_as_of_2026_10_20": "سعر نيسان ماجنايت في مصر بعد زيادة أكتوبر: أسعار الفئات والمواصفات"
+    }
+  ]
+}
