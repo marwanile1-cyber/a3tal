@@ -51,7 +51,7 @@ def validate(t,post,pub):
         raise RuntimeError("Canonical/OG/index unexpected")
     original=post["content"]
     if len(original)<1700:raise RuntimeError("Original content truncated")
-    imgs=re.findall(r"<img\\b[^>]*>",original,flags=re.I)
+    imgs=re.findall(r"<img\b[^>]*>",original,flags=re.I)
     if len(imgs)!=0:raise RuntimeError("Article contains in-body image, do not overwrite media")
     if len(t["html"])<2500 or t["html"].count("<h2>")<5 or t["html"].count("<a href=")<2:raise RuntimeError("New body fails quality checks")
     return seo
