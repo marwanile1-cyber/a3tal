@@ -1,0 +1,29 @@
+name: A3tal Egypt human editorial batch03 (Xpander + motorcycle parts)
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/review-human-seo-geo-egypt-batch03-20261114.yml'
+      - 'scripts/review-human-seo-geo-egypt-batch03-20261114.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-egypt-editorial-content-write
+  cancel-in-progress: false
+jobs:
+  verify-update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint protected editorial update
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY" || { echo "Bridge secret missing"; exit 1; }
+          python3 -m py_compile scripts/review-human-seo-geo-egypt-batch03-20261114.py
+          python3 -m py_compile scripts/review-human-seo-geo-egypt-three-20261114.py
+      - name: Preflight all existing posts and update with revision locks
+        run: python3 -u scripts/review-human-seo-geo-egypt-batch03-20261114.py
