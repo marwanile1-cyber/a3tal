@@ -191,7 +191,7 @@ def build(target, original):
         new = NEW_INTRO + tail + NEW_EXTRA
     else:
         new = USED_INTRO + tail + USED_EXTRA
-    if new.count(mark) != 1:
+    if new.count('id="' + mark + '"') != 1:
         raise RuntimeError("Missing unique editorial revision marker")
     if len(new) < 3200 or len(new) > 24000:
         raise RuntimeError("Unexpected length after human revision")
@@ -265,7 +265,7 @@ def main():
         if (final.get("slug"),final.get("status"),int(final.get("featured_media") or 0))!=(
             target["slug"],"publish",target["cover"]):
             raise RuntimeError("Slug/status/featured media changed after publishing")
-        if final.get("content","").count(MARK+"-"+target["kind"])!=1:
+        if final.get("content","").count('id="' + MARK+"-"+target["kind"] + '"')!=1:
             raise RuntimeError("Revision marker not visible in stored content")
         if final.get("title")!=target["title"] or seo.get("description")!=target["description"]:
             raise RuntimeError("SEO or displayed title not saved")
