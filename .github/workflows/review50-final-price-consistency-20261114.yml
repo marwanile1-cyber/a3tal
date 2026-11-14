@@ -1,0 +1,29 @@
+name: A3tal human50 - canonical T2 and Opel vehicle price consistency
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/review50-final-price-consistency-20261114.yml'
+      - 'scripts/review50-final-price-consistency-20261114.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-egypt-editorial-content-write
+  cancel-in-progress: false
+jobs:
+  verify-and-apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check protected source code
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY" || { echo "Missing Bridge secret"; exit 1; }
+          python3 -m py_compile scripts/review50-final-price-consistency-20261114.py
+          python3 -m py_compile scripts/review-human-seo-geo-egypt-three-20261114.py
+      - name: Verify original canonical posts and related vehicle before every write
+        run: python3 -u scripts/review50-final-price-consistency-20261114.py
