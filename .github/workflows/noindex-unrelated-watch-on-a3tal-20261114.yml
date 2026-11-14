@@ -1,0 +1,37 @@
+name: Isolate unrelated watch offer from A3tal automotive Google search index
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/noindex-unrelated-watch-on-a3tal-20261114.yml'
+      - 'scripts/noindex-unrelated-watch-landing-20261114.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  noindex:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Static tests for single post noindex safeguard
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/noindex-unrelated-watch-landing-20261114.py
+          test -n "$A3TAL_API_KEY"
+          grep -q 'PAGE_ID=86067' scripts/noindex-unrelated-watch-landing-20261114.py
+          grep -q '_yoast_wpseo_meta-robots-noindex' scripts/noindex-unrelated-watch-landing-20261114.py
+      - name: Install minimal HTTP dependency
+        run: python3 -m pip install -q requests
+      - name: Update one off-topic Yoast page and verify public noindex while keeping offer live
+        run: python3 -u scripts/noindex-unrelated-watch-landing-20261114.py
+      - name: Preserve live before-after Yoast proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-watch-noindex-20261114-proof
+          path: reports/watch-offtopic-noindex-20261114.json
+          retention-days: 30
+          if-no-files-found: ignore
