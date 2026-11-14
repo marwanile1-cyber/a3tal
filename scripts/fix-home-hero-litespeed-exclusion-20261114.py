@@ -24,9 +24,8 @@ def html_check():
     if r.status_code!=200:raise RuntimeError("Homepage HTTP "+str(r.status_code))
     s=r.text
     # The DOM image must escape LiteSpeed rewrite, unlike previous lazy-loaded audit.
-    match=re.search(r'<img[^>]*class=["\\\'][^"\\\']*hero-mobile-scene[^>]*>',s,re.I)
-    if not match:raise RuntimeError("Hero IMG missing from public HTML")
-    hero=match.group(0)
+    hero=next((tag for tag in re.findall("<img[^>]*>",s,re.I) if "hero-mobile-scene" in tag),None)
+    if not hero:raise RuntimeError("Hero IMG missing from public HTML")
     m=re.search(r'<div class="a3egy-reference-grid">(.*?)</div>',s,re.S)
     result={"h1_one":len(re.findall("<h1",s,re.I))==1,
      "pseo_cards":m.group(1).count("a3egy-reference-card") if m else 0,
