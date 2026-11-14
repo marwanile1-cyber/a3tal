@@ -1,0 +1,60 @@
+name: Exclude A3tal homepage mobile LCP image from LiteSpeed lazy load
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-a3tal-litespeed-mobile-lcp-20261114.yml'
+      - 'scripts/fix-home-hero-litespeed-exclusion-20261114.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-home-performance-safe-cas
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate one-image LiteSpeed exclusion and stable six-PSEO-card guard
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/fix-home-hero-litespeed-exclusion-20261114.py
+          php -l theme-source/a3tal-global/home-reference-20261104.php
+          test -n "$A3TAL_API_KEY"
+          grep -q 'data-no-lazy="1"' theme-source/a3tal-global/home-reference-20261104.php
+          grep -q 'LITESPEED_HERO_NO_LAZY_AND_PSEO_6_CARDS_VERIFIED' scripts/fix-home-hero-litespeed-exclusion-20261114.py
+      - name: Install HTTP dependency
+        run: python3 -m pip install -q requests
+      - name: Safely deploy one image exclusion, purge LiteSpeed cache and verify public HTML
+        run: python3 -u scripts/fix-home-hero-litespeed-exclusion-20261114.py
+      - name: Measure performance in mobile Chromium after LiteSpeed exclusion
+        shell: bash
+        run: |
+          set +e
+          npx --yes lighthouse@12.8.2 https://a3tal.com/ --chrome-path=/usr/bin/google-chrome --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" --only-categories=performance --form-factor=mobile --screenEmulation.mobile=true --throttling-method=simulate --output=json --output-path=reports/a3tal-mobile-lighthouse-lazy-excluded-20261114.json --quiet
+          code=$?
+          echo "LH_EXIT=$code"
+          if [ "$code" -eq 0 ]; then node - <<'JS'
+          const x=require('./reports/a3tal-mobile-lighthouse-lazy-excluded-20261114.json');
+          console.log('AFTER_EXCLUDE_LITESPEED_MOBILE_SCORE',Math.round(100*x.categories.performance.score));
+          console.log('AFTER_EXCLUDE_LITESPEED_MOBILE_LCP',x.audits['largest-contentful-paint']?.displayValue);
+          console.log('AFTER_EXCLUDE_LITESPEED_MOBILE_FCP',x.audits['first-contentful-paint']?.displayValue);
+          const q=x.audits['largest-contentful-paint-element']?.details?.items;
+          console.log('AFTER_EXCLUDE_LITESPEED_HERO_EVIDENCE',JSON.stringify(q||[]).slice(0,770));
+          JS
+          fi
+          exit 0
+      - name: Preserve actual public SEO and performance evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-non-lazy-lcp-image-audit-20261114
+          path: |
+            reports/a3tal-20261114-litespeed-lcp-exclude.json
+            reports/a3tal-mobile-lighthouse-lazy-excluded-20261114.json
+          retention-days: 30
+          if-no-files-found: ignore
