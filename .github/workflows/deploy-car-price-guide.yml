@@ -61,9 +61,13 @@ jobs:
           import urllib.parse
           import urllib.error
           import time
+          # Check real visible features instead of asset filenames: LiteSpeed may
+          # combine/minify CSS and JS even when the interface is rendered correctly.
+          # Also test published price-article search, separate from the car CPT.
           paths={
-            '/cars/':['cg-guide','cg-brands-grid','cg-cars-grid','car-price-guide.css','car-price-brand-logos.js','car-price-guide.js'],
-            '/cars/?car_search=Kia':['cg-guide','car_search','Kia'],
+            '/cars/':['cg-guide','cg-brands-grid','cg-cars-grid','أحدث مقالات أسعار السيارات الجديدة'],
+            '/cars/?car_search=Kia':['cg-guide','car_search','K4'],
+            '/cars/?car_search=كورسا':['cg-guide','cg-search-price-articles','سعر أوبل كورسا 2027','لا توجد موديلات مسجلة بهذا الاسم'],
             '/cars/?car_year=2027':['cg-guide','car_year','K4'],
             '/cars/skoda-octavia-2027-egypt/':['cg-trim-panel','Loft','Lounge','Suite'],
             '/cars/mazda-3-2027-egypt/':['cg-trim-panel','Highline'],
@@ -71,12 +75,12 @@ jobs:
             '/cars/jac-js2-2027-egypt/':['cg-trim-panel','Smart'],
             '/cars/?brand=kia&car_year=2027':['cg-guide','car_year','K4','Seltos'],
             '/cars/?brand=kia&car_search=Kia&car_year=2027':['cg-guide','car_year','K4','Seltos'],
-            '/cars/?brand=toyota':['cg-guide','دليل سيارات تويوتا في مصر','كل ما يخص سيارات تويوتا','اقرأ الدليل المنشور'],
-            '/cars/?brand=nissan':['cg-guide','كل ما يخص سيارات نيسان','دليل المواصفات الفنية لهذه الماركة'],
-            '/cars/?brand=mg':['cg-guide','كل ما يخص سيارات MG','دليل المواصفات الفنية لهذه الماركة'],
-            '/cars/?brand=chevrolet':['cg-guide','كل ما يخص سيارات شيفروليه','دليل المواصفات الفنية لهذه الماركة'],
+            '/cars/?brand=toyota':['cg-guide','دليل سيارات تويوتا في مصر','دليل تويوتا في أعطال.كوم'],
+            '/cars/?brand=nissan':['cg-guide','دليل سيارات نيسان في مصر','دليل نيسان في أعطال.كوم'],
+            '/cars/?brand=mg':['cg-guide','دليل سيارات إم جي في مصر','دليل إم جي في أعطال.كوم'],
+            '/cars/?brand=chevrolet':['cg-guide','دليل سيارات شيفروليه في مصر','دليل شيفروليه في أعطال.كوم'],
             '/cars/?brand=geely':['cg-guide','Geely','Galaxy EX2'],
-            '/cars/?brand=byd':['cg-guide','BYD','Sealion'],
+            '/cars/?brand=byd':['cg-guide','دليل سيارات بي واي دي في مصر','Sealion'],
             '/cars/kia-k4-2027-egypt/':['كيا','K4','id="car-explore"','kia-k4-2027-egypt-prices-engines','a3tal-vehicle-diagnostics'],
             '/dtc/':['dtc-codes','مكتبة'],
             '/motorcycles/':['الموتوسيكلات'],
