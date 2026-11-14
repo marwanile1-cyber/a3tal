@@ -82,6 +82,10 @@ def main():
         if live[n]["content"]==reviewed[n]:
             print("ALREADY_DEPLOYED",n,flush=True)
         elif live[n]["content"]!=before[n]:
+            import difflib
+            print("LIVE_THEME_DRIFT_DIAGNOSTIC",n,"live_chars",len(live[n]["content"]),"expected_chars",len(before[n]),flush=True)
+            diffs=list(difflib.unified_diff(before[n].splitlines(),live[n]["content"].splitlines(),n=2))
+            print("LIVE_THEME_DRIFT_PREVIEW", "\\n".join(z[:260] for z in diffs[:55]),flush=True)
             raise RuntimeError("LIVE_SOURCE_DRIFT_STOPPED_WITHOUT_WRITE "+n+" live="+sha(live[n]["content"])[:16]+" expected="+sha(before[n])[:16])
         else:
             print("SOURCE_PREPATCH_EXACT_CONFIRMED",n,flush=True)
