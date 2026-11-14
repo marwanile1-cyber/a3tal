@@ -131,7 +131,7 @@ if (post_type_exists('a3_car_ref')) {
 <!-- A3TAL-EGYPT-HOME-PSEO-20261108-END -->
 <!-- A3TAL-EGYPT-BRAND-LOGO-ASSET-20261108 -->
 <link rel="stylesheet" href="<?php echo esc_url(get_template_directory_uri().'/egypt-home-brand-logos-20261108.css?ver=20261108.3'); ?>">
-<!-- Brand logo WebP images render directly in HTML; no delayed JavaScript needed. -->
+<script src="<?php echo esc_url(get_template_directory_uri().'/assets/js/egypt-home-brand-logos-20261108.js'); ?>" defer></script>
 <div class="wrap"><section class="catalog"><div class="panel cars-panel"><div class="panel-title"><h2>أحدث موديلات السيارات</h2><a href="https://a3tal.com/cars/">عرض جميع الموديلات ←</a></div><div class="car-grid">
 <?php if($home_ref_cards && $home_ref_cards->have_posts()): ?>
 <?php while($home_ref_cards->have_posts()):$home_ref_cards->the_post();
