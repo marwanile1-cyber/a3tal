@@ -16,7 +16,7 @@ jobs:
         shell: bash
         run: |
           python3 - <<'PY'
-          import urllib.request,json,re
+          import urllib.request,json,re,urllib.parse
           from html.parser import HTMLParser
           sources=[
            ("https://a3tal.com/car-battery-heat-saudi-summer-voltage-test-before-replace/","car-battery-drains-when-parked-diagnosis"),
@@ -52,7 +52,7 @@ jobs:
            except Exception as e:return {"url":url,"error":str(e)[:180]}
           for url,target in sources:
            r=read(url)
-           found=[a for a in r.get("links",[]) if target in a["href"]]
+           found=[a for a in r.get("links",[]) if target in urllib.parse.unquote(a["href"])]
            matches=[]
            for a in found:
             i=r["html"].find(a["href"])
