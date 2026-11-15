@@ -1,0 +1,36 @@
+name: A3tal Sitemap Integrity Live Audit - read only 2026-11-16
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/audit-a3tal-sitemap-live-20261116.yml'
+      - 'scripts/audit-a3tal-sitemap-live-20261116.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-sitemap-readonly-audit
+  cancel-in-progress: false
+jobs:
+  inspect-live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install read-only parsing libraries
+        run: pip install -q requests beautifulsoup4
+      - name: Validate Python syntax before request
+        run: python -m py_compile scripts/audit-a3tal-sitemap-live-20261116.py
+      - name: Validate live Yoast XML index, robots and stratified sample, GET only
+        run: python -u scripts/audit-a3tal-sitemap-live-20261116.py
+      - name: Preserve exact audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-sitemap-audit-${{ github.run_id }}
+          path: a3tal-sitemap-live-audit-20261116.json
+          retention-days: 30
+          if-no-files-found: warn
