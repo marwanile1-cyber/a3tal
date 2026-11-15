@@ -176,7 +176,7 @@ def main():
             pair_summary.append({"cluster":name,"pages":[a,b],"error":"Insufficient content to compare"})
             continue
         sim=round(len(words(x["_sample"]) & words(y["_sample"]))/
-             max(1,len(words(x["_sample"]) | words(y["_sample"])),3)
+             max(1,len(words(x["_sample"]) | words(y["_sample"]))),3)
         ha=words(" ".join(x["h2"]));hb=words(" ".join(y["h2"]))
         hsim=round(len(ha&hb)/max(1,len(ha|hb)),3)
         linked=a in y["links_to_prioritized"] or b in x["links_to_prioritized"]
