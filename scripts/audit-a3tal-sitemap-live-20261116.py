@@ -115,7 +115,7 @@ def main():
         all_urls.extend((record["file"],u) for u in page_urls)
         print("SITEMAP_CHILD",record["file"].rsplit("/",1)[-1],record["http"],record["urls"],flush=True)
     counts=collections.Counter(e["url"] for e in entries)
-    exact_duplicates=[{"url":k,"count":n} for k,n in counts.items() if n>1]
+    exact_duplicates=[{"url":k,"count":n,"sitemaps":[e["sitemap"] for e in entries if e["url"]==k]} for k,n in counts.items() if n>1]
     normalized=collections.defaultdict(set)
     for e in entries:normalized[exact_path_key(e["url"])].add(e["url"])
     variants=[list(v) for v in normalized.values() if len(v)>1]
@@ -177,6 +177,7 @@ def main():
     with open("a3tal-sitemap-live-audit-20261116.json","w",encoding="utf-8") as f:json.dump(summary,f,ensure_ascii=False,indent=2)
     simple={k:summary[k] for k in ["total_entries","unique_exact_url_count","unique_normalized_url_count","url_entries_issues_count","sample_checked","sample_http_statuses","sample_issues_count","known_redirects_listed"]}
     print("A3TAL_SITEMAP_AUDIT_SUMMARY",json.dumps(simple,ensure_ascii=False),flush=True)
+    print("A3TAL_SITEMAP_DUPLICATES",json.dumps(summary["duplicate_exact_urls"],ensure_ascii=False),flush=True)
     print("A3TAL_SITEMAP_ROBOTS",json.dumps(summary["robots"],ensure_ascii=False),flush=True)
     print("A3TAL_SITEMAP_ALIASES",json.dumps(summary["sitemap_aliases"],ensure_ascii=False),flush=True)
     print("A3TAL_SITEMAP_SAMPLE_ISSUES",json.dumps(issue_rows[:50],ensure_ascii=False),flush=True)
