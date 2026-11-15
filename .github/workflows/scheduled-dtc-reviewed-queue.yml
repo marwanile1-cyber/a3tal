@@ -1,17 +1,10 @@
 name: Auto-publish 10 reviewed Arabic DTC codes every 30 minutes
 
+# Emergency SEO freeze 2026-11-15: no scheduled or push-triggered WordPress mutations.
+# Manual workflow_dispatch preserved so reviewed DTC publishing can resume only
+# after Search Console trend and original URL/indexability are verified.
 on:
-  schedule:
-    # Twice per hour, offset from the crowded start-of-hour GitHub Actions queue (UTC).
-    - cron: '7,37 * * * *'
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/scheduled-dtc-reviewed-queue.yml'
-      - 'scripts/scheduled-dtc-reviewed-queue.py'
-      - 'data/dtc-original-batch-26.json'
-      - 'data/dtc-original-batch-27.json'
 
 permissions:
   contents: read
