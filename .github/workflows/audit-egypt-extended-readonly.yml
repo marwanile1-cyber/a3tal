@@ -14,8 +14,8 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: a3tal-live-seo-link-audit-39168012987
-          run-id: 39168012987
+          name: a3tal-live-seo-link-audit-43701521420
+          run-id: 43701521420
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: audit-input
       - name: Install audit dependencies
