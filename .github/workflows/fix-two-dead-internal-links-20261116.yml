@@ -1,0 +1,30 @@
+name: A3tal emergency fix 2 confirmed dead internal links only
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-two-dead-internal-links-20261116.yml'
+      - 'scripts/fix-two-dead-internal-links-20261116.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-emergency-two-broken-links
+  cancel-in-progress: false
+jobs:
+  safe-fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install read/validation HTML parser
+        run: python -m pip install -q beautifulsoup4
+      - name: Compile before running
+        run: python -m py_compile scripts/fix-two-dead-internal-links-20261116.py
+      - name: Preflight both existing posts and patch only two proven 404 hrefs via A3tal Direct Bridge
+        run: python -u scripts/fix-two-dead-internal-links-20261116.py
