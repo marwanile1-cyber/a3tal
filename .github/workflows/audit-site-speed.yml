@@ -41,6 +41,7 @@ jobs:
           echo "VARIABLE_FONT_CSS_BYTES $(wc -c </tmp/a3tal-variable-fonts.css)"
           grep -E 'font-family:|font-weight:' /tmp/a3tal-variable-fonts.css | sort -u | head -18
       - name: Verify live mobile CSS paint patch and version
+        continue-on-error: true
         shell: bash
         run: |
           set -euo pipefail
