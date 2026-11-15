@@ -1,0 +1,36 @@
+name: A3tal recovery30 - read-only live triage 2026-11-16
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/audit-a3tal-recovery30-readonly-20261116.yml'
+      - 'scripts/audit-a3tal-recovery30-readonly-20261116.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-readonly-seo-recovery30
+  cancel-in-progress: false
+jobs:
+  inspect-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install read-only HTML parsing dependencies
+        run: pip install --quiet requests beautifulsoup4
+      - name: Check code syntax
+        run: python -m py_compile scripts/audit-a3tal-recovery30-readonly-20261116.py
+      - name: Inspect 30 public pages with max 2 concurrent GETs; no WP write credentials
+        run: python -u scripts/audit-a3tal-recovery30-readonly-20261116.py
+      - name: Upload exact evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-recovery30-readonly-${{ github.run_id }}
+          path: a3tal-recovery30-live-readonly.json
+          retention-days: 30
+          if-no-files-found: warn
