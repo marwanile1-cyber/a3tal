@@ -1,0 +1,36 @@
+name: A3tal priority indexability and sitemap match - read only
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/audit-a3tal-priority-indexability-readonly-20261116.yml'
+      - 'scripts/audit-a3tal-priority-indexability-readonly-20261116.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-priority-indexability-readonly
+  cancel-in-progress: false
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install requests and parsing
+        run: python -m pip install -q requests beautifulsoup4
+      - name: Syntax check
+        run: python -m py_compile scripts/audit-a3tal-priority-indexability-readonly-20261116.py
+      - name: Check highest-value 30 final pages against all XML URLs, GET only
+        run: python -u scripts/audit-a3tal-priority-indexability-readonly-20261116.py
+      - name: Preserve full report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-priority-indexability-readonly-${{ github.run_id }}
+          path: a3tal-priority-indexability-readonly-20261116.json
+          if-no-files-found: warn
+          retention-days: 30
