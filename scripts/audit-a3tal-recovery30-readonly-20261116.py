@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""SEO emergency triage for 30 GSC-prioritized a3tal.com Egypt pages.
+"""SEO emergency triage for 30 distinct canonical Egypt pages (32 URLs: 2 known redirected source aliases).
 READ ONLY: GET published pages; no WP/GitHub writes and no indexing requests.
 Counts current structural evidence; historic 3-month GSC metrics are NOT a
 Nov 12-13 page-level loss comparison. Avoid ranking claims from this audit.
@@ -47,9 +47,11 @@ URL_PATHS=[
 "renault-egypt-maintenance-booking-centers-locations/",
 "what-to-do-when-check-engine-light-is-on/",
 "byd-f3-price-egypt/",
-"p0335-crankshaft-position-sensor/"
+"p0335-crankshaft-position-sensor/",
+"mg-5-2026-egypt/",
+"gac-emzoom-maintenance-schedule/"
 ]
-assert len(URL_PATHS)==30 and len(set(URL_PATHS))==30
+assert len(URL_PATHS)==32 and len(set(URL_PATHS))==32
 GROUPS=[
 ("جيتور T2",9,10),
 ("كورولا",11,12),
@@ -188,7 +190,7 @@ def main():
           "note":"Similarity is a triage cue, NEVER proof of cannibalization or authorization for 301."})
     for r in results:r.pop("_sample",None)
     count=lambda flag:sum(flag in r["flags"] for r in results)
-    summary={"target_count":30,"inspected":len(results),
+    summary={"source_urls_checked":len(URL_PATHS),"distinct_final_url_count":len(set(v["final_url"] for v in results if v["status"]==200)),"inspected":len(results),
              "http_200":sum(r["status"]==200 for r in results),
              "fetch_failure":count("FETCH_FAILED"),
              "non_200":count("NON_200"),
@@ -211,6 +213,6 @@ def main():
     print("RECOVERY30_PAIRS",json.dumps(pair_summary,ensure_ascii=False),flush=True)
     print("RECOVERY30_ARTIFACT a3tal-recovery30-live-readonly.json",flush=True)
     # Fail only on systemic inability to inspect, not because of naturally present SEO issues.
-    if summary["http_200"]<24:
+    if summary["http_200"]<28:
         raise SystemExit("Too many inaccessible pages for representative triage; rerun read-only later.")
 if __name__=="__main__":main()
