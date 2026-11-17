@@ -2,8 +2,8 @@
   "batch": "a3tal-seo10-nov17-2026",
   "site": "https://a3tal.com",
   "editorial_status": "published_verified_10",
-  "image_status": "generated_and_exported_as_local_webp_not_uploaded",
-  "note": "Do not mark images as assigned or og:image updated. Live posts retain their existing WordPress featured media. Photographic renders are illustrative rather than evidence of actual repairs; Nissan gearbox render must not be represented as a confirmed exact model.",
+  "image_status": "uploaded_featured_inline_and_og_verified_2026-11-17",
+  "note": "All 10 exact original 1600x900 WebP assets uploaded via GitHub+Direct Bridge and independently verified on live articles, including index/follow and self-canonical.",
   "bundle_filename": "a3tal_10_exclusive_photoreal_images_2026-11-17.zip",
   "targets": [
     {
@@ -11,70 +11,91 @@
       "filename": "starter-motor-diagnosis.webp",
       "width": 1600,
       "height": 900,
-      "status": "upload_pending; do not report live image updated"
+      "status": "uploaded_assigned_inline_and_og_verified",
+      "media_id": 86236,
+      "url": "https://a3tal.com/wp-content/uploads/2026/01/a3tal-exclusive-20261117-starter-motor-diagnosis.webp"
     },
     {
       "post_id": 81039,
       "filename": "check-engine-warning-scanner.webp",
       "width": 1600,
       "height": 900,
-      "status": "upload_pending; do not report live image updated"
+      "status": "uploaded_assigned_inline_and_og_verified",
+      "media_id": 86238,
+      "url": "https://a3tal.com/wp-content/uploads/2026/04/a3tal-exclusive-20261117-check-engine-warning-scanner.webp"
     },
     {
       "post_id": 80521,
       "filename": "turbocharger-boost-hose-inspection.webp",
       "width": 1600,
       "height": 900,
-      "status": "upload_pending; do not report live image updated"
+      "status": "uploaded_assigned_inline_and_og_verified",
+      "media_id": 86240,
+      "url": "https://a3tal.com/wp-content/uploads/2026/01/a3tal-exclusive-20261117-turbocharger-boost-hose-inspection.webp"
     },
     {
       "post_id": 80508,
       "filename": "clutch-hydraulic-master-cylinder.webp",
       "width": 1600,
       "height": 900,
-      "status": "upload_pending; do not report live image updated"
+      "status": "uploaded_assigned_inline_and_og_verified",
+      "media_id": 86242,
+      "url": "https://a3tal.com/wp-content/uploads/2026/01/a3tal-exclusive-20261117-clutch-hydraulic-master-cylinder.webp"
     },
     {
       "post_id": 81009,
       "filename": "car-ac-condenser-fan.webp",
       "width": 1600,
       "height": 900,
-      "status": "upload_pending; do not report live image updated"
+      "status": "uploaded_assigned_inline_and_og_verified",
+      "media_id": 86244,
+      "url": "https://a3tal.com/wp-content/uploads/2026/04/a3tal-exclusive-20261117-car-ac-condenser-fan.webp"
     },
     {
       "post_id": 80611,
       "filename": "nissan-sunny-automatic-gearbox.webp",
       "width": 1600,
       "height": 900,
-      "status": "upload_pending; do not report live image updated"
+      "status": "uploaded_assigned_inline_and_og_verified",
+      "media_id": 86246,
+      "url": "https://a3tal.com/wp-content/uploads/2026/01/a3tal-exclusive-20261117-nissan-sunny-automatic-gearbox.webp"
     },
     {
       "post_id": 79890,
       "filename": "crankshaft-main-and-rod-bearings.webp",
       "width": 1600,
       "height": 900,
-      "status": "upload_pending; do not report live image updated"
+      "status": "uploaded_assigned_inline_and_og_verified",
+      "media_id": 86248,
+      "url": "https://a3tal.com/wp-content/uploads/2025/10/a3tal-exclusive-20261117-crankshaft-main-and-rod-bearings.webp"
     },
     {
       "post_id": 80153,
       "filename": "automatic-transmission-jerk-diagnostics.webp",
       "width": 1600,
       "height": 900,
-      "status": "upload_pending; do not report live image updated"
+      "status": "uploaded_assigned_inline_and_og_verified",
+      "media_id": 86250,
+      "url": "https://a3tal.com/wp-content/uploads/2025/12/a3tal-exclusive-20261117-automatic-transmission-jerk-diagnostics.webp"
     },
     {
       "post_id": 79952,
       "filename": "abs-wheel-speed-sensor.webp",
       "width": 1600,
       "height": 900,
-      "status": "upload_pending; do not report live image updated"
+      "status": "uploaded_assigned_inline_and_og_verified",
+      "media_id": 86252,
+      "url": "https://a3tal.com/wp-content/uploads/2025/10/a3tal-exclusive-20261117-abs-wheel-speed-sensor.webp"
     },
     {
       "post_id": 80992,
       "filename": "cooling-system-pressure-test.webp",
       "width": 1600,
       "height": 900,
-      "status": "upload_pending; do not report live image updated"
+      "status": "uploaded_assigned_inline_and_og_verified",
+      "media_id": 86254,
+      "url": "https://a3tal.com/wp-content/uploads/2026/03/a3tal-exclusive-20261117-cooling-system-pressure-test.webp"
     }
-  ]
+  ],
+  "workflow_url": "https://github.com/marwanile1-cyber/a3tal/actions/runs/44127855135"
 }
