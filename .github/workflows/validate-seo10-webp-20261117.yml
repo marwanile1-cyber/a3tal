@@ -1,0 +1,39 @@
+name: Validate 10 Exclusive WebP Media Payload Nov17
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/validate-seo10-webp-20261117.yml'
+permissions:
+  contents: read
+jobs:
+  check-ten-webps:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Pillow and check source and syntax
+        run: |
+          set -euo pipefail
+          python3 -m pip install --quiet Pillow
+          python3 -m py_compile scripts/upload-seo10-webp-20261117.py
+          python3 -m json.tool data/seo10-webp-upload-20261117.json >/dev/null
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          import io, json, zipfile, hashlib, base64
+          cfg=json.loads(Path('data/seo10-webp-upload-20261117.json').read_text())
+          content=Path(cfg['zip_b64_path']).read_text().strip()
+          assert len(content)>1000000,len(content)
+          decoded=base64.b64decode(content,validate=True)
+          digest=hashlib.sha256(decoded).hexdigest()
+          assert digest==cfg['zip_sha256'],(digest,cfg['zip_sha256'])
+          with zipfile.ZipFile(io.BytesIO(decoded)) as z:
+              expected={x['file'] for x in cfg['items']}
+              assert set(z.namelist())==expected
+              for item in cfg['items']:
+                  with Image.open(io.BytesIO(z.read(item['file']))) as im:
+                      assert im.format=='WEBP' and im.size==(1600,900)
+                  print('WEBP_VALID',item['id'],item['file'],flush=True)
+          print('ALL_TEN_WEBP_CONTENT_VALID_SHA256',digest,flush=True)
+          PY
