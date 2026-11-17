@@ -1,0 +1,26 @@
+name: Correct A3tal seven editorial dates and visible CSS Nov17
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/correct-seven-dates-copy-20261117.yml'
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-seo-copy-qa-correct-seven-20261117
+  cancel-in-progress: false
+jobs:
+  correct:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify script syntax and bridge credentials
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/correct-seven-dates-copy-20261117.py
+          test -n "$A3TAL_API_KEY"
+      - name: Verify originals and update only checked text
+        run: python3 -u scripts/correct-seven-dates-copy-20261117.py
