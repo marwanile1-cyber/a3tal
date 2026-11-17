@@ -1,7 +1,7 @@
 {
   "batch": "a3tal-seo10-nov17-2026",
   "gsc_export": "https___a3tal.com_-Performance-on-Search-2026-11-17.xlsx",
-  "images_prepared_locally_not_uploaded": true,
+  "images_prepared_locally_not_uploaded": false,
   "cases": [
     {
       "id": 80524,
@@ -373,5 +373,7 @@
       "internal": "https://a3tal.com/air-in-cooling-system-bleeding-diagnosis/",
       "meta": "مياه الردياتير بتنقص بلا تسريب ظاهر؟ افحص الغطاء والخرطوم والطلمبة والـHeater Core واختبار ضغط الدورة قبل اتهام جوان وش السلندر."
     }
-  ]
+  ],
+  "media_status": "10 exclusive generated WebP uploaded/featured/inline and og:image verified 2026-11-17",
+  "media_workflow_url": "https://github.com/marwanile1-cyber/a3tal/actions/runs/44127855135"
 }
