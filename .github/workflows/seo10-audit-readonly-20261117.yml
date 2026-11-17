@@ -1,0 +1,17 @@
+name: Read only A3tal ten editorial audit 20261117
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/seo10-audit-readonly-20261117.yml']
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m py_compile scripts/seo10-audit-readonly-20261117.py
+      - run: python3 -u scripts/seo10-audit-readonly-20261117.py
