@@ -1,13 +1,19 @@
 #!/usr/bin/env python3
 """Read-only quality and stale-date audit of the seven revised Egypt articles."""
-import os,json,re,html,urllib.request
+import os,json,re,html,urllib.request,urllib.error,time
 IDS=[79964,80401,79,80669,80266,80534,80056]
 API="https://a3tal.com/wp-json/a3tal-direct/v1"
 KEY=os.getenv("A3TAL_API_KEY","")
 if not KEY: raise RuntimeError("Missing Direct Bridge key")
 def get(pid):
-    req=urllib.request.Request(f"{API}/post/{pid}",headers={"X-A3tal-Key":KEY,"Authorization":"Bearer "+KEY,"Cache-Control":"no-store"})
-    with urllib.request.urlopen(req,timeout=100) as r:return json.load(r)
+    req=urllib.request.Request(f"{API}/post/{pid}",headers={"X-A3tal-Key":KEY,"Authorization":"Bearer "+KEY,"Cache-Control":"no-cache","Accept":"application/json","User-Agent":"curl/8.5.0"})
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(req,timeout=100) as r:return json.load(r)
+        except urllib.error.HTTPError as exc:
+            if attempt==2:raise
+            print("RETRY_BRIDGE_READ",pid,exc.code,flush=True)
+            time.sleep(4+attempt*3)
 def norm(s):
     s=html.unescape(re.sub(r'<[^>]+>',' ',s))
     return re.sub(r'\s+',' ',s).strip()
