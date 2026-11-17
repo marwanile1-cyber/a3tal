@@ -1,0 +1,80 @@
+{
+  "batch": "a3tal-seo10-nov17-2026",
+  "site": "https://a3tal.com",
+  "editorial_status": "published_verified_10",
+  "image_status": "generated_and_exported_as_local_webp_not_uploaded",
+  "note": "Do not mark images as assigned or og:image updated. Live posts retain their existing WordPress featured media. Photographic renders are illustrative rather than evidence of actual repairs; Nissan gearbox render must not be represented as a confirmed exact model.",
+  "bundle_filename": "a3tal_10_exclusive_photoreal_images_2026-11-17.zip",
+  "targets": [
+    {
+      "post_id": 80524,
+      "filename": "starter-motor-diagnosis.webp",
+      "width": 1600,
+      "height": 900,
+      "status": "upload_pending; do not report live image updated"
+    },
+    {
+      "post_id": 81039,
+      "filename": "check-engine-warning-scanner.webp",
+      "width": 1600,
+      "height": 900,
+      "status": "upload_pending; do not report live image updated"
+    },
+    {
+      "post_id": 80521,
+      "filename": "turbocharger-boost-hose-inspection.webp",
+      "width": 1600,
+      "height": 900,
+      "status": "upload_pending; do not report live image updated"
+    },
+    {
+      "post_id": 80508,
+      "filename": "clutch-hydraulic-master-cylinder.webp",
+      "width": 1600,
+      "height": 900,
+      "status": "upload_pending; do not report live image updated"
+    },
+    {
+      "post_id": 81009,
+      "filename": "car-ac-condenser-fan.webp",
+      "width": 1600,
+      "height": 900,
+      "status": "upload_pending; do not report live image updated"
+    },
+    {
+      "post_id": 80611,
+      "filename": "nissan-sunny-automatic-gearbox.webp",
+      "width": 1600,
+      "height": 900,
+      "status": "upload_pending; do not report live image updated"
+    },
+    {
+      "post_id": 79890,
+      "filename": "crankshaft-main-and-rod-bearings.webp",
+      "width": 1600,
+      "height": 900,
+      "status": "upload_pending; do not report live image updated"
+    },
+    {
+      "post_id": 80153,
+      "filename": "automatic-transmission-jerk-diagnostics.webp",
+      "width": 1600,
+      "height": 900,
+      "status": "upload_pending; do not report live image updated"
+    },
+    {
+      "post_id": 79952,
+      "filename": "abs-wheel-speed-sensor.webp",
+      "width": 1600,
+      "height": 900,
+      "status": "upload_pending; do not report live image updated"
+    },
+    {
+      "post_id": 80992,
+      "filename": "cooling-system-pressure-test.webp",
+      "width": 1600,
+      "height": 900,
+      "status": "upload_pending; do not report live image updated"
+    }
+  ]
+}
