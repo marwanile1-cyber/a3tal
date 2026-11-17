@@ -84,3 +84,9 @@ Updating this repository does not update the currently installed WordPress plugi
 ## Editorial image policy
 
 All article and featured images must follow [A3tal Editorial Image Policy](A3TAL-IMAGE-POLICY.md). The default is photorealistic, scene-based automotive imagery. Vector, icon-based, infographic-style or generic rendered images are rejected unless a technical diagram is explicitly required by the content.
+
+## Mandatory A3tal editorial standards (adopted 2026-11-17)
+
+All new or revised Egypt car articles, expert biography blocks, source-dated price/service content, and photos must follow **[A3tal Editorial & SEO/GEO Standard](EDITORIAL-STANDARDS-A3TAL.md)** and the repository **[AGENTS.md](AGENTS.md)**.
+
+Release checklist includes original photorealistic ChatGPT-generated WebP uploaded and assigned in WordPress, answer-first prose, human editorial style, verified automotive facts and dates, proper expert attribution after actual review, responsive visual tables, Yoast/Schema/indexability checks, and public post-publication verification. GitHub + A3tal Direct Bridge only. No auto-publication without explicit authorization.
