@@ -1,0 +1,30 @@
+name: Validate SEO10 A3tal batch preflight 20261117
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/seo10-validate-20261117.yml']
+permissions:
+  contents: read
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile and validate ten targeted article cases
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/publish-seo10-editorial-20261117.py
+          python3 -m json.tool data/a3tal-seo10-editorial-20261117.json >/dev/null
+          python3 - <<'PY'
+          import json
+          p=json.load(open('data/a3tal-seo10-editorial-20261117.json'))
+          assert len(p['cases'])==10
+          assert len(set(x['id'] for x in p['cases']))==10
+          for c in p['cases']:
+              assert len(c['table'])>=4
+              assert len(c['answer'])>120
+              assert len(c['source'])>25
+              assert len(c['meta'])>65
+              print('QA_CASE',c['id'],c['headline'])
+          PY
