@@ -1,0 +1,21 @@
+name: Audit A3tal seven live copy dates READ ONLY Nov17
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/audit-seven-live-copy-20261117.yml'
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read and audit all seven originals, never write
+        run: |
+          set -euo pipefail
+          python3 -m py_compile scripts/audit-seven-live-copy-20261117.py
+          python3 -u scripts/audit-seven-live-copy-20261117.py
