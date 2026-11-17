@@ -1,0 +1,67 @@
+{
+  "batch": "a3tal-seo10-featured-20261117",
+  "zip_b64_path": "assets/seo10-20261117-exclusive-webp-bundle.zip.b64",
+  "zip_sha256": "8b2dc30ef1176c91ef711ccb158a48dbcaf16f9cce6c02cc8a451b450acb86ac",
+  "items": [
+    {
+      "id": 80524,
+      "slug": "bad-starter-motor-symptoms-repair-guide",
+      "file": "starter-motor-diagnosis.webp",
+      "alt": "فني يفحص مارش السيارة وأطرافه بجهاز قياس كهربائي داخل ورشة، صورة فوتوغرافية توضيحية"
+    },
+    {
+      "id": 81039,
+      "slug": "what-to-do-when-check-engine-light-is-on",
+      "file": "check-engine-warning-scanner.webp",
+      "alt": "لمبة فحص المحرك مضيئة في لوحة العدادات مع جهاز تشخيص الأعطال، صورة توضيحية"
+    },
+    {
+      "id": 80521,
+      "slug": "bad-turbocharger-symptoms-repair-cost",
+      "file": "turbocharger-boost-hose-inspection.webp",
+      "alt": "فحص خرطوم الهواء المضغوط المتصل بالتيربو داخل حجرة المحرك، صورة توضيحية"
+    },
+    {
+      "id": 80508,
+      "slug": "clutch-master-cylinder-symptoms-vs-disc",
+      "file": "clutch-hydraulic-master-cylinder.webp",
+      "alt": "فني يفحص الأسطوانة الهيدروليكية لدواسة الدبرياج وموصلاتها، صورة توضيحية"
+    },
+    {
+      "id": 81009,
+      "slug": "car-ac-weak-at-idle",
+      "file": "car-ac-condenser-fan.webp",
+      "alt": "فني يفحص مروحة تبريد الكوندنسر خلف واجهة السيارة أثناء تشخيص ضعف التكييف، صورة توضيحية"
+    },
+    {
+      "id": 80611,
+      "slug": "nissan-sunny-gearbox-problems-guide",
+      "file": "nissan-sunny-automatic-gearbox.webp",
+      "alt": "ناقل حركة أوتوماتيكي مفكوك داخل ورشة، صورة توضيحية عامة ولا تمثل بالضرورة فتيس نيسان صني بعينه"
+    },
+    {
+      "id": 79890,
+      "slug": "أعراض-تلف-سبائك-الكرنك",
+      "file": "crankshaft-main-and-rod-bearings.webp",
+      "alt": "فحص محامل عمود الكرنك وسبائك المحرك داخل ورشة ميكانيكا، صورة توضيحية"
+    },
+    {
+      "id": 80153,
+      "slug": "automatic-transmission-jerk-causes-fix-egypt-2026",
+      "file": "automatic-transmission-jerk-diagnostics.webp",
+      "alt": "فني يراجع بيانات تشخيص ناقل الحركة أثناء فحص السيارة في ورشة، صورة توضيحية"
+    },
+    {
+      "id": 79952,
+      "slug": "دليلك-الشامل-لصيانة-نظام-abs-ومعالجة-أشه",
+      "file": "abs-wheel-speed-sensor.webp",
+      "alt": "فحص حساس سرعة العجلة بجانب قرص الفرامل عند تشخيص عطل ABS، صورة توضيحية"
+    },
+    {
+      "id": 80992,
+      "slug": "radiator-water-loss-no-leak",
+      "file": "cooling-system-pressure-test.webp",
+      "alt": "فني يختبر ضغط دورة تبريد المحرك لكشف نقص سائل الردياتير وتسريباته، صورة توضيحية"
+    }
+  ]
+}
