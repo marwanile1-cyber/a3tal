@@ -1,0 +1,28 @@
+name: Upload and Verify 10 A3tal Exclusive Featured WebPs Nov17
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/upload-seo10-webp-20261117.yml'
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-10-generated-featured-image-upload-20261117
+  cancel-in-progress: false
+jobs:
+  upload-ten:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Authenticate and verify source scripts
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/upload-seo10-webp-20261117.py
+          python3 -m json.tool data/seo10-webp-upload-20261117.json >/dev/null
+          python3 -m pip install --quiet Pillow
+      - name: Upload original WebPs via Direct Bridge and verify each featured and inline image
+        run: python3 -u scripts/upload-seo10-webp-20261117.py
