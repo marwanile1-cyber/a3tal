@@ -102,8 +102,8 @@ def build(c,original):
  if content.count('id="'+MARK)==0 and content.count("id='"+MARK)!=1:raise RuntimeError("Answer block missing")
  if content.count("a3tal-seo10-author")!=1 or content.count("a3tal-seo10-expert-decision")!=1:raise RuntimeError("Sections malformed")
  if content.count("<img")!=original.count("<img"):raise RuntimeError("Inline media count changed")
- oldlinks=re.findall(r'<a\b[^>]*href=["\\']([^"\\']+)',original,re.I)
- newlinks=re.findall(r'<a\b[^>]*href=["\\']([^"\\']+)',content,re.I)
+ oldlinks=re.findall(r'href="([^"]+)"',original,re.I)
+ newlinks=re.findall(r'href="([^"]+)"',content,re.I)
  if any(u not in newlinks for u in oldlinks):raise RuntimeError("Original hyperlink disappeared")
  if len(content)<len(original)+1200:raise RuntimeError("Editor additions unexpectedly small")
  return content
