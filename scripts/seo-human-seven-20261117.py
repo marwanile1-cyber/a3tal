@@ -124,7 +124,11 @@ def remove_visible_css_clutch(original):
                r'\.highlight\s*\{\s*font-weight:\s*bold;.*?\}\s*</p>')
     patched, count = re.subn(pattern, "", original, count=1, flags=re.I | re.S)
     if count != 1 or "body { font-family:" in patched[:1000]:
-        raise RuntimeError("Clutch printed CSS did not match the reviewed original")
+        # Do not delete any text on an uncertain pattern. The rest of the
+        # revision still preserves every byte of the original article.
+        print("CLUTCH_CSS_NOT_CHANGED_UNCERTAIN_LAYOUT", flush=True)
+        return original
+    print("CLUTCH_VISIBLE_CSS_REMOVED", flush=True)
     return patched
 
 
