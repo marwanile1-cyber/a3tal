@@ -49,3 +49,12 @@ Before setting an image as featured or inserting it in an article, verify:
 8. It is original to A3tal.com and not reused from another article.
 
 If any check fails, the image is rejected and must be regenerated before publication.
+
+## Exclusive creation, upload and post-publication evidence — Nov 17, 2026
+
+- Every **new** a3tal.com article must use an original **photorealistic image created with ChatGPT image-generation capability for that exact article**; images must not be reused from other articles or taken as-is from a competitor's site or stock search.
+- Save as WebP (preferred featured size 1600 × 900); upload the actual generated file through GitHub + A3tal Direct Bridge, set it as the WordPress featured image, and add meaningful, factual ALT text. Where another photo helps, create a distinct article-specific inline WebP.
+- Never claim an AI-generated workshop scene documents an actual repair, test or customer vehicle. The scene is editorial illustration in a realistic photographic style; if a named real vehicle is depicted, confirm model-specific visual details.
+- **Required after publish:** verify WordPress featured_media, live in-article image, responsive behavior, `og:image`, any `Article.image`, image width ≥ 1200 px, `max-image-preview:large`, and no broken image URLs. If absent, publishing is incomplete.
+- For previously published articles whose media is unchanged in a text-only update, record that the existing original image was retained; do not imply a new exclusive generated image was uploaded when it was not.
+- Full editorial rules: [EDITORIAL-STANDARDS-A3TAL.md](EDITORIAL-STANDARDS-A3TAL.md).
