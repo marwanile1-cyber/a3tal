@@ -24,3 +24,4 @@ jobs:
           test -n "$A3TAL_API_KEY"
       - name: Verify originals and update only checked text
         run: python3 -u scripts/correct-seven-dates-copy-20261117.py
+# Retry exact guarded text patches with inline strong HTML handling
