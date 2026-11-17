@@ -25,3 +25,4 @@ jobs:
           python3 -m json.tool data/a3tal-seo10-editorial-20261117.json > /dev/null
       - name: Read before write and publish only if all preflights pass
         run: python3 -u scripts/publish-seo10-editorial-20261117.py
+# Retry guard: intentionally removed fabricated anecdote and its homepage link only
