@@ -1,0 +1,27 @@
+name: Publish A3tal ten guarded editorial upgrades Nov17
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-seo10-editorial-20261117.yml'
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-seo10-editorial-nov2026-one-time
+  cancel-in-progress: false
+jobs:
+  upgrade-ten:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate secret and scripts
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY"
+          python3 -m py_compile scripts/publish-seo10-editorial-20261117.py
+          python3 -m json.tool data/a3tal-seo10-editorial-20261117.json > /dev/null
+      - name: Read before write and publish only if all preflights pass
+        run: python3 -u scripts/publish-seo10-editorial-20261117.py
