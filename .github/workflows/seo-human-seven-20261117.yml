@@ -1,0 +1,27 @@
+name: One-time guarded A3tal seven editorial refresh Nov 17 2026
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/seo-human-seven-20261117.yml'
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-seven-high-impression-editorial-20261117
+  cancel-in-progress: false
+jobs:
+  improve-seven:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Guarded preflight and syntax
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY" || { echo "A3tal Direct Bridge secret is unavailable"; exit 1; }
+          python3 -m py_compile scripts/seo-human-seven-20261117.py
+          python3 -m json.tool data/seo-human-seven-20261117.json >/dev/null
+      - name: Revision-safe seven existing posts update and verification
+        run: python3 -u scripts/seo-human-seven-20261117.py
