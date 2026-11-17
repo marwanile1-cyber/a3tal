@@ -25,3 +25,4 @@ jobs:
           python3 -m json.tool data/seo-human-seven-20261117.json >/dev/null
       - name: Revision-safe seven existing posts update and verification
         run: python3 -u scripts/seo-human-seven-20261117.py
+# guarded retry 2026-11-17: preserve original clutch CSS if HTML differs
