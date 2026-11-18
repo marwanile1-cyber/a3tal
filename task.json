@@ -1,9 +1,9 @@
 {
-  "deployment_tag": "read-only-search-kia-20261118",
+  "deployment_tag": "read-only-post-81239-kia-20261118",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=%D8%AA%D9%88%D9%83%D9%8A%D9%84%20%D9%83%D9%8A%D8%A7&limit=20",
+      "path": "/post/81239",
       "body": {}
     }
   ],
