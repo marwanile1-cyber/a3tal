@@ -1,9 +1,9 @@
 {
-  "deployment_tag": "read-only-renault-post-20261118",
+  "deployment_tag": "read-only-renault-post-80560-20261118",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=%D8%AA%D9%88%D9%83%D9%8A%D9%84%20%D8%B1%D9%8A%D9%86%D9%88&limit=20",
+      "path": "/post/80560",
       "body": {}
     }
   ],
