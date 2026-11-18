@@ -1,11 +1,10 @@
 {
-  "deployment_tag": "read-only-inspect-mansour-chevrolet-20261118",
+  "deployment_tag": "read-only-snapshot-post-81108-20261118",
   "requests": [
     {
       "method": "GET",
-      "path": "/search-posts?search=%D9%85%D9%86%D8%B5%D9%88%D8%B1%20%D8%B4%D9%8A%D9%81%D8%B1%D9%88%D9%84%D9%8A%D9%87&limit=20",
-      "body": {},
-      "log_response": true
+      "path": "/post/81108",
+      "body": {}
     }
   ],
   "network_diagnostics": {
