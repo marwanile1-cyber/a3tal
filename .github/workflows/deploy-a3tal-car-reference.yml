@@ -1,10 +1,7 @@
 name: Deploy A3tal Car Reference Engine
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'plugin-source/a3tal-car-reference/**'
-      - '.github/workflows/deploy-a3tal-car-reference.yml'
+  # Temporary safety: never auto-deploy a stale source over the patched live plugin.
+  # Restore automated deployment only after full reviewed source/live reconciliation.
   workflow_dispatch:
 permissions:
   contents: write
@@ -21,6 +18,35 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Block overwriting drifted live plugin (read-only Bridge check)
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$A3TAL_API_KEY" || { echo "::error::Missing A3TAL_API_KEY"; exit 1; }
+          mismatch=0
+          for FILE in single.php archive.php a3tal-car-reference.php reference.css; do
+            LOCAL="plugin-source/a3tal-car-reference/$FILE"
+            test -f "$LOCAL" || { echo "::error::Missing source $LOCAL"; exit 1; }
+            DEST="plugins/a3tal-car-reference/$FILE"
+            jq -n --arg p "$DEST" '{op:"file_read",path:$p}' > /tmp/a3cr-read.json
+            curl --fail --silent --show-error --retry 3 --retry-all-errors --max-time 95 \
+              -X POST -H "X-A3tal-Key: $A3TAL_API_KEY" \
+              -H "Content-Type: application/json" --data-binary @/tmp/a3cr-read.json \
+              "https://a3tal.com/wp-json/a3tal-direct/v1/admin" > /tmp/a3cr-response.json
+            jq -e '.ok==true and (.result.sha256|type=="string")' /tmp/a3cr-response.json >/dev/null
+            LIVE_SHA="$(jq -r '.result.sha256' /tmp/a3cr-response.json)"
+            REPO_SHA="$(sha256sum "$LOCAL" | awk '{print $1}')"
+            if [ "$LIVE_SHA" != "$REPO_SHA" ]; then
+              echo "::error file=$LOCAL::Live plugin differs from repository. Refusing destructive ZIP overwrite; reconcile the live implementation first."
+              mismatch=1
+            else
+              echo "SOURCE_LIVE_MATCH $FILE"
+            fi
+          done
+          if [ "$mismatch" -ne 0 ]; then
+            echo "::error::Deployment blocked; see docs/SEO_CANNIBALIZATION_REMEDIATION_2026-11-21.md"
+            exit 1
+          fi
       - name: Validate plugin source
         run: |
           set -euo pipefail
