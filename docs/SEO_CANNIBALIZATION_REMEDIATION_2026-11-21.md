@@ -188,3 +188,42 @@ Follow-up execution completed via GitHub + A3tal Direct Bridge in Egypt only. **
 **Summary as of this verification:** this post-393 work verified 4 article-duplicate 301s and repaired **74 total internal hrefs**: 12 stale hrefs following the four new duplicate redirects + 37 previously redirecting but semantically matched hrefs + 25 dead hrefs. No 404 remains in the scanned live/root post/page/reference content. The 393 historical fact-card internal href repairs (997) are an independent earlier campaign, not included in the new 74 count.
 
 **Caveats:** This crawl does not cover every template-driven/navigation link or custom service-center/showroom post content whose REST endpoints are unavailable. Also the 23 generic-code-to-brand redirects are **not** a clean SEO resolution and need deliberate landing-page intent planning, ideally with query/page/date Search Console export. No unverified SEO traffic gains are claimed.
+
+
+## LATEST EGYPT CLOSEOUT — 23 GENERIC DTC HREFS AND 3 CANONICAL CONTENT GAPS
+
+Date: 21 November 2026. Scope strictly the Egyptian root `a3tal.com` project, not the separate `/ksa/` installation.
+
+### Decision: preserve existing successful P0300/P0011/P0342 canonical URLs
+
+The [three-code public content comparison](https://github.com/marwanile1-cyber/a3tal/actions/runs/44919778405) showed that their brand-titled current canonical landing pages contain **general cross-make diagnostic information**, while the old generic articles are substantially overlapping archives with 301 redirects:
+
+- Former `/p0300-random-misfire/` (post 81329, ~1,756 words, off sitemap) and retained `/فك-لغز-كود-العطل-p0300-في-شيفروليه-دليل-التش/` (post 79856, ~1,784 words) share the same major general-code headings. The retained page is indexable, HTTP 200, self-canonical. Its brand-specific title can be editorially evaluated separately, but should not be changed solely from this link crawl.
+- Former `/p0011-camshaft-timing-over-advanced/` (post 82275, ~1,356 words, off sitemap) points to retained `/كود-p0011-سيارات-هيونداي/` (post 114, ~2,936 words), whose published headings explicitly discuss generic meaning and examples for Hyundai, Nissan, Toyota and VAG. No justification to revive a near-identical generic competing page.
+- Former `/p0342-camshaft-position-sensor-circuit-low/` (post 82276, ~2,067 words, off sitemap) points to retained `/dtc-p0342-chevrolet/` (post 80209, ~2,732 words). The canonical has general sensor circuit / Bank / diagnosis details plus Chevrolet examples; is indexable, selfcanonical and HTTP 200. Generic `/dtc/p0342/` remains noindexed. Do not create a duplicate without query-by-page evidence.
+
+The available historical 92-day Google Search Console export showed *retained canonical clicks* of **30 P0300**, **58 P0011**, **90 P0342**; these numbers are **not** recent recovery claims. Thus avoid modifying their successful 301 source rules or page-title targeting without newer query-page evidence.
+
+### 23 direct internal href corrections verified
+
+[Successful workflow run 44919957228](https://github.com/marwanile1-cyber/a3tal/actions/runs/44919957228): all **23 direct internal href references** to the three old, already redirecting generic-code source paths were updated in **22 published articles**. Only the `href` attribute changed: links now point directly to the **same destination that the prior 301 already reached**; no shift of landing-page intent was introduced by this change. Guarded preflight confirmed that the existing 200 destination pages are sitemap-listed, selfcanonical and indexable, and contain generic diagnostic sections before editing. Original 22 article bodies are stored in the workflow artifact; all 22 edits reread and verified through A3tal Direct Bridge. Current legacy 301 rules, SEO title, canonical and original archived content left unchanged. Residual opportunity: the destinations' visible brand-titled H1/SEO titles may not match some generic-code anchor expectations, but cannot be resolved by creating immediate duplicate pages.
+
+[Independent final root internal URL status crawl 44920060803](https://github.com/marwanile1-cyber/a3tal/actions/runs/44920060803): **ZERO internal redirect hrefs** and **ZERO internal HTTP 404/410 hrefs** among the scanned live public article/page/reference bodies. Detailed inventory: 631 active WordPress posts, 10 sitemap-listed pages, 62 sitemap-listed car-reference records; eight sitemaps. There were 16 internally linked paths not found in those eight XML inventories, **all 16 HTTP 200** (31 href occurrences total). Not a claim for sitewide template assets/custom service-center bodies which were outside REST coverage.
+
+Updated post-393 href repair subtotal: **97** = 12 after four article-duplicate 301s + 37 earlier semantically matched legacy-301 hrefs + 25 repaired dead hrefs + 23 three-generic-code 301 hrefs. The earlier **997** car-model child redirect internal hrefs are a separate campaign; don't mix counts.
+
+### Unique archived technical detail preserved without reopening competing pages
+
+[Read-only safety detail comparison 44920122379](https://github.com/marwanile1-cyber/a3tal/actions/runs/44920122379) found several precise diagnostic details absent from retained guide text: workshop-safe 12/6 wheel-play tests and caliper heating vs bearing, fan-control/ECT codes P0480/P0483/P0117, and battery Sleep Mode / fuse Voltage Drop / multimeter caution. Older Opel Insignia source contained a cabin-air-filter price range that was **not** migrated because it is stale/unverified and the primary article already covers main parts-buying intents.
+
+[Successful source-preserving edits 44920270892](https://github.com/marwanile1-cyber/a3tal/actions/runs/44920270892): inserted **one concise missing safety/diagnosis section** into each of three existing, retained Egypt posts while keeping original article HTML, metadata and primary URL:
+1. Wheel hub noise article `/wheel-bearing-humming-noise-diagnosis/` (post 81463): safe lifting/12-and-6 check limitations, ball-joint differentiation and brake-caliper heat.
+2. Traffic-overheating canonical `/car-overheats-in-traffic-cools-while-driving/` (post 82480): P0480/P0483/P0117 distinction, electrical tests, cooling-system refill/bleed and hot-pressure-cap warning.
+3. Parked-battery-drain canonical `/car-battery-drains-overnight-while-parked-parasitic-draw-diagnosis/` (post 84487): Sleep Mode, fuse Voltage Drop, module wake-up and multimeter ammeter-current safety.
+All three pre-change live full post bodies were backed up with WordPress modification timestamps and edits verified after saving, no speculative external price figures. Supporting specialist references inspected: Fluke parasitic drain guide `https://www.fluke.com/en-us/learn/blog/digital-multimeters/how-to-find-parasitic-battery-drain-with-a-multimeter`; HELLA cooling system diagnostics `https://www.hella.com/techworld/uk/technical/car-cooling-system/cooling-system-check/`; MOOG wheel/suspension checks `https://www.moogparts.com/technical/bulletins/tech-tips/How-to-Isolate-Suspension-Noises.html`.
+
+[Independent live HTTP/content verification 44920348693](https://github.com/marwanile1-cyber/a3tal/actions/runs/44920348693): each of the three former source URLs **remains HTTP 301 to the intended primary**; all three retained pages **HTTP 200, selfcanonical, indexable and in the post XML sitemap**; and the new technical details were verified in publicly rendered HTML. 3/3 pass.
+
+### What is *not* proved
+
+The remediation does not establish an increase in Google organic clicks or that the full site is free of all semantic cannibalization. The prior 58 article similarity candidate pairs remain largely model-distinct; live query-to-page-to-date GSC export is still needed before wider 301 reorganization. No new redirects were invented in this closeout and no `/ksa/` installation was touched.
