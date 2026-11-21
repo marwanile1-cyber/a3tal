@@ -1,0 +1,81 @@
+name: A3tal Egypt - three generic DTC redirect content decision and restored-source preflight
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/a3tal-egypt-p0300-p0011-p0342-content-and-intent-decision-20261121.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Compare old generic code post body against current brand targets and other generic guides
+        run: |
+          set -euo pipefail
+          python3 -m pip install -q requests beautifulsoup4
+          mkdir -p reports
+          cat >/tmp/inspect.py <<'PY'
+          import json,requests,urllib.parse,xml.etree.ElementTree as ET,re
+          from bs4 import BeautifulSoup
+          BASE="https://a3tal.com"
+          sess=requests.Session();sess.headers.update({'User-Agent':'A3tal-Egypt-P03xx-Intent-Audit/1.0'})
+          all_posts=[]
+          for page in range(1,14):
+            r=sess.get(BASE+"/wp-json/wp/v2/posts",params={'per_page':100,'page':page,'_fields':'id,link,slug,title,content,status,modified_gmt,yoast_head_json'},timeout=40)
+            r.raise_for_status()
+            rows=r.json()
+            if not isinstance(rows,list):break
+            all_posts.extend(rows)
+            if len(rows)<100:break
+          def norm(url):
+            return urllib.parse.unquote(urllib.parse.urlsplit(url).path).rstrip('/')+'/'
+          sitemap=ET.fromstring(sess.get(BASE+'/post-sitemap.xml',timeout=30).content)
+          active={norm(e.text) for parent in sitemap for e in parent if e.tag.rsplit('}',1)[-1]=='loc' and e.text}
+          dtc=ET.fromstring(sess.get(BASE+'/a3_dtc-sitemap.xml',timeout=30).content)
+          dtc_active={norm(e.text) for parent in dtc for e in parent if e.tag.rsplit('}',1)[-1]=='loc' and e.text}
+          paths=['/p0300-random-misfire/','/p0011-camshaft-timing-over-advanced/','/p0342-camshaft-position-sensor-circuit-low/']
+          dests=[]
+          for p in paths:
+             response=sess.get(BASE+p,timeout=30,allow_redirects=False)
+             dest=response.headers.get('Location','')
+             final=sess.get(dest,timeout=30,allow_redirects=False)
+             soup=BeautifulSoup(final.text,'html.parser')
+             robots=soup.find('meta',attrs={'name':'robots'});canonical=soup.find('link',rel='canonical')
+             dests.append({'source':p,'source_http':response.status_code,'destination_url':dest,'target_http':final.status_code,
+                           'target_title':soup.title.get_text(' ',strip=True) if soup.title else '',
+                           'target_h1':[h.get_text(' ',strip=True) for h in soup.select('h1')][:2],
+                           'target_h2':[h.get_text(' ',strip=True) for h in soup.select('h2')][:25],
+                           'target_robots':robots.get('content') if robots else None,
+                           'target_canonical':canonical.get('href') if canonical else None,
+                           'target_in_post_sitemap':norm(dest) in active})
+          records=[]
+          for code in ('p0300','p0011','p0342'):
+             matching=[]
+             for x in all_posts:
+               if code.lower() in (x.get('title',{}).get('rendered','')+' '+x.get('slug','')+' '+x.get('link','')).lower():
+                  soup=BeautifulSoup(x['content']['rendered'],'html.parser')
+                  title=BeautifulSoup(x['title']['rendered'],'html.parser').get_text(' ',strip=True)
+                  txt=soup.get_text(' ',strip=True)
+                  matching.append({'post_id':x['id'],'url':x['link'],'title':title,
+                     'sitemap':norm(x['link']) in active,'word_count':len(txt.split()),
+                     'h2':[p.get_text(' ',strip=True) for p in soup.select('h2')][:30],
+                     'intro':txt[:700], 'modified_gmt':x.get('modified_gmt')})
+             dtc_page=sess.get(BASE+'/dtc/'+code+'/',timeout=30,allow_redirects=False)
+             records.append({'code':code,'wp_post_candidates':matching,'generic_dtc_path_status':dtc_page.status_code,
+                              'dtc_in_sitemap':norm(BASE+'/dtc/'+code+'/') in dtc_active})
+          out={'post_sitemap_count':len(active),'wp_rest_count':len(all_posts),'redirects':dests,'code_posts':records}
+          with open('reports/egypt-three-general-vs-brand-code-article-inventory.json','w',encoding='utf-8') as f:json.dump(out,f,ensure_ascii=False,indent=2)
+          print('REDIRECT_DESTINATIONS',json.dumps(dests,ensure_ascii=False),flush=True)
+          print('CODE_POSTS',json.dumps(records,ensure_ascii=False),flush=True)
+          PY
+          python3 -u /tmp/inspect.py
+      - name: Save code intent analysis
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-egypt-dtc-three-generic-vs-brand-inventory
+          path: reports/
+          if-no-files-found: warn
+          retention-days: 60
