@@ -1,0 +1,106 @@
+name: A3tal Egypt closeout - verify directory template and 375 other public pages
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/a3tal-egypt-closeout-cpt-post-template-20261121.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - name: Read-only crawl of public Egyptian custom-type pages and HTTP link targets
+        run: |
+          set -euo pipefail
+          python3 -m pip install -q requests beautifulsoup4
+          mkdir -p reports
+          cat >/tmp/custom_crawl.py <<'PY'
+          import requests,urllib.parse,html,xml.etree.ElementTree as ET,re,json,collections,concurrent.futures
+          from bs4 import BeautifulSoup
+          BASE='https://a3tal.com'
+          HEAD={'User-Agent':'A3tal-Egypt-NonPost-CPT-Internal-Link-ReadOnly-Audit/1.0'}
+          def norm(u):
+            s=urllib.parse.urlsplit(html.unescape(u))
+            if s.hostname and s.hostname.lower().removeprefix('www.')!='a3tal.com':return ''
+            return urllib.parse.unquote(s.path or '/').rstrip('/')+'/'
+          names=['post-sitemap.xml','page-sitemap.xml','a3_dtc-sitemap.xml','a3_car_ref-sitemap.xml',
+            'a3_service_center-sitemap.xml','a3_showroom-sitemap.xml','a3_car-sitemap.xml','category-sitemap.xml']
+          all_sitemap=set();groups={}
+          for name in names:
+            response=requests.get(BASE+'/'+name,headers=HEAD,timeout=35);response.raise_for_status()
+            tree=ET.fromstring(response.content)
+            urls=[n.text for parent in tree for n in parent if n.tag.split('}')[-1]=='loc' and n.text]
+            groups[name]=urls
+            all_sitemap.update(norm(u) for u in urls)
+          targets=[]
+          for kind in names:
+            if kind=='post-sitemap.xml':continue
+            for u in groups[kind]:
+              targets.append((kind,u))
+          print('CPT_PAGES_TO_CRAWL',json.dumps({k:len(v) for k,v in groups.items()},ensure_ascii=False),flush=True)
+          def page_scan(item):
+            typ,u=item
+            try:
+              r=requests.get(u,headers=HEAD,timeout=40,allow_redirects=False)
+              if r.status_code!=200:return {'kind':typ,'url':u,'page_status':r.status_code,'linked':[],'issue':'sitemap URL not 200'}
+              soup=BeautifulSoup(r.text,'html.parser')
+              main=soup.find('main') or soup.find('article') or soup.body
+              if main is None:return {'kind':typ,'url':u,'page_status':200,'linked':[],'issue':'main missing'}
+              for node in main.select('header,footer,nav,script,style,form,aside,.breadcrumbs,.breadcrumb,.pagination'):
+                node.decompose()
+              links=[]
+              for a in main.select('a[href]'):
+                raw=html.unescape(a.get('href','')).strip()
+                if not raw or raw.startswith(('#','tel:','mailto:','javascript:','data:')):continue
+                sp=urllib.parse.urlsplit(raw)
+                if sp.scheme not in ('','http','https'):continue
+                if not sp.netloc and not raw.startswith('/'):continue
+                n=norm(raw)
+                if not n or n.startswith(('/ksa/','/wp-content/','/wp-includes/','/wp-json/','/wp-admin/')):continue
+                if re.search(r'\.(?:jpg|jpeg|webp|png|svg|pdf|xml|js|css|mp4|zip)/$',n,re.I):continue
+                if n in all_sitemap:continue
+                links.append({'path':n,'anchor':a.get_text(' ',strip=True)[:90]})
+              return {'kind':typ,'url':u,'page_status':200,'linked':links}
+            except Exception as e:return {'kind':typ,'url':u,'issue':str(e)[:190],'linked':[]}
+          with concurrent.futures.ThreadPoolExecutor(max_workers=7) as pool:
+            page_results=list(pool.map(page_scan,targets))
+          refs=collections.defaultdict(lambda:collections.Counter())
+          for p in page_results:
+            for link in p['linked']:refs[link['path']][p['url']]+=1
+          def check(item):
+            path,srcs=item
+            try:
+              url=BASE+urllib.parse.quote(path,safe='/%-._~')
+              r=requests.get(url,headers=HEAD,timeout=35,allow_redirects=False)
+              return {'path':path,'status':r.status_code,'location':r.headers.get('Location',''),
+                'type':'redirect' if 300<=r.status_code<400 else ('missing' if r.status_code in (404,410) else ('ok' if 200<=r.status_code<300 else 'other')),
+                'hrefs':sum(srcs.values()),'linking_pages':len(srcs),'sources':dict(srcs.most_common(10))}
+            except Exception as e:return {'path':path,'type':'request_error','error':str(e)[:150],'sources':dict(srcs.most_common(10))}
+          with concurrent.futures.ThreadPoolExecutor(max_workers=7) as pool:
+            check_results=list(pool.map(check,refs.items()))
+          breakdown=collections.Counter(r['type'] for r in check_results)
+          errors=[r for r in check_results if r['type']!='ok']
+          errors.sort(key=lambda x:-x.get('hrefs',0))
+          incomplete=[p for p in page_results if p.get('issue')]
+          total={'total_pages':len(targets),'successful_pages':sum(p.get('page_status')==200 for p in page_results),
+            'page_issues':len(incomplete),'non_sitemap_paths':len(check_results),'classification':dict(breakdown),
+            'missing_hrefs':sum(x.get('hrefs',0) for x in errors if x['type']=='missing'),
+            'redirect_hrefs':sum(x.get('hrefs',0) for x in errors if x['type']=='redirect')}
+          print('CUSTOM_SITEMAP_CRAWL_SUMMARY',json.dumps(total,ensure_ascii=False),flush=True)
+          print('CUSTOM_SITEMAP_ISSUES',json.dumps(incomplete[:30],ensure_ascii=False),flush=True)
+          print('CUSTOM_SITEMAP_LINK_DEFECTS',json.dumps(errors[:100],ensure_ascii=False),flush=True)
+          with open('reports/a3tal-egypt-nonpost-custom-type-link-crawl.json','w',encoding='utf8') as f:
+            json.dump({'summaries':total,'groups':{k:len(v) for k,v in groups.items()},'issues':incomplete,
+              'defects':errors,'all_unlisted_links':check_results},f,ensure_ascii=False,indent=2)
+          PY
+          python3 -u /tmp/custom_crawl.py
+      - name: Retain exact DTC center showroom category link sources and statuses
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-egypt-closeout-nonpost-sitemap-page-links
+          path: reports/
+          if-no-files-found: warn
+          retention-days: 60
