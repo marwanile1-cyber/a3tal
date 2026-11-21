@@ -1,0 +1,71 @@
+name: A3tal Egypt - four redirected articles content preservation and unique section audit
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/a3tal-egypt-four-merged-content-retention-audit-20261121.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  read-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Compare published old vs primary bodies without changing content
+        run: |
+          set -euo pipefail
+          python3 -m pip install -q requests beautifulsoup4 rapidfuzz
+          mkdir -p reports
+          cat >/tmp/audit.py <<'PY'
+          import requests,json,re,urllib.parse,html,difflib,hashlib
+          from bs4 import BeautifulSoup
+          from rapidfuzz.fuzz import ratio
+          B='https://a3tal.com';S=requests.Session();S.headers['User-Agent']='A3tal-Egypt-PostMerge-ContentAudit/1.0'
+          pairs=[
+           ['wheel_hum',82596,81463],
+           ['traffic_overheating',84754,82480],
+           ['parked_battery_drain',81395,84487],
+           ['opel_insignia_parts',80144,79933]
+          ]
+          results=[]
+          def read(postid):
+            r=S.get(B+'/wp-json/wp/v2/posts/'+str(postid),params={'_fields':'id,link,title,content,modified_gmt,status,yoast_head_json'},timeout=40);r.raise_for_status();return r.json()
+          def split(content):
+            soup=BeautifulSoup(content,'html.parser')
+            for el in soup(['script','style','nav','form','footer']):el.decompose()
+            text=soup.get_text(' ',strip=True)
+            heads=[x.get_text(' ',strip=True) for x in soup.select('h2,h3')]
+            sections=[]
+            for h in soup.select('h2,h3'):
+              body=[]
+              for nxt in h.next_siblings:
+                if getattr(nxt,'name',None) in ('h2','h3'):break
+                body.append(BeautifulSoup(str(nxt),'html.parser').get_text(' ',strip=True))
+              sections.append({'heading':h.get_text(' ',strip=True),'section_sample':' '.join(body)[:500]})
+            return text,heads,sections
+          for topic,old_id,new_id in pairs:
+            old=read(old_id);new=read(new_id)
+            a,ah,asc=split(old['content']['rendered']);b,bh,bsc=split(new['content']['rendered'])
+            heading_comparison=[{'old_heading':h,'closest_primary_heading':max(bh,key=lambda z:ratio(h,z)) if bh else '',
+              'title_ratio':max((ratio(h,z) for z in bh),default=0)} for h in ah]
+            specific=[x for x in heading_comparison if x['title_ratio']<58]
+            info={'topic':topic,'old_id':old_id,'primary_id':new_id,'old_url':old['link'],'primary_url':new['link'],
+              'old_words':len(a.split()),'primary_words':len(b.split()),
+              'old_headings':ah,'primary_headings':bh,
+              'weakly_matched_old_heading_count':len(specific),
+              'weakly_matched_old_headings':specific,
+              'old_sections':asc,
+              'page_level_content_ratio':round(ratio(a[:12000],b[:12000]),2)}
+            results.append(info)
+            print('CONTENT_GAP',json.dumps({k:info[k] for k in ('topic','old_id','primary_id','old_words','primary_words','page_level_content_ratio','weakly_matched_old_headings')},ensure_ascii=False),flush=True)
+          with open('reports/egypt-four-redirected-source-content-compare.json','w',encoding='utf-8') as f:json.dump(results,f,ensure_ascii=False,indent=2)
+          PY
+          python3 -u /tmp/audit.py
+      - name: Save original content differences for technical editorial review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-egypt-four-301-content-retention-differences
+          path: reports/egypt-four-redirected-source-content-compare.json
+          if-no-files-found: warn
+          retention-days: 90
