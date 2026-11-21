@@ -1,0 +1,59 @@
+name: A3tal verify HTML fidelity after internal-link fixes 20261121
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/a3tal-check-article-html-after-links-20261121.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Read bridge rollback snapshots and compare HTML structure without changes
+        shell: bash
+        env:
+          A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+        run: |
+          set -euo pipefail
+          cat > /tmp/check_html.py <<'PY'
+          import os,json,subprocess,re,difflib,collections
+          base="https://a3tal.com/wp-json/a3tal-direct/v1"
+          def get(path):
+            args=["curl","--fail","--silent","--show-error","--retry","3","-H","X-A3tal-Key: "+os.environ["A3TAL_API_KEY"],"-H","Authorization: Bearer "+os.environ["A3TAL_API_KEY"],base+path]
+            p=subprocess.run(args,capture_output=True,timeout=90)
+            if p.returncode:raise SystemExit("Bridge read failed "+str(p.returncode))
+            return json.loads(p.stdout.decode("utf-8"))
+          r=get("/admin?op=options&keys=a3tal_direct_bridge_backups")
+          entries=r.get("result",{}).get("a3tal_direct_bridge_backups",[])
+          print("BACKUP_RECORD_COUNT",len(entries),flush=True)
+          report=[]
+          for id in [80557,79964]:
+            snapshots=[x.get("snapshot",{}) for x in entries if int(x.get("post_id",0))==id and x.get("snapshot",{}).get("content")]
+            current=get("/post/"+str(id))
+            latest=snapshots[-1] if snapshots else {}
+            orig=latest.get("content","")
+            cur=current.get("content","")
+            def tags(t):
+              a=collections.Counter(re.findall(r'<\s*([a-zA-Z][\w-]*)\b',t))
+              return {k:v for k,v in a.items() if k in ("table","a","div","span","p","h2","h3","img","script","style","iframe","svg","section","ul","li","br")}
+            orig_t,cur_t=tags(orig),tags(cur)
+            structural={k:cur_t.get(k,0)-orig_t.get(k,0) for k in set(orig_t)|set(cur_t) if cur_t.get(k,0)!=orig_t.get(k,0)}
+            matcher=difflib.SequenceMatcher(None,orig,cur,autojunk=False)
+            ops=matcher.get_opcodes()
+            changed=[{"old_len":a1-a0,"new_len":b1-b0,"removed_tags":re.findall(r'<\s*([a-zA-Z]+)\b',orig[a0:a1])[:6],"added_tags":re.findall(r'<\s*([a-zA-Z]+)\b',cur[b0:b1])[:6]} for tag,a0,a1,b0,b1 in ops if tag!="equal"]
+            o={"post_id":id,"backup_found":bool(orig),"old_len":len(orig),"new_len":len(cur),"structure_delta":structural,"non_equal_spans":len(changed),"changed_preview":changed[:20]}
+            report.append(o)
+            print("CONTENT_STRUCTURAL_DIFF",json.dumps(o,ensure_ascii=False),flush=True)
+          with open("a3tal-html-fidelity-check.json","w") as f:json.dump(report,f,ensure_ascii=False,indent=2)
+          PY
+          python3 /tmp/check_html.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: a3tal-html-fidelity-check-20261121
+          path: a3tal-html-fidelity-check.json
+          if-no-files-found: ignore
+          retention-days: 30
