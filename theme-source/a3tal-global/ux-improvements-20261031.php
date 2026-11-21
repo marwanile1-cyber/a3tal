@@ -88,6 +88,16 @@ function a3g_ux_directory_guides($brand = '', $location = '') {
     }
     return array_values(array_filter($all, static function($post) use ($needles, $location) {
         if ($post->post_password !== '') return false;
+        // Keep the Egyptian service directory free of retired, redirected/noindexed guides.
+        // Old post objects remain published for historical audit and 301s; they must not
+        // reappear as selectable destination links in the current directory archive.
+        if ((string) get_post_meta((int) $post->ID, '_yoast_wpseo_meta-robots-noindex', true) === '1') return false;
+        $retired_service_slugs = [
+            'mansour-chevrolet-maintenance-booking-numbers-branches',
+            'مركز-خدمة-منصور-شيفروليه-الرئيسي-في-ال',
+            'دليلك-الشامل-أفضل-مراكز-خدمة-غبور-أوتو',
+        ];
+        if (in_array(rawurldecode((string) $post->post_name), $retired_service_slugs, true)) return false;
         if ($needles) {
             $matches = false;
             foreach ($needles as $needle) {
