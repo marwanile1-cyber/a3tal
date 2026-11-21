@@ -1,0 +1,74 @@
+name: A3tal Egypt - find real destinations for remaining 12 dead hrefs
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/a3tal-egypt-12-unmatched-dead-hrefs-destination-search-20261121.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  search:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Search titles of 631 indexable Egypt articles for remaining broken link intents
+        run: |
+          set -euo pipefail
+          python3 -m pip install -q requests beautifulsoup4 rapidfuzz
+          mkdir -p reports
+          cat >/tmp/find.py <<'PY'
+          import requests,json,xml.etree.ElementTree as ET,urllib.parse
+          from bs4 import BeautifulSoup
+          from rapidfuzz import fuzz
+          B='https://a3tal.com';S=requests.Session();S.headers['User-Agent']='A3tal-Egypt-Remaining-404-Match-ReadOnly/1.0'
+          def norm(u):return urllib.parse.unquote(urllib.parse.urlsplit(u).path).rstrip('/')+'/'
+          t=ET.fromstring(S.get(B+'/post-sitemap.xml',timeout=40).content)
+          active={norm(el.text) for u in t for el in u if el.tag.rsplit('}',1)[-1]=='loc' and el.text}
+          posts=[]
+          for p in range(1,14):
+            r=S.get(B+'/wp-json/wp/v2/posts',params={'page':p,'per_page':100,'_fields':'id,link,title,content'},timeout=35);r.raise_for_status()
+            chunk=r.json()
+            if not isinstance(chunk,list):break
+            posts.extend(chunk)
+            if len(chunk)<100:break
+          docs=[]
+          for p in posts:
+            if norm(p.get('link','')) not in active:continue
+            title=BeautifulSoup(p['title']['rendered'],'html.parser').get_text(' ',strip=True)
+            brief=BeautifulSoup(p['content']['rendered'],'html.parser').get_text(' ',strip=True)[:850]
+            docs.append({'title':title,'url':p['link'],'id':p['id'],'excerpt':brief})
+          wants=[
+           {'intent':'مشاكل السيارات الكهربائية والبطارية 12 فولت والشحن والجهد العالي','tokens':['سيارات كهربائية','كهربائية','بطارية','شحن','high voltage','12v']},
+           {'intent':'كورس كهرباء السيارات من الملتيميتر إلى CAN Bus','tokens':['كورس','كهرباء','تعليم','ملتيميتر','can bus']},
+           {'intent':'هيونداي توسان مستعملة 2026 و 2027 دليل شراء','tokens':['توسان','مستعملة','2026','2027','فحص']},
+           {'intent':'هيونداي توسان تكلفة إصلاح المحرك والفتيس','tokens':['توسان','فتيس','محرك','إصلاح','تكلفة']},
+           {'intent':'التكييف حار وقت الوقوف وبارد أثناء المشي','tokens':['تكييف','واقفة','ساخن','يبرد','ماشي','وقوف']},
+           {'intent':'تدوير كاوتش السيارة ونقشات تبديل الإطارات','tokens':['تدوير','كاوتش','إطارات','تبديل','ترصيص']},
+           {'intent':'لمبات أعطال السيارات ومعانيها بالصور','tokens':['لمبات','تحذير','تابلوه','معاني','أعطال']},
+           {'intent':'أعطال طرمبة البنزين في السيارات: الأسباب والتشخيص','tokens':['طرمبة','بنزين','ضغط','الأعطال','تشخيص']}
+          ]
+          out=[]
+          for x in wants:
+            scored=[]
+            for p in docs:
+              tt=p['title'].lower();excerpt=p['excerpt'].lower()
+              tk=sum(1 for t in x['tokens'] if t.lower() in tt)
+              body=sum(1 for t in x['tokens'] if t.lower() in excerpt)
+              sim=fuzz.token_set_ratio(x['intent'],p['title'])
+              score=13*tk+2.5*body+0.35*sim
+              if tk>0 or body>=2:scored.append({'score':round(score,1),'title':p['title'],'url':p['url'],'id':p['id'],'excerpt':p['excerpt'][:220]})
+            scored.sort(key=lambda z:-z['score'])
+            out.append({'intent':x['intent'],'candidates':scored[:15]})
+          print('MISSING_INTENT_MATCHES',json.dumps(out,ensure_ascii=False),flush=True)
+          with open('reports/a3tal-egypt-12-unmatched-dead-intents.json','w',encoding='utf-8') as f:
+            json.dump(out,f,ensure_ascii=False,indent=2)
+          PY
+          python3 -u /tmp/find.py
+      - name: Retain intent matches
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-egypt-remaining-dead-href-matching
+          path: reports/
+          if-no-files-found: warn
+          retention-days: 30
