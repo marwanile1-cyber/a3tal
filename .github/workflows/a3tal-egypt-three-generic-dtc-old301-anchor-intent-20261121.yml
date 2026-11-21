@@ -1,0 +1,73 @@
+name: A3tal Egypt - 23 legacy generic DTC anchors actual linking intent audit
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/a3tal-egypt-three-generic-dtc-old301-anchor-intent-20261121.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Inspect exact anchor text and source article for generic P0300 P0011 P0342 old 301 paths
+        run: |
+          set -euo pipefail
+          python3 -m pip install -q requests beautifulsoup4
+          mkdir -p reports
+          cat >/tmp/audit.py <<'PY'
+          import requests,re,html,json,urllib.parse,xml.etree.ElementTree as ET,collections
+          from bs4 import BeautifulSoup
+          B='https://a3tal.com'
+          S=requests.Session();S.headers['User-Agent']='A3tal-Egypt-404-Anchor-Intent-ReadOnly/1.0'
+          broken=[
+            '/p0300-random-misfire/',
+            '/p0011-camshaft-timing-over-advanced/',
+            '/p0342-camshaft-position-sensor-circuit-low/'
+          ]
+          candidate={}
+          def norm(u):return urllib.parse.unquote(urllib.parse.urlsplit(html.unescape(u)).path).rstrip('/')+'/'
+          tree=ET.fromstring(S.get(B+'/post-sitemap.xml',timeout=35).content)
+          active={norm(el.text) for url in tree for el in url if el.tag.rsplit('}',1)[-1]=='loc' and el.text}
+          posts=[]
+          for pg in range(1,14):
+            r=S.get(B+'/wp-json/wp/v2/posts',params={'per_page':100,'page':pg,'_fields':'id,link,content'},timeout=40);r.raise_for_status()
+            a=r.json()
+            if not isinstance(a,list):break
+            posts.extend(a)
+            if len(a)<100:break
+          hits=collections.defaultdict(list)
+          for p in posts:
+            if norm(p.get('link','')) not in active:continue
+            soup=BeautifulSoup(p.get('content',{}).get('rendered',''),'html.parser')
+            for el in soup.select('a[href]'):
+              h=el.get('href');v=urllib.parse.urlsplit(html.unescape(h))
+              if v.netloc.lower() not in ('','a3tal.com','www.a3tal.com'):continue
+              if not v.netloc and not h.startswith('/'):continue
+              n=norm(h)
+              if n in broken:
+                hits[n].append({'post_id':p['id'],'url':p['link'],'anchor':el.get_text(' ',strip=True)[:200],
+                  'is_image_link':bool(el.find('img'))})
+          tests={}
+          for a,b in candidate.items():
+            r=S.get(B+urllib.parse.quote(b,safe='/%-._~'),allow_redirects=False,timeout=35)
+            soup=BeautifulSoup(r.text,'html.parser')
+            can=soup.find('link',rel='canonical');robots=soup.find('meta',attrs={'name':'robots'})
+            tests[a]={'target':b,'status':r.status_code,'canonical':can.get('href') if can else '',
+              'robots':robots.get('content','') if robots else '',
+              'in_post_sitemap':norm(b) in active,'title':soup.title.get_text(' ',strip=True) if soup.title else ''}
+          report={'broken_sources':broken,'anchor_context':hits,'candidate_target_verification':tests}
+          with open('reports/a3tal-egypt-generic-DTC-old301-anchor-context.json','w',encoding='utf8') as f:json.dump(report,f,ensure_ascii=False,indent=2)
+          print('BROKEN_ANCHORS',json.dumps(hits,ensure_ascii=False),flush=True)
+          print('CANDIDATE_TARGET_TESTS',json.dumps(tests,ensure_ascii=False),flush=True)
+          PY
+          python3 -u /tmp/audit.py
+      - name: Keep link context report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-egypt-23-generic-DTC-old301-anchors
+          path: reports/a3tal-egypt-generic-DTC-old301-anchor-context.json
+          if-no-files-found: warn
+          retention-days: 30
