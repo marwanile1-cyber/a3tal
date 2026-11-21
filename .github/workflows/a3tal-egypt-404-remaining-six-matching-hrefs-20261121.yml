@@ -1,0 +1,132 @@
+name: A3tal Egypt - repair final six matched 404 internal source URL families
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/a3tal-egypt-404-remaining-six-matching-hrefs-20261121.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  clean:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Verify dead sources, final indexed 200 targets and repair matching old hrefs
+        env:
+          A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+        run: |
+          set -euo pipefail
+          python3 -m pip install -q requests beautifulsoup4
+          mkdir -p reports
+          cat >/tmp/run.py <<'PY'
+          import os,json,requests,subprocess,urllib.parse,re,html,xml.etree.ElementTree as ET
+          BASE='https://a3tal.com';API=BASE+'/wp-json/a3tal-direct/v1'
+          KEY=os.getenv('A3TAL_API_KEY')
+          if not KEY:raise SystemExit('Missing bridge secret, no edits')
+          changes={
+            '/electric-car-problems-egypt-guide/':'/electric-vehicle-faults-egypt-2026/',
+            '/كورس-كهرباء-السيارات-دليلك-للاحتراف-م/':'/learn-car-electricity-course-roadmap/',
+            '/car-ac-hot-at-idle-cold-driving-causes/':'/car-ac-weak-at-idle/',
+            '/tire-rotation-service-cost-egypt-2026/':'/تدوير-الكاوتش-tire-rotation-أهميته،-طرقه-الصحيح/',
+            '/لمبات-أعطال-السيارات-ومعانيها-بالصور/':'/car-dashboard-warning-lights-meaning/',
+            '/أعطال-طرمبة-البنزين/':'/bad-fuel-pump-symptoms-vs-filter/'
+          }
+          def norm(u):return urllib.parse.unquote(urllib.parse.urlsplit(html.unescape(u)).path).rstrip('/')+'/'
+          def fetch(u):
+            r=requests.get(u,timeout=45,headers={'User-Agent':'A3tal-Egypt-404-Matched-Internal-Link-Repair/1.0'});r.raise_for_status();return r
+          def bridge(path,payload=None):
+            cmd=['curl','--silent','--show-error','--fail','--retry','2','--retry-all-errors','--retry-delay','1','--connect-timeout','15','--max-time','85','-H','X-A3tal-Key: '+KEY,'-H','Authorization: Bearer '+KEY]
+            data=None
+            if payload is not None:
+              cmd+=['-X','POST','-H','Content-Type: application/json','--data-binary','@-']
+              data=json.dumps(payload,ensure_ascii=False).encode()
+            cmd.append(API+path)
+            r=subprocess.run(cmd,input=data,capture_output=True,timeout=100)
+            if r.returncode:raise RuntimeError(r.stderr.decode('utf-8','replace')[:250])
+            v=json.loads(r.stdout.decode())
+            if v.get('ok') is False:raise RuntimeError(str(v)[:220])
+            return v
+          for a,b in changes.items():
+            resp=requests.get(BASE+a,allow_redirects=False,timeout=30)
+            if resp.status_code not in (404,410):
+              raise RuntimeError('Refusing edit: source no longer dead '+a+' '+str(resp.status_code))
+            target=requests.get(BASE+b,allow_redirects=False,timeout=30)
+            if target.status_code!=200:
+              raise RuntimeError('Refusing edit: destination is not direct 200 for '+b)
+            from bs4 import BeautifulSoup
+            soup=BeautifulSoup(target.text,'html.parser')
+            canonical=soup.find('link',rel='canonical')
+            robots=soup.find('meta',attrs={'name':'robots'})
+            if robots and 'noindex' in robots.get('content','').lower():
+              raise RuntimeError('Destination noindexed '+b)
+            if canonical and norm(canonical.get('href',''))!=norm(b):
+              raise RuntimeError('Destination canonical mismatch '+b)
+          d=ET.fromstring(fetch(BASE+'/post-sitemap.xml').content)
+          active={norm(node.text) for parent in d for node in parent if node.tag.rsplit('}',1)[-1]=='loc' and node.text}
+          if any(x in active for x in changes):raise RuntimeError('Dead source is listed in post XML; refuse edits')
+          posts=[]
+          for pg in range(1,14):
+            a=fetch(BASE+'/wp-json/wp/v2/posts?'+urllib.parse.urlencode({'per_page':100,'page':pg,'_fields':'id,link,content,status'})).json()
+            if not isinstance(a,list):break
+            posts.extend(a)
+            if len(a)<100:break
+          href=re.compile(r'(?P<prefix>\bhref\s*=\s*)(?P<q>["\'])(?P<url>[^"\']+)(?P=q)',re.I)
+          found=[]
+          for p in posts:
+            if norm(p.get('link','')) not in active:continue
+            counts={}
+            for x in href.finditer(p.get('content',{}).get('rendered','')):
+              u=urllib.parse.urlsplit(html.unescape(x.group('url')))
+              if u.netloc.lower() not in ('','a3tal.com','www.a3tal.com'):continue
+              n=norm(x.group('url'))
+              if n in changes:counts[n]=counts.get(n,0)+1
+            if counts:found.append({'id':p['id'],'url':p['link'],'counts':counts})
+          print('CLEANUP_SCAN',json.dumps({'sitemap_articles':len(active),'rest_posts':len(posts),'sources':found},ensure_ascii=False),flush=True)
+          with open('reports/a3tal-egypt-six-residual-404-preflight-sources.json','w',encoding='utf-8') as f:json.dump(found,f,ensure_ascii=False,indent=2)
+          backups=[];done=[]
+          for item in found:
+            obj=bridge('/post/'+str(item['id']))
+            if obj.get('status')!='publish' or obj.get('type')!='post' or norm(obj.get('link',''))!=norm(item['url']):
+              raise RuntimeError('Bridge identity mismatch on '+str(item['id']))
+            raw=obj.get('content') or ''
+            if re.search(r'<(?:script|style|iframe|svg|form|object)\b',raw,re.I):
+              print('SKIPPED_ADVANCED_HTML',item['id'],flush=True);continue
+            count=[0]
+            def rewrite(m):
+              u=urllib.parse.urlsplit(html.unescape(m.group('url')))
+              if u.netloc.lower() not in ('','a3tal.com','www.a3tal.com'):return m.group(0)
+              if not u.netloc and not u.path.startswith('/'):return m.group(0)
+              p=norm(m.group('url'))
+              if p not in changes:return m.group(0)
+              count[0]+=1
+              return m.group('prefix')+m.group('q')+html.escape(BASE+changes[p],quote=True)+m.group('q')
+            new=href.sub(rewrite,raw)
+            if count[0]>20:raise RuntimeError('Suspicious amount of href edits '+str(item['id']))
+            if not count[0]:continue
+            backups.append({'id':item['id'],'url':obj['link'],'original_content':raw,'modified_gmt':obj['modified_gmt']})
+            with open('reports/a3tal-egypt-six-residual-404-backups.json','w',encoding='utf-8') as f:json.dump(backups,f,ensure_ascii=False,indent=2)
+            resp=bridge('/update-post',{'id':item['id'],'expected_modified_gmt':obj['modified_gmt'],'content':new})
+            if resp.get('id')!=item['id']:raise RuntimeError('Unexpected update response')
+            check=bridge('/post/'+str(item['id']))
+            still=[]
+            for match in href.finditer(check.get('content') or ''):
+              if norm(match.group('url')) in changes:still.append(match.group('url'))
+            if still:raise RuntimeError('Old hrefs persist after edit '+str(item['id']))
+            done.append({'id':item['id'],'hrefs_fixed':count[0]})
+            print('UPDATED_INDEXABLE_ARTICLE',json.dumps(done[-1]),flush=True)
+          if done:bridge('/admin',{'op':'cache_flush'})
+          outcome={'scanned_sitemap_articles':len(active),'posts_with_raw_rendered_old_hrefs':len(found),
+            'updated_posts':len(done),'updated_hrefs':sum(r['hrefs_fixed'] for r in done),
+            'updates':done,'advanced_content_skips':len(found)-len(done)}
+          with open('reports/a3tal-egypt-six-residual-404-cleanup-summary.json','w',encoding='utf-8') as f:json.dump(outcome,f,ensure_ascii=False,indent=2)
+          print('CLEANUP_SUMMARY',json.dumps(outcome,ensure_ascii=False),flush=True)
+          PY
+          python3 -u /tmp/run.py
+      - name: Save cleanup changes and prior content
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-egypt-six-residual-404-internal-link-fixes-20261121
+          path: reports/
+          if-no-files-found: warn
+          retention-days: 90
