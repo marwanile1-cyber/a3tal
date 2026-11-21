@@ -1,0 +1,94 @@
+name: A3tal dedupe MG Geely Chery model hubs 20261121
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/a3tal-dedupe-mg-geely-chery-20261121.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-mg-geely-chery-copy-cleanup
+  cancel-in-progress: false
+jobs:
+  clean:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Preserve facts; deduplicate identical advisory paragraphs in four consolidated model guides
+        shell: bash
+        env:
+          A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+        run: |
+          set -euo pipefail
+          cat >/tmp/dedupe.py <<'PY'
+          import os,re,json,subprocess,html,collections,time
+          from html.parser import HTMLParser
+          KEY=os.getenv("A3TAL_API_KEY","")
+          if not KEY:raise SystemExit("No key; no edits")
+          BASE="https://a3tal.com/wp-json/a3tal-direct/v1"
+          IDS={85464:10,85466:10,85535:10,85851:7}
+          class Plain(HTMLParser):
+            def __init__(self):super().__init__();self.t=[]
+            def handle_data(self,s):self.t.append(s)
+          def norm(s):
+            p=Plain();p.feed(s)
+            return re.sub(r'\s+',' ',html.unescape(' '.join(p.t))).strip()
+          def get(path,body=None):
+            cmd=["curl","--fail","--silent","--show-error","--retry","3","--retry-all-errors","--retry-delay","2","--connect-timeout","15","--max-time","80","-H","X-A3tal-Key: "+KEY,"-H","Authorization: Bearer "+KEY]
+            if body is not None:cmd+=["-X","POST","-H","Content-Type: application/json","--data-binary","@-"]
+            cmd.append(BASE+path)
+            b=json.dumps(body,ensure_ascii=False).encode("utf8") if body is not None else None
+            p=subprocess.run(cmd,input=b,capture_output=True,timeout=95)
+            if p.returncode:raise RuntimeError("Bridge HTTP problem "+str(p.returncode)+":"+p.stderr.decode("utf8","replace")[:250])
+            return json.loads(p.stdout.decode("utf8"))
+          pattern=re.compile(r'(?P<head><h4\b[^>]*>[\s\S]*?</h4>)\s*(?P<par><p\b[^>]*>[\s\S]*?</p>)',re.I)
+          backups=[];results=[]
+          for pid,child_total in IDS.items():
+            obj=get("/post/"+str(pid))
+            raw=obj.get("content","")
+            marker="A3TAL-CONSOLIDATED-20261121-"+str(pid)
+            if obj.get("type")!="a3_car_ref" or obj.get("status")!="publish" or marker not in raw:raise SystemExit("Unexpected hub content "+str(pid))
+            if raw.count('id="a3tal-spec-')!=child_total:raise SystemExit("Unexpected number of preserved sections "+str(pid))
+            before,after=raw.split("<!-- "+marker+" -->",1)
+            matches=list(pattern.finditer(after))
+            counts=collections.Counter(norm(m.group("par")) for m in matches)
+            seen=set()
+            removed=[]
+            def rewrite(m):
+              n=norm(m.group("par"))
+              if len(n)>=95 and counts[n]>1:
+                if n in seen:
+                  removed.append({"heading":norm(m.group("head"))[:110],"characters":len(n)})
+                  return ""
+                seen.add(n)
+              return m.group(0)
+            revised=before+"<!-- "+marker+" -->"+pattern.sub(rewrite,after)
+            if not removed:
+              print("NO_REPEAT_BOILERPLATE",pid,flush=True)
+              continue
+            if revised.count('id="a3tal-spec-')!=child_total:raise SystemExit("Lost any technical anchors "+str(pid))
+            if len(revised)>=len(raw) or len(revised)<len(raw)*.50:raise SystemExit("Abnormal length adjustment "+str(pid))
+            backups.append({"post_id":pid,"original_content":raw,"original_revision":obj["modified_gmt"]})
+            with open("a3tal-mg-geely-chery-dedupe-backups-20261121.json","w",encoding="utf8") as f:json.dump(backups,f,ensure_ascii=False,indent=2)
+            result=get("/update-post",{"id":pid,"expected_modified_gmt":obj["modified_gmt"],"content":revised})
+            check=get("/post/"+str(pid))
+            if marker not in check.get("content","") or check["content"].count('id="a3tal-spec-')!=child_total:
+              raise SystemExit("Failed to preserve source anchors on "+str(pid))
+            results.append({"id":pid,"paragraphs_deduplicated":len(removed),"chars_removed":len(raw)-len(revised),"repeated_headings":removed})
+            print("MODEL_COPY_DEDUPED",pid,"paragraphs",len(removed),"removed_chars",len(raw)-len(revised),flush=True)
+            time.sleep(1)
+          with open("a3tal-mg-geely-chery-dedupe-results-20261121.json","w",encoding="utf8") as f:json.dump(results,f,ensure_ascii=False,indent=2)
+          print("SUMMARY",json.dumps({"models":len(results),"removed_paragraphs":sum(z["paragraphs_deduplicated"] for z in results)},ensure_ascii=False),flush=True)
+          PY
+          python3 /tmp/dedupe.py
+      - name: Retain full pre-edit copies for rollback
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-mg-geely-chery-dedupe-backups-20261121
+          path: |
+            a3tal-mg-geely-chery-dedupe-backups-20261121.json
+            a3tal-mg-geely-chery-dedupe-results-20261121.json
+          if-no-files-found: ignore
+          retention-days: 90
