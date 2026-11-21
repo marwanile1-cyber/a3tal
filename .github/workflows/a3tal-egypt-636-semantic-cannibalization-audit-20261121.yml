@@ -30,7 +30,7 @@ jobs:
           def fetch(url):
             r=s.get(url,timeout=45);r.raise_for_status();return r
           doc=ET.fromstring(fetch(BASE+'/post-sitemap.xml').content)
-          urls=[e.text for e in doc.iter() if e.tag.split('}')[-1]=='loc' and e.text]
+          urls=[el.text for url in doc if url.tag.split('}')[-1]=='url' for el in url if el.tag.split('}')[-1]=='loc' and el.text]
           active=set(map(norm_url,urls))
           objects=[]
           for page in range(1,14):
