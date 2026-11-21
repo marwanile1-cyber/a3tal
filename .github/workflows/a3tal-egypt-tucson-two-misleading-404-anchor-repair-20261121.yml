@@ -1,0 +1,107 @@
+name: A3tal Egypt - replace two mismatched dead Tucson hrefs and accurate labels
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/a3tal-egypt-tucson-two-misleading-404-anchor-repair-20261121.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Backup Tucson 2026 vs 2027 article; replace two dead links and correct anchor descriptions
+        env:
+          A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+        run: |
+          set -euo pipefail
+          python3 -m pip install -q requests beautifulsoup4
+          mkdir -p reports
+          cat >/tmp/tucson.py <<'PY'
+          import requests,subprocess,os,json,urllib.parse,re,html
+          from bs4 import BeautifulSoup
+          B='https://a3tal.com';API=B+'/wp-json/a3tal-direct/v1'
+          KEY=os.getenv('A3TAL_API_KEY')
+          if not KEY:raise SystemExit('Missing Bridge secret; no live changes')
+          id=80567
+          postpath='/hyundai-tucson-2026-price-specs-review-egypt/'
+          targets={
+            '/hyundai-tucson-2026-2027-used-price-buying-guide-egypt/':{
+              'target':'/used-hyundai-tucson-prices-egypt-2026/',
+              'old_phrase':'دليل شراء هيونداي توسان مستعملة: 2026 مقابل 2027',
+              'new_text':'أسعار هيونداي توسان المستعملة ودليل الفحص قبل الشراء'},
+            '/hyundai-tucson-engine-gearbox-repair-costs/':{
+              'target':'/hyundai-tucson-nx4-transmission-problems-dct/',
+              'old_phrase':'دليل محرك وفتيس هيونداي توسان: الأعطال والتكاليف',
+              'new_text':'أعطال فتيس هيونداي توسان NX4 DCT وطريقة التشخيص'}
+          }
+          def norm(u):return urllib.parse.unquote(urllib.parse.urlsplit(html.unescape(u)).path).rstrip('/')+'/'
+          def call(path,body=None):
+            cmd=['curl','--silent','--show-error','--fail','--retry','2','--retry-all-errors','--retry-delay','1','--connect-timeout','15','--max-time','85','-H','X-A3tal-Key: '+KEY,'-H','Authorization: Bearer '+KEY]
+            data=None
+            if body is not None:
+              cmd+=['-X','POST','-H','Content-Type: application/json','--data-binary','@-']
+              data=json.dumps(body,ensure_ascii=False).encode()
+            cmd.append(API+path)
+            p=subprocess.run(cmd,input=data,capture_output=True,timeout=100)
+            if p.returncode:raise RuntimeError(p.stderr.decode('utf8','replace')[:240])
+            d=json.loads(p.stdout.decode('utf8'))
+            if d.get('ok') is False:raise RuntimeError(str(d)[:250])
+            return d
+          for source,item in targets.items():
+            a=requests.get(B+source,timeout=30,allow_redirects=False)
+            b=requests.get(B+item['target'],timeout=30,allow_redirects=False)
+            if a.status_code not in (404,410) or b.status_code!=200:
+              raise RuntimeError('Unexpected source/destination response '+source+' '+str(a.status_code)+' '+str(b.status_code))
+            soup=BeautifulSoup(b.text,'html.parser')
+            robots=soup.find('meta',attrs={'name':'robots'})
+            canonical=soup.find('link',rel='canonical')
+            if (robots and 'noindex' in robots.get('content','').lower()) or (canonical and norm(canonical.get('href',''))!=norm(item['target'])):
+              raise RuntimeError('Destination not indexable self canonical '+item['target'])
+          post=call('/post/'+str(id))
+          if post.get('type')!='post' or post.get('status')!='publish' or norm(post.get('link',''))!=norm(postpath):
+            raise RuntimeError('Exact Tucson article preflight failed; no edits')
+          raw=post.get('content') or ''
+          if re.search(r'<(?:script|style|iframe|svg|form|object)\b',raw,re.I):
+            raise RuntimeError('Advanced HTML; needs manual')
+          anchor=re.compile(r'<a\b(?P<attrs>[^>]*\bhref\s*=\s*(?P<q>["\'])(?P<url>[^"\']+)(?P=q)[^>]*)>(?P<inner>.*?)</a>',re.I|re.S)
+          counts={k:0 for k in targets}
+          def rewrite(m):
+            u=html.unescape(m.group('url'))
+            sp=urllib.parse.urlsplit(u)
+            if sp.netloc.lower() not in ('','a3tal.com','www.a3tal.com') or (not sp.netloc and not sp.path.startswith('/')):
+              return m.group(0)
+            source=norm(u)
+            if source not in targets:return m.group(0)
+            rule=targets[source]
+            label=BeautifulSoup(m.group('inner'),'html.parser').get_text(' ',strip=True)
+            if label!=rule['old_phrase'] or '<' in m.group('inner'):
+              raise RuntimeError('Link anchor text unexpectedly differs: '+label)
+            counts[source]+=1
+            attrs=m.group('attrs')
+            new_attrs=re.sub(r'(\bhref\s*=\s*)(["\'])([^"\']+)(\2)',lambda a:a.group(1)+a.group(2)+html.escape(B+rule['target'],quote=True)+a.group(4),attrs,count=1,flags=re.I)
+            return '<a'+new_attrs+'>'+html.escape(rule['new_text'])+'</a>'
+          updated=anchor.sub(rewrite,raw)
+          if any(n!=1 for n in counts.values()):raise RuntimeError('Expected one exact link for each Tucson topic: '+str(counts))
+          with open('reports/tucson-2026-2027-original-prechange.json','w',encoding='utf8') as f:
+            json.dump({'post':post,'rewrites':targets,'counts':counts},f,ensure_ascii=False,indent=2)
+          v=call('/update-post',{'id':id,'expected_modified_gmt':post['modified_gmt'],'content':updated})
+          if v.get('id')!=id:raise RuntimeError('Update response mismatch')
+          saved=call('/post/'+str(id))
+          text=saved.get('content') or ''
+          if any(norm(h) in text for h in []):raise RuntimeError('Impossible guard')
+          if any(old in urllib.parse.unquote(text) for old in targets):raise RuntimeError('Dead Tucson links remain after save')
+          if any(rule['new_text'] not in text for rule in targets.values()):raise RuntimeError('New accurate anchors absent')
+          call('/admin',{'op':'cache_flush'})
+          print('TUCSON_2_ANCHORS_REPAIRED',json.dumps({'post_id':id,'links_repaired':2,'hrefs_and_text_updated':targets},ensure_ascii=False),flush=True)
+          PY
+          python3 -u /tmp/tucson.py
+      - name: Keep original Tucson post and link mapping
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-egypt-two-tucson-dead-href-anchor-repairs
+          path: reports/
+          if-no-files-found: warn
+          retention-days: 90
