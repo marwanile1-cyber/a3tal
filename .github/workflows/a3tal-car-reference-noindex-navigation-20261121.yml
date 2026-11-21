@@ -1,0 +1,84 @@
+name: A3tal live car-reference noindex navigation surgical patch 20261121
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/a3tal-car-reference-noindex-navigation-20261121.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - name: Preflight and surgically filter redirected noindex spec cards from live template
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat >/tmp/patch_nav.py <<'PY'
+          import hashlib,json,os,subprocess
+          key=os.getenv("A3TAL_API_KEY","")
+          if not key:raise SystemExit("Missing A3tal bridge key")
+          endpoint="https://a3tal.com/wp-json/a3tal-direct/v1/admin"
+          changes=[
+          {
+            "file":"single.php",
+            "old":"$children=get_posts(['post_type'=>A3tal_Car_Reference_Engine::TYPE,'post_status'=>'publish','post_parent'=>$post->ID,'numberposts'=>100,'orderby'=>'title','order'=>'ASC']);",
+            "new":"$children=array_values(array_filter(get_posts(['post_type'=>A3tal_Car_Reference_Engine::TYPE,'post_status'=>'publish','post_parent'=>$post->ID,'numberposts'=>100,'orderby'=>'title','order'=>'ASC']),static function($item){ return (string)get_post_meta($item->ID,'_yoast_wpseo_meta-robots-noindex',true)!=='1'; }));"
+          },{
+            "file":"archive.php",
+            "old":"$posts=get_posts(['post_type'=>A3tal_Car_Reference_Engine::TYPE,'post_status'=>'publish','numberposts'=>60]+($q?['s'=>$q]:['post_parent'=>0,'orderby'=>'title','order'=>'ASC']));",
+            "new":"$posts=array_values(array_filter(get_posts(['post_type'=>A3tal_Car_Reference_Engine::TYPE,'post_status'=>'publish','numberposts'=>60]+($q?['s'=>$q]:['post_parent'=>0,'orderby'=>'title','order'=>'ASC'])),static function($item){ return (string)get_post_meta($item->ID,'_yoast_wpseo_meta-robots-noindex',true)!=='1'; }));"
+          }]
+          def call(body):
+              args=["curl","--fail","--silent","--show-error","--retry","3","--retry-all-errors","--retry-delay","2","--connect-timeout","15","--max-time","110","-X","POST","-H","X-A3tal-Key: "+key,"-H","Content-Type: application/json","--data-binary","@-",endpoint]
+              b=json.dumps(body,ensure_ascii=False).encode("utf8")
+              r=subprocess.run(args,input=b,capture_output=True,timeout=125)
+              if r.returncode:raise RuntimeError("Bridge POST failed "+r.stderr.decode("utf8","replace")[:200])
+              j=json.loads(r.stdout.decode("utf8"))
+              if not j.get("ok"):raise RuntimeError("Bridge rejected operation "+str(j)[:200])
+              return j["result"]
+          saved=[]
+          for x in changes:
+              path="plugins/a3tal-car-reference/"+x["file"]
+              f=call({"op":"file_read","path":path})
+              if f.get("path")!=path:raise SystemExit("Wrong file path: "+path)
+              current=f["content"]
+              if current.count(x["old"])!=1 or x["new"] in current:
+                  raise SystemExit("Unexpected existing code or already patched: "+path)
+              before=hashlib.sha256(current.encode("utf8")).hexdigest()
+              if f.get("sha256")!=before:raise SystemExit("Live content checksum mismatch "+path)
+              proposal=current.replace(x["old"],x["new"])
+              if len(proposal)-len(current)!=len(x["new"])-len(x["old"]):
+                  raise SystemExit("Unexpected diff size")
+              local="/tmp/proposed-"+x["file"]
+              with open(local,"w",encoding="utf8") as out:out.write(proposal)
+              lint=subprocess.run(["php","-l",local],capture_output=True,text=True)
+              if lint.returncode:raise SystemExit("PHP syntax check failed "+x["file"]+" "+lint.stderr)
+              saved.append({"path":path,"sha256":before,"before":current,"after":proposal,"sha_after":hashlib.sha256(proposal.encode("utf8")).hexdigest()})
+          with open("a3tal-car-reference-live-navigation-backup-20261121.json","w",encoding="utf8") as f:
+              json.dump([{k:v for k,v in rec.items() if k!="after"} for rec in saved],f,ensure_ascii=False,indent=2)
+          print("PREFLIGHT_PASSED_TWO_TEMPLATES",flush=True)
+          updated=[]
+          for rec in saved:
+              result=call({"op":"file_write","path":rec["path"],"content":rec["after"],"expected_sha256":rec["sha256"],"confirm":True,"dangerous":True})
+              if result.get("sha256")!=rec["sha_after"] or result.get("path")!=rec["path"]:
+                  raise SystemExit("Live write mismatch on "+rec["path"])
+              read=call({"op":"file_read","path":rec["path"]})
+              if read.get("sha256")!=rec["sha_after"] or read.get("content")!=rec["after"]:
+                  raise SystemExit("Live readback mismatch on "+rec["path"])
+              updated.append(rec["path"])
+              print("LIVE_NAV_TEMPLATE_PATCHED",rec["path"],rec["sha_after"],flush=True)
+          print("LIVE_NAV_PATCH_SUCCESS",len(updated),"templates",flush=True)
+          PY
+          python3 /tmp/patch_nav.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: a3tal-reference-live-template-backup-20261121
+          path: a3tal-car-reference-live-navigation-backup-20261121.json
+          if-no-files-found: ignore
+          retention-days: 90
