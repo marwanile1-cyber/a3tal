@@ -1,0 +1,35 @@
+name: A3tal inspect live car-reference plugin templates before safe patch 20261121
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/a3tal-car-reference-template-preflight-20261121.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compare live source and checked-in car-reference templates exactly
+        shell: bash
+        run: |
+          set -euo pipefail
+          for FILE in single.php archive.php; do
+            LOCAL="plugin-source/a3tal-car-reference/$FILE"
+            DEST="plugins/a3tal-car-reference/$FILE"
+            jq -n --arg p "$DEST" '{op:"file_read",path:$p}' >/tmp/read.json
+            curl --silent --show-error --fail --retry 3 --retry-all-errors --max-time 100 \
+              -X POST -H "X-A3tal-Key: $A3TAL_API_KEY" -H "Content-Type: application/json" \
+              --data-binary @/tmp/read.json "https://a3tal.com/wp-json/a3tal-direct/v1/admin" >/tmp/result.json
+            jq -e '.ok==true and (.result.content|type=="string") and (.result.sha256|type=="string")' /tmp/result.json >/dev/null
+            REMOTE="$(jq -r '.result.sha256' /tmp/result.json)"
+            LOCAL_SHA="$(sha256sum "$LOCAL" | awk '{print $1}')"
+            echo "$FILE live sha=$REMOTE repo sha=$LOCAL_SHA"
+            test "$REMOTE" = "$LOCAL_SHA" || { echo "LIVE_DRIFT_DETECTED, refusing write"; exit 1; }
+            echo "MATCHED_LIVE_TEMPLATE $FILE"
+          done
