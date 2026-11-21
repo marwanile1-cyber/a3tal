@@ -1,0 +1,103 @@
+name: A3tal verify all 127 model-reference redirects 20261121
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/a3tal-verify-127-model-redirects-20261121.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: a3tal-model-merge-backups-20261121
+          run-id: 44908933064
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: artifacts/pilot
+      - uses: actions/download-artifact@v4
+        with:
+          name: a3tal-sportage-merge-backups-20261121
+          run-id: 44909168278
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: artifacts/sportage
+      - uses: actions/download-artifact@v4
+        with:
+          name: a3tal-kia-hyundai-merge-backups-20261121
+          run-id: 44909326151
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: artifacts/other
+      - name: Check 127 HTTP 301 routes, 8 200 hubs, canonicals and sitemap presence
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat >/tmp/a3tal_verify.py <<'PY'
+          import subprocess,json,re,concurrent.futures,urllib.parse,html,xml.etree.ElementTree as ET,os
+          sources=[
+            "artifacts/pilot/a3tal-model-consolidation-result-20261121.json",
+            "artifacts/sportage/a3tal-sportage-merge-result-20261121.json",
+            "artifacts/other/a3tal-kia-hyundai-merge-result-20261121.json"
+          ]
+          rows=[]
+          for file in sources:
+              with open(file,encoding="utf8") as f:rows+=json.load(f)
+          if len(rows)!=127:raise SystemExit("Expected exactly 127 saved redirects; got "+str(len(rows)))
+          site="https://a3tal.com"
+          def request(url):
+              cmd=["curl","--silent","--show-error","--connect-timeout","15","--max-time","35","--retry","2","--retry-delay","2","-A","Mozilla/5.0 (A3tal Technical SEO validation)","-H","Cache-Control: no-cache","-D","-","-o","/dev/null","-w","\nFINALHTTP:%{http_code}",url]
+              p=subprocess.run(cmd,capture_output=True,timeout=50)
+              raw=p.stdout.decode("utf8","replace")
+              if p.returncode:return None,None,("curl "+str(p.returncode)+" "+p.stderr.decode("utf8","replace")[:100])
+              codes=re.findall(r'FINALHTTP:(\d+)',raw)
+              codes=[int(x) for x in codes]
+              loc=re.findall(r'(?mi)^location:\s*(.+?)\s*$',raw)
+              return (codes[-1] if codes else None),(loc[-1].strip() if loc else ""),None
+          def norm(url):
+              x=urllib.parse.urlsplit(url)
+              return (x.scheme.lower(),x.netloc.lower(),urllib.parse.unquote(x.path).rstrip("/"),x.fragment)
+          def one(z):
+              old=z["source"];expected=z["target"]
+              url=old+("?a3tal_qa=20261121" if "?" not in old else "&a3tal_qa=20261121")
+              status,loc,err=request(url)
+              good=status==301 and norm(loc)==norm(expected)
+              return {"source":old,"target":expected,"status":status,"location":loc,"passed":good,"error":err}
+          with concurrent.futures.ThreadPoolExecutor(max_workers=5) as pool:
+              checks=list(pool.map(one,rows))
+          hubs=sorted(set(z["target"].split("#")[0] for z in rows))
+          hub_checks=[]
+          for u in hubs:
+              p=subprocess.run(["curl","--fail","--silent","--show-error","--location","--connect-timeout","15","--max-time","35","-A","Mozilla/5.0","-H","Cache-Control: no-cache",u],capture_output=True,timeout=45)
+              body=p.stdout.decode("utf8","replace")
+              can=re.search(r'<link[^>]+rel=["\']canonical["\'][^>]+href=["\']([^"\']+)',body,re.I)
+              robots=re.search(r'<meta[^>]+name=["\']robots["\'][^>]+content=["\']([^"\']+)',body,re.I)
+              ok=p.returncode==0 and can and norm(can.group(1))==norm(u) and robots and "noindex" not in robots.group(1).lower()
+              hub_checks.append({"url":u,"ok":bool(ok),"canonical":can.group(1) if can else None,"robots":robots.group(1) if robots else None,"body_bytes":len(body)})
+          p=subprocess.run(["curl","--fail","--silent","--show-error","--connect-timeout","15","--max-time","35",site+"/a3_car_ref-sitemap.xml"],capture_output=True,timeout=45)
+          if p.returncode:raise SystemExit("Failed fetching XML sitemap "+str(p.returncode))
+          root=ET.fromstring(p.stdout)
+          sitemap=set()
+          for entry in root:
+              if entry.tag.split("}")[-1]!="url":continue
+              for item in entry:
+                  if item.tag.split("}")[-1]=="loc" and item.text:sitemap.add(urllib.parse.unquote(item.text).rstrip("/"))
+          missing_hubs=[h for h in hubs if urllib.parse.unquote(h).rstrip("/") not in sitemap]
+          old_in_sitemap=[z["source"] for z in rows if urllib.parse.unquote(z["source"]).rstrip("/") in sitemap]
+          results={"redirects_tested":len(checks),"redirects_passed":sum(x["passed"] for x in checks),"redirect_failures":[x for x in checks if not x["passed"]],"hub_checks":hub_checks,"sitemap_count":len(sitemap),"missing_hubs":missing_hubs,"old_in_sitemap":old_in_sitemap}
+          with open("a3tal-127-redirect-qa-20261121.json","w",encoding="utf8") as f:json.dump(results,f,ensure_ascii=False,indent=2)
+          print("REDIRECT_QA_SUMMARY",json.dumps({k:v for k,v in results.items() if k!="redirect_failures"},ensure_ascii=False),flush=True)
+          print("REDIRECT_FAILURES",json.dumps(results["redirect_failures"][:20],ensure_ascii=False),flush=True)
+          if len(results["redirect_failures"])>0 or any(not x["ok"] for x in hub_checks) or missing_hubs or old_in_sitemap:
+              raise SystemExit("Live redirect QA found inconsistencies, see artifact")
+          PY
+          python3 /tmp/a3tal_verify.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: a3tal-model-127-qa-20261121
+          path: a3tal-127-redirect-qa-20261121.json
+          if-no-files-found: ignore
+          retention-days: 90
