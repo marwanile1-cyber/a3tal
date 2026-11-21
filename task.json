@@ -1,67 +1,89 @@
 {
-  "deployment_tag": "a3tal-20261121-fix-7-historical-404-typo-urls",
+  "deployment_tag": "a3tal-clean-yoast-sitemaps-for-three-confirmed-301-sources-20261121",
   "requests": [
     {
       "method": "POST",
-      "path": "/redirect",
+      "path": "/update-post",
       "body": {
-        "source_path": "/الدليل-الشامل-أرقام-مراكز-خدمإ-المنصو/",
-        "target_url": "https://a3tal.com/الدليل-الشامل-أرقام-مراكز-خدمة-المنصو/",
-        "status_code": 301
+        "id": 79943
       }
     },
     {
       "method": "POST",
-      "path": "/redirect",
+      "path": "/admin",
       "body": {
-        "source_path": "/الدليل-الشامل-أرقام-مراكز-خدمإ-المنصور/",
-        "target_url": "https://a3tal.com/الدليل-الشامل-أرقام-مراكز-خدمة-المنصو/",
-        "status_code": 301
+        "op": "post_meta_set",
+        "post_id": 79943,
+        "meta": {
+          "_yoast_wpseo_meta-robots-noindex": "1",
+          "_yoast_wpseo_canonical": "https://a3tal.com/ghabbour-auto-maintenance-booking-numbers-branches/"
+        }
       }
     },
     {
       "method": "POST",
-      "path": "/redirect",
+      "path": "/update-post",
       "body": {
-        "source_path": "/الدليل-الدليل-الشامل-أرقام-مراكز-خدمة-المنصور/",
-        "target_url": "https://a3tal.com/الدليل-الشامل-أرقام-مراكز-خدمة-المنصو/",
-        "status_code": 301
+        "id": 79943
       }
     },
     {
       "method": "POST",
-      "path": "/redirect",
+      "path": "/update-post",
       "body": {
-        "source_path": "/مراكز-خدمة-جيتور-ايمعتمدة-في-مصر/",
-        "target_url": "https://a3tal.com/مراكز-خدمة-جيتور-المعتمدة-في-مصر/",
-        "status_code": 301
+        "id": 79906
       }
     },
     {
       "method": "POST",
-      "path": "/redirect",
+      "path": "/admin",
       "body": {
-        "source_path": "/مراكز-خدمة-جيتوش-المعتمدة-في-مصر/",
-        "target_url": "https://a3tal.com/مراكز-خدمة-جيتور-المعتمدة-في-مصر/",
-        "status_code": 301
+        "op": "post_meta_set",
+        "post_id": 79906,
+        "meta": {
+          "_yoast_wpseo_meta-robots-noindex": "1",
+          "_yoast_wpseo_canonical": "https://a3tal.com/الدليل-الشامل-أرقام-مراكز-خدمة-المنصو/"
+        }
       }
     },
     {
       "method": "POST",
-      "path": "/redirect",
+      "path": "/update-post",
       "body": {
-        "source_path": "/دليلك-الشامل-أفضل-مراكز-خدمإ-غبور-أوتو/",
-        "target_url": "https://a3tal.com/ghabbour-auto-maintenance-booking-numbers-branches/",
-        "status_code": 301
+        "id": 79906
       }
     },
     {
       "method": "POST",
-      "path": "/redirect",
+      "path": "/update-post",
       "body": {
-        "source_path": "/صيانة-سيارام-سيارات-في-حدائق-االأهرام-دليلك-ال/",
-        "target_url": "https://a3tal.com/صيانة-سيارات-في-حدائق-الأهرام-دليلك-ال/",
-        "status_code": 301
+        "id": 81108
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/admin",
+      "body": {
+        "op": "post_meta_set",
+        "post_id": 81108,
+        "meta": {
+          "_yoast_wpseo_meta-robots-noindex": "1",
+          "_yoast_wpseo_canonical": "https://a3tal.com/الدليل-الشامل-أرقام-مراكز-خدمة-المنصو/"
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/update-post",
+      "body": {
+        "id": 81108
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/admin",
+      "body": {
+        "op": "cache_flush"
       }
     }
   ],
