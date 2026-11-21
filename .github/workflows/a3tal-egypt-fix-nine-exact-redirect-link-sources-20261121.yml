@@ -1,0 +1,141 @@
+name: A3tal Egypt - fix nine confirmed semantically equivalent 301 internal href sources
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/a3tal-egypt-fix-nine-exact-redirect-link-sources-20261121.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Read-only 301 target preflight; original backups; edit only exact href attributes in active Egyptian posts
+        env:
+          A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+        run: |
+          set -euo pipefail
+          python3 -m pip install -q requests beautifulsoup4
+          mkdir -p reports
+          cat >/tmp/audit_fix.py <<'PY'
+          import os,json,re,html,requests,subprocess,urllib.parse,xml.etree.ElementTree as ET,collections,time
+          from bs4 import BeautifulSoup
+          B='https://a3tal.com';API=B+'/wp-json/a3tal-direct/v1'
+          KEY=os.getenv('A3TAL_API_KEY')
+          if not KEY:raise SystemExit('No bridge key; no writes')
+          sources=[
+            '/obd2-freeze-frame-data-guide/',
+            '/obd2-live-data-reading-guide/',
+            '/engine-overheating-causes-solutions/',
+            '/engine-oil-consumption-no-leak-causes/',
+            '/freeze-frame-obd2-diagnostic-data/',
+            '/geely-starray-maintenance-schedule/',
+            '/live-data-obd2-scanner-readings-guide/',
+            '/opel-insignia-p03a3-pressure-sensor-glow-plug-fix-2026/',
+            '/p0171-system-too-lean-bank1/'
+          ]
+          def norm(u):return urllib.parse.unquote(urllib.parse.urlsplit(html.unescape(u)).path).rstrip('/')+'/'
+          def bridge(p,body=None):
+            cmd=['curl','--silent','--show-error','--fail','--retry','2','--retry-all-errors','--retry-delay','1','--connect-timeout','15','--max-time','85',
+              '-H','X-A3tal-Key: '+KEY,'-H','Authorization: Bearer '+KEY]
+            b=None
+            if body is not None:
+              cmd+=['-X','POST','-H','Content-Type: application/json','--data-binary','@-']
+              b=json.dumps(body,ensure_ascii=False).encode()
+            cmd.append(API+p)
+            z=subprocess.run(cmd,input=b,capture_output=True,timeout=100)
+            if z.returncode:raise RuntimeError(z.stderr.decode('utf-8','replace')[:220])
+            data=json.loads(z.stdout.decode('utf-8'))
+            if data.get('ok') is False:raise RuntimeError(str(data)[:220])
+            return data
+          client=requests.Session()
+          client.headers['User-Agent']='A3tal-Egypt-Exact-Redirect-Link-Repair/1.0'
+          tree=ET.fromstring(client.get(B+'/post-sitemap.xml',timeout=30).content)
+          active={norm(e.text) for u in tree for e in u if e.tag.rsplit('}',1)[-1]=='loc' and e.text}
+          mapping={}
+          for p in sources:
+            r=client.get(B+p,allow_redirects=False,timeout=30)
+            location=r.headers.get('Location','')
+            sp=urllib.parse.urlsplit(location)
+            if r.status_code!=301 or sp.netloc.lower() not in ('a3tal.com','www.a3tal.com'):
+              raise RuntimeError('Source no longer direct 301 to same domain: '+p)
+            dest=client.get(location,allow_redirects=False,timeout=30)
+            if dest.status_code!=200 or norm(location) not in active:
+              raise RuntimeError('Destination not an active 200 sitemap post: '+p)
+            soup=BeautifulSoup(dest.text,'html.parser')
+            meta=soup.find('meta',attrs={'name':'robots'})
+            can=soup.find('link',rel='canonical')
+            if (meta and 'noindex' in meta.get('content','')) or (can and norm(can.get('href',''))!=norm(location)):
+              raise RuntimeError('Destination is nonindexable or nonself canonical: '+p)
+            mapping[p]=B+norm(location)
+          print('VERIFIED_9_SOURCE_301_TARGETS',json.dumps(mapping,ensure_ascii=False),flush=True)
+          rows=[]
+          for i in range(1,14):
+            r=client.get(B+'/wp-json/wp/v2/posts',params={'per_page':100,'page':i,'_fields':'id,link,content,status'},timeout=35);r.raise_for_status()
+            arr=r.json()
+            if not isinstance(arr,list):break
+            rows.extend(arr)
+            if len(arr)<100:break
+          expr=re.compile(r'(?P<prefix>\bhref\s*=\s*)(?P<quote>["\'])(?P<url>[^"\']+)(?P=quote)',re.I)
+          selected=[]
+          for obj in rows:
+            if norm(obj.get('link','')) not in active:continue
+            old={}
+            for hit in expr.finditer(obj.get('content',{}).get('rendered','')):
+              raw=html.unescape(hit.group('url'))
+              u=urllib.parse.urlsplit(raw)
+              if u.hostname not in (None,'a3tal.com','www.a3tal.com') or (u.hostname is None and not raw.startswith('/')):continue
+              n=norm(raw)
+              if n in mapping:old[n]=old.get(n,0)+1
+            if old:selected.append({'post_id':obj['id'],'source':obj['link'],'links':old})
+          print('PREFLIGHT_AFFECTED_POSTS',json.dumps({'count':len(selected),'expected_hrefs':sum(sum(x['links'].values()) for x in selected),'posts':selected},ensure_ascii=False),flush=True)
+          with open('reports/egypt-old301-9-preflight.json','w',encoding='utf8') as f:
+            json.dump({'mapping':mapping,'posts':selected},f,ensure_ascii=False,indent=2)
+          backup=[];updates=[]
+          for item in selected:
+            obj=bridge('/post/'+str(item['post_id']))
+            if obj.get('status')!='publish' or obj.get('type')!='post' or norm(obj.get('link',''))!=norm(item['source']):
+              raise RuntimeError('Live post changed identity: '+str(item['post_id']))
+            raw=obj.get('content') or ''
+            if re.search(r'<(?:script|style|iframe|svg|form|object)\b',raw,re.I):
+              raise RuntimeError('Advanced HTML, refusal before edit on '+str(item['post_id']))
+            count=[0]
+            def repl(m):
+              raw_u=html.unescape(m.group('url'))
+              u=urllib.parse.urlsplit(raw_u)
+              if u.hostname not in (None,'a3tal.com','www.a3tal.com') or (u.hostname is None and not raw_u.startswith('/')):return m.group(0)
+              n=norm(raw_u)
+              if n not in mapping:return m.group(0)
+              count[0]+=1
+              return m.group('prefix')+m.group('quote')+html.escape(mapping[n],quote=True)+m.group('quote')
+            revised=expr.sub(repl,raw)
+            if not count[0]:continue
+            if count[0]>20:raise RuntimeError('Too many edits per article')
+            backup.append({'id':item['post_id'],'modified_gmt':obj['modified_gmt'],'content_before':raw})
+            with open('reports/egypt-old301-9-original-posts.json','w',encoding='utf8') as f:json.dump(backup,f,ensure_ascii=False,indent=2)
+            done=bridge('/update-post',{'id':item['post_id'],'expected_modified_gmt':obj['modified_gmt'],'content':revised})
+            if done.get('id')!=item['post_id']:raise RuntimeError('Unexpected update response')
+            reread=bridge('/post/'+str(item['post_id']))
+            still=[]
+            for match in expr.finditer(reread.get('content') or ''):
+              if norm(match.group('url')) in mapping:still.append(match.group('url'))
+            if still:raise RuntimeError('Unrepaired hrefs on '+str(item['post_id']))
+            updates.append({'post_id':item['post_id'],'replaced':count[0]})
+            print('HREF_FIXED',json.dumps(updates[-1]),flush=True)
+          if updates:bridge('/admin',{'op':'cache_flush'})
+          summary={'status':'success','mapping_count':len(mapping),'affected_articles':len(selected),
+            'updated_articles':len(updates),'rewritten_hrefs':sum(i['replaced'] for i in updates),
+            'left_unmodified_generic_dtc_301_sources':['/p0300-random-misfire/','/p0011-camshaft-timing-over-advanced/','/p0342-camshaft-position-sensor-circuit-low/']}
+          with open('reports/egypt-old301-9-result.json','w',encoding='utf8') as f:json.dump(summary,f,ensure_ascii=False,indent=2)
+          print('FINAL_301_LINK_REPAIR',json.dumps(summary,ensure_ascii=False),flush=True)
+          PY
+          python3 -u /tmp/audit_fix.py
+      - name: Save old content, target mappings and results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-egypt-nine-301-internal-link-repairs-20261121
+          path: reports/
+          if-no-files-found: warn
+          retention-days: 90
