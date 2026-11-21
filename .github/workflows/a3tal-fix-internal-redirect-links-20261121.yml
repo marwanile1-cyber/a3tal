@@ -19,7 +19,7 @@ jobs:
         run: |
           set -euo pipefail
           cat > /tmp/fix_a3tal_links.py <<'PY'
-          import urllib.request,urllib.error,urllib.parse,json,os,re,html,time
+          import urllib.request,urllib.error,urllib.parse,json,os,re,html,time,subprocess
           base="https://a3tal.com"
           api=base+"/wp-json/a3tal-direct/v1"
           if not os.environ.get("A3TAL_API_KEY"):raise SystemExit("Missing key")
@@ -46,8 +46,12 @@ jobs:
               data=None
               if method=="POST":
                 data=json.dumps(payload,ensure_ascii=False).encode();h["Content-Type"]="application/json"
-              q=urllib.request.Request(api+path,data=data,headers=h,method=method)
-              with urllib.request.urlopen(q,timeout=75) as f:return json.loads(f.read().decode("utf8"))
+              cmd=["curl","--retry","3","--retry-all-errors","--retry-delay","2","--connect-timeout","20","--max-time","90","--silent","--show-error","--fail","-X",method,"-H","X-A3tal-Key: "+os.environ["A3TAL_API_KEY"],"-H","Authorization: Bearer "+os.environ["A3TAL_API_KEY"],"-H","Accept: application/json"]
+              if data is not None:cmd+=["-H","Content-Type: application/json","--data-binary","@-"]
+              cmd+=[api+path]
+              process=subprocess.run(cmd,input=data,capture_output=True,timeout=110)
+              if process.returncode:raise RuntimeError("Bridge curl failed "+str(process.returncode)+" "+process.stderr.decode("utf8","replace")[:400])
+              return json.loads(process.stdout.decode("utf8"))
           changed=[];skipped=[]
           for postid in ids:
               obj=call("/post/"+str(postid))
