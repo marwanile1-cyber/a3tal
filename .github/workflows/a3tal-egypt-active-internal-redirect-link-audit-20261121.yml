@@ -1,0 +1,105 @@
+name: A3tal Egypt - audit canonical internal links to redirects or missing pages
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/a3tal-egypt-active-internal-redirect-link-audit-20261121.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Read published Egyptian post and page HTML; test non-sitemap internal hrefs for 301 or 404
+        run: |
+          set -euo pipefail
+          python3 -m pip install -q requests beautifulsoup4
+          mkdir -p reports
+          cat >/tmp/crawl.py <<'PY'
+          import requests,xml.etree.ElementTree as ET,urllib.parse,re,html,json,collections,concurrent.futures,time
+          from bs4 import BeautifulSoup
+          BASE='https://a3tal.com'
+          S=requests.Session();S.headers.update({'User-Agent':'A3tal-Egypt-ReadOnly-Internal-Redirect-QualityCheck/1.0'})
+          def normalize(u):
+            sp=urllib.parse.urlsplit(html.unescape(u))
+            if sp.netloc and sp.netloc.lower().removeprefix('www.')!='a3tal.com':return ''
+            path=urllib.parse.unquote(sp.path or '/').rstrip('/')+'/'
+            return path
+          def get(u):
+            r=S.get(u,timeout=45);r.raise_for_status();return r
+          known=set(); sitemap_results={}
+          names=['post-sitemap.xml','page-sitemap.xml','a3_dtc-sitemap.xml',
+            'a3_car_ref-sitemap.xml','a3_service_center-sitemap.xml',
+            'a3_showroom-sitemap.xml','a3_car-sitemap.xml','category-sitemap.xml']
+          for name in names:
+            root=ET.fromstring(get(BASE+'/'+name).content)
+            locs=[e.text for url in root for e in url if e.tag.rsplit('}',1)[-1]=='loc' and e.text]
+            urls={normalize(u) for u in locs}
+            known|=urls
+            sitemap_results[name]=len(urls)
+          inventories={}
+          href_sources=collections.defaultdict(lambda:collections.Counter())
+          for typ in ('posts','pages','car-reference-records'):
+            records=[]
+            for page in range(1,14):
+              url=BASE+'/wp-json/wp/v2/'+typ+'?'+urllib.parse.urlencode({'per_page':100,'page':page,'_fields':'id,link,content,status'})
+              data=get(url).json()
+              if not isinstance(data,list):break
+              records.extend(data)
+              if len(data)<100:break
+            count=0
+            for p in records:
+              source=normalize(p.get('link',''))
+              if source not in known:continue
+              count+=1
+              for node in BeautifulSoup(p.get('content',{}).get('rendered',''),'html.parser').select('a[href]'):
+                raw=html.unescape(node.get('href',''))
+                if not raw or raw.startswith('#') or raw.startswith(('mailto:','tel:','javascript:','data:')):continue
+                v=urllib.parse.urlsplit(raw)
+                if v.scheme and v.scheme not in ('http','https'):continue
+                if not v.netloc and not raw.startswith('/'):continue
+                n=normalize(raw)
+                if not n:continue
+                if n=='/ksa/' or n.startswith('/ksa/'):continue
+                if n.startswith(('/wp-content/','/wp-includes/','/wp-admin/','/wp-json/','/feed/')):continue
+                if re.search(r'\.(?:jpg|jpeg|webp|png|svg|pdf|xml|js|css|mp4|zip)/$',n,re.I):continue
+                if n in known:continue
+                href_sources[n][source]+=1
+            inventories[typ]={'records':len(records),'sitemap_included':count}
+          print('UNLISTED_HREF_COUNT',json.dumps({'paths':len(href_sources),'from':sum(sum(c.values()) for c in href_sources.values()),'inventory':inventories,'sitemaps':sitemap_results},ensure_ascii=False),flush=True)
+          def test(it):
+            path,srcs=it
+            u=BASE+urllib.parse.quote(path,safe='/%-._~')
+            try:
+              r=requests.get(u,timeout=35,allow_redirects=False,
+                headers={'User-Agent':'A3tal-Egypt-ReadOnly-Link-Status/1.0'})
+              code=r.status_code;target=r.headers.get('Location','')
+              if code not in (301,302,303,307,308,404,410,500,502,503) and not (200<=code<300):flag='other'
+              elif code in (301,302,303,307,308):flag='redirect'
+              elif code in (404,410):flag='missing'
+              elif code>=500:flag='server'
+              else:flag='ok'
+              return {'path':path,'status':code,'type':flag,'location':target,'source_articles':len(srcs),
+               'href_count':sum(srcs.values()),'sample_sources':dict(srcs.most_common(12))}
+            except Exception as e:return {'path':path,'type':'request_error','error':str(e)[:180],
+              'sample_sources':dict(srcs.most_common(5))}
+          with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
+            checked=list(pool.map(test,href_sources.items()))
+          labels=collections.Counter(x['type'] for x in checked)
+          problems=[x for x in checked if x['type']!='ok']
+          problems.sort(key=lambda x:(-x.get('href_count',0),x['path']))
+          print('STATUS_SUMMARY',json.dumps({'unique_checked':len(checked),'classification':dict(labels),'redirect_hrefs':sum(x.get('href_count',0) for x in problems if x['type']=='redirect'),'missing_hrefs':sum(x.get('href_count',0) for x in problems if x['type']=='missing')},ensure_ascii=False),flush=True)
+          print('TOP_PROBLEMS',json.dumps(problems[:85],ensure_ascii=False),flush=True)
+          with open('reports/egypt-active-posts-internal-redirects-missing-20261121.json','w',encoding='utf-8') as f:
+            json.dump({'sitemaps':sitemap_results,'inventories':inventories,'all_non_sitemap_internal':checked,'problems':problems},f,ensure_ascii=False,indent=2)
+          PY
+          python3 -u /tmp/crawl.py
+      - name: Retain exact source articles for any redirect or missing href
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-egypt-internal-redirect-link-quality-audit
+          path: reports/egypt-active-posts-internal-redirects-missing-20261121.json
+          if-no-files-found: warn
+          retention-days: 30
