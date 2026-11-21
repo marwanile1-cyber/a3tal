@@ -1,0 +1,100 @@
+name: A3tal Egypt - broken href anchor intent and exact replacement preflight
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/a3tal-egypt-404-context-verification-20261121.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Inspect actual broken anchor labels in active published posts; verify candidate replacements
+        run: |
+          set -euo pipefail
+          python3 -m pip install -q requests beautifulsoup4
+          mkdir -p reports
+          cat >/tmp/audit.py <<'PY'
+          import requests,re,html,json,urllib.parse,xml.etree.ElementTree as ET,collections
+          from bs4 import BeautifulSoup
+          B='https://a3tal.com'
+          S=requests.Session();S.headers['User-Agent']='A3tal-Egypt-404-Anchor-Intent-ReadOnly/1.0'
+          broken=[
+            '/electric-car-problems-egypt-guide/',
+            '/engine-oil-change-cost-prices-egypt-2026/',
+            '/كورس-كهرباء-السيارات-دليلك-للاحتراف-م/',
+            '/toyota-cvt-fluid-fe-vs-tc/',
+            '/car-ac-hot-at-idle-cold-driving-causes/',
+            '/cars-prices-egypt-2026-local-imported/',
+            '/check-injection-renault-causes-solutions/',
+            '/hyundai-tucson-2026-2027-used-price-buying-guide-egypt/',
+            '/hyundai-tucson-engine-gearbox-repair-costs/',
+            '/parasitic-battery-drain-test/',
+            '/tire-rotation-service-cost-egypt-2026/',
+            '/toyota-corolla-maintenance-schedule-egypt/',
+            '/أسباب-اهتزاز-السرعات-العا/',
+            '/أسعار-قطع-غيار-أوبل-انسجنيا-2025-دليلك-ال/',
+            '/أعراض-تلف-افتيس-الأوتوماتيك/',
+            '/أعطال-طرمبة-البنزين/',
+            '/عالم-أكواد-أعطال-السيارات-dtc-موسوعة-شامل/',
+            '/لمبات-أعطال-السيارات-ومعانيها-بالصور/'
+          ]
+          candidate={
+            '/engine-oil-change-cost-prices-egypt-2026/':'/engine-oil-change-guide-egypt-2025/',
+            '/toyota-cvt-fluid-fe-vs-tc/':'/toyota-cvt-fluid-price-egypt-fe-vs-tc/',
+            '/cars-prices-egypt-2026-local-imported/':'/اسعار-السيارات-الجديدة-في-مصر-2026/',
+            '/check-injection-renault-causes-solutions/':'/renault-fault-codes-check-injection-solution/',
+            '/parasitic-battery-drain-test/':'/car-battery-drains-overnight-while-parked-parasitic-draw-diagnosis/',
+            '/toyota-corolla-maintenance-schedule-egypt/':'/toyota-corolla-maintenance-prices-guide-2026/',
+            '/أسباب-اهتزاز-السرعات-العا/':'/رجة-في-السيارة-على-سرعة-80-أو-100-أو-120/',
+            '/أسعار-قطع-غيار-أوبل-انسجنيا-2025-دليلك-ال/':'/أسعار-قطع-غيار-أوبل-انسيجنيا-2025-دليلك-ال/',
+            '/أعراض-تلف-افتيس-الأوتوماتيك/':'/الدليل-الشامل-أعراض-تلف-الفتيس-الأوتو/',
+            '/أعطال-طرمبة-البنزين/':'/fuel-pump-low-pressure-how-to-test-before-replacement/',
+            '/عالم-أكواد-أعطال-السيارات-dtc-موسوعة-شامل/':'/dtc/'
+          }
+          def norm(u):return urllib.parse.unquote(urllib.parse.urlsplit(html.unescape(u)).path).rstrip('/')+'/'
+          tree=ET.fromstring(S.get(B+'/post-sitemap.xml',timeout=35).content)
+          active={norm(el.text) for url in tree for el in url if el.tag.rsplit('}',1)[-1]=='loc' and el.text}
+          posts=[]
+          for pg in range(1,14):
+            r=S.get(B+'/wp-json/wp/v2/posts',params={'per_page':100,'page':pg,'_fields':'id,link,content'},timeout=40);r.raise_for_status()
+            a=r.json()
+            if not isinstance(a,list):break
+            posts.extend(a)
+            if len(a)<100:break
+          hits=collections.defaultdict(list)
+          for p in posts:
+            if norm(p.get('link','')) not in active:continue
+            soup=BeautifulSoup(p.get('content',{}).get('rendered',''),'html.parser')
+            for el in soup.select('a[href]'):
+              h=el.get('href');v=urllib.parse.urlsplit(html.unescape(h))
+              if v.netloc.lower() not in ('','a3tal.com','www.a3tal.com'):continue
+              if not v.netloc and not h.startswith('/'):continue
+              n=norm(h)
+              if n in broken:
+                hits[n].append({'post_id':p['id'],'url':p['link'],'anchor':el.get_text(' ',strip=True)[:200],
+                  'is_image_link':bool(el.find('img'))})
+          tests={}
+          for a,b in candidate.items():
+            r=S.get(B+urllib.parse.quote(b,safe='/%-._~'),allow_redirects=False,timeout=35)
+            soup=BeautifulSoup(r.text,'html.parser')
+            can=soup.find('link',rel='canonical');robots=soup.find('meta',attrs={'name':'robots'})
+            tests[a]={'target':b,'status':r.status_code,'canonical':can.get('href') if can else '',
+              'robots':robots.get('content','') if robots else '',
+              'in_post_sitemap':norm(b) in active,'title':soup.title.get_text(' ',strip=True) if soup.title else ''}
+          report={'broken_sources':broken,'anchor_context':hits,'candidate_target_verification':tests}
+          with open('reports/a3tal-egypt-404-anchor-intent-context.json','w',encoding='utf8') as f:json.dump(report,f,ensure_ascii=False,indent=2)
+          print('BROKEN_ANCHORS',json.dumps(hits,ensure_ascii=False),flush=True)
+          print('CANDIDATE_TARGET_TESTS',json.dumps(tests,ensure_ascii=False),flush=True)
+          PY
+          python3 -u /tmp/audit.py
+      - name: Keep link context report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-egypt-404-link-anchor-intent-preflight
+          path: reports/a3tal-egypt-404-anchor-intent-context.json
+          if-no-files-found: warn
+          retention-days: 30
