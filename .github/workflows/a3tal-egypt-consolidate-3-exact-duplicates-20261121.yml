@@ -1,0 +1,114 @@
+name: A3tal Egypt - consolidate 3 confirmed same-intent posts safely
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/a3tal-egypt-consolidate-3-exact-duplicates-20261121.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  consolidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Preflight all six live posts; backup and persist 3 301s via A3tal Direct Bridge
+        env:
+          A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+        run: |
+          set -euo pipefail
+          python3 -m pip install -q requests beautifulsoup4
+          mkdir -p reports
+          cat >/tmp/consolidate.py <<'PY'
+          import os,json,subprocess,urllib.parse,re,requests,datetime,html
+          from bs4 import BeautifulSoup
+          BASE='https://a3tal.com'
+          API=BASE+'/wp-json/a3tal-direct/v1'
+          KEY=os.getenv('A3TAL_API_KEY')
+          if not KEY:raise SystemExit('Missing A3tal Direct Bridge key; nothing changed')
+          pairs=[
+           {'topic':'wheel_hum','primary_id':81463,'old_id':82596,
+           'primary_path':'/wheel-bearing-humming-noise-diagnosis/',
+           'old_path':'/humming-noise-increases-with-speed-wheel-bearing-tires-gearbox/',
+           'min_primary_words':800,'min_old_words':800,
+           'must':['بلي','كاوتش','فتيس','سرعة']},
+           {'topic':'traffic_overheating','primary_id':82480,'old_id':84754,
+           'primary_path':'/car-overheats-in-traffic-cools-while-driving/',
+           'old_path':'/car-overheats-in-traffic-cools-when-driving-fan-thermostat-diagnosis/',
+           'min_primary_words':800,'min_old_words':500,
+           'must':['مروحة','ردياتير','حرارة','الزحمة']},
+           {'topic':'parked_battery_drain','primary_id':84487,'old_id':81395,
+           'primary_path':'/car-battery-drains-overnight-while-parked-parasitic-draw-diagnosis/',
+           'old_path':'/car-battery-parasitic-draw-diagnosis/',
+           'min_primary_words':1000,'min_old_words':900,
+           'must':['Parasitic','بطارية','سحب','Sleep']}
+          ]
+          def api(path,body=None):
+             cmd=['curl','--silent','--show-error','--fail','--retry','2','--retry-all-errors','--retry-delay','1','--connect-timeout','15','--max-time','85','-H','X-A3tal-Key: '+KEY,'-H','Authorization: Bearer '+KEY]
+             data=None
+             if body is not None:
+                cmd+=['-X','POST','-H','Content-Type: application/json','--data-binary','@-']
+                data=json.dumps(body,ensure_ascii=False).encode()
+             cmd.append(API+path)
+             q=subprocess.run(cmd,input=data,capture_output=True,timeout=100)
+             if q.returncode:raise RuntimeError('Bridge failed: '+q.stderr.decode('utf-8','replace')[:240])
+             d=json.loads(q.stdout.decode('utf-8'))
+             if d.get('ok') is False:raise RuntimeError('Bridge failed: '+str(d)[:240])
+             return d
+          def norm(u):return urllib.parse.unquote(urllib.parse.urlsplit(u).path).rstrip('/')
+          def words(value):return len(BeautifulSoup(value or '', 'html.parser').get_text(' ',strip=True).split())
+          snapshots={}
+          for p in pairs:
+              primary=api('/post/'+str(p['primary_id']))
+              old=api('/post/'+str(p['old_id']))
+              for key,post,path in [('primary',primary,p['primary_path']),('old',old,p['old_path'])]:
+                  if post.get('status')!='publish' or post.get('type')!='post' or norm(post.get('link',''))!=norm(path):
+                      raise RuntimeError('POST IDENTITY PREFLIGHT FAIL '+p['topic']+'/'+key)
+              if words(primary.get('content'))<p['min_primary_words'] or words(old.get('content'))<p['min_old_words']:
+                  raise RuntimeError('POST CONTENT SHORTER THAN VERIFIED SCOPE '+p['topic'])
+              title=BeautifulSoup(primary.get('title',''), 'html.parser').get_text(' ',strip=True) if isinstance(primary.get('title'),str) else str(primary.get('title',''))
+              alltext=primary.get('content','')+' '+title
+              if any(x.lower() not in alltext.lower() for x in p['must']):
+                  raise RuntimeError('DESTINATION DOES NOT COVER EXACT INTENT '+p['topic'])
+              r=requests.get(BASE+p['primary_path'],timeout=30,allow_redirects=False)
+              if r.status_code!=200:raise RuntimeError('Destination must be public HTTP 200 before redirect '+p['topic'])
+              snapshots[p['topic']]={'rule':p,'primary':primary,'old':old}
+          backup='reports/a3tal-egypt-three-exact-intent-backup-20261121.json'
+          with open(backup,'w',encoding='utf-8') as f:json.dump({'timestamp_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'snapshots':snapshots},f,ensure_ascii=False,indent=2)
+          print('ALL_PREFLIGHTS_PASS 3 pairs; backup staged',flush=True)
+          applied=[]
+          for p in pairs:
+              src=BASE+p['old_path']; target=BASE+p['primary_path']
+              api('/admin',{'op':'post_meta_set','post_id':p['old_id'],
+                'meta':{'_yoast_wpseo_meta-robots-noindex':'1','_yoast_wpseo_canonical':target}})
+              fresh=api('/post/'+str(p['old_id']))
+              api('/update-post',{'id':p['old_id'],'expected_modified_gmt':fresh['modified_gmt']})
+              rule=api('/redirect',{'source_path':p['old_path'],'target_url':target,'status_code':301})
+              if not rule.get('ok') or int(rule.get('status_code',0))!=301:
+                  raise RuntimeError('Redirect save not confirmed: '+p['topic'])
+              applied.append({'topic':p['topic'],'source':src,'target':target,'old_id':p['old_id'],'primary_id':p['primary_id']})
+              print('SAVED_301',json.dumps(applied[-1],ensure_ascii=False),flush=True)
+          api('/admin',{'op':'cache_flush'})
+          results=[]
+          for p in applied:
+              src=requests.get(p['source'],allow_redirects=False,timeout=35,
+                headers={'User-Agent':'A3tal-Egypt-301-Verification/1.0'})
+              dest=requests.get(p['target'],allow_redirects=False,timeout=35)
+              loc=src.headers.get('Location','')
+              ok=src.status_code==301 and norm(loc)==norm(p['target']) and dest.status_code==200
+              record=dict(p,source_status=src.status_code,source_location=loc,destination_status=dest.status_code,pass_test=ok)
+              results.append(record)
+              print('LIVE_301_TEST',json.dumps(record,ensure_ascii=False),flush=True)
+          with open('reports/a3tal-egypt-three-exact-intent-results-20261121.json','w',encoding='utf-8') as f:json.dump(results,f,ensure_ascii=False,indent=2)
+          if not all(x['pass_test'] for x in results):
+              raise RuntimeError('One or more live redirects did not verify; see saved rules and backup')
+          print('SUCCESS_3_OF_3_301',flush=True)
+          PY
+          python3 -u /tmp/consolidate.py
+      - name: Archive original content and exact redirect verification
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-egypt-three-exact-duplicates-originals-and-301-20261121
+          path: reports/
+          if-no-files-found: warn
+          retention-days: 90
