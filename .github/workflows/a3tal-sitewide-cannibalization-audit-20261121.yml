@@ -1,0 +1,109 @@
+name: A3tal sitewide cannibalization inventory 20261121
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/a3tal-sitewide-cannibalization-audit-20261121.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Crawl live XML maps and classify overlapping URLs (read only)
+        shell: bash
+        run: |
+          cat > /tmp/a3tal_inventory.py <<'PY'
+          import urllib.request, urllib.error, urllib.parse, xml.etree.ElementTree as ET
+          import re,json,csv,time,collections,hashlib,os
+          BASE="https://a3tal.com"
+          def fetch(u):
+              for i in range(3):
+                  try:
+                      req=urllib.request.Request(u,headers={"User-Agent":"Mozilla/5.0 (compatible; A3talSEOAudit/1.0)","Accept":"application/xml,text/xml,text/html,*/*"})
+                      with urllib.request.urlopen(req,timeout=24) as f:
+                          return f.read().decode("utf-8","replace"),f.geturl(),int(f.status)
+                  except Exception as e:
+                      last=str(e);time.sleep(1.1*(i+1))
+              return "",u,0
+          def locs(xml):
+              try:
+                  root=ET.fromstring(xml)
+                  return [v.text.strip() for v in root.iter() if v.tag.split("}")[-1]=="loc" and v.text]
+              except Exception: return re.findall(r"<loc>\s*(https?://[^<]+)</loc>",xml)
+          index_text,_,_=fetch(BASE+"/sitemap_index.xml")
+          maps=locs(index_text)
+          if len(maps)<5: raise SystemExit("Could not fetch site sitemap index. No mutation made.")
+          inventory={}; errors={}
+          for sm in maps:
+              s,_,status=fetch(sm)
+              z=locs(s) if s else []
+              inventory[sm]=z
+              if status!=200 or not z:errors[sm]={"status":status,"bytes":len(s)}
+              print("SITEMAP",sm,len(z),"HTTP",status,flush=True)
+          all_urls=list(dict.fromkeys(u for a in inventory.values() for u in a))
+          def path(url):return urllib.parse.unquote(urllib.parse.urlsplit(url).path).strip("/")
+          def category(url):
+              p=path(url)
+              if p.startswith("car-reference/"):
+                  a=p.split("/");return ("car-reference", "/".join(a[:3]),"/".join(a[3:]))
+              if p.startswith("dtc/"):
+                  a=p.split("/");return ("DTC",a[1] if len(a)>1 else "archive","")
+              if p.startswith("cars/"):return("cars",p.split("/")[1],"")
+              if p.startswith("service-centers/"):return("service",p.split("/")[1] if "/" in p else "", "")
+              return("posts",p,"")
+          cars=collections.defaultdict(list); folders=collections.Counter(); patterns=collections.defaultdict(list)
+          terms={"ghabbour":r"ghabbour|غبور","mansour":r"mansour|منصور","jetour":r"jetour|جيتور","sportage":r"sportage|سبورتاج","sunny":r"sunny|صني","optra":r"optra|اوبترا|أوبترا","T1":r"jetour.t1|جيتور.t1","T2":r"jetour.t2|جيتور.t2","fluids":r"oil|fluid|coolant|زيت|سائل|مياه.تبريد","P0011":r"p0011","maintenance":r"maintenance|صيان|جدول","specs":r"spec|مواصفات"}
+          for u in all_urls:
+              p=path(u).lower()
+              kind,cluster,leaf=category(u)
+              folders[kind]+=1
+              if kind=="car-reference":cars[cluster].append(u)
+              for label,rx in terms.items():
+                  if re.search(rx,p,re.I):patterns[label].append(u)
+          old=[
+            "/دليلك-الشامل-أفضل-مراكز-خدمة-غبور-أوتو/",
+            "/مركز-خدمة-منصور-شيفروليه-الرئيسي-في-ال/",
+            "/mansour-chevrolet-maintenance-booking-numbers-branches/",
+            "/jetour-t2-maintenance-schedule-spare-parts/",
+            "/haval-v7-2027-price-specs-egypt/",
+            "/radiator-internal-blockage-flow-temperature-test-2/"
+          ]
+          oldset={v.rstrip("/") for v in old}
+          old_in_sitemap=[u for u in all_urls if path(u) in {p.strip("/") for p in old}]
+          data={
+              "run_date":"2026-11-21",
+              "scope":"root WordPress: excludes /ksa/ separate install",
+              "sitemaps":{k:len(v) for k,v in inventory.items()},
+              "errors":errors,
+              "counts":dict(folders),
+              "total_urls":len(all_urls),
+              "car_reference_cluster_counts":{k:len(v) for k,v in sorted(cars.items(),key=lambda x:-len(x[1]))},
+              "car_reference_top_clusters":{k:v for k,v in list(sorted(cars.items(),key=lambda x:-len(x[1])))[:28]},
+              "pattern_counts":{k:len(v) for k,v in patterns.items()},
+              "pattern_urls":{k:v[:100] for k,v in patterns.items()},
+              "redirect_sources_still_in_sitemap":old_in_sitemap,
+              "all_sitemap_urls":all_urls
+          }
+          with open("a3tal-sitewide-inventory.json","w",encoding="utf-8") as f:json.dump(data,f,ensure_ascii=False,indent=2)
+          with open("a3tal-sitewide-urls.csv","w",encoding="utf-8",newline="") as f:
+              w=csv.writer(f);w.writerow(["url","category","cluster","leaf"])
+              for u in all_urls:w.writerow([u,*category(u)])
+          print("SUMMARY",json.dumps({k:v for k,v in data.items() if k not in ("all_sitemap_urls","pattern_urls","car_reference_top_clusters")},ensure_ascii=False),flush=True)
+          print("TOP_CLUSTER_URLS",json.dumps({k:[path(u) for u in v[:8]] for k,v in list(sorted(cars.items(),key=lambda x:-len(x[1])))[:26]},ensure_ascii=False),flush=True)
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a") as f:
+              f.write(f"# A3tal live URL inventory\n\nTotal: **{len(all_urls)}**; index maps: **{len(maps)}**.\n\n")
+              for k,v in folders.items():f.write(f"* {k}: {v}\n")
+              f.write("\n## Old redirected links still in XML\n\n"+("\n".join("- "+x for x in old_in_sitemap) or "None")+"\n")
+          PY
+          python3 /tmp/a3tal_inventory.py
+      - name: Retain audit artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-sitewide-inventory-20261121
+          path: |
+            a3tal-sitewide-inventory.json
+            a3tal-sitewide-urls.csv
+          retention-days: 30
