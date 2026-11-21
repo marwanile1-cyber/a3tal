@@ -1,0 +1,61 @@
+name: A3tal Egypt - four previous merged sources critical technical content retention
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/a3tal-egypt-4-merged-posts-technical-safety-gaps-readonly-20261121.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Compare high-value technical diagnostic details in original and retained articles
+        run: |
+          set -euo pipefail
+          python3 -m pip install -q requests beautifulsoup4
+          mkdir -p reports
+          cat >/tmp/retention_check.py <<'PY'
+          import requests,re,json
+          from bs4 import BeautifulSoup
+          B='https://a3tal.com';S=requests.Session();S.headers['User-Agent']='A3tal-Egypt-Consolidated-Critical-Detail-Check/1.0'
+          cases=[
+            ('wheel_hum',82596,81463,['العجلة وهي مرفوعة','دفرنس','ترصيص','السخونة','الصوت مع الملفات','هب','العربية مرفوعة','متى ما ينفعش تكمل قيادة']),
+            ('traffic_overheating',84754,82480,['P0480','P0483','P0117','غطاء القربة','غطاء الردياتير','الثرموستات','بعد الإصلاح','صوت المروحة','حساس الحرارة']),
+            ('battery_overnight',81395,84487,['Sleep Mode','Voltage Drop','الملتيميتر','BCM','300 mA','أمبير','فصل الفيوزات','الكاميرا','المفتاح الذكي','الأرضي']),
+            ('opel_insignia',80144,79933,['Insignia A','Insignia B','OEM','Aftermarket','تيل فرامل','بوجيه','فوانيس','رقم الشاسيه','فلتر التكييف'])
+          ]
+          rows=[]
+          def read_post(id):
+            r=S.get(B+'/wp-json/wp/v2/posts/'+str(id),params={'_fields':'id,title,content,link'},timeout=35);r.raise_for_status();return r.json()
+          for topic,oldid,newid,keys in cases:
+            old=read_post(oldid);new=read_post(newid)
+            def get(obj):
+              soup=BeautifulSoup(obj['content']['rendered'],'html.parser')
+              for node in soup(['script','style','nav','footer','form']):node.decompose()
+              return soup.get_text(' ',strip=True)
+            original=get(old);primary=get(new)
+            evidence=[]
+            for key in keys:
+              match_old=re.search(re.escape(key),original,re.I)
+              match_new=re.search(re.escape(key),primary,re.I)
+              if match_old:
+                context=original[max(0,match_old.start()-130):min(len(original),match_old.end()+280)]
+                evidence.append({'keyword':key,'in_old':True,'in_primary':bool(match_new),'old_context':context})
+            rows.append({'topic':topic,'old_id':oldid,'primary_id':newid,
+              'old_words':len(original.split()),'primary_words':len(primary.split()),
+              'technical_evidence':evidence})
+            print('GAP_DETAIL',json.dumps({'topic':topic,'old_words':len(original.split()),'primary_words':len(primary.split()),
+               'keywords_missing_from_primary':[x for x in evidence if not x['in_primary']]},ensure_ascii=False),flush=True)
+          with open('reports/four-consolidated-critical-detail-preservation.json','w',encoding='utf8') as f:json.dump(rows,f,ensure_ascii=False,indent=2)
+          PY
+          python3 -u /tmp/retention_check.py
+      - name: Archive case-by-case editorial retention comparison
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-egypt-four-consolidations-critical-detail-check
+          path: reports/
+          if-no-files-found: warn
+          retention-days: 60
