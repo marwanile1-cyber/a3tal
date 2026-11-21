@@ -145,3 +145,5 @@ jobs:
           retention-days: 30
 
 # After live noindex-filter navigation patch: rerun all 393-source internal-link checks.
+
+# Final validation after replacing 997 old clickable hrefs across 32 live model guides.
