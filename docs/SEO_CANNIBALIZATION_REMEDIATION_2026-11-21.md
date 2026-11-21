@@ -38,3 +38,24 @@
 - Check the site when Google November 2026 Core Update is complete and wait at least 7 days to compare a stable period to comparable pre-November 10 days.
 - Keep technical data engine-/transmission-/market-specific; avoid combining different fluid specifications into a single unsafe figure.
 - **Do not rerun one-shot migration workflows** after successful deployment. Each requires exact parent/child counts and source-content migration guards. Any new change needs a fresh audited batch.
+
+## Additional verified production batch (continuation on 2026-11-21)
+- Four MG/Geely/Chery hubs: **37** additional consolidated source URLs, with full content migration + saved 301 instructions: https://github.com/marwanile1-cyber/a3tal/actions/runs/44910379524
+- Copy cleanup for these hubs: **27** exact repeated generic advisory paragraphs removed: https://github.com/marwanile1-cyber/a3tal/actions/runs/44910545387
+- Four Captiva/Magnite/Patrol/MG GT hubs: **27** more source URLs consolidated, with backup + saved 301 instructions: https://github.com/marwanile1-cyber/a3tal/actions/runs/44910678907
+- Copy cleanup for this batch: **20** exact repeated generic advisory paragraphs removed: https://github.com/marwanile1-cyber/a3tal/actions/runs/44910819308
+- Independent complete verification: **191/191** raw live HTTP 301 responses with correct targets; **16/16** hubs return content, index/follow and self-canonical; **0** redirected old sources in the XML sitemap; car-reference sitemap **456 -> 265**: https://github.com/marwanile1-cyber/a3tal/actions/runs/44910835942
+- Consolidated total now **191** old model-reference URLs into **16** existing hubs; **249** exact repeated generic paragraphs removed in total (202 earlier + 27 + 20), without deleting sections of technical facts.
+- GSC new date-by-page-by-query breakdown still unavailable; no traffic recovery claim.
+
+### Additional model hubs
+| Canonical model hub | Parent post ID | Child sources with 301 |
+| --- | ---: | ---: |
+| /car-reference/mg/new-zs-cvt-egypt/ | 85464 | 10 |
+| /car-reference/geely/starray-15t-7dct-egypt/ | 85466 | 10 |
+| /car-reference/chery/tiggo9-phev-2026-egypt/ | 85535 | 10 |
+| /car-reference/mg/new-hs-15t-luxury-hybrid-egypt/ | 85851 | 7 |
+| /car-reference/chevrolet/captiva-2026-egypt/ | 85149 | 7 |
+| /car-reference/nissan/magnite-2026-egypt/ | 85094 | 7 |
+| /car-reference/nissan/patrol-y63-egypt/ | 85654 | 7 |
+| /car-reference/mg/mg-gt-15t-egypt/ | 85148 | 6 |
