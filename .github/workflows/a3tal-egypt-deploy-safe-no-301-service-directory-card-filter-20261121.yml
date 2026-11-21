@@ -1,0 +1,104 @@
+name: A3tal Egypt - safely exclude redirected dealer guides from service directory cards
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/a3tal-egypt-deploy-safe-no-301-service-directory-card-filter-20261121.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-production-theme
+  cancel-in-progress: false
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: PHP lint, live file SHA preflight, backup and single-source guarded replacement
+        env:
+          A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+        run: |
+          set -euo pipefail
+          php -l theme-source/a3tal-global/ux-improvements-20261031.php
+          mkdir -p reports
+          cat >/tmp/deploy_directory_filter.py <<'PY'
+          import pathlib,subprocess,json,os,hashlib,requests,urllib.parse,html,time
+          from bs4 import BeautifulSoup
+          SITE='https://a3tal.com';API=SITE+'/wp-json/a3tal-direct/v1'
+          KEY=os.getenv('A3TAL_API_KEY')
+          if not KEY:raise SystemExit('Missing Direct Bridge auth')
+          PATH='themes/a3tal-global/ux-improvements-20261031.php'
+          BASE_SHA='937cfc04de75e74ac1a0bcd44cf7787be1a85bcd6303d9f85ce3d6f29d16db0b'
+          source=pathlib.Path('theme-source/a3tal-global/ux-improvements-20261031.php').read_text('utf-8')
+          marker='// Keep the Egyptian service directory free of retired, redirected/noindexed guides.'
+          if source.count(marker)!=1 or source.count('function a3g_ux_directory_guides')!=1:
+            raise RuntimeError('Reviewed source marker/function mismatch')
+          def digest(text):return hashlib.sha256(text.encode()).hexdigest()
+          def request(path,body=None):
+            h={'X-A3tal-Key':KEY,'Authorization':'Bearer '+KEY,'Accept':'application/json'}
+            inp=json.dumps(body,ensure_ascii=False).encode() if body is not None else None
+            if inp:h['Content-Type']='application/json; charset=utf-8'
+            cmd=['curl','--silent','--show-error','--fail','--retry','2','--retry-all-errors','--retry-delay','1',
+              '--connect-timeout','15','--max-time','85','-H','X-A3tal-Key: '+KEY,'-H','Authorization: Bearer '+KEY,'-H','Accept: application/json']
+            if inp:cmd+=['-X','POST','-H','Content-Type: application/json','--data-binary','@-']
+            cmd.append(API+path)
+            run=subprocess.run(cmd,input=inp,capture_output=True,timeout=100)
+            if run.returncode:raise RuntimeError('Bridge request failed '+run.stderr.decode('utf8','replace')[:240])
+            val=json.loads(run.stdout.decode('utf8'))
+            if val.get('ok') is False:raise RuntimeError(str(val)[:260])
+            return val
+          def read_live():
+            out=request('/admin?'+urllib.parse.urlencode({'op':'file_read','path':PATH,'nonce':str(time.time_ns())}))
+            info=out.get('result')
+            if not info or 'content' not in info or digest(info['content'])!=info.get('sha256'):
+              raise RuntimeError('Live Bridge file read/integrity check failed')
+            return info
+          before=read_live()
+          if before['content']==source:
+            print('DIRECTORY_FILTER_ALREADY_DEPLOYED',flush=True)
+            raise SystemExit(0)
+          if before['sha256']!=BASE_SHA:
+            raise RuntimeError('Unreviewed live theme file drift; refuse change, current digest prefix '+before['sha256'][:16])
+          pathlib.Path('reports/a3tal-egypt-service-directory-ux-previous-live-file.php').write_text(before['content'],encoding='utf8')
+          print('LIVE_BASELINE_VERIFIED backup saved',BASE_SHA[:16],flush=True)
+          saved=request('/admin',{'op':'file_write','path':PATH,'content':source,
+            'expected_sha256':before['sha256'],'confirm':True,'dangerous':True})
+          if saved.get('result',{}).get('sha256')!=digest(source):
+            raise RuntimeError('Bridge did not acknowledge expected new file SHA')
+          after=read_live()
+          if after['content']!=source:raise RuntimeError('Live source after write does not match reviewed GitHub source')
+          request('/admin',{'op':'cache_flush'})
+          old=['/mansour-chevrolet-maintenance-booking-numbers-branches/',
+               '/مركز-خدمة-منصور-شيفروليه-الرئيسي-في-ال/',
+               '/دليلك-الشامل-أفضل-مراكز-خدمة-غبور-أوتو/']
+          def norm(u):return urllib.parse.unquote(urllib.parse.urlsplit(html.unescape(u)).path).rstrip('/')+'/'
+          statuses=[]
+          for i in range(4):
+            r=requests.get(SITE+'/service-centers/',params={'a3_directory_cache_qa':'20261121-'+str(i)},
+              headers={'User-Agent':'A3tal-Egypt-Directory-301-Card-QA','Cache-Control':'no-cache'},
+              allow_redirects=False,timeout=35)
+            soup=BeautifulSoup(r.text,'html.parser')
+            cards=soup.select('.g-guide-results .g-legacy-card a[href]')
+            old_hrefs=[a.get('href') for a in cards if norm(a.get('href')) in old]
+            result={'attempt':i,'status':r.status_code,'cards':len(cards),'old_hrefs':len(old_hrefs)}
+            statuses.append(result)
+            print('DIRECTORY_PUBLIC_CARD_TEST',json.dumps(result,ensure_ascii=False),flush=True)
+            if r.status_code==200 and len(cards)>0 and not old_hrefs:
+              break
+            time.sleep(2)
+          with open('reports/a3tal-egypt-directory-filter-results.json','w',encoding='utf8') as f:
+            json.dump({'old_sha':before['sha256'],'new_sha':after['sha256'],'tests':statuses},f,ensure_ascii=False,indent=2)
+          if not statuses or statuses[-1]['status']!=200 or statuses[-1]['old_hrefs']>0 or statuses[-1]['cards']==0:
+            raise RuntimeError('Deployment verified but public directory still exposes redirected cards: review cache')
+          print('DIRECTORY_CARD_REDIRECT_LINKS_ZERO_LIVE',flush=True)
+          PY
+          python3 -u /tmp/deploy_directory_filter.py
+      - name: Archive exact before-image and live verification
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-egypt-service-directory-retired-301-guide-filter-backup
+          path: reports/
+          if-no-files-found: warn
+          retention-days: 90
