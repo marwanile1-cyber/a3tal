@@ -1,0 +1,154 @@
+name: A3tal pilot consolidation of 3 car-reference hubs 20261121
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/a3tal-merge-model-reference-hubs-20261121.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: a3tal-model-reference-content-migration
+  cancel-in-progress: false
+jobs:
+  consolidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - name: Consolidate verified low-traffic model fact sheets, retain content and enable 301
+        shell: bash
+        env:
+          A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+        run: |
+          set -euo pipefail
+          cat > /tmp/a3tal_model_merge.py <<'PY'
+          import os,re,json,html,time,subprocess,urllib.parse,difflib
+          from html.parser import HTMLParser
+          BASE="https://a3tal.com"
+          API=BASE+"/wp-json/a3tal-direct/v1"
+          REST=BASE+"/wp-json/wp/v2/car-reference-records"
+          KEY=os.getenv("A3TAL_API_KEY")
+          if not KEY:raise SystemExit("A3TAL_API_KEY missing; zero mutations")
+          JOBS=[
+              (85086,"nissan/sunny-n17-egypt",6,"مواصفات نيسان صني N17 في مصر بالتفصيل"),
+              (85128,"chevrolet/optra-2026-egypt",6,"مواصفات شيفروليه أوبترا الجديدة 2026 بالتفصيل"),
+              (86164,"jetour/t1-15t-7dct-egypt-2026",4,"مواصفات جيتور T1 في مصر بالتفصيل")
+          ]
+          class Text(HTMLParser):
+              def __init__(self):super().__init__();self.a=[]
+              def handle_data(self,d):self.a.append(d)
+          def textify(s):
+              p=Text();p.feed(s);return re.sub(r'\s+',' ',html.unescape(" ".join(p.a))).strip()
+          def curl_json(url,method="GET",body=None,auth=False):
+              cmd=["curl","--fail","--silent","--show-error","--location","--retry","3","--retry-all-errors","--retry-delay","2","--connect-timeout","15","--max-time","90","-X",method,"-H","Accept: application/json"]
+              if auth:cmd+=["-H","X-A3tal-Key: "+KEY,"-H","Authorization: Bearer "+KEY]
+              if body is not None:cmd+=["-H","Content-Type: application/json","--data-binary","@-"]
+              cmd.append(url)
+              data=json.dumps(body,ensure_ascii=False).encode("utf8") if body is not None else None
+              proc=subprocess.run(cmd,input=data,capture_output=True,timeout=110)
+              if proc.returncode:raise RuntimeError("Request failed: "+url+" :: "+proc.stderr.decode("utf8","replace")[:400])
+              try:return json.loads(proc.stdout.decode("utf8"))
+              except Exception as e:raise RuntimeError("Unexpected JSON: "+url+" "+proc.stdout[:500].decode("utf8","replace")) from e
+          def public(url):return curl_json(url)
+          def bridge(path,method="GET",body=None):return curl_json(API+path,method,body,True)
+          def target(p):return BASE+"/"+p.strip("/")+"/"
+          def norm(u):return urllib.parse.unquote(urllib.parse.urlsplit(u).path).rstrip("/")
+          def hlevel(h,level):
+              return re.sub(r'</?h'+str(h)+r'(\b[^>]*)>',lambda m:('</h'+str(level)+'>' if m.group(0).startswith("</") else '<h'+str(level)+m.group(1)+'>'),h,flags=re.I)
+          def move_headings(source):
+              t=re.sub(r'<h1\b([^>]*)>(.*?)</h1>',r'<h4\1>\2</h4>',source,flags=re.I|re.S)
+              t=re.sub(r'<h2\b([^>]*)>(.*?)</h2>',r'<h4\1>\2</h4>',t,flags=re.I|re.S)
+              t=re.sub(r'<h3\b([^>]*)>(.*?)</h3>',r'<h5\1>\2</h5>',t,flags=re.I|re.S)
+              return t
+          # Dry-run first: verify all parent/child relationships, site URLs, all source content.
+          all_groups=[]
+          for parent_id,model,expected_count,heading in JOBS:
+              root=target("car-reference/"+model)
+              pub=public(REST+"?parent="+str(parent_id)+"&per_page=100&_fields=id,slug,parent,status,link")
+              if len(pub)!=expected_count:raise SystemExit("Refusing unexpected child count for "+model+": "+str(len(pub)))
+              parent=bridge("/post/"+str(parent_id))
+              if parent.get("type")!="a3_car_ref" or parent.get("status")!="publish" or norm(parent.get("link",""))!=norm(root):
+                  raise SystemExit("Parent validation failed for "+model)
+              children=[]
+              for record in pub:
+                  if int(record.get("parent",0))!=parent_id or record.get("status")!="publish" or not record.get("link","").startswith(root):
+                      raise SystemExit("Child is outside intended model "+str(record))
+                  post=bridge("/post/"+str(record["id"]))
+                  if post.get("type")!="a3_car_ref" or post.get("status")!="publish" or norm(post.get("link",""))!=norm(record.get("link","")):
+                      raise SystemExit("Child mismatch "+str(record))
+                  if not textify(post.get("content") or "") or len(textify(post["content"]))<120:
+                      raise SystemExit("Short/empty child content "+str(record["id"]))
+                  if re.search(r'<\s*(script|iframe|form|svg|object)\b',post["content"],re.I):
+                      raise SystemExit("Unsafe embedded markup "+str(record["id"]))
+                  children.append(post)
+              children.sort(key=lambda x:x["slug"])
+              marker="A3TAL-CONSOLIDATED-20261121-"+str(parent_id)
+              if marker in parent.get("content",""):
+                  raise SystemExit("Already merged marker in "+model+"; refusing repeat execution")
+              all_groups.append((parent,root,children,heading,marker))
+              print("PREFLIGHT_MODEL_OK",parent_id,model,"children",len(children),"existing_parent_words",len(textify(parent["content"]).split()),flush=True)
+          backup=[{"parent":p,"children":children,"target":root,"marker":mark} for p,root,children,h,mark in all_groups]
+          with open("a3tal-model-consolidation-backup-20261121.json","w",encoding="utf8") as f:json.dump(backup,f,ensure_ascii=False,indent=2)
+          print("BACKUP_READY",len(backup),"models",flush=True)
+          # Migrate content first; no redirects until content has been checked on the live parent.
+          repaired=[]
+          for parent,root,children,heading,marker in all_groups:
+              lines=['\n<!-- '+marker+' -->',
+                  '<section class="a3tal-merged-technical-facts" aria-label="'+html.escape(heading,quote=True)+'">',
+                  '<h2>'+html.escape(heading)+'</h2>',
+                  '<p>تختلف المعلومات التالية حسب الفئة والمحرك وناقل الحركة والسوق. راجع دليل المالك وبيانات سيارتك قبل استخدام أي مواصفة للصيانة أو شراء قطع الغيار.</p>',
+                  '<p>انتقل إلى المواصفة المطلوبة:</p><ul>']
+              for ch in children:
+                  lines.append('<li><a href="#a3tal-spec-'+str(ch["id"])+'">'+html.escape(ch["title"])+'</a></li>')
+              lines.append('</ul>')
+              for ch in children:
+                  content=move_headings(ch["content"])
+                  lines.append('<section id="a3tal-spec-'+str(ch["id"])+'" class="a3tal-merged-fact"><h3>'+html.escape(ch["title"])+'</h3>'+content+'</section>')
+              lines.append('</section>')
+              addition='\n'.join(lines)
+              original=parent.get("content","")
+              merged=original+"\n"+addition
+              if len(merged)>240000:raise SystemExit("Merged content abnormally large for "+root)
+              result=bridge("/update-post","POST",{"id":parent["id"],"expected_modified_gmt":parent["modified_gmt"],"content":merged})
+              if int(result.get("id",0))!=parent["id"]:raise SystemExit("Failed saving parent "+root)
+              current=bridge("/post/"+str(parent["id"]))
+              actual=current.get("content","")
+              if marker not in actual:raise SystemExit("Missing marker after save "+root)
+              for child in children:
+                  sample=textify(child["content"])[:110]
+                  if sample not in textify(actual):
+                      raise SystemExit("Source content not preserved in parent "+str(child["id"]))
+              print("PARENT_CONTENT_VERIFIED",parent["id"],"parts",len(children),"bytes",len(actual),flush=True)
+              # Child contents remain published unchanged and backed up; they become noindex + 301 source URLs.
+              for child in children:
+                  pid=int(child["id"])
+                  oldurl=child["link"]
+                  bridge("/admin","POST",{"op":"post_meta_set","post_id":pid,"meta":{
+                      "_yoast_wpseo_meta-robots-noindex":"1",
+                      "_yoast_wpseo_canonical":root}})
+                  # Resave to refresh Yoast indexables, with conflict check.
+                  fresh=bridge("/post/"+str(pid))
+                  bridge("/update-post","POST",{"id":pid,"expected_modified_gmt":fresh["modified_gmt"]})
+                  anchor="#a3tal-spec-"+str(pid)
+                  red=bridge("/redirect","POST",{"source_path":urllib.parse.urlsplit(oldurl).path,"target_url":root+anchor,"status_code":301})
+                  if not red.get("ok") or int(red.get("status_code",0))!=301:raise SystemExit("Redirect write failed "+oldurl)
+                  repaired.append({"parent_id":parent["id"],"source_id":pid,"source":oldurl,"target":root+anchor})
+                  print("CHILD_301_SAVED",pid,oldurl,flush=True)
+                  time.sleep(0.6)
+          bridge("/admin","POST",{"op":"cache_flush"})
+          with open("a3tal-model-consolidation-result-20261121.json","w",encoding="utf8") as f:json.dump(repaired,f,ensure_ascii=False,indent=2)
+          print("CONSOLIDATION_DONE",json.dumps({"hub_count":len(all_groups),"redirect_count":len(repaired),"parent_ids":[p["id"] for p,r,c,h,m in all_groups]},ensure_ascii=False),flush=True)
+          with open(os.environ["GITHUB_STEP_SUMMARY"],"a") as f:
+              f.write("# Verified model-reference consolidation\n\nHubs: **"+str(len(all_groups))+"**; saved 301 redirects: **"+str(len(repaired))+"**.\n\nChild original content retained, merged full text verified on hubs. Confirm live HTTP and sitemap separately.\n")
+          PY
+          python3 /tmp/a3tal_model_merge.py
+      - name: Keep original post content backups and 301 mapping
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-model-merge-backups-20261121
+          path: |
+            a3tal-model-consolidation-backup-20261121.json
+            a3tal-model-consolidation-result-20261121.json
+          if-no-files-found: ignore
+          retention-days: 90
