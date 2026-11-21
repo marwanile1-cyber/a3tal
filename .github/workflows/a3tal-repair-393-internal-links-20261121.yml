@@ -1,0 +1,120 @@
+name: A3tal repair 997 stale redirected hrefs inside 32 model guides 20261121
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/a3tal-repair-393-internal-links-20261121.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: a3tal-redirected-393-internal-links-20261121
+          run-id: 44913227499
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: artifacts/audit
+      - name: Back up 32 live model guides then rewrite only href to verified canonical section anchors
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat >/tmp/fix_393_href.py <<'PY'
+          import json,urllib.parse,html,re,subprocess,os,time,collections
+          KEY=os.getenv("A3TAL_API_KEY","")
+          if not KEY:raise SystemExit("Missing Bridge key")
+          API="https://a3tal.com/wp-json/a3tal-direct/v1"
+          INPUT="artifacts/audit/a3tal-redirected-393-internal-links-20261121.json"
+          with open(INPUT,encoding="utf8") as f:audit=json.load(f)
+          if audit.get("source_count")!=393 or audit.get("articles_with_old_links")!=32:
+             raise SystemExit("Audit shape changed; refuse to edit")
+          pages=[p for p in audit["pages"] if p["type"]=="references"]
+          if len(pages)!=32:raise SystemExit("Unexpected post types in audit")
+          def norm(u):
+             return urllib.parse.unquote(urllib.parse.urlsplit(html.unescape(u)).path).rstrip("/")
+          mapping={}
+          for page in pages:
+             for m in page["matches"]:
+                path=norm(m["original_link"])
+                target=m["expected_target"]
+                if path in mapping and mapping[path]!=target:
+                   raise SystemExit("Contradictory redirect mapping for "+path)
+                mapping[path]=target
+          if len(mapping)>393 or not mapping:raise SystemExit("No safe mappings")
+          def call(path,body=None):
+             cmd=["curl","--fail","--silent","--show-error","--retry","3","--retry-all-errors","--retry-delay","2","--connect-timeout","15","--max-time","85","-H","X-A3tal-Key: "+KEY,"-H","Authorization: Bearer "+KEY]
+             data=None
+             if body is not None:
+               data=json.dumps(body,ensure_ascii=False).encode("utf8")
+               cmd+=["-X","POST","-H","Content-Type: application/json","--data-binary","@-"]
+             cmd.append(API+path)
+             p=subprocess.run(cmd,input=data,capture_output=True,timeout=105)
+             if p.returncode:raise RuntimeError("Bridge failed "+str(p.returncode)+": "+p.stderr.decode("utf8","replace")[:200])
+             value=json.loads(p.stdout.decode("utf8"))
+             if value.get("ok") is False:raise RuntimeError("Bridge error: "+str(value)[:200])
+             return value
+          hrefs=re.compile(r'(?P<before>\bhref\s*=\s*)(?P<quote>["\'])(?P<url>[^"\']+)(?P=quote)',re.I)
+          def rewrite(content,counts):
+             def sub(m):
+                raw=m.group("url")
+                key=norm(raw)
+                target=mapping.get(key)
+                if not target:return m.group(0)
+                counts[0]+=1
+                return m.group("before")+m.group("quote")+html.escape(target,quote=True)+m.group("quote")
+             return hrefs.sub(sub,content)
+          planned=[];skipped=[]
+          for item in pages:
+             id=item["post_id"]
+             current=call("/post/"+str(id))
+             if current.get("status")!="publish" or current.get("type")!="a3_car_ref" or norm(current.get("link",""))!=norm(item["url"]):
+                raise SystemExit("Post identity or status mismatch "+str(id))
+             content=current.get("content") or ""
+             if re.search(r'<(?:script|style|iframe|svg|form|object)\b',content,re.I):
+                skipped.append({"id":id,"reason":"advanced HTML; needs manual check"})
+                continue
+             count=[0]
+             proposed=rewrite(content,count)
+             if count[0]==0:
+                skipped.append({"id":id,"reason":"no matching raw href; may be dynamic injection"})
+                continue
+             if count[0]>100:raise SystemExit("Unexpectedly many replacements in post "+str(id))
+             if re.sub(r'<[^>]+>',"",content).strip()!=re.sub(r'<[^>]+>',"",proposed).strip():
+                raise SystemExit("Text content changed preflight for "+str(id))
+             planned.append({"post":current,"new_content":proposed,"count":count[0]})
+          if not planned:raise SystemExit("No raw internal hrefs found; no changes made")
+          with open("a3tal-393-internal-link-backup-20261121.json","w",encoding="utf8") as f:
+             json.dump({"before":[x["post"] for x in planned],"skipped":skipped},f,ensure_ascii=False,indent=2)
+          print("PREWRITE_INTERNAL_LINKS",json.dumps({"pages_to_edit":len(planned),"hrefs_to_rewrite":sum(x["count"] for x in planned),"skipped":skipped},ensure_ascii=False),flush=True)
+          updated=[]
+          for item in planned:
+             post=item["post"];pid=int(post["id"])
+             res=call("/update-post",{"id":pid,"expected_modified_gmt":post["modified_gmt"],"content":item["new_content"]})
+             if int(res.get("id",0))!=pid:raise SystemExit("Update response mismatch "+str(pid))
+             actual=call("/post/"+str(pid)).get("content","")
+             remaining=[m.group("url") for m in hrefs.finditer(actual) if norm(m.group("url")) in mapping]
+             if remaining:raise SystemExit("Unrepaired hrefs in post "+str(pid)+": "+str(remaining[:2]))
+             updated.append({"id":pid,"rewritten_hrefs":item["count"]})
+             print("UPDATED_GUIDE_LINKS",pid,item["count"],flush=True)
+             time.sleep(.25)
+          call("/admin",{"op":"cache_flush"})
+          summary={"updated":updated,"skipped":skipped,"pages":len(updated),"hrefs":sum(x["rewritten_hrefs"] for x in updated)}
+          with open("a3tal-393-internal-link-fix-results-20261121.json","w",encoding="utf8") as f:json.dump(summary,f,ensure_ascii=False,indent=2)
+          print("INTERNAL_HREF_REPAIR_SUMMARY",json.dumps({"pages":summary["pages"],"hrefs":summary["hrefs"],"skipped":len(skipped)},ensure_ascii=False),flush=True)
+          PY
+          python3 /tmp/fix_393_href.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: a3tal-393-internal-href-fix-backups-20261121
+          path: |
+            a3tal-393-internal-link-backup-20261121.json
+            a3tal-393-internal-link-fix-results-20261121.json
+          if-no-files-found: ignore
+          retention-days: 90
