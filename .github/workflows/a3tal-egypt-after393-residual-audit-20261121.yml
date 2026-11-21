@@ -1,0 +1,103 @@
+name: A3tal Egypt post-393 residual redirect and DTC indexing audit
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/a3tal-egypt-after393-residual-audit-20261121.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Install public HTML parser
+        run: python3 -m pip install -q requests beautifulsoup4
+      - name: Read only - verify current DTC sitemap inclusion, 301s and sitemap inventory
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p diagnostics/post393
+          cat >/tmp/audit.py <<'PY'
+          import requests,concurrent.futures,json,xml.etree.ElementTree as ET,urllib.parse,time,re
+          from bs4 import BeautifulSoup
+          BASE="https://a3tal.com"
+          H={"User-Agent":"A3tal-Egypt-Post393-ReadOnlyAudit/1.0"}
+          sitemap_names=["post-sitemap.xml","a3_dtc-sitemap.xml","a3_car_ref-sitemap.xml","a3_service_center-sitemap.xml","a3_showroom-sitemap.xml"]
+          redirects={
+           "/الدليل-الشامل-أرقام-مراكز-خدمإ-المنصو/":"/الدليل-الشامل-أرقام-مراكز-خدمة-المنصو/",
+           "/الدليل-الشامل-أرقام-مراكز-خدمإ-المنصور/":"/الدليل-الشامل-أرقام-مراكز-خدمة-المنصو/",
+           "/الدليل-الدليل-الشامل-أرقام-مراكز-خدمة-المنصور/":"/الدليل-الشامل-أرقام-مراكز-خدمة-المنصو/",
+           "/مراكز-خدمة-جيتور-ايمعتمدة-في-مصر/":"/مراكز-خدمة-جيتور-المعتمدة-في-مصر/",
+           "/مراكز-خدمة-جيتوش-المعتمدة-في-مصر/":"/مراكز-خدمة-جيتور-المعتمدة-في-مصر/",
+           "/دليلك-الشامل-أفضل-مراكز-خدمإ-غبور-أوتو/":"/ghabbour-auto-maintenance-booking-numbers-branches/",
+           "/صيانة-سيارام-سيارات-في-حدائق-االأهرام-دليلك-ال/":"/صيانة-سيارات-في-حدائق-الأهرام-دليلك-ال/",
+           "/دليلك-الشامل-أفضل-مراكز-خدمة-غبور-أوتو/":"/ghabbour-auto-maintenance-booking-numbers-branches/",
+           "/مركز-خدمة-منصور-شيفروليه-الرئيسي-في-ال/":"/الدليل-الشامل-أرقام-مراكز-خدمة-المنصو/",
+           "/mansour-chevrolet-maintenance-booking-numbers-branches/":"/الدليل-الشامل-أرقام-مراكز-خدمة-المنصو/",
+           "/jetour-t2-maintenance-schedule-spare-parts/":"/jetour-t2-maintenance-schedule-egypt/",
+           "/haval-v7-2027-price-specs-egypt/":"/haval-v7-price-specs-egypt/",
+           "/radiator-internal-blockage-flow-temperature-test-2/":"/radiator-internal-blockage-flow-temperature-test/",
+           "/تغيير-زيت-الفرامل-تنظيف-الدورة/":"/dot3-dot4-dot51-brake-fluid-differences/"
+          }
+          def request(url,follow=True):
+            for attempt in range(2):
+              try:return requests.get(url,headers=H,timeout=35,allow_redirects=follow)
+              except requests.RequestException:
+                if attempt==1:raise
+                time.sleep(1)
+          def pathname(url):return urllib.parse.unquote(urllib.parse.urlsplit(url).path).rstrip("/")
+          def sitemap(n):
+            try:
+              r=request(BASE+"/"+n);r.raise_for_status()
+              root=ET.fromstring(r.content)
+              urls=[c.text.strip() for el in root for c in el if c.tag.split("}")[-1]=="loc" and c.text]
+              return {"name":n,"count":len(urls),"duplicate_urls":len(urls)-len(set(urls)),"urls":urls}
+            except Exception as e:return {"name":n,"error":str(e),"urls":[]}
+          maps=[sitemap(x) for x in sitemap_names]
+          index={x["name"]:x for x in maps}
+          dtc=[x for x in index["a3_dtc-sitemap.xml"]["urls"] if re.search(r"/dtc/[PBCU]?[0-9a-z]+/?$",x,re.I)]
+          samples=[BASE+"/dtc/"+code+"/" for code in ["p0342","p0420","p0335"]]
+          queue=list(dict.fromkeys(dtc+samples))
+          def audit_dtc(url):
+            try:
+              r=request(url);s=BeautifulSoup(r.content,"html.parser")
+              canon=s.find("link",rel="canonical");robot=s.find("meta",attrs={"name":"robots"})
+              c=canon.get("href","") if canon else ""
+              robots=robot.get("content","") if robot else ""
+              return {"url":url,"status":r.status_code,"final":r.url,"canonical":c,"robots":robots,"noindex":"noindex" in robots.lower(),"self_canonical":pathname(c)==pathname(url) and urllib.parse.urlsplit(c).netloc=="a3tal.com"}
+            except Exception as e:return {"url":url,"error":str(e)}
+          with concurrent.futures.ThreadPoolExecutor(max_workers=5) as pool:pages=list(pool.map(audit_dtc,queue))
+          dtc_set={pathname(x) for x in dtc}
+          for x in pages:x["in_xml"]=pathname(x["url"]) in dtc_set
+          unexpected=[x for x in pages if x["in_xml"] and (x.get("error") or x.get("status")!=200 or x["noindex"] or not x["self_canonical"])]
+          samples_found=[x for x in pages if any(x["url"].endswith("/"+code+"/") for code in ["p0342","p0420","p0335"])]
+          def redirect(kv):
+            old,expected=kv;src=BASE+urllib.parse.quote(old,safe="/")
+            try:
+              r=request(src,False);loc=urllib.parse.urljoin(src,r.headers.get("Location",""))
+              correct=r.status_code in (301,308) and pathname(loc)==pathname(BASE+expected) and urllib.parse.urlsplit(loc).netloc=="a3tal.com"
+              return {"source":BASE+old,"http":r.status_code,"target":loc,"expected":BASE+expected,"ok":correct}
+            except Exception as e:return {"source":BASE+old,"expected":BASE+expected,"ok":False,"error":str(e)}
+          with concurrent.futures.ThreadPoolExecutor(max_workers=5) as pool:redirect_results=list(pool.map(redirect,redirects.items()))
+          output={"scope":"Egypt only, read-only, no GSC query-page validation",
+            "sitemaps":[{k:v for k,v in x.items() if k!="urls"} for x in maps],
+            "dtc_sitemap_code_urls":len(dtc),"dtc_checked":len(pages),"dtc_sitemap_anomaly_count":len(unexpected),
+            "dtc_sitemap_anomalies":unexpected,"dtc_sample_crosscheck":samples_found,
+            "legacy_redirects_checked":len(redirect_results),"legacy_redirects_passed":sum(x["ok"] for x in redirect_results),
+            "legacy_redirect_failures":[x for x in redirect_results if not x["ok"]],
+            "legacy_redirect_results":redirect_results}
+          open("diagnostics/post393/findings.json","w").write(json.dumps(output,ensure_ascii=False,indent=2))
+          print("SITEMAPS",json.dumps(output["sitemaps"],ensure_ascii=False),flush=True)
+          print("DTC_INDEXABILITY",json.dumps({"sitemap_codes":len(dtc),"anomalies":len(unexpected),"examples":unexpected[:25],"sample":samples_found},ensure_ascii=False),flush=True)
+          print("LEGACY_REDIRECTS",json.dumps({"checked":len(redirect_results),"passed":output["legacy_redirects_passed"],"failures":output["legacy_redirect_failures"]},ensure_ascii=False),flush=True)
+          PY
+          python3 -u /tmp/audit.py
+      - name: Preserve results for follow-up fixes
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-egypt-post393-residual-readonly-20261121
+          path: diagnostics/post393/findings.json
+          if-no-files-found: warn
+          retention-days: 21
