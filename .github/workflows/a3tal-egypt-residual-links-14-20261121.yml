@@ -1,0 +1,115 @@
+name: A3tal Egypt legacy 14 redirects - sitemap and internal links
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/a3tal-egypt-residual-links-14-20261121.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Audit 14 redirected URLs inside all indexable Egyptian posts and XML
+        run: |
+          set -euo pipefail
+          python3 -m pip install -q requests beautifulsoup4
+          mkdir -p reports
+          cat >/tmp/scan.py <<'PY'
+          import requests, json, re, html, urllib.parse, xml.etree.ElementTree as ET, collections, concurrent.futures
+          from bs4 import BeautifulSoup
+          ROOT='https://a3tal.com'
+          AGENT='A3tal-Egypt-ReadOnly-Residual-301-Scan/1.0'
+          session=requests.Session();session.headers.update({'User-Agent':AGENT})
+          legacy=[
+            '/الدليل-الشامل-أرقام-مراكز-خدمإ-المنصو/',
+            '/الدليل-الشامل-أرقام-مراكز-خدمإ-المنصور/',
+            '/الدليل-الدليل-الشامل-أرقام-مراكز-خدمة-المنصور/',
+            '/مراكز-خدمة-جيتور-ايمعتمدة-في-مصر/',
+            '/مراكز-خدمة-جيتوش-المعتمدة-في-مصر/',
+            '/دليلك-الشامل-أفضل-مراكز-خدمإ-غبور-أوتو/',
+            '/صيانة-سيارام-سيارات-في-حدائق-االأهرام-دليلك-ال/',
+            '/دليلك-الشامل-أفضل-مراكز-خدمة-غبور-أوتو/',
+            '/مركز-خدمة-منصور-شيفروليه-الرئيسي-في-ال/',
+            '/mansour-chevrolet-maintenance-booking-numbers-branches/',
+            '/jetour-t2-maintenance-schedule-spare-parts/',
+            '/haval-v7-2027-price-specs-egypt/',
+            '/radiator-internal-blockage-flow-temperature-test-2/',
+            '/تغيير-زيت-الفرامل-تنظيف-الدورة/',
+          ]
+          def path(u):
+            try:
+              s=urllib.parse.urlsplit(html.unescape(u))
+              if s.netloc and s.netloc.lower().replace('www.','')!='a3tal.com':return ''
+              return urllib.parse.unquote(s.path).rstrip('/')+'/'
+            except Exception:return ''
+          checked={path(p) for p in legacy}
+          def request(u):
+            r=session.get(u,timeout=35);r.raise_for_status();return r
+          sitemap_names=['post-sitemap.xml','page-sitemap.xml','a3_dtc-sitemap.xml','a3_car_ref-sitemap.xml',
+             'a3_service_center-sitemap.xml','a3_showroom-sitemap.xml','a3_car-sitemap.xml',
+             'category-sitemap.xml']
+          sitemaps={}
+          for name in sitemap_names:
+            try:
+              doc=request(ROOT+'/'+name)
+              root=ET.fromstring(doc.content)
+              links=[el.text.strip() for e in root for el in e if el.tag.split('}')[-1]=='loc' and el.text]
+              sitemaps[name]={'count':len(links),'old_urls':[u for u in links if path(u) in checked]}
+            except Exception as e:
+              sitemaps[name]={'error':str(e)}
+          def collect(kind):
+            entries=[]
+            for number in range(1,14):
+              u=ROOT+'/wp-json/wp/v2/'+kind
+              try:
+                r=request(u+'?'+urllib.parse.urlencode({'per_page':100,'page':number,'_fields':'id,slug,link,title,content,modified_gmt,status'}))
+                j=r.json()
+                if not isinstance(j,list):return entries,'unexpected response'
+                entries.extend(j)
+                if len(j)<100:return entries,None
+              except Exception as e:
+                if number>1 and '400 Client Error' in str(e):return entries,None
+                return entries,str(e)
+            return entries,'more than 1300 entries; truncated'
+          types=('posts','pages','car-reference-records','a3_service_center','a3_showroom')
+          inventories={}
+          findings=[]
+          for typ in types:
+            posts,error=collect(typ)
+            inventories[typ]={'read':len(posts),'error':error}
+            for row in posts:
+              body=row.get('content',{}).get('rendered','')
+              if not body:continue
+              soup=BeautifulSoup(body,'html.parser')
+              old_hits=collections.Counter()
+              for link in soup.find_all('a',href=True):
+                p=path(link['href'])
+                if p in checked:old_hits[p]+=1
+              if old_hits:
+                findings.append({'post_type':typ,'id':row.get('id'),'url':row.get('link'),
+                  'title':BeautifulSoup(row.get('title',{}).get('rendered',''),'html.parser').get_text(' ',strip=True),
+                  'modified_gmt':row.get('modified_gmt'),'old_links':dict(old_hits)})
+          report={'scope':'Egypt root only','read_only':True,'legacy_urls':len(legacy),
+            'sitemaps':sitemaps,'inventories':inventories,
+            'posts_with_legacy_links':len(findings),
+            'total_legacy_hrefs':sum(sum(d['old_links'].values()) for d in findings),
+            'stale_link_sources':findings}
+          with open('reports/a3tal-egypt-residual-14-links.json','w',encoding='utf-8') as f:
+            json.dump(report,f,ensure_ascii=False,indent=2)
+          print('LEGACY_14_SITEMAP',json.dumps({k:v for k,v in sitemaps.items()},ensure_ascii=False),flush=True)
+          print('CONTENT_INVENTORIES',json.dumps(inventories,ensure_ascii=False),flush=True)
+          print('STALE_14_LINKS',json.dumps({'posts':len(findings),'hrefs':report['total_legacy_hrefs'],'sources':findings[:80]},ensure_ascii=False),flush=True)
+          if any('error' in v for v in sitemaps.values()):
+            print('WARN incomplete sitemap scan',flush=True)
+          PY
+          python3 -u /tmp/scan.py
+      - name: Save precise stale-link sources for surgical repair
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-egypt-14-residual-301-link-audit
+          path: reports/a3tal-egypt-residual-14-links.json
+          if-no-files-found: warn
+          retention-days: 30
