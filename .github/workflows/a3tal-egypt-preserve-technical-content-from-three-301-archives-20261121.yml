@@ -1,0 +1,115 @@
+name: A3tal Egypt - preserve unique technical safety information from three merged duplicates
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/a3tal-egypt-preserve-technical-content-from-three-301-archives-20261121.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Add only missing technical safety detail to three canonical Egyptian articles, with full revision backups
+        env:
+          A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+        run: |
+          set -euo pipefail
+          python3 -m pip install -q requests beautifulsoup4
+          mkdir -p reports
+          cat >/tmp/safety_content_retention.py <<'PY'
+          import os,re,subprocess,json,datetime,html,urllib.parse,requests
+          from bs4 import BeautifulSoup
+          BASE='https://a3tal.com'; API=BASE+'/wp-json/a3tal-direct/v1'; KEY=os.getenv('A3TAL_API_KEY')
+          if not KEY:raise SystemExit('No Bridge secret, no changes')
+          cases=[
+            {
+              'topic':'wheel_bearing_safe_testing','id':81463,'path':'/wheel-bearing-humming-noise-diagnosis/',
+              'marker':'A3TAL-CONSOLIDATED-WHEEL-SAFETY-20261121','must_be_absent':['العجلة وهي مرفوعة'],
+              'insert':'''<!-- A3TAL-CONSOLIDATED-WHEEL-SAFETY-20261121 -->
+          <h2>لماذا لا يكفي اختبار العجلة وهي مرفوعة للحكم على رولمان البلي؟</h2>
+          <p>يمكن للفني فحص وجود خلوص في العجلة من وضعَي الساعة 12 و6 والاستماع إلى الخشونة عند تدويرها، ولكن لا يُجرى هذا الاختبار إلا بعد رفع السيارة وتأمينها على حوامل تثبيت مناسبة، وليس بالاعتماد على الكوريك وحده. وجود حركة غير طبيعية لا يثبت تلف البلي بمفرده؛ فقد يكون مصدرها مفصل كروي أو جزء آخر في التعليق، ولذلك يلزم تحديد موضع الخلوص قبل استبدال القطعة.</p>
+          <p>إذا صاحبت الونة سخونة غير طبيعية قرب الهَب، يجب استبعاد احتكاك الفرامل أو تعلق الكاليبر قبل الحكم على البلي. أما وجود لعب واضح أو طحن معدني أو اهتزاز قوي مع فقد الثبات، فيستدعي إيقاف القيادة وفحص السيارة بصورة آمنة، مع تجنب لمس الأجزاء الساخنة.</p>'''
+            },
+            {
+              'topic':'traffic_cooling_dtc_diagnosis','id':82480,'path':'/car-overheats-in-traffic-cools-while-driving/',
+              'marker':'A3TAL-CONSOLIDATED-COOLING-DTC-20261121','must_be_absent':['P0480','P0483','P0117'],
+              'insert':'''<!-- A3TAL-CONSOLIDATED-COOLING-DTC-20261121 -->
+          <h2>هل أكواد P0480 وP0483 وP0117 تعني تغيير المروحة؟</h2>
+          <p>ليس بالضرورة. قد يرتبط P0480 بدائرة التحكم في مروحة التبريد، وقد يشير P0483 إلى خلل في أداء التحكم بها حسب تصميم السيارة، بينما يرتبط P0117 بانخفاض إشارة دائرة حساس حرارة سائل التبريد. لا تكفي قراءة أي كود منها وحدها للحكم بتلف موتور المروحة. يبدأ التشخيص بحفظ بيانات Freeze Frame وفحص الفيوزات والتغذية والأرضي وأمر وحدة التحكم وقراءة حرارة المحرك الفعلية، وفق مخطط السيارة.</p>
+          <p>بعد إصلاح العطل، تُراجع كمية سائل التبريد وتنفيذ خطوات تنفيس الهواء طبقًا لتعليمات المصنع، ثم التأكد من استقرار الحرارة وعمل المراوح وعدم وجود تسريب. لا تفتح غطاء القربة أو الردياتير والمحرك ساخن.</p>'''
+            },
+            {
+              'topic':'parked_battery_sleep_multimeter','id':84487,'path':'/car-battery-drains-overnight-while-parked-parasitic-draw-diagnosis/',
+              'marker':'A3TAL-CONSOLIDATED-BATTERY-SLEEP-20261121','must_be_absent':['Sleep Mode','Voltage Drop'],
+              'insert':'''<!-- A3TAL-CONSOLIDATED-BATTERY-SLEEP-20261121 -->
+          <h2>أهمية Sleep Mode وقياس Voltage Drop عند فحص سحب البطارية</h2>
+          <p>لا تصح مقارنة تيار السحب فور غلق السيارة بالقيم الطبيعية قبل أن تدخل وحدات التحكم في وضع السكون Sleep Mode؛ فالمدة تختلف حسب السيارة وتجهيزاتها. وقد يؤدي فتح باب أو اقتراب المفتاح الذكي أو تشغيل ملحق كهربائي إلى إيقاظ الوحدات وتغيير القراءة. يبدأ الفحص بالتأكد من حالة البطارية والشحن، ثم يحدد الفني الدائرة المسببة للسحب بمعدات مناسبة أو بقياس هبوط الجهد Voltage Drop عبر الفيوزات وفق الإجراء الفني الخاص بالمركبة.</p>
+          <p>لا يُشغّل المحرك أو تُشغّل أحمال كبيرة والملتيميتر موصل على التوالي في وضع قياس الأمبير، لأن ذلك قد يضر الجهاز أو يسبب خطرًا. كما لا تُنزع الفيوزات عشوائيًا في السيارات الحديثة؛ فقد تعيد بعض الوحدات إلى وضع التشغيل وتفسد نتيجة الاختبار.</p>'''
+            }
+          ]
+          def api(path,body=None):
+            cmd=['curl','--silent','--show-error','--fail','--retry','2','--retry-all-errors','--retry-delay','1','--connect-timeout','15','--max-time','85','-H','X-A3tal-Key: '+KEY,'-H','Authorization: Bearer '+KEY]
+            inp=None
+            if body is not None:
+              cmd+=['-X','POST','-H','Content-Type: application/json','--data-binary','@-']
+              inp=json.dumps(body,ensure_ascii=False).encode('utf-8')
+            cmd.append(API+path)
+            r=subprocess.run(cmd,input=inp,capture_output=True,timeout=100)
+            if r.returncode:raise RuntimeError('Bridge error '+r.stderr.decode('utf8','replace')[:250])
+            d=json.loads(r.stdout.decode('utf8'))
+            if d.get('ok') is False:raise RuntimeError(str(d)[:200])
+            return d
+          def norm(u):return urllib.parse.unquote(urllib.parse.urlsplit(u).path).rstrip('/')
+          snapshots=[]
+          for item in cases:
+            row=api('/post/'+str(item['id']))
+            if row.get('type')!='post' or row.get('status')!='publish' or norm(row.get('link',''))!=norm(item['path']):
+              raise RuntimeError('Canonical post identity or state mismatch '+item['topic'])
+            body=row.get('content') or ''
+            if len(BeautifulSoup(body,'html.parser').get_text(' ',strip=True).split())<700:
+              raise RuntimeError('Canonical article unexpected short body '+item['topic'])
+            if item['marker'] in body:raise RuntimeError('Already completed '+item['topic'])
+            if any(word.lower() in BeautifulSoup(body,'html.parser').get_text(' ',strip=True).lower() for word in item['must_be_absent']):
+              raise RuntimeError('Existing canonical mentions supposedly missing unique detail: '+item['topic'])
+            hs=list(re.finditer(r'<h2\b[^>]*>.*?</h2>',body,re.I|re.S))
+            insert_at=None
+            for h in hs:
+              heading=BeautifulSoup(h.group(),'html.parser').get_text(' ',strip=True)
+              if 'أسئلة شائعة' in heading or 'الأسئلة الشائعة' in heading or 'الخلاصة' in heading:
+                insert_at=h.start();break
+            if insert_at is None:raise RuntimeError('Cannot find safe before-FAQ insertion location: '+item['topic'])
+            page=requests.get(BASE+item['path'],timeout=30,allow_redirects=False)
+            if page.status_code!=200:raise RuntimeError('Live article not HTTP 200: '+item['topic'])
+            item['original']=row
+            item['insert_at']=insert_at
+            snapshots.append({'topic':item['topic'],'post_id':item['id'],'original':row})
+          with open('reports/egypt-three-precontent-original-posts.json','w',encoding='utf-8') as f:json.dump(snapshots,f,ensure_ascii=False,indent=2)
+          print('ALL_THREE_PREFLIGHTS_PASSED original content backed up',flush=True)
+          results=[]
+          for item in cases:
+            row=item['original']; body=row['content']
+            changed=body[:item['insert_at']]+'\n'+item['insert']+'\n'+body[item['insert_at']:]
+            saved=api('/update-post',{'id':item['id'],'expected_modified_gmt':row['modified_gmt'],'content':changed})
+            if saved.get('id')!=item['id']:raise RuntimeError('Update ID mismatch '+item['topic'])
+            verify=api('/post/'+str(item['id']))
+            updated=verify.get('content') or ''
+            if item['marker'] not in updated or updated.count(item['marker'])!=1:
+              raise RuntimeError('Content marker not verified '+item['topic'])
+            if len(updated)<len(body)+200:raise RuntimeError('Unexpected large content removal '+item['topic'])
+            results.append({'topic':item['topic'],'post_id':item['id'],'url':BASE+item['path'],'old_characters':len(body),'new_characters':len(updated),'marker':item['marker']})
+            print('UNIQUE_TECHNICAL_SECTION_PRESERVED',json.dumps(results[-1],ensure_ascii=False),flush=True)
+          api('/admin',{'op':'cache_flush'})
+          with open('reports/egypt-three-unique-technical-preservation-results.json','w',encoding='utf-8') as f:json.dump(results,f,ensure_ascii=False,indent=2)
+          print('THREE_CANONICAL_TECHNICAL_GAPS_FIXED',json.dumps({'pages':len(results),'topics':[r['topic'] for r in results]},ensure_ascii=False),flush=True)
+          PY
+          python3 -u /tmp/safety_content_retention.py
+      - name: Keep original article text and exact edits for rollback
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-egypt-three-consolidated-canonical-technical-restoration-originals
+          path: reports/
+          if-no-files-found: warn
+          retention-days: 90
