@@ -143,3 +143,5 @@ jobs:
           path: a3tal-redirected-393-internal-links-20261121.json
           if-no-files-found: ignore
           retention-days: 30
+
+# After live noindex-filter navigation patch: rerun all 393-source internal-link checks.
