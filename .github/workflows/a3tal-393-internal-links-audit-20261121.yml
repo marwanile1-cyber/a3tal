@@ -1,0 +1,145 @@
+name: A3tal redirected internal link inventory 20261121
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/a3tal-393-internal-links-audit-20261121.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: a3tal-model-merge-backups-20261121
+          run-id: 44908933064
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: artifacts/pilot
+      - uses: actions/download-artifact@v4
+        with:
+          name: a3tal-sportage-merge-backups-20261121
+          run-id: 44909168278
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: artifacts/sportage
+      - uses: actions/download-artifact@v4
+        with:
+          name: a3tal-kia-hyundai-merge-backups-20261121
+          run-id: 44909326151
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: artifacts/other
+      - uses: actions/download-artifact@v4
+        with:
+          name: a3tal-next-four-merge-backups-20261121
+          run-id: 44910379524
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: artifacts/nextfour
+      - uses: actions/download-artifact@v4
+        with:
+          name: a3tal-fourmore-merge-backups-20261121
+          run-id: 44910678907
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: artifacts/fourmore
+      - uses: actions/download-artifact@v4
+        with:
+          name: a3tal-t2-frontera-boreal-backups-20261121
+          run-id: 44911351892
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: artifacts/t2
+      - uses: actions/download-artifact@v4
+        with:
+          name: a3tal-kia-mg-merge-backups-20261121
+          run-id: 44911480279
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: artifacts/kiamg
+      - uses: actions/download-artifact@v4
+        with:
+          name: a3tal-nissan-renault-merge-backups-20261121
+          run-id: 44911771853
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: artifacts/nissanrenault
+      - uses: actions/download-artifact@v4
+        with:
+          name: a3tal-last-13-models-merge-backups-20261121
+          run-id: 44912070039
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: artifacts/final13
+      - name: Check 393 redirected child URLs within indexable posts and model hubs
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat >/tmp/check_internal_393.py <<'PY'
+          import json,urllib.request,urllib.parse,html,re,xml.etree.ElementTree as ET,collections,os
+          ROOT="https://a3tal.com"
+          sources=[
+              "artifacts/pilot/a3tal-model-consolidation-result-20261121.json",
+              "artifacts/sportage/a3tal-sportage-merge-result-20261121.json",
+              "artifacts/other/a3tal-kia-hyundai-merge-result-20261121.json",
+              "artifacts/nextfour/a3tal-next-four-merge-result-20261121.json",
+              "artifacts/fourmore/a3tal-fourmore-merge-result-20261121.json",
+              "artifacts/t2/a3tal-t2-frontera-boreal-result-20261121.json",
+              "artifacts/kiamg/a3tal-kia-mg-merge-result-20261121.json",
+              "artifacts/nissanrenault/a3tal-nissan-renault-merge-result-20261121.json",
+              "artifacts/final13/a3tal-last-13-models-merge-result-20261121.json"
+          ]
+          items=[]
+          for f in sources:
+            with open(f,encoding="utf8") as fp:items+=json.load(fp)
+          if len(items)!=393:raise SystemExit("Need all 393 recorded sources; found "+str(len(items)))
+          def norm(url):
+             return urllib.parse.unquote(urllib.parse.urlsplit(html.unescape(url)).path).rstrip("/")
+          mapping={norm(x["source"]):x["target"] for x in items}
+          def fetch(u):
+             q=urllib.request.Request(u,headers={"User-Agent":"Mozilla/5.0 (A3tal internal links audit)","Accept":"application/json,text/xml,*/*"})
+             with urllib.request.urlopen(q,timeout=38) as r:return r.read().decode("utf8","replace")
+          def smap(path):
+             xml=ET.fromstring(fetch(ROOT+"/"+path))
+             out=set()
+             for el in xml:
+               if el.tag.split("}")[-1]=="url":
+                 for v in el:
+                   if v.tag.split("}")[-1]=="loc" and v.text:out.add(norm(v.text))
+             return out
+          active_posts=smap("post-sitemap.xml")
+          active_refs=smap("a3_car_ref-sitemap.xml")
+          findings=[];scanned={}
+          for typ,url,keep in [
+            ("posts",ROOT+"/wp-json/wp/v2/posts",active_posts),
+            ("references",ROOT+"/wp-json/wp/v2/car-reference-records",active_refs)
+          ]:
+             seen=0
+             for page in range(1,15):
+               u=url+"?per_page=100&page="+str(page)+"&_fields=id,link,title,content,slug"
+               try: data=json.loads(fetch(u))
+               except Exception as ex:
+                  if page==1:raise
+                  break
+               if not data:break
+               for post in data:
+                  if norm(post.get("link","")) not in keep:continue
+                  seen+=1
+                  t=post.get("content",{}).get("rendered","")
+                  # count real clickable href to an old redirected source; ignore plain text
+                  matches=[]
+                  for raw in re.findall(r'\bhref\s*=\s*["\']([^"\']+)["\']',t,flags=re.I):
+                    old=norm(raw)
+                    if old in mapping:matches.append({"original_link":raw,"expected_target":mapping[old]})
+                  if matches:findings.append({"type":typ,"post_id":post["id"],"url":post.get("link"),"matches":matches})
+               if len(data)<100:break
+             scanned[typ]=seen
+          outcome={"source_count":len(items),"scanned":scanned,"articles_with_old_links":len(findings),"old_link_occurrences":sum(len(v["matches"]) for v in findings),"pages":findings}
+          with open("a3tal-redirected-393-internal-links-20261121.json","w",encoding="utf8") as f:json.dump(outcome,f,ensure_ascii=False,indent=2)
+          print("INTERNAL_LINK_AUDIT",json.dumps({k:v for k,v in outcome.items() if k!="pages"},ensure_ascii=False),flush=True)
+          print("OLD_HREF_PAGES",json.dumps(findings[:70],ensure_ascii=False),flush=True)
+          PY
+          python3 /tmp/check_internal_393.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: a3tal-redirected-393-internal-links-20261121
+          path: a3tal-redirected-393-internal-links-20261121.json
+          if-no-files-found: ignore
+          retention-days: 30
