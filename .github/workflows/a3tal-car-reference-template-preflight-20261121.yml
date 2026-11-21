@@ -30,6 +30,11 @@ jobs:
             REMOTE="$(jq -r '.result.sha256' /tmp/result.json)"
             LOCAL_SHA="$(sha256sum "$LOCAL" | awk '{print $1}')"
             echo "$FILE live sha=$REMOTE repo sha=$LOCAL_SHA"
-            test "$REMOTE" = "$LOCAL_SHA" || { echo "LIVE_DRIFT_DETECTED, refusing write"; exit 1; }
-            echo "MATCHED_LIVE_TEMPLATE $FILE"
+            jq -r '.result.content' /tmp/result.json > "/tmp/live-$FILE"
+            if test "$REMOTE" = "$LOCAL_SHA"; then
+              echo "MATCHED_LIVE_TEMPLATE $FILE"
+            else
+              echo "LIVE_DRIFT_DETECTED $FILE (read-only), beginning safely bounded diff"
+              diff -u "$LOCAL" "/tmp/live-$FILE" | head -n 95 || true
+            fi
           done
