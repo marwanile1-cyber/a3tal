@@ -1,0 +1,84 @@
+name: A3tal fix duplicate brake fluid posts 20261121
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/a3tal-merge-duplicate-brake-fluid-20261121.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  consolidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Preserve original content and consolidate duplicate DOT3 DOT4 DOT5.1 posts
+        shell: bash
+        env:
+          A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+        run: |
+          set -euo pipefail
+          cat >/tmp/merge_brakes.py <<'PY'
+          import os,json,subprocess,urllib.parse,re
+          BASE="https://a3tal.com"
+          API=BASE+"/wp-json/a3tal-direct/v1"
+          KEY=os.getenv("A3TAL_API_KEY")
+          if not KEY:raise SystemExit("Missing bridge key; no changes")
+          primary_id=84390
+          old_id=80404
+          primary_path="/dot3-dot4-dot51-brake-fluid-differences/"
+          old_path="/تغيير-زيت-الفرامل-تنظيف-الدورة/"
+          def call(path,body=None):
+             cmd=["curl","--silent","--show-error","--fail","--retry","2","--retry-all-errors","--retry-delay","2","--connect-timeout","15","--max-time","85","-H","X-A3tal-Key: "+KEY,"-H","Authorization: Bearer "+KEY]
+             data=None
+             if body is not None:
+                 cmd+=["-X","POST","-H","Content-Type: application/json","--data-binary","@-"]
+                 data=json.dumps(body,ensure_ascii=False).encode("utf-8")
+             cmd.append(API+path)
+             p=subprocess.run(cmd,input=data,capture_output=True,timeout=100)
+             if p.returncode:raise SystemExit("Bridge failed: "+p.stderr.decode("utf-8","replace")[:250])
+             result=json.loads(p.stdout.decode("utf-8"))
+             if result.get("ok") is False:raise SystemExit("Bridge error result: "+str(result)[:200])
+             return result
+          def norm(u):return urllib.parse.unquote(urllib.parse.urlsplit(u).path).rstrip("/")
+          main=call("/post/"+str(primary_id))
+          old=call("/post/"+str(old_id))
+          if any(x.get("status")!="publish" or x.get("type")!="post" for x in (main,old)):
+             raise SystemExit("Refusing nonpublished non-post")
+          if norm(main.get("link",""))!=norm(primary_path) or norm(old.get("link",""))!=norm(old_path):
+             raise SystemExit("Exact page identity mismatch")
+          if len(main.get("content","").split())<900 or len(old.get("content","").split())<180:
+             raise SystemExit("Content scope differs; refusing merge")
+          marker="A3TAL-BRAKE-FLUID-CONSOLIDATED-20261121"
+          if marker in main["content"]:raise SystemExit("Already merged")
+          if not ("DOT 5.1" in main["content"] and "DOT 4" in main["content"]):
+             raise SystemExit("Main article does not cover same intent")
+          backup={"main":main,"old":old,"destination":BASE+primary_path}
+          with open("brake-fluid-merge-backup-20261121.json","w",encoding="utf-8") as f:json.dump(backup,f,ensure_ascii=False,indent=2)
+          supplement='''\n<!-- A3TAL-BRAKE-FLUID-CONSOLIDATED-20261121 -->\n<h2>هل تغيير سائل الفرامل يزيد قوة الفرملة بنسبة ثابتة؟</h2>\n<p>لا توجد نسبة مضمونة مثل 30% لتحسن قوة الفرملة بمجرد تغيير السائل. الغرض من استبدال السائل المتدهور هو إعادة منظومة الفرامل إلى ظروف التشغيل المناسبة وفق تعليمات المصنع، وليس زيادة قوتها عن التصميم الأصلي. إذا استمر ضعف الفرملة أو إحساس الدواسة الإسفنجي، فيجب فحص الهواء أو التسرب أو الأعطال الميكانيكية أو الإلكترونية، ولا يجوز استخدام السيارة مع وجود خلل مؤثر في الكبح.</p>\n'''
+          text=main["content"]
+          insert=re.search(r'<h2\b[^>]*>.*?أخطاء شائعة.*?</h2>',text,re.I|re.S)
+          if insert:
+             content=text[:insert.start()]+supplement+text[insert.start():]
+          else:content=text+supplement
+          updated=call("/update-post",{"id":primary_id,"expected_modified_gmt":main["modified_gmt"],"content":content})
+          verify=call("/post/"+str(primary_id))
+          if marker not in verify.get("content",""):
+             raise SystemExit("Primary content not verified; do not redirect")
+          call("/admin",{"op":"post_meta_set","post_id":old_id,"meta":{"_yoast_wpseo_meta-robots-noindex":"1","_yoast_wpseo_canonical":BASE+primary_path}})
+          fresh=call("/post/"+str(old_id))
+          call("/update-post",{"id":old_id,"expected_modified_gmt":fresh["modified_gmt"]})
+          redirect=call("/redirect",{"source_path":old_path,"target_url":BASE+primary_path,"status_code":301})
+          if not redirect.get("ok") or int(redirect.get("status_code",0))!=301:
+             raise SystemExit("Redirect not confirmed")
+          call("/admin",{"op":"cache_flush"})
+          print("BRAKE_FLUID_REDIRECT_SAVED",json.dumps({"from":BASE+old_path,"to":BASE+primary_path,"status":301,"old_id":old_id,"primary_id":primary_id},ensure_ascii=False),flush=True)
+          PY
+          python3 /tmp/merge_brakes.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: a3tal-brake-fluid-merge-backup-20261121
+          path: brake-fluid-merge-backup-20261121.json
+          if-no-files-found: ignore
+          retention-days: 90
