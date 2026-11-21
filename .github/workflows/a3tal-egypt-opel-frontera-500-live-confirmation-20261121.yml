@@ -1,0 +1,49 @@
+name: A3tal Egypt - verify Opel Frontera car model transient 500 with repeated requests
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/a3tal-egypt-opel-frontera-500-live-confirmation-20261121.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Probe Opel Frontera public model multiple times with cache variation and protect sitemap canonical
+        run: |
+          set -euo pipefail
+          python3 -m pip install -q requests beautifulsoup4
+          cat >/tmp/probe_model.py <<'PY'
+          import requests,json,time,xml.etree.ElementTree as ET,urllib.parse
+          from bs4 import BeautifulSoup
+          B='https://a3tal.com'
+          targets=['/cars/opel-frontera-egypt/','/opel-frontera-price-specs-egypt/','/cars-for-sale/']
+          s=requests.Session()
+          out=[]
+          for t in targets:
+            for i in range(5):
+              try:
+                r=s.get(B+t,allow_redirects=False,timeout=45,
+                  params={'a3_fix_verify':'20261121-'+str(i)},
+                  headers={'User-Agent':'Mozilla/5.0 (compatible; A3tal-Egypt-HTTP-500-Retest/1.0)','Accept':'text/html','Cache-Control':'no-cache'})
+                soup=BeautifulSoup(r.text,'html.parser')
+                can=soup.find('link',rel='canonical')
+                robots=soup.find('meta',attrs={'name':'robots'})
+                o={'path':t,'attempt':i,'status':r.status_code,'bytes':len(r.content),
+                   'canonical':can.get('href') if can else None,
+                   'robots':robots.get('content') if robots else None,
+                   'title':soup.title.get_text(' ',strip=True) if soup.title else '',
+                   'cache':r.headers.get('x-litespeed-cache'),'cf_cache':r.headers.get('cf-cache-status')}
+                out.append(o)
+                print('LIVE_MODEL_RETEST',json.dumps(o,ensure_ascii=False),flush=True)
+              except Exception as e:
+                out.append({'path':t,'attempt':i,'error':str(e)})
+              time.sleep(.3)
+          root=ET.fromstring(s.get(B+'/a3_car-sitemap.xml',timeout=35).content)
+          listed={v.text for p in root for v in p if v.tag.split('}')[-1]=='loc' and v.text}
+          print('MODEL_SITEMAP_CHECK',json.dumps({'model_in_sitemap':B+'/cars/opel-frontera-egypt/' in listed,'all':len(listed),
+            'statuses':{k:[x.get('status') for x in out if x.get('path')==k] for k in targets}},ensure_ascii=False),flush=True)
+          PY
+          python3 -u /tmp/probe_model.py
