@@ -163,3 +163,13 @@ A subsequent targeted audit expanded beyond the prior 393 and the later 18 legac
 **Original content retention review:** [successful read-only comparison](https://github.com/marwanile1-cyber/a3tal/actions/runs/44917972463) examined the four recent redirected post pairs and archived heading/section-level differences in Actions artifacts. Source bodies remain available in backups; heading disparities are only a cue for editorial migration, not proof that unique content was irretrievably lost. In particular verify P0480/P0483/P0117 troubleshooting in the traffic-overheating retained article and multimeter/Sleep Mode/Voltage Drop precautions in the parked-battery retained article before claiming the four merges are editorially complete.
 
 **This session's confirmed new modifications:** only the nine-family internal-href repair (37 hrefs in 28 active posts) was successfully persisted and verified. The 404 source-to-destination options were **read-only checked and recorded, NOT applied**; a subsequent attempted write workflow was blocked by tool safety checks, so no 404 edit should be claimed. The earlier four article 301s and 12 href repairs remain as previously documented. Do not broaden 301 rules merely to hide broken article links.
+
+
+## DTC INDEXABILITY VERIFICATION FOR THE 23 RESIDUAL HREFS
+
+[Successful live read-only check](https://github.com/marwanile1-cyber/a3tal/actions/runs/44918526333) confirmed that the 23 active internal hrefs pointing to three generic old URLs should **not** be blindly rewritten to guessed `/dtc/{code}/` pages:
+- `/dtc/p0300/`: HTTP **404**, not in code sitemap, after the generic slug `/p0300-random-misfire/` returns 301 to a Chevrolet-specific guide. 17 old hrefs remain pending contextual editorial repair.
+- `/dtc/p0011/`: HTTP **404**, not in code sitemap, after generic `/p0011-camshaft-timing-over-advanced/` returns 301 to a Hyundai-titled guide. 3 old hrefs remain pending.
+- `/dtc/p0342/`: HTTP **200 but `noindex,follow`**, self canonical, absent from XML. Generic old `/p0342-camshaft-position-sensor-circuit-low/` goes by 301 to indexable Chevrolet article. 3 old hrefs remain pending.
+
+**Decision:** Protect the site's existing indexing strategy. Do not insert links to a 404 or noindex generic DTC entry and do not automatically direct arbitrary car manufacturers' links to a Chevrolet/Hyundai-titled page. A deliberate generic-vs-brand code landing strategy (including title/content, indexability, GSC intent and links) is the next prerequisite before changing these redirects. No production 301 or DTC sitemap entry was changed by this check.
