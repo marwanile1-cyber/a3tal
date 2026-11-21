@@ -129,3 +129,37 @@ Confirmed sitewide active-post semantic review and targeted fixes **within Egypt
 - The standalone GSC worksheets from 15 November 2026 show aggregate keywords and URLs separately, not query-page-date rows. Historical 92-day clicks listed above guide which primary to retain but **do not prove recent impressions or diagnose Google's November update**. The connected Semrush `resource_organic` report returned `API UNITS BALANCE IS ZERO` on this audit; GSC Wizard returned `payment_required` earlier. No claim of complete live Google query cannibalization is possible without a suitable query/page/date export.
 
 **Current confirmed totals:** 393 original model facts redirect correctly to 52 retained hubs, plus the previously verified 14 legacy redirects, plus 4 additional *new* same-intent article redirects in this follow-up. These are different groups; do not label all of them as part of the `393`. 12 internal hrefs to the four newest retired URLs were repaired. Four original source articles are archived/redirected, not destroyed, and their prechange snapshots are in the respective Actions artifacts. Only further precise evidence should justify additional 301 rules.
+
+
+## SECOND-PASS LIVE INTERNAL HREF AUDIT — 21 November 2026
+
+A subsequent targeted audit expanded beyond the prior 393 and the later 18 legacy rules. The [read-only all-active-article internal-href report](https://github.com/marwanile1-cyber/a3tal/actions/runs/44918025205) inspected 631 sitemap-listed WordPress posts, 10 pages, and 62 sitemap-listed car-reference records (post-sitemap 632 includes the homepage); unknown links from other custom types remain outside its scope.
+
+**Before latest repairs** 46 distinct internally linked paths were absent from the eight enumerated sitemaps. Live network checks returned: 16 direct HTTP 200 paths, **12 redirecting paths with 60 total stale internal hrefs**, and **18 HTTP 404 paths referenced 25 times**. Direct 200 URLs absent from a sitemap are not automatically broken; redirect and missing status are concrete.
+
+**Nine safe redirect-source families corrected:** [successful live A3tal Direct Bridge run 44918185898](https://github.com/marwanile1-cyber/a3tal/actions/runs/44918185898): 9 historical 301 source paths with semantically appropriate current targets and verified live HTTP 301→200, self canonicals and indexability. A total of **37 old hrefs were replaced in 28 active Egypt posts**, all 28 posts verified after the write and originals backed up. Main source clusters:
+- `/obd2-freeze-frame-data-guide/` (11 hrefs) and `/freeze-frame-obd2-diagnostic-data/` (1) → `/freeze-frame-obd2/`.
+- `/obd2-live-data-reading-guide/` (11) and `/live-data-obd2-scanner-readings-guide/` (1) → `/live-data-obd2/`.
+- `/engine-overheating-causes-solutions/` (9) → the canonical indexed generic car-engine overheating guide `/ما-هي-الأسباب-الشائعة-لسخونة-محرك-السي/`.
+- Another 4 one-href equivalent links were fixed: oil consumption without visible leak, Geely Starray maintenance, Opel P03A3 to canonical code, and P0171 to its canonical diagnostic guide.
+
+**Three NOT SAFE for blind target link rewrite:** 23 remaining old hrefs across `/p0300-random-misfire/` (17), `/p0011-camshaft-timing-over-advanced/` (3) and `/p0342-camshaft-position-sensor-circuit-low/` (3). These three redirects resolve to Chevrolet, Hyundai and Chevrolet articles respectively, although the source anchors can refer to generic P0300/P0011/P0342 OBD-II codes and even from other manufacturers' posts. Redirects technically return a success status but manufacturer-specific targeting is not proven appropriate for all linking contexts; do not rewrite generic anchors to the brand-specific destinations en masse. Preserve existing rules until code-specific global page intent and GSC query/page evidence are verified; potential brand/general intent split is a distinct SEO priority.
+
+**Broken-link inventory** (from the same read-only run): 18 distinct 404 paths linked 25 times. A [separate read-only contextual anchor + destination QA run](https://github.com/marwanile1-cyber/a3tal/actions/runs/44918320054) inspected exact in-article anchor text and independently validated live 200, self-canonical, indexable and in-sitemap destinations for 11 mapping candidates. These are **verified candidates, not applied repairs**:
+1. `/engine-oil-change-cost-prices-egypt-2026/` (3 anchors, all specifically describing oil selection/change) → `/engine-oil-change-guide-egypt-2025/`.
+2. `/toyota-cvt-fluid-fe-vs-tc/` (2) → `/toyota-cvt-fluid-price-egypt-fe-vs-tc/`.
+3. `/cars-prices-egypt-2026-local-imported/` (1; anchor actually mentions *economical* new cars) → the more precise `/new-economical-car-prices-egypt-2026-encyclopedia/`, not the broader car-prices hub.
+4. `/check-injection-renault-causes-solutions/` (1) → `/renault-fault-codes-check-injection-solution/` (must preserve the explicit Check Injection anchor; destination contains that section).
+5. `/parasitic-battery-drain-test/` (1) → `/car-battery-drains-overnight-while-parked-parasitic-draw-diagnosis/`.
+6. `/toyota-corolla-maintenance-schedule-egypt/` (1) → `/toyota-corolla-maintenance-prices-guide-2026/`.
+7. `/أسباب-اهتزاز-السرعات-العا/` (1) → `/رجة-في-السيارة-على-سرعة-80-أو-100-أو-120/`.
+8. `/أسعار-قطع-غيار-أوبل-انسجنيا-2025-دليلك-ال/` (1, spelling variant) → `/أسعار-قطع-غيار-أوبل-انسيجنيا-2025-دليلك-ال/`.
+9. `/أعراض-تلف-افتيس-الأوتوماتيك/` (1, typo) → `/الدليل-الشامل-أعراض-تلف-الفتيس-الأوتو/`.
+10. `/عالم-أكواد-أعطال-السيارات-dtc-موسوعة-شامل/` (1) → `/dtc/` indexable code archive.
+11. `/أعطال-طرمبة-البنزين/` (1; broad fuel pump title) → `/fuel-pump-low-pressure-how-to-test-before-replacement/` covers pressure diagnosis but is narrower. **Hold pending manual contextual adjustment** rather than pretending both have identical breadth.
+
+**Unmatched broken intent paths:** `/electric-car-problems-egypt-guide/` (3), `/كورس-كهرباء-السيارات-دليلك-للاحتراف-م/` (3), `/hyundai-tucson-engine-gearbox-repair-costs/` (1), `/hyundai-tucson-2026-2027-used-price-buying-guide-egypt/` (1), `/car-ac-hot-at-idle-cold-driving-causes/` (1), `/tire-rotation-service-cost-egypt-2026/` (1), `/لمبات-أعطال-السيارات-ومعانيها-بالصور/` (1). Leave these untreated until a real matching page exists, a justified 301 is verified, or the original article anchor can be safely rewritten without dead links.
+
+**Original content retention review:** [successful read-only comparison](https://github.com/marwanile1-cyber/a3tal/actions/runs/44917972463) examined the four recent redirected post pairs and archived heading/section-level differences in Actions artifacts. Source bodies remain available in backups; heading disparities are only a cue for editorial migration, not proof that unique content was irretrievably lost. In particular verify P0480/P0483/P0117 troubleshooting in the traffic-overheating retained article and multimeter/Sleep Mode/Voltage Drop precautions in the parked-battery retained article before claiming the four merges are editorially complete.
+
+**This session's confirmed new modifications:** only the nine-family internal-href repair (37 hrefs in 28 active posts) was successfully persisted and verified. The 404 source-to-destination options were **read-only checked and recorded, NOT applied**; a subsequent attempted write workflow was blocked by tool safety checks, so no 404 edit should be claimed. The earlier four article 301s and 12 href repairs remain as previously documented. Do not broaden 301 rules merely to hide broken article links.
