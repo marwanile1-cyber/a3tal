@@ -1,4 +1,4 @@
-name: A3tal Egypt - clean internal hrefs to 3 new 301 sources
+name: A3tal Egypt - clean internal hrefs to 4 exact-intent 301 sources
 on:
   push:
     branches: [main]
@@ -26,7 +26,8 @@ jobs:
           changes={
             '/humming-noise-increases-with-speed-wheel-bearing-tires-gearbox/':'/wheel-bearing-humming-noise-diagnosis/',
             '/car-overheats-in-traffic-cools-when-driving-fan-thermostat-diagnosis/':'/car-overheats-in-traffic-cools-while-driving/',
-            '/car-battery-parasitic-draw-diagnosis/':'/car-battery-drains-overnight-while-parked-parasitic-draw-diagnosis/'
+            '/car-battery-parasitic-draw-diagnosis/':'/car-battery-drains-overnight-while-parked-parasitic-draw-diagnosis/',
+            '/opel-insignia-spare-parts-prices-guide-egypt-2026/':'/أسعار-قطع-غيار-أوبل-انسيجنيا-2025-دليلك-ال/'
           }
           def norm(u):return urllib.parse.unquote(urllib.parse.urlsplit(html.unescape(u)).path).rstrip('/')+'/'
           def fetch(u):
@@ -68,7 +69,7 @@ jobs:
               if n in changes:counts[n]=counts.get(n,0)+1
             if counts:found.append({'id':p['id'],'url':p['link'],'counts':counts})
           print('CLEANUP_SCAN',json.dumps({'sitemap_articles':len(active),'rest_posts':len(posts),'sources':found},ensure_ascii=False),flush=True)
-          with open('reports/a3tal-egypt-3-old301-preflight-sources.json','w',encoding='utf-8') as f:json.dump(found,f,ensure_ascii=False,indent=2)
+          with open('reports/a3tal-egypt-4-old301-preflight-sources.json','w',encoding='utf-8') as f:json.dump(found,f,ensure_ascii=False,indent=2)
           backups=[];done=[]
           for item in found:
             obj=bridge('/post/'+str(item['id']))
@@ -90,7 +91,7 @@ jobs:
             if count[0]>20:raise RuntimeError('Suspicious amount of href edits '+str(item['id']))
             if not count[0]:continue
             backups.append({'id':item['id'],'url':obj['link'],'original_content':raw,'modified_gmt':obj['modified_gmt']})
-            with open('reports/a3tal-egypt-3-old301-backups.json','w',encoding='utf-8') as f:json.dump(backups,f,ensure_ascii=False,indent=2)
+            with open('reports/a3tal-egypt-4-old301-backups.json','w',encoding='utf-8') as f:json.dump(backups,f,ensure_ascii=False,indent=2)
             resp=bridge('/update-post',{'id':item['id'],'expected_modified_gmt':obj['modified_gmt'],'content':new})
             if resp.get('id')!=item['id']:raise RuntimeError('Unexpected update response')
             check=bridge('/post/'+str(item['id']))
@@ -104,7 +105,7 @@ jobs:
           outcome={'scanned_sitemap_articles':len(active),'posts_with_raw_rendered_old_hrefs':len(found),
             'updated_posts':len(done),'updated_hrefs':sum(r['hrefs_fixed'] for r in done),
             'updates':done,'advanced_content_skips':len(found)-len(done)}
-          with open('reports/a3tal-egypt-3-old301-cleanup-summary.json','w',encoding='utf-8') as f:json.dump(outcome,f,ensure_ascii=False,indent=2)
+          with open('reports/a3tal-egypt-4-old301-cleanup-summary.json','w',encoding='utf-8') as f:json.dump(outcome,f,ensure_ascii=False,indent=2)
           print('CLEANUP_SUMMARY',json.dumps(outcome,ensure_ascii=False),flush=True)
           PY
           python3 -u /tmp/run.py
@@ -112,7 +113,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: a3tal-egypt-three-new301-internal-links-20261121
+          name: a3tal-egypt-four-new301-internal-links-20261121
           path: reports/
           if-no-files-found: warn
           retention-days: 90
