@@ -16,7 +16,7 @@ jobs:
           set -euo pipefail
           python3 -m pip install -q requests beautifulsoup4
           mkdir -p reports
-          cat >/tmp/inspect.py <<'PY'
+          cat >/tmp/dtc_intent_audit.py <<'PY'
           import json,requests,urllib.parse,xml.etree.ElementTree as ET,re
           from bs4 import BeautifulSoup
           BASE="https://a3tal.com"
@@ -70,7 +70,7 @@ jobs:
           print('REDIRECT_DESTINATIONS',json.dumps(dests,ensure_ascii=False),flush=True)
           print('CODE_POSTS',json.dumps(records,ensure_ascii=False),flush=True)
           PY
-          python3 -u /tmp/inspect.py
+          python3 -u /tmp/dtc_intent_audit.py
       - name: Save code intent analysis
         if: always()
         uses: actions/upload-artifact@v4
