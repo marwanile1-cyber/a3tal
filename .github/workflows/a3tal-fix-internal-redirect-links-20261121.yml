@@ -1,0 +1,101 @@
+name: A3tal repair direct internal links to 301 targets 20261121
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/a3tal-fix-internal-redirect-links-20261121.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Update only verified link hrefs in nine live articles with WordPress revision checks
+        shell: bash
+        env:
+          A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+        run: |
+          set -euo pipefail
+          cat > /tmp/fix_a3tal_links.py <<'PY'
+          import urllib.request,urllib.error,urllib.parse,json,os,re,html,time
+          base="https://a3tal.com"
+          api=base+"/wp-json/a3tal-direct/v1"
+          if not os.environ.get("A3TAL_API_KEY"):raise SystemExit("Missing key")
+          mappings={
+          "دليلك-الشامل-أفضل-مراكز-خدمة-غبور-أوتو":"/ghabbour-auto-maintenance-booking-numbers-branches/",
+          "مركز-خدمة-منصور-شيفروليه-الرئيسي-في-ال":"/الدليل-الشامل-أرقام-مراكز-خدمة-المنصو/",
+          "mansour-chevrolet-maintenance-booking-numbers-branches":"/الدليل-الشامل-أرقام-مراكز-خدمة-المنصو/",
+          "jetour-t2-maintenance-schedule-spare-parts":"/jetour-t2-maintenance-schedule-egypt/",
+          "haval-v7-2027-price-specs-egypt":"/haval-v7-price-specs-egypt/",
+          "radiator-internal-blockage-flow-temperature-test-2":"/radiator-internal-blockage-flow-temperature-test/",
+          "الدليل-الشامل-أرقام-مراكز-خدمإ-المنصو":"/الدليل-الشامل-أرقام-مراكز-خدمة-المنصو/",
+          "الدليل-الشامل-أرقام-مراكز-خدمإ-المنصور":"/الدليل-الشامل-أرقام-مراكز-خدمة-المنصو/",
+          "الدليل-الدليل-الشامل-أرقام-مراكز-خدمة-المنصور":"/الدليل-الشامل-أرقام-مراكز-خدمة-المنصو/",
+          "مراكز-خدمة-جيتور-ايمعتمدة-في-مصر":"/مراكز-خدمة-جيتور-المعتمدة-في-مصر/",
+          "مراكز-خدمة-جيتوش-المعتمدة-في-مصر":"/مراكز-خدمة-جيتور-المعتمدة-في-مصر/",
+          "دليلك-الشامل-أفضل-مراكز-خدمإ-غبور-أوتو":"/ghabbour-auto-maintenance-booking-numbers-branches/",
+          "صيانة-سيارام-سيارات-في-حدائق-االأهرام-دليلك-ال":"/صيانة-سيارات-في-حدائق-الأهرام-دليلك-ال/"
+          }
+          # Selected from read-only crawl of all 650 posts and 13 pages.
+          ids=[84435,81203,81139,81102,80602,80599,80557,80459,79964]
+          expr=re.compile(r'(?P<prefix>\bhref\s*=\s*)(?P<quote>["\'])(?P<url>[^"\']+)(?P=quote)',re.I)
+          def call(path,method="GET",payload=None):
+              h={"X-A3tal-Key":os.environ["A3TAL_API_KEY"],"Authorization":"Bearer "+os.environ["A3TAL_API_KEY"],"Accept":"application/json"}
+              data=None
+              if method=="POST":
+                data=json.dumps(payload,ensure_ascii=False).encode();h["Content-Type"]="application/json"
+              q=urllib.request.Request(api+path,data=data,headers=h,method=method)
+              with urllib.request.urlopen(q,timeout=75) as f:return json.loads(f.read().decode("utf8"))
+          changed=[];skipped=[]
+          for postid in ids:
+              obj=call("/post/"+str(postid))
+              if obj.get("status")!="publish" or obj.get("type")!="post":
+                skipped.append([postid,"not-public-post"]);continue
+              original=obj.get("content") or ""
+              if re.search(r'<(?:script|style|iframe|svg|form|object)\b',original,re.I):
+                skipped.append([postid,"advanced-HTML: manual check"]);continue
+              count=[0]
+              def rewrite(m):
+                  try:
+                    raw=html.unescape(m.group("url"))
+                    v=urllib.parse.urlsplit(raw)
+                    if v.hostname not in (None,"a3tal.com","www.a3tal.com"):return m.group(0)
+                    if v.hostname is None and not raw.startswith("/"):return m.group(0)
+                    key=urllib.parse.unquote(v.path).strip("/")
+                    target=mappings.get(key)
+                    if not target:return m.group(0)
+                    count[0]+=1
+                    return m.group("prefix")+m.group("quote")+html.escape(base+target,quote=True)+m.group("quote")
+                  except Exception:return m.group(0)
+              newer=expr.sub(rewrite,original)
+              if newer==original:
+                skipped.append([postid,"no-raw-href-match"]);continue
+              if count[0]>25:raise SystemExit("Unexpected edit count, refuse post "+str(postid))
+              out=call("/update-post","POST",{"id":postid,"expected_modified_gmt":obj["modified_gmt"],"content":newer})
+              if out.get("id")!=postid:raise SystemExit("Bad response for post "+str(postid))
+              saved=call("/post/"+str(postid))
+              if saved.get("content")!=newer:
+                print("WARN WordPress sanitization changed some markup on post",postid,flush=True)
+              remaining=[]
+              for m in expr.finditer(saved.get("content") or ""):
+                 u=urllib.parse.urlsplit(html.unescape(m.group("url")))
+                 if urllib.parse.unquote(u.path).strip("/") in mappings:remaining.append(u.path)
+              if remaining:raise SystemExit("Unrepaired old href in post "+str(postid))
+              changed.append({"post_id":postid,"rewritten_href_count":count[0]})
+              print("REPAIRED_INTERNAL_LINK",postid,count[0],flush=True)
+              time.sleep(2)
+          result={"updated":changed,"skipped":skipped}
+          with open("a3tal-internal-link-fixes-20261121.json","w",encoding="utf8") as f:json.dump(result,f,ensure_ascii=False,indent=2)
+          print("LINK_REPAIR_SUMMARY",json.dumps(result,ensure_ascii=False),flush=True)
+          PY
+          python3 /tmp/fix_a3tal_links.py
+      - name: Save deterministic audit of all changed IDs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-internal-link-fix-results-20261121
+          path: a3tal-internal-link-fixes-20261121.json
+          if-no-files-found: ignore
+          retention-days: 30
