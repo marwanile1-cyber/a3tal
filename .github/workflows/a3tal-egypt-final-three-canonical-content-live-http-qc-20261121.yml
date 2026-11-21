@@ -1,0 +1,59 @@
+name: A3tal Egypt - verify three retained merged guides live HTML, robots and 301s
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/a3tal-egypt-final-three-canonical-content-live-http-qc-20261121.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Test live pages contain unique safety sections, self-canonical indexable 200 and retired source 301
+        run: |
+          set -euo pipefail
+          python3 -m pip install -q requests beautifulsoup4
+          mkdir -p reports
+          cat >/tmp/live_check.py <<'PY'
+          import json,requests,urllib.parse,xml.etree.ElementTree as ET
+          from bs4 import BeautifulSoup
+          base='https://a3tal.com'
+          maps=[
+            ('wheel', '/humming-noise-increases-with-speed-wheel-bearing-tires-gearbox/','/wheel-bearing-humming-noise-diagnosis/', ['العجلة وهي مرفوعة','الكاليبر']),
+            ('overheating','/car-overheats-in-traffic-cools-when-driving-fan-thermostat-diagnosis/','/car-overheats-in-traffic-cools-while-driving/',['P0480','P0483','P0117']),
+            ('battery','/car-battery-parasitic-draw-diagnosis/','/car-battery-drains-overnight-while-parked-parasitic-draw-diagnosis/',['Sleep Mode','Voltage Drop'])
+          ]
+          s=requests.Session();s.headers['User-Agent']='A3tal-Egypt-Live-Content-301-QC/1.0'
+          def norm(u):return urllib.parse.unquote(urllib.parse.urlsplit(u).path).rstrip('/')+'/'
+          root=ET.fromstring(s.get(base+'/post-sitemap.xml',timeout=30).content)
+          sitemap={norm(e.text) for url in root for e in url if e.tag.rsplit('}',1)[-1]=='loc' and e.text}
+          out=[]
+          for topic,src,dst,required in maps:
+            r=s.get(base+src,allow_redirects=False,timeout=30)
+            t=s.get(base+dst,allow_redirects=False,timeout=30)
+            soup=BeautifulSoup(t.text,'html.parser')
+            can=soup.find('link',rel='canonical')
+            robots=soup.find('meta',attrs={'name':'robots'})
+            text=soup.get_text(' ',strip=True)
+            ok=r.status_code==301 and norm(r.headers.get('Location',''))==norm(dst) and t.status_code==200 and norm(dst) in sitemap and can and norm(can.get('href',''))==norm(dst) and not (robots and 'noindex' in robots.get('content','')) and all(k in text for k in required)
+            row={'topic':topic,'source_status':r.status_code,'source_location':r.headers.get('Location'),
+              'target_status':t.status_code,'self_canonical':bool(can and norm(can.get('href',''))==norm(dst)),
+              'indexable':not (robots and 'noindex' in robots.get('content','')),
+              'in_post_sitemap':norm(dst) in sitemap,'verified_terms':{k:k in text for k in required},'passed':bool(ok)}
+            out.append(row)
+            print('LIVE_PRIMARY_AND_301',json.dumps(row,ensure_ascii=False),flush=True)
+          with open('reports/egypt-three-301-and-content-live-verification.json','w',encoding='utf8') as f:json.dump(out,f,ensure_ascii=False,indent=2)
+          if not all(x['passed'] for x in out):raise SystemExit('One live canonical/301/section check failed')
+          print('ALL_3_CANONICALS_LIVE_VERIFIED',flush=True)
+          PY
+          python3 -u /tmp/live_check.py
+      - name: Retain live HTTP/SEO test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-egypt-live-html-three-restored-canonical-guides
+          path: reports/
+          if-no-files-found: warn
+          retention-days: 60
