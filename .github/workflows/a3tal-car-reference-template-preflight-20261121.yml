@@ -19,7 +19,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for FILE in single.php archive.php; do
+          for FILE in single.php archive.php a3tal-car-reference.php reference.css; do
             LOCAL="plugin-source/a3tal-car-reference/$FILE"
             DEST="plugins/a3tal-car-reference/$FILE"
             jq -n --arg p "$DEST" '{op:"file_read",path:$p}' >/tmp/read.json
