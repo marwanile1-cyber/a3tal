@@ -1,11 +1,56 @@
 {
-  "deployment_tag": "a3tal-ghabbour-mansour-consolidation-301-2026-11-21",
+  "deployment_tag": "a3tal-20261121-fix-7-historical-404-typo-urls",
   "requests": [
     {
       "method": "POST",
       "path": "/redirect",
       "body": {
-        "source_path": "/دليلك-الشامل-أفضل-مراكز-خدمة-غبور-أوتو/",
+        "source_path": "/الدليل-الشامل-أرقام-مراكز-خدمإ-المنصو/",
+        "target_url": "https://a3tal.com/الدليل-الشامل-أرقام-مراكز-خدمة-المنصو/",
+        "status_code": 301
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/redirect",
+      "body": {
+        "source_path": "/الدليل-الشامل-أرقام-مراكز-خدمإ-المنصور/",
+        "target_url": "https://a3tal.com/الدليل-الشامل-أرقام-مراكز-خدمة-المنصو/",
+        "status_code": 301
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/redirect",
+      "body": {
+        "source_path": "/الدليل-الدليل-الشامل-أرقام-مراكز-خدمة-المنصور/",
+        "target_url": "https://a3tal.com/الدليل-الشامل-أرقام-مراكز-خدمة-المنصو/",
+        "status_code": 301
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/redirect",
+      "body": {
+        "source_path": "/مراكز-خدمة-جيتور-ايمعتمدة-في-مصر/",
+        "target_url": "https://a3tal.com/مراكز-خدمة-جيتور-المعتمدة-في-مصر/",
+        "status_code": 301
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/redirect",
+      "body": {
+        "source_path": "/مراكز-خدمة-جيتوش-المعتمدة-في-مصر/",
+        "target_url": "https://a3tal.com/مراكز-خدمة-جيتور-المعتمدة-في-مصر/",
+        "status_code": 301
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/redirect",
+      "body": {
+        "source_path": "/دليلك-الشامل-أفضل-مراكز-خدمإ-غبور-أوتو/",
         "target_url": "https://a3tal.com/ghabbour-auto-maintenance-booking-numbers-branches/",
         "status_code": 301
       }
@@ -14,17 +59,8 @@
       "method": "POST",
       "path": "/redirect",
       "body": {
-        "source_path": "/مركز-خدمة-منصور-شيفروليه-الرئيسي-في-ال/",
-        "target_url": "https://a3tal.com/الدليل-الشامل-أرقام-مراكز-خدمة-المنصو/",
-        "status_code": 301
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/redirect",
-      "body": {
-        "source_path": "/mansour-chevrolet-maintenance-booking-numbers-branches/",
-        "target_url": "https://a3tal.com/الدليل-الشامل-أرقام-مراكز-خدمة-المنصو/",
+        "source_path": "/صيانة-سيارام-سيارات-في-حدائق-االأهرام-دليلك-ال/",
+        "target_url": "https://a3tal.com/صيانة-سيارات-في-حدائق-الأهرام-دليلك-ال/",
         "status_code": 301
       }
     }
