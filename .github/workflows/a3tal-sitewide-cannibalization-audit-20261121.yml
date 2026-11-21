@@ -93,6 +93,7 @@ jobs:
               for u in all_urls:w.writerow([u,*category(u)])
           print("SUMMARY",json.dumps({k:v for k,v in data.items() if k not in ("all_sitemap_urls","pattern_urls","car_reference_top_clusters")},ensure_ascii=False),flush=True)
           print("TOP_CLUSTER_URLS",json.dumps({k:[path(u) for u in v[:8]] for k,v in list(sorted(cars.items(),key=lambda x:-len(x[1])))[:26]},ensure_ascii=False),flush=True)
+          print("DTC_NOINDEX_CODES_IN_SITEMAP",json.dumps({c:any(path(u)==("dtc/"+c) for u in inventory.get(BASE+"/a3_dtc-sitemap.xml",[])) for c in ["p0335","p0342","p0420","p0011"]}),flush=True)
           with open(os.environ["GITHUB_STEP_SUMMARY"],"a") as f:
               f.write(f"# A3tal live URL inventory\n\nTotal: **{len(all_urls)}**; index maps: **{len(maps)}**.\n\n")
               for k,v in folders.items():f.write(f"* {k}: {v}\n")
