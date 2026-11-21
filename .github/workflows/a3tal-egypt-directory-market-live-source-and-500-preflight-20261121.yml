@@ -1,0 +1,74 @@
+name: A3tal Egypt - live source drift and market 500 preflight for non-post hubs
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/a3tal-egypt-directory-market-live-source-and-500-preflight-20261121.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read live allowed theme files and repeat market HTTP probes without changing site
+        env:
+          A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+        run: |
+          set -euo pipefail
+          python3 -m pip install -q requests beautifulsoup4
+          mkdir -p reports
+          cat >/tmp/check_market.py <<'PY'
+          import os,json,requests,urllib.parse,hashlib,pathlib,time
+          from bs4 import BeautifulSoup
+          B='https://a3tal.com';KEY=os.getenv('A3TAL_API_KEY')
+          if not KEY:raise SystemExit('No key: read-only Bridge check cannot proceed')
+          s=requests.Session();s.headers.update({'X-A3tal-Key':KEY,'Authorization':'Bearer '+KEY,'Accept':'application/json','User-Agent':'A3tal-Egypt-Market-Directory-Live-Preflight/1.0'})
+          paths=[
+            'themes/a3tal-global/ux-improvements-20261031.php',
+            'themes/a3tal-global/archive-a3_listing.php',
+            'themes/a3tal-global/platform-archive-directory.php'
+          ]
+          report={'theme_files':[],'market_probes':[],'link_context':[]}
+          for p in paths:
+            r=s.get(B+'/wp-json/a3tal-direct/v1/admin',params={'op':'file_read','path':p},timeout=80)
+            r.raise_for_status();body=r.json()
+            if not body.get('ok') or 'content' not in body.get('result',{}):
+              raise RuntimeError('Cannot verify live file '+p)
+            live=body['result']['content']
+            source=pathlib.Path('theme-source/a3tal-global')/pathlib.Path(p).name
+            src=source.read_text('utf8')
+            row={'path':p,'live_sha256':hashlib.sha256(live.encode()).hexdigest(),
+                 'repo_sha256':hashlib.sha256(src.encode()).hexdigest(),
+                 'exact_repo_match':live==src,
+                 'has_directory_function':'function a3g_ux_directory_guides' in live,
+                 'has_noindex_exclusion':"_yoast_wpseo_meta-robots-noindex" in live}
+            report['theme_files'].append(row)
+            if p.endswith('ux-improvements-20261031.php'):
+              j=live.find('function a3g_ux_directory_guides')
+              print('LIVE_DIRECTORY_FILTER_SEGMENT',live[j:j+2100] if j>=0 else 'function not found',flush=True)
+            print('LIVE_THEME_DRIFT_STATUS',json.dumps(row,ensure_ascii=False),flush=True)
+          for path in ['/cars-for-sale/','/cars/','/service-centers/']:
+            for attempt in range(3 if path=='/cars-for-sale/' else 1):
+              h={'User-Agent':'Mozilla/5.0 (compatible; A3tal-Egypt-Market-500-Confirm/1.0)','Accept':'text/html','Cache-Control':'no-cache'}
+              r=requests.get(B+path,params={'a3_qa_nonce':'20261121-'+str(attempt)},headers=h,allow_redirects=False,timeout=55)
+              soup=BeautifulSoup(r.text,'html.parser')
+              row={'path':path,'attempt':attempt,'status':r.status_code,'content_type':r.headers.get('content-type',''),
+                   'title':soup.title.get_text(' ',strip=True) if soup.title else '',
+                   'text_prefix':soup.get_text(' ',strip=True)[:260],'body_bytes':len(r.content),
+                   'server':r.headers.get('server',''),'cache_status':r.headers.get('x-litespeed-cache','')}
+              report['market_probes'].append(row)
+              print('MARKET_HTTP_PROBE',json.dumps(row,ensure_ascii=False),flush=True)
+          with open('reports/egypt-market-and-directory-live-preflight.json','w',encoding='utf8') as f:
+            json.dump(report,f,ensure_ascii=False,indent=2)
+          PY
+          python3 -u /tmp/check_market.py
+      - name: Preserve source drift and market HTTP results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-egypt-market-500-directory-live-source-readonly
+          path: reports/
+          if-no-files-found: warn
+          retention-days: 60
