@@ -1,0 +1,84 @@
+name: A3tal Egypt - merge exact duplicate Opel Insignia parts guide
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/a3tal-egypt-opel-insignia-parts-exact-duplicate-20261121.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  consolidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Preserve historically stronger Opel guide and redirect redundant guide
+        env:
+          A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+        run: |
+          set -euo pipefail
+          python3 -m pip install -q requests beautifulsoup4
+          mkdir -p reports
+          cat > /tmp/fix.py <<'PY'
+          import requests, subprocess,os,json,urllib.parse,datetime
+          from bs4 import BeautifulSoup
+          BASE='https://a3tal.com'; API=BASE+'/wp-json/a3tal-direct/v1'
+          KEY=os.getenv('A3TAL_API_KEY')
+          if not KEY:raise SystemExit('No Bridge secret; no edits')
+          original_id=79933
+          duplicate_id=80144
+          original='/أسعار-قطع-غيار-أوبل-انسيجنيا-2025-دليلك-ال/'
+          duplicate='/opel-insignia-spare-parts-prices-guide-egypt-2026/'
+          def api(p,body=None):
+            args=['curl','--silent','--show-error','--fail','--retry','2','--retry-all-errors','--retry-delay','1','--connect-timeout','15','--max-time','85','-H','X-A3tal-Key: '+KEY,'-H','Authorization: Bearer '+KEY]
+            b=None
+            if body is not None:
+              args+=['-X','POST','-H','Content-Type: application/json','--data-binary','@-']
+              b=json.dumps(body,ensure_ascii=False).encode()
+            args.append(API+p)
+            out=subprocess.run(args,input=b,capture_output=True,timeout=100)
+            if out.returncode:raise RuntimeError(out.stderr.decode('utf-8','replace')[:240])
+            r=json.loads(out.stdout.decode())
+            if r.get('ok') is False:raise RuntimeError(str(r)[:300])
+            return r
+          def norm(p):return urllib.parse.unquote(urllib.parse.urlsplit(p).path).rstrip('/')
+          main=api('/post/'+str(original_id));old=api('/post/'+str(duplicate_id))
+          for obj,path in [(main,original),(old,duplicate)]:
+             if obj.get('type')!='post' or obj.get('status')!='publish' or norm(obj.get('link',''))!=norm(path):
+                raise RuntimeError('Source identity mismatch; no edits')
+          if any(len(BeautifulSoup(x.get('content') or '','html.parser').get_text(' ',strip=True).split())<800 for x in (main,old)):
+             raise RuntimeError('Content too short for previous manual overlap check')
+          text=BeautifulSoup(main['content'],'html.parser').get_text(' ',strip=True)
+          if not all(p in text.lower() for p in ['إنسيجنيا','الاستيراد','الأسعار']):
+             raise RuntimeError('Target content does not cover necessary spare parts categories')
+          destination=BASE+original
+          probe=requests.get(destination,timeout=30,allow_redirects=False)
+          if probe.status_code!=200:raise RuntimeError('Destination is not live 200')
+          with open('reports/opel-insignia-two-original-articles-20261121.json','w',encoding='utf-8') as f:
+             json.dump({'timestamp':datetime.datetime.now(datetime.timezone.utc).isoformat(),'primary':main,'duplicate':old,'target':destination},f,ensure_ascii=False,indent=2)
+          print('PREFLIGHT_SUCCESS_BACKUP_STAGED',flush=True)
+          api('/admin',{'op':'post_meta_set','post_id':duplicate_id,
+           'meta':{'_yoast_wpseo_meta-robots-noindex':'1','_yoast_wpseo_canonical':destination}})
+          fresh=api('/post/'+str(duplicate_id))
+          api('/update-post',{'id':duplicate_id,'expected_modified_gmt':fresh['modified_gmt']})
+          saved=api('/redirect',{'source_path':duplicate,'target_url':destination,'status_code':301})
+          if not saved.get('ok') or int(saved.get('status_code',0))!=301:
+             raise RuntimeError('Direct Bridge redirect was not saved')
+          api('/admin',{'op':'cache_flush'})
+          source=BASE+duplicate
+          test=requests.get(source,allow_redirects=False,timeout=30)
+          end=requests.get(destination,allow_redirects=False,timeout=30)
+          outcome={'source':source,'source_status':test.status_code,'location':test.headers.get('Location'),'target':destination,'destination_status':end.status_code,
+           'valid':test.status_code==301 and norm(test.headers.get('Location',''))==norm(destination) and end.status_code==200}
+          print('OPEL_LIVE_301',json.dumps(outcome,ensure_ascii=False),flush=True)
+          with open('reports/opel-insignia-301-verification.json','w',encoding='utf-8') as f:json.dump(outcome,f,ensure_ascii=False,indent=2)
+          if not outcome['valid']:raise RuntimeError('Failed live 301 verification')
+          PY
+          python3 -u /tmp/fix.py
+      - name: Keep both original articles and redirect test
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-egypt-opel-insignia-originals-and-301-20261121
+          path: reports/
+          if-no-files-found: warn
+          retention-days: 90
