@@ -1,0 +1,38 @@
+name: A3tal Egypt - inspect three generic code redirect destinations without changes
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/a3tal-egypt-general-dtc-3-source-vs-destination-readonly.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - name: Inspect generic DTC root records and brand-specific landing indexability
+        run: |
+          python3 -m pip install -q requests beautifulsoup4
+          python3 - <<'PY'
+          import requests,xml.etree.ElementTree as ET,urllib.parse,json
+          from bs4 import BeautifulSoup
+          BASE='https://a3tal.com'
+          S=requests.Session();S.headers['User-Agent']='A3tal-Egypt-DTC-Redirect-Intent-QA-ReadOnly/1.0'
+          sitemap=ET.fromstring(S.get(BASE+'/a3_dtc-sitemap.xml',timeout=30).content)
+          entries={e.text for p in sitemap for e in p if e.tag.split('}')[-1]=='loc' and e.text}
+          source={'p0300':'/p0300-random-misfire/','p0011':'/p0011-camshaft-timing-over-advanced/','p0342':'/p0342-camshaft-position-sensor-circuit-low/'}
+          out=[]
+          for code,path in source.items():
+            for label,url in [('legacy_redirect_source',BASE+path),('generic_dtc_record',BASE+'/dtc/'+code+'/')]:
+              r=S.get(url,timeout=30,allow_redirects=False)
+              soup=BeautifulSoup(r.text,'html.parser')
+              robots=soup.find('meta',attrs={'name':'robots'})
+              can=soup.find('link',rel='canonical')
+              title=soup.title.get_text(' ',strip=True) if soup.title else ''
+              out.append({'code':code,'type':label,'url':url,'http':r.status_code,'location':r.headers.get('Location',''),
+                'robots':robots.get('content','') if robots else None,
+                'canonical':can.get('href') if can else None,
+                'title':title[:130],'in_dtc_sitemap':url in entries})
+          print('DTC_3_GENERIC_VS_BRAND',json.dumps(out,ensure_ascii=False),flush=True)
+          PY
