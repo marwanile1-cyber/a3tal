@@ -25,14 +25,25 @@ $home_latest_review = new WP_Query([
  'posts_per_page'=>1,'orderby'=>'date','order'=>'DESC','ignore_sticky_posts'=>true,'no_found_rows'=>true
 ]);
 
-// Reuse existing, already stable homepage car query; avoid extra home data scans.
+// Only count and display indexable car-reference records after 393 fact-card merges.
+// Historical fact cards remain published as 301 sources but are intentionally noindexed.
+$home_ref_indexable_meta = [
+ 'relation'=>'OR',
+ ['key'=>'_yoast_wpseo_meta-robots-noindex','compare'=>'NOT EXISTS'],
+ ['key'=>'_yoast_wpseo_meta-robots-noindex','value'=>'1','compare'=>'!='],
+];
 $home_new_reference = post_type_exists('a3_car_ref') ? get_posts([
  'post_type'=>'a3_car_ref','post_status'=>'publish','numberposts'=>6,
- 'orderby'=>'modified','order'=>'DESC'
+ 'orderby'=>'modified','order'=>'DESC','meta_query'=>$home_ref_indexable_meta
 ]) : [];
 if (post_type_exists('a3_car_ref')) {
-    $ref_stats = wp_count_posts('a3_car_ref');
-    $ref_count = isset($ref_stats->publish) ? (int) $ref_stats->publish : 0;
+    // Count independently of the six visible cards, but exclude redirected noindex children.
+    $home_ref_total_query = new WP_Query([
+      'post_type'=>'a3_car_ref','post_status'=>'publish','posts_per_page'=>1,
+      'fields'=>'ids','meta_query'=>$home_ref_indexable_meta,
+      'no_found_rows'=>false,'ignore_sticky_posts'=>true
+    ]);
+    $ref_count = (int) $home_ref_total_query->found_posts;
 }
 ?>
 <div class="a3tal-reference-page" dir="rtl">
