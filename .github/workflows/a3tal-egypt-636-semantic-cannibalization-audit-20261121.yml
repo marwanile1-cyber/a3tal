@@ -1,0 +1,104 @@
+name: A3tal Egypt - 636 live post semantic overlap candidate scan (read only)
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/a3tal-egypt-636-semantic-cannibalization-audit-20261121.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Read sitemap and active post content; rank article intent overlap without redirects
+        run: |
+          set -euo pipefail
+          python3 -m pip install -q requests beautifulsoup4 scikit-learn
+          mkdir -p reports
+          cat >/tmp/audit.py <<'PY'
+          import requests, re, json, unicodedata, urllib.parse, xml.etree.ElementTree as ET, collections
+          import numpy as np
+          from bs4 import BeautifulSoup
+          from sklearn.feature_extraction.text import TfidfVectorizer
+          from sklearn.metrics.pairwise import linear_kernel
+          BASE='https://a3tal.com'
+          s=requests.Session();s.headers.update({'User-Agent':'A3tal-Egypt-Semantic-Audit-ReadOnly/1.0'})
+          def norm_url(url):
+            v=urllib.parse.urlsplit(url)
+            return urllib.parse.unquote(v.path).rstrip('/')+'/'
+          def fetch(url):
+            r=s.get(url,timeout=45);r.raise_for_status();return r
+          doc=ET.fromstring(fetch(BASE+'/post-sitemap.xml').content)
+          urls=[e.text for e in doc.iter() if e.tag.split('}')[-1]=='loc' and e.text]
+          active=set(map(norm_url,urls))
+          objects=[]
+          for page in range(1,14):
+            r=fetch(BASE+'/wp-json/wp/v2/posts?'+urllib.parse.urlencode({'per_page':100,'page':page,'_fields':'id,link,title,content,status,modified_gmt'}))
+            arr=r.json()
+            if not isinstance(arr,list):break
+            objects.extend(arr)
+            if len(arr)<100:break
+          diacritics=re.compile('[\u064b-\u065f\u0670\u0640]')
+          def tidy(x):
+            x=unicodedata.normalize('NFKC',x or '').lower()
+            x=diacritics.sub('',x)
+            return re.sub(r'[^\w\s]+',' ',x).replace('أ','ا').replace('إ','ا').replace('آ','ا').replace('ى','ي').replace('ة','ه')
+          stopwords=set('في من علي الى عن مع هي هو هذا هذه تلك تلكم ما كيف لماذا ماهي معلومات دليل شامل افضل سعر اسعار تكلفة مصر مصري المصرية ومصر سيارات سيارة السياره اعطال اعطالكم كوم كل هل تعرف خطوات طريقة وما هناك قبل بعد 2024 2025 2026 2027 تحديث جديد الجديد دليلنا شاهد تعرف'.split())
+          def focus(title):
+            return ' '.join(t for t in tidy(title).split() if t not in stopwords and len(t)>1)
+          pages=[]
+          for p in objects:
+            if norm_url(p.get('link','')) not in active:continue
+            title=BeautifulSoup(p['title']['rendered'],'html.parser').get_text(' ',strip=True)
+            soup=BeautifulSoup(p['content']['rendered'],'html.parser')
+            for tag in soup(['script','style','nav','footer','form']):tag.decompose()
+            headings=' '.join(h.get_text(' ',strip=True) for h in soup.select('h2,h3')[:22])
+            desc=soup.get_text(' ',strip=True)
+            pages.append({'id':p['id'],'url':p['link'],'title':title,'headings':headings,'body':desc[:22000],
+             'modified_gmt':p.get('modified_gmt'),'length':len(desc.split())})
+          print('INVENTORY',json.dumps({'sitemap':len(urls),'rest_total':len(objects),'sitemap_matched':len(pages),'unmatched':len(active)-len(pages)},ensure_ascii=False),flush=True)
+          titles=[focus(p['title']) for p in pages]
+          heads=[focus(p['title']+' '+p['headings'][:1300]) for p in pages]
+          bodies=[tidy(p['body'])[:11000] for p in pages]
+          tv=TfidfVectorizer(analyzer='char_wb',ngram_range=(3,5),min_df=2,max_features=100000,sublinear_tf=True)
+          th=tv.fit_transform(titles)
+          sv=TfidfVectorizer(analyzer='word',ngram_range=(1,2),min_df=2,max_df=.72,max_features=130000,sublinear_tf=True,token_pattern=r'(?u)\b\w\w+\b')
+          hh=sv.fit_transform(heads)
+          bv=TfidfVectorizer(analyzer='word',ngram_range=(1,2),min_df=3,max_df=.67,max_features=110000,sublinear_tf=True,token_pattern=r'(?u)\b\w\w+\b')
+          bb=bv.fit_transform(bodies)
+          T=linear_kernel(th);H=linear_kernel(hh);B=linear_kernel(bb)
+          pairs=[]
+          for i in range(len(pages)):
+            for j in range(i+1,len(pages)):
+              a,b=float(T[i,j]),float(H[i,j])
+              c=float(B[i,j])
+              if not (a>=.50 or (b>=.43 and c>=.29) or (a>=.38 and c>=.41)):continue
+              score=.48*a+.34*b+.18*c
+              if score<.41:continue
+              pairs.append({'score':round(score,3),'title_similarity':round(a,3),
+               'intent_headings_similarity':round(b,3),'body_similarity':round(c,3),
+               'a':{k:pages[i][k] for k in ('id','url','title','length')},
+               'b':{k:pages[j][k] for k in ('id','url','title','length')}})
+          pairs.sort(key=lambda x:-x['score'])
+          exact_titles=collections.defaultdict(list)
+          for p in pages:exact_titles[focus(p['title'])].append(p['url'])
+          dup_titles={k:v for k,v in exact_titles.items() if len(v)>1 and k}
+          report={'scope':'Egypt post sitemap only','automatic_301':False,'sitemap_posts':len(active),
+           'included_post_records':len(pages),'exact_focus_title_duplicates':dup_titles,
+           'candidate_count':len(pairs),'candidates':pairs}
+          with open('reports/a3tal-egypt-636-semantic-candidates.json','w',encoding='utf-8') as f:json.dump(report,f,ensure_ascii=False,indent=2)
+          print('EXACT_TITLE_DUPLICATES',json.dumps(dup_titles,ensure_ascii=False),flush=True)
+          print('CANDIDATE_COUNTS',json.dumps({'total':len(pairs),'score_ge_075':sum(x['score']>=.75 for x in pairs),'score_ge_065':sum(x['score']>=.65 for x in pairs),'score_ge_055':sum(x['score']>=.55 for x in pairs)},ensure_ascii=False),flush=True)
+          print('TOP_CANDIDATE_PAIRS',json.dumps(pairs[:85],ensure_ascii=False),flush=True)
+          print('READ_ONLY complete; similarity scores require manual intent and GSC verification',flush=True)
+          PY
+          python3 -u /tmp/audit.py
+      - name: Persist audit report for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-egypt-636-semantic-cannibalization-20261121
+          path: reports/a3tal-egypt-636-semantic-candidates.json
+          if-no-files-found: warn
+          retention-days: 30
