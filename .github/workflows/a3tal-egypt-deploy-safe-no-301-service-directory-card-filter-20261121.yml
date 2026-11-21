@@ -21,6 +21,7 @@ jobs:
         run: |
           set -euo pipefail
           php -l theme-source/a3tal-global/ux-improvements-20261031.php
+          python3 -m pip install -q requests beautifulsoup4
           mkdir -p reports
           cat >/tmp/deploy_directory_filter.py <<'PY'
           import pathlib,subprocess,json,os,hashlib,requests,urllib.parse,html,time
