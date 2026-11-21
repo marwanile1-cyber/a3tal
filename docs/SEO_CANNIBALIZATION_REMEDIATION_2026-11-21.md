@@ -59,3 +59,37 @@
 | /car-reference/nissan/magnite-2026-egypt/ | 85094 | 7 |
 | /car-reference/nissan/patrol-y63-egypt/ | 85654 | 7 |
 | /car-reference/mg/mg-gt-15t-egypt/ | 85148 | 6 |
+
+## FINAL VERIFIED RESULT — 2026-11-21
+
+These are the latest verified counts. Supersede earlier intermediate counts in this file.
+
+- 393 / 393 legacy car-reference fact URLs: live HTTP 301, correct target and anchor.
+- 52 / 52 model hubs: index/follow, self canonical, accessible.
+- Car-reference XML sitemap reduced from 456 to 63; all 393 old URLs absent, all 52 hubs present.
+- Full QA: https://github.com/marwanile1-cyber/a3tal/actions/runs/44912432183
+- 304 exactly repeated generic advisory paragraphs removed across consolidated hubs; all technical sections retained.
+- All original children and model hub contents saved in GitHub Actions artifacts, no mass deletion.
+
+### Extra batches now complete
+- Jetour T2 i-DM, Opel Frontera, Renault Boreal: 29 redirected sources, 3 hubs, https://github.com/marwanile1-cyber/a3tal/actions/runs/44911351892
+- Kia and MG 10 hubs: 62 sources, https://github.com/marwanile1-cyber/a3tal/actions/runs/44911480279
+- Nissan and Renault 10 hubs: 59 sources, https://github.com/marwanile1-cyber/a3tal/actions/runs/44911771853
+- Remaining 13 model hubs: 52 sources, https://github.com/marwanile1-cyber/a3tal/actions/runs/44912070039
+- Last exact boilerplate dedupe: 55 paragraphs, https://github.com/marwanile1-cyber/a3tal/actions/runs/44912299530
+
+### Internal linking and plugin template fix
+- The first read-only post+reference scan found 997 outdated links in 32 indexable model guides (source content), https://github.com/marwanile1-cyber/a3tal/actions/runs/44912690489
+- All 997 href attributes updated to link directly to the correct canonical model section, in 32 guides, full original HTML backups preserved, https://github.com/marwanile1-cyber/a3tal/actions/runs/44913356949
+- A later read-only scan confirmed 0 links to any of the 393 redirected fact cards across 635 sitemap-listed regular posts and 62 reference archive/model records, https://github.com/marwanile1-cyber/a3tal/actions/runs/44913486278
+- Live single and archive templates of the car-reference plugin were surgically patched via GitHub + A3tal Direct Bridge with expected SHA validation and PHP lint. They now omit children marked with _yoast_wpseo_meta-robots-noindex=1 in linked cards/search output. Backups retained, https://github.com/marwanile1-cyber/a3tal/actions/runs/44913163162
+- CRITICAL DEPLOYMENT NOTE: Production plugin code had pre-existing drift from plugin-source/a3tal-car-reference in GitHub: the live main plugin PHP contains extra Yoast OG image handlers, and live single.php had an older facts-table guard. The work above preserved production differences and patched only two live templates. DO NOT redeploy the old plugin-source ZIP or rerun deploy-a3tal-car-reference.yml until its source is reconciled with current live plugin content; otherwise it may reverse these fixes or erase existing OG behavior. Read-only SHA/diff check: https://github.com/marwanile1-cyber/a3tal/actions/runs/44913066898
+
+### Ordinary articles
+- Compared 636 of 637 sitemap-listed published article bodies and titles; 8 broad title-similarity pairs surfaced, most are distinct models, marques or new/used search intent. No mass redirects based on title similarity. https://github.com/marwanile1-cyber/a3tal/actions/runs/44912349884
+- Two brake-fluid DOT 3/4/5.1 guides had matching intent; the short duplicate was noindexed and permanently redirected to the comprehensive version, with a unique safety clarification moved and the original preserved: https://github.com/marwanile1-cyber/a3tal/actions/runs/44912578853
+
+### Still needed for measurable organic-search recovery
+- Fresh first-party GSC export with date + query + page to measure query loss and identify genuinely competing articles. The 92-day aggregate export cannot establish this.
+- Evaluate a stable period at least one week after Google officially completes the November 2026 Core Update. Do not attribute traffic recovery to these changes without measured data.
+- Review the current on-site plugin-source drift before any future car-reference plugin deployment.
