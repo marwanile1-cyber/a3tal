@@ -112,3 +112,5 @@ jobs:
 # Recheck sitemap after 301-source noindex cleanup, 2026-11-21
 
 # Check post-consolidation Yoast XML exclusion of Sunny, Optra, T1 child URLs.
+
+# Verify live sitemap after 127 redirected car-reference cards, retaining 8 canonical hubs.
