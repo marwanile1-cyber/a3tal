@@ -31,7 +31,7 @@ jobs:
           def locs(xml):
               try:
                   root=ET.fromstring(xml)
-                  return [v.text.strip() for v in root.iter() if v.tag.split("}")[-1]=="loc" and v.text]
+                  return [v.text.strip() for item in root if item.tag.split("}")[-1] in ("url","sitemap") for v in item if v.tag.split("}")[-1]=="loc" and v.text]
               except Exception: return re.findall(r"<loc>\s*(https?://[^<]+)</loc>",xml)
           index_text,_,_=fetch(BASE+"/sitemap_index.xml")
           maps=locs(index_text)
