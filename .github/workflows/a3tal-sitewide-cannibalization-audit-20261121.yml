@@ -107,3 +107,5 @@ jobs:
             a3tal-sitewide-inventory.json
             a3tal-sitewide-urls.csv
           retention-days: 30
+
+# Recheck sitemap after 301-source noindex cleanup, 2026-11-21
