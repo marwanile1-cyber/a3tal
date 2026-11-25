@@ -1,0 +1,52 @@
+name: A3tal Egypt - read-only review of live homepage performance source drift
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/a3tal-egypt-home-speed-live-drift-review-20261126.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Review exact live PHP/CSS and public markup without changing website
+        env:
+          A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+        run: |
+          python3 -m pip install -q requests beautifulsoup4
+          mkdir -p reports
+          python3 - <<'PY'
+          import os,requests,hashlib,pathlib,json,difflib,re
+          from bs4 import BeautifulSoup
+          b='https://a3tal.com'; k=os.environ['A3TAL_API_KEY']; h={'X-A3tal-Key':k,'Authorization':'Bearer '+k}
+          root=pathlib.Path('theme-source/a3tal-global')
+          for n in ['functions.php','home-reference-20261104.php','home-reference-20261104.css']:
+            r=requests.post(b+'/wp-json/a3tal-direct/v1/admin',json={'op':'file_read','path':'themes/a3tal-global/'+n},headers=h,timeout=60)
+            r.raise_for_status(); j=r.json()['result']; live=j['content']; local=(root/n).read_text('utf8')
+            assert hashlib.sha256(live.encode()).hexdigest()==j['sha256']
+            diff=list(difflib.unified_diff(local.splitlines(),live.splitlines(),n=1))
+            pathlib.Path('reports',n+'.diff').write_text('\n'.join(diff),'utf8')
+            print('SOURCE_SHA',n,j['sha256'],'diff_lines',len(diff),flush=True)
+            for l in diff[:100]:
+              if l[:1] in ('+','-','@'): print('DIFF',l[:900],flush=True)
+            if n=='functions.php':
+              for needle in ['function a3g_preload_home_hero_image','function a3g_encyclopedia_home_assets']:
+                i=live.find(needle);print('LIVE_ANCHOR',live[i:i+950],flush=True)
+            elif n.endswith('.php'):
+              print('LIVE_HERO',re.search(r'<img class="hero-mobile-scene".*?alt="[^"]*"[^>]*>',live,re.S).group(0),flush=True)
+              for m in re.findall(r'<img class="hub-visual"[^>]*>',live):print('HUB',m[:650],flush=True)
+            else:
+              for m in re.findall(r'[^{}]*hero-mobile-scene[^{}]*\{[^{}]*\}',live):print('CSS_HERO',m[-900:],flush=True)
+          page=requests.get(b+'/',timeout=35);page.raise_for_status(); s=BeautifulSoup(page.text,'html.parser')
+          print('PUBLIC_PRELOADS',[(x.get('media'),x.get('href')) for x in s.select('link[rel="preload"][as="image"]')],flush=True)
+          print('PUBLIC_HERO',str(s.select_one('.hero-mobile-scene'))[:800],flush=True)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: homepage-live-source-drift
+          path: reports/
+          retention-days: 30
