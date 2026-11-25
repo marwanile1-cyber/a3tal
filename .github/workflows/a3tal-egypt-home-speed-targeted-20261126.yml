@@ -61,26 +61,33 @@ jobs:
             c=s.find('link',rel='canonical');m=s.find('meta',attrs={'name':'robots'});og=s.find('meta',property='og:image')
             return {'title':s.title.get_text(' ',strip=True) if s.title else '', 'canonical':c.get('href') if c else None,'robots':m.get('content') if m else None,'og':og.get('content') if og else None,'h1':[x.get_text(' ',strip=True) for x in s.select('h1')]}
           before_page=get_page();before_seo=seo(before_page)
+          # The read-only audit verified and reviewed these exact live source revisions.
+          # Preserve newer live product schema, ALT text and editorial changes.
+          reviewed_live={
+            'functions.php':'206beaa1a77464297ee4c450fac9a16e7c47cdcf4a3621b77cbbeed03202c81c',
+            'home-reference-20261104.php':'2182c92b54c12acbe0f8ecf2a65dd38dd16d82c7d5f362739d8c169cfcd35313',
+            'home-reference-20261104.css':'6e9fd2d0e6cff4bed77af97d2ce7b65d64f80edee78d167f91de921ddb865a30'
+          }
           originals={}
           for n in files:
-            x=read(n);local=(root/n).read_text('utf8')
-            if x['content']!=local and x['content'].splitlines()!=local.splitlines():
-              raise RuntimeError('Repository/live drift; no writes: '+n+' live='+x['sha256'][:16]+' repo='+digest(local)[:16])
+            x=read(n)
+            if x['sha256']!=reviewed_live[n]:
+              raise RuntimeError('Live revision changed since review; no writes: '+n)
             originals[n]=x
             pathlib.Path('reports/speed-before',n).write_text(x['content'],'utf8')
             print('LIVE_BASELINE',n,x['sha256'][:16],flush=True)
           out={n:x['content'] for n,x in originals.items()}
           n='functions.php';s=out[n]
           s=replace_once(s,'media="(min-width: 701px)"','media="(min-width: 721px)"')
-          s=replace_once(s,'media="(max-width: 700px)"','media="(max-width: 720px)"')
-          s=replace_once(s,"'/home-reference-20261104.css',['a3g-style'],'20261104-v5'","'/home-reference-20261104.css',['a3g-style'],'20261126-v1'")
+          s=replace_once(s,'''media="(max-width: 700px)" href="'.esc_url($base.'a3tal-ref-20261104-hero-desktop.webp')''','''media="(max-width: 720px)" href="'.esc_url($base.'a3tal-ref-20261104-hero-mobile.webp')''')
+          s=replace_once(s,"'/home-reference-20261104.css',['a3g-style'],'20261108.1'","'/home-reference-20261104.css',['a3g-style'],'20261126.1'")
           out[n]=s
           n='home-reference-20261104.css';s=out[n]
           s=replace_once(s,".hero-mobile-scene{order:2;height:125px;background:url('/wp-content/uploads/2026/11/a3tal-ref-20261104-hero-mobile.webp') center 51%/cover no-repeat;",".hero-mobile-scene{order:2;height:125px;background:none;")
           s=replace_once(s,"background:url('/wp-content/uploads/2026/11/a3tal-ref-20261104-hero-desktop.webp') center 49%/cover no-repeat!important}","background:none!important}")
           out[n]=s
           n='home-reference-20261104.php';s=out[n]
-          hero=re.findall(r'<img class="hero-mobile-scene"[^>]+>',s)
+          hero=re.findall(r'<img class="hero-mobile-scene".*?alt="[^"]*"[^>]*>',s,re.S)
           if len(hero)!=1 or 'data-no-lazy="1"' not in hero[0]:raise RuntimeError('Unexpected hero markup')
           source='<picture style="display:contents"><source media="(min-width:721px)" srcset="https://a3tal.com/wp-content/uploads/2026/11/a3tal-ref-20261104-hero-desktop.webp">'+hero[0]+'</picture>'
           s=replace_once(s,hero[0],source)
@@ -129,7 +136,7 @@ jobs:
             req({'op':'cache_flush'})
             for attempt in range(3):
               page=get_page();h=page.select_one('img.hero-mobile-scene');pic=h.parent if h else None
-              ok=(seo(page)==before_seo and h is not None and pic.name=='picture' and pic.find('source',media='(min-width:721px)') is not None and len(page.select('img.hub-visual'))==6 and page.select_one('#searchForm') is not None)
+              ok=(seo(page)==before_seo and h is not None and pic is not None and pic.name=='picture' and pic.find('source',media='(min-width:721px)') is not None and len(page.select('img.hub-visual'))==6 and page.select_one('#searchForm') is not None)
               pre=[x.get('media','') for x in page.select('link[rel="preload"][as="image"]') if 'a3tal-ref-20261104-hero-' in x.get('href','')]
               css=public.get(BASE+'/wp-content/themes/a3tal-global/home-reference-20261104.css',params={'qa':str(time.time_ns())},timeout=30)
               ok=ok and '(min-width: 721px)' in pre and '(max-width: 720px)' in pre and css.status_code==200 and 'background:none!important}' in css.text
