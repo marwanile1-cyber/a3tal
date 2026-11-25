@@ -1,0 +1,182 @@
+name: A3tal Egypt - targeted responsive homepage image performance repair
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/a3tal-egypt-home-speed-targeted-20261126.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: a3tal-production-theme
+  cancel-in-progress: false
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verified live file baseline, targeted image patch, backup and production QA
+        env:
+          A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+        run: |
+          set -euo pipefail
+          python3 -m pip install -q requests beautifulsoup4 pillow
+          mkdir -p reports/speed-before reports/speed-after
+          cat >/tmp/a3tal_speed_patch.py <<'PY'
+          import os,json,hashlib,requests,urllib.parse,subprocess,re,io,time,pathlib
+          from bs4 import BeautifulSoup
+          from PIL import Image
+          BASE='https://a3tal.com'; API=BASE+'/wp-json/a3tal-direct/v1/admin'
+          key=os.environ['A3TAL_API_KEY']
+          root=pathlib.Path('theme-source/a3tal-global')
+          files=['functions.php','home-reference-20261104.php','home-reference-20261104.css']
+          public=requests.Session()
+          public.headers.update({'User-Agent':'Mozilla/5.0 (compatible; A3talSpeedQA/20261126)'})
+          def digest(s):return hashlib.sha256(s.encode('utf8')).hexdigest()
+          def req(body,read=False):
+            h={'X-A3tal-Key':key,'Authorization':'Bearer '+key,'Accept':'application/json','Cache-Control':'no-cache'}
+            for attempt in range(3 if read else 1):
+              r=requests.post(API,json=body,headers=h,timeout=85)
+              if read and r.status_code in (429,502,503,504):
+                time.sleep(3);continue
+              r.raise_for_status()
+              j=r.json()
+              if not j.get('ok') or 'result' not in j:raise RuntimeError('Bridge operation not confirmed: '+body['op'])
+              return j['result']
+            raise RuntimeError('Bridge read failed')
+          def read(n):
+            x=req({'op':'file_read','path':'themes/a3tal-global/'+n},True)
+            if digest(x['content'])!=x['sha256']:raise RuntimeError('Live SHA mismatch: '+n)
+            return x
+          def write(n,s,old):
+            req({'op':'file_write','path':'themes/a3tal-global/'+n,'content':s,'expected_sha256':old,'confirm':True,'dangerous':True})
+            if read(n)['content']!=s:raise RuntimeError('Readback mismatch: '+n)
+          def replace_once(s,a,b):
+            if s.count(a)!=1:raise RuntimeError('Exact patch anchor missing or duplicated: '+a[:140])
+            return s.replace(a,b,1)
+          def get_page(path='/'):
+            r=public.get(BASE+path,params={'a3tal_speed_qa':str(time.time_ns())},timeout=45)
+            r.raise_for_status();return BeautifulSoup(r.text,'html.parser')
+          def seo(s):
+            c=s.find('link',rel='canonical');m=s.find('meta',attrs={'name':'robots'});og=s.find('meta',property='og:image')
+            return {'title':s.title.get_text(' ',strip=True) if s.title else '', 'canonical':c.get('href') if c else None,'robots':m.get('content') if m else None,'og':og.get('content') if og else None,'h1':[x.get_text(' ',strip=True) for x in s.select('h1')]}
+          before_page=get_page();before_seo=seo(before_page)
+          originals={}
+          for n in files:
+            x=read(n);local=(root/n).read_text('utf8')
+            if x['content']!=local and x['content'].splitlines()!=local.splitlines():
+              raise RuntimeError('Repository/live drift; no writes: '+n+' live='+x['sha256'][:16]+' repo='+digest(local)[:16])
+            originals[n]=x
+            pathlib.Path('reports/speed-before',n).write_text(x['content'],'utf8')
+            print('LIVE_BASELINE',n,x['sha256'][:16],flush=True)
+          out={n:x['content'] for n,x in originals.items()}
+          n='functions.php';s=out[n]
+          s=replace_once(s,'media="(min-width: 701px)"','media="(min-width: 721px)"')
+          s=replace_once(s,'media="(max-width: 700px)"','media="(max-width: 720px)"')
+          s=replace_once(s,"'/home-reference-20261104.css',['a3g-style'],'20261104-v5'","'/home-reference-20261104.css',['a3g-style'],'20261126-v1'")
+          out[n]=s
+          n='home-reference-20261104.css';s=out[n]
+          s=replace_once(s,".hero-mobile-scene{order:2;height:125px;background:url('/wp-content/uploads/2026/11/a3tal-ref-20261104-hero-mobile.webp') center 51%/cover no-repeat;",".hero-mobile-scene{order:2;height:125px;background:none;")
+          s=replace_once(s,"background:url('/wp-content/uploads/2026/11/a3tal-ref-20261104-hero-desktop.webp') center 49%/cover no-repeat!important}","background:none!important}")
+          out[n]=s
+          n='home-reference-20261104.php';s=out[n]
+          hero=re.findall(r'<img class="hero-mobile-scene"[^>]+>',s)
+          if len(hero)!=1 or 'data-no-lazy="1"' not in hero[0]:raise RuntimeError('Unexpected hero markup')
+          source='<picture style="display:contents"><source media="(min-width:721px)" srcset="https://a3tal.com/wp-content/uploads/2026/11/a3tal-ref-20261104-hero-desktop.webp">'+hero[0]+'</picture>'
+          s=replace_once(s,hero[0],source)
+          # Use only smaller image derivatives independently confirmed as actual WebP image responses.
+          variants=[]
+          for tag in re.findall(r'<img class="hub-visual"[^>]+>',s):
+            m=re.search(r'src="(https://a3tal.com/wp-content/uploads/[^"]+)"',tag)
+            if not m:continue
+            url=m.group(1)
+            if not any(x in url for x in ('tvs-raider-125-egypt','hero-real-photograph','egypt-parts-market')):continue
+            stem=re.sub(r'-[0-9]+x[0-9]+\.webp$','.webp',url)
+            candidates=[]
+            for size in ('300x169','300x158','360x180','480x270','768x432','768x405'):
+              u=stem[:-5]+'-'+size+'.webp'
+              try:
+                r=public.get(u,timeout=12)
+                if r.status_code!=200 or not r.headers.get('Content-Type','').startswith('image/'):continue
+                im=Image.open(io.BytesIO(r.content))
+                w,h=im.size
+                if im.format!='WEBP' or w!=int(size.split('x')[0]):continue
+                if w>=300 and w<840:candidates.append((w,u,len(r.content)))
+              except Exception:continue
+            if not candidates:continue
+            r=public.get(url,timeout=30);r.raise_for_status()
+            im=Image.open(io.BytesIO(r.content));w,h=im.size
+            choices={a:(b,c) for a,b,c in candidates if a<w and c<len(r.content)}
+            if not choices:continue
+            choices[w]=(url,len(r.content))
+            srcset=', '.join(u+' '+str(width)+'w' for width,(u,b) in sorted(choices.items()))
+            new=tag.replace('src="'+url+'"','src="'+url+'" srcset="'+srcset+'" sizes="(max-width:350px) 44vw, (max-width:720px) 30vw, 190px"')
+            s=replace_once(s,tag,new)
+            variants.append({'original':url,'original_bytes':len(r.content),'available':choices})
+          out[n]=s
+          print('VERIFIED_RESPONSIVE_HUB_VARIANTS',json.dumps(variants,ensure_ascii=False),flush=True)
+          for n,s in out.items():
+            p=pathlib.Path('reports/speed-after',n);p.write_text(s,'utf8')
+            if n.endswith('.php'):subprocess.run(['php','-l',str(p)],check=True)
+          changed=[]
+          try:
+            for n in files:
+              if out[n]==originals[n]['content']:continue
+              # Record attempt before the request, so rollback checks even uncertain responses.
+              changed.append(n)
+              write(n,out[n],originals[n]['sha256'])
+              print('LIVE_FILE_VERIFIED',n,flush=True)
+            req({'op':'cache_flush'})
+            for attempt in range(3):
+              page=get_page();h=page.select_one('img.hero-mobile-scene');pic=h.parent if h else None
+              ok=(seo(page)==before_seo and h is not None and pic.name=='picture' and pic.find('source',media='(min-width:721px)') is not None and len(page.select('img.hub-visual'))==6 and page.select_one('#searchForm') is not None)
+              pre=[x.get('media','') for x in page.select('link[rel="preload"][as="image"]') if 'a3tal-ref-20261104-hero-' in x.get('href','')]
+              css=public.get(BASE+'/wp-content/themes/a3tal-global/home-reference-20261104.css',params={'qa':str(time.time_ns())},timeout=30)
+              ok=ok and '(min-width: 721px)' in pre and '(max-width: 720px)' in pre and css.status_code==200 and 'background:none!important}' in css.text
+              if ok:break
+              time.sleep(4)
+            if not ok:raise RuntimeError('Live homepage structural/SEO QA failed')
+            for route in ['/cars/','/dtc/','/p0420-catalyst-efficiency-bank-1/']:
+              get_page(route)
+            result={'verified':True,'files':changed,'responsive_cards':len(variants),'seo_unchanged':True,'hero_preloads':pre}
+            pathlib.Path('reports/speed-patch-result.json').write_text(json.dumps(result,ensure_ascii=False,indent=2))
+            print('SPEED_PATCH_LIVE_VERIFIED',json.dumps(result,ensure_ascii=False),flush=True)
+            for n in changed:(root/n).write_text(out[n],'utf8')
+          except Exception:
+            for n in reversed(changed):
+              try:
+                cur=read(n)
+                if cur['content']==out[n]:write(n,originals[n]['content'],cur['sha256']);print('ROLLED_BACK',n,flush=True)
+              except Exception:print('ROLLBACK_REVIEW_REQUIRED',n,flush=True)
+            req({'op':'cache_flush'})
+            raise
+          PY
+          python3 -u /tmp/a3tal_speed_patch.py
+      - name: Synchronize verified live theme source to repository
+        run: |
+          git config user.name "a3tal-performance"
+          git config user.email "a3tal-performance@users.noreply.github.com"
+          git add theme-source/a3tal-global/functions.php theme-source/a3tal-global/home-reference-20261104.php theme-source/a3tal-global/home-reference-20261104.css
+          if ! git diff --cached --quiet; then
+            git commit -m "Sync verified responsive homepage performance patch"
+            git push origin HEAD:main
+          fi
+      - name: Measure two mobile Lighthouse runs
+        run: |
+          set -euo pipefail
+          for i in 1 2; do
+            npx --yes lighthouse@12.8.2 https://a3tal.com/ --chrome-path=/usr/bin/google-chrome --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" --only-categories=performance --form-factor=mobile --screenEmulation.mobile=true --throttling-method=simulate --output=json --output-path="reports/mobile-after-$i.json" --quiet
+          done
+          node - <<'JS'
+          for(const i of [1,2]){
+            const j=require('./reports/mobile-after-'+i+'.json'),a=j.audits;
+            console.log('MOBILE_AFTER',JSON.stringify({run:i,score:Math.round(j.categories.performance.score*100),lcp:a['largest-contentful-paint'].numericValue,fcp:a['first-contentful-paint'].numericValue,tbt:a['total-blocking-time'].numericValue,cls:a['cumulative-layout-shift'].numericValue,heroRequests:(a['network-requests']?.details?.items||[]).filter(x=>/a3tal-ref-20261104-hero-(desktop|mobile)\.webp/.test(x.url)).map(x=>({url:x.url,bytes:x.transferSize}))}));
+          }
+          JS
+      - name: Keep production backup and QA reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a3tal-egypt-responsive-speed-20261126
+          path: reports/
+          retention-days: 90
