@@ -18,6 +18,15 @@ function a3g_assets(){
   wp_enqueue_script('a3g-theme',get_template_directory_uri().'/assets/js/theme.js',[],A3G_VERSION,true);
 }
 add_action('wp_enqueue_scripts','a3g_assets');
+
+function a3g_reference_v5_home_assets(){
+ if(!is_front_page())return;
+ $base=get_template_directory_uri();
+ wp_enqueue_style('a3g-reference-v5',$base.'/home-reference-20261104.css',['a3g-style'],'20261126.1');
+ wp_enqueue_script('a3g-reference-v5',$base.'/assets/js/home-reference-20261104.js',[],'20261104.8',true);
+}
+add_action('wp_enqueue_scripts','a3g_reference_v5_home_assets',25);
+
 // Load the optional Google Fonts stylesheet without blocking the initial visual render.
 // Keep the primary theme stylesheet render-blocking to preserve layout and CLS.
 add_filter('style_loader_tag', static function($html, $handle, $href) {
@@ -38,10 +47,10 @@ add_filter('wp_resource_hints',function($urls,$relation_type){
 // Prioritize the exact responsive homepage LCP photo before the stylesheet and font downloads.
 // Match the front-page category query and sizes to avoid duplicate image requests.
 function a3g_preload_home_hero_image() {
-  if (!is_front_page()) return;
-  $base=content_url('/uploads/2026/11/');
-  echo '<link rel="preload" as="image" media="(min-width: 701px)" href="'.esc_url($base.'a3tal-ref-20261104-hero-desktop.webp').'" fetchpriority="high">'.PHP_EOL;
-  echo '<link rel="preload" as="image" media="(max-width: 700px)" href="'.esc_url($base.'a3tal-ref-20261104-hero-mobile.webp').'" fetchpriority="high">'.PHP_EOL;
+ if(!is_front_page())return;
+ $base=content_url('/uploads/2026/11/');
+ echo '<link rel="preload" as="image" media="(min-width: 721px)" href="'.esc_url($base.'a3tal-ref-20261104-hero-desktop.webp').'" fetchpriority="high">'.PHP_EOL;
+ echo '<link rel="preload" as="image" media="(max-width: 720px)" href="'.esc_url($base.'a3tal-ref-20261104-hero-mobile.webp').'" fetchpriority="high">'.PHP_EOL;
 }
 add_action('wp_head', 'a3g_preload_home_hero_image', 2);
 
@@ -985,11 +994,11 @@ add_filter('the_content', static function($html) {
       $related->post_status!=='publish' || $related->post_name!==$expected_slug) return $html;
   $target=get_permalink($related);
   if (!$target || strpos($html,'a3tal-tucson-intent-notice')!==false) return $html;
-  $title=$is_old?'تحديث مهم للأسعار بتاريخ 15 أكتوبر 2026':'تبحث عن الفرق بين موديل 2026 و2027؟';
+  $title=$is_old?'تحديث مهم للأسعار بتاريخ 5 نوفمبر 2026':'تبحث عن الفرق بين موديل 2026 و2027؟';
   $intro=$is_old
-    ? 'هذا الموضوع مخصص لمقارنة موديلَي توسان 2026 و2027، ويتضمن بيانات سعرية جرى تدقيقها يوم 1 أكتوبر 2026. لمراجعة قائمة أسعار 2027 بعد تحديث 15 أكتوبر، ارجع للمقال الأحدث قبل اتخاذ قرار الشراء.'
-    : 'هذا الموضوع يعرض أسعار توسان 2027 المراجعة بتاريخ 16 أكتوبر 2026. للمقارنة التاريخية بين فئات وأسعار 2026 و2027، راجع الدليل المنفصل ولا تتعامل مع أسعاره القديمة باعتبارها أحدث قائمة.';
-  $link=$is_old?'أسعار هيونداي توسان 2027 بعد تحديث أكتوبر ←':'مقارنة توسان 2026 و2027 ←';
+    ? 'هذا الموضوع مخصص لمقارنة موديلَي توسان 2026 و2027، ويتضمن بيانات سعرية جرى تدقيقها يوم 5 نوفمبر 2026. لمراجعة قائمة أسعار 2027 بعد تحديث 5 نوفمبر، ارجع للمقال الأحدث قبل اتخاذ قرار الشراء.'
+    : 'هذا الموضوع يعرض أسعار توسان 2027 المراجعة بتاريخ 5 نوفمبر 2026. للمقارنة التاريخية بين فئات وأسعار 2026 و2027، راجع الدليل المنفصل ولا تتعامل مع أسعاره القديمة باعتبارها أحدث قائمة.';
+  $link=$is_old?'أسعار هيونداي توسان 2027 بعد تحديث نوفمبر ←':'مقارنة توسان 2026 و2027 ←';
   $notice='<aside class="a3tal-tucson-intent-notice" role="note" aria-label="مسار توسان المكمل"'
     .' style="margin:22px 0;padding:17px 19px;border:1px solid #cedfea;border-right:4px solid #18789b;border-radius:12px;background:#f5f9fc">'
     .'<strong style="display:block;margin-bottom:7px;color:#123b63">'.esc_html($title).'</strong>'
@@ -1198,12 +1207,131 @@ add_filter('wpseo_canonical',static function($url){
 if (is_file(__DIR__ . '/ux-improvements-20261031.php')) require_once __DIR__ . '/ux-improvements-20261031.php';
 
 
-/* Encyclopedia preview: load only on the homepage. Existing content and URLs remain untouched. */
-function a3g_encyclopedia_home_assets(){
-  if(!is_front_page())return;
-  $uri=get_template_directory_uri();
-  $ver=defined('A3G_VERSION')?A3G_VERSION:'4-preview';
-  wp_enqueue_style('a3g-encyclopedia-home',$uri.'/home-reference-20261104.css',['a3g-style'],'20261104-v5');
-  wp_enqueue_script('a3g-encyclopedia-home',$uri.'/assets/js/home-reference-20261104.js',[],'20261104-v5',true);
+
+
+
+
+
+
+
+/**
+ * A3TAL-PARTS-JSONLD-20261122 — Product/Offer JSON-LD for a3_part pages.
+ * Keys confirmed 23 Nov 2026 from plugin source (NOT ACF):
+ * min _a3_price_min, max _a3_price_max, manufacturer _a3_part_manufacturer
+ * (theme displays _a3_manufacturer — read both), brand taxonomy a3_brand.
+ * Single price => Offer.price; range => AggregateOffer; unpriced => no offers.
+ */
+
+// A3TAL-PARTS-JSONLD-20261122 — Product/Offer JSON-LD for spare-part pages.
+add_action('wp_head', 'a3tal_part_product_jsonld', 20);
+
+function a3tal_part_product_jsonld() {
+    if (!is_singular('a3_part')) {
+        return;
+    }
+    $post_id = get_the_ID();
+
+    // Confirmed meta keys (23 Nov 2026, plugin source inspection).
+    $min = a3tal_part_first_meta($post_id, array('_a3_price_min'));
+    $max = a3tal_part_first_meta($post_id, array('_a3_price_max'));
+    if ($min === '' || $min === null) {
+        return; // Unpriced part: no Offer.
+    }
+    $min_f = floatval(str_replace(array(',', '٬'), '', (string) $min));
+    $max_f = ($max === '' || $max === null)
+        ? $min_f
+        : floatval(str_replace(array(',', '٬'), '', (string) $max));
+    if ($min_f <= 0) {
+        return; // Blank prices are stored as 0: treat as unpriced.
+    }
+
+    $brand = a3tal_part_brand_name($post_id);
+
+    $offers = array(
+        '@type'        => 'Offer',
+        'priceCurrency' => 'EGP',
+        'availability' => 'https://schema.org/InStock',
+        'url'          => get_permalink($post_id),
+    );
+    if ($max_f > $min_f) {
+        $offers['@type']    = 'AggregateOffer';
+        $offers['lowPrice'] = $min_f;
+        $offers['highPrice'] = $max_f;
+        $offers['offerCount'] = 1;
+    } else {
+        $offers['price'] = $min_f;
+    }
+
+    $data = array(
+        '@context'    => 'https://schema.org',
+        '@type'       => 'Product',
+        'name'        => get_the_title($post_id),
+        'description' => wp_strip_all_tags(get_the_excerpt($post_id)),
+        'url'         => get_permalink($post_id),
+        'offers'      => $offers,
+    );
+    if ($brand !== '') {
+        $data['brand'] = array('@type' => 'Brand', 'name' => $brand);
+    }
+    $img = get_the_post_thumbnail_url($post_id, 'full');
+    if ($img) {
+        $data['image'] = $img;
+    }
+
+    echo '<script type="application/ld+json">'
+        . wp_json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+        . '</script>' . "\n";
 }
-add_action('wp_enqueue_scripts','a3g_encyclopedia_home_assets',25);
+
+function a3tal_part_first_meta($post_id, $keys) {
+    foreach ($keys as $key) {
+        // ACF-aware: get_field resolves by field NAME even when the stored
+        // meta key is a hashed field key.
+        if (function_exists('get_field')) {
+            $v = get_field($key, $post_id);
+            if ($v !== '' && $v !== null && $v !== false) {
+                return $v;
+            }
+        }
+        $v = get_post_meta($post_id, $key, true);
+        if ($v !== '' && $v !== null) {
+            return $v;
+        }
+    }
+    return '';
+}
+
+function a3tal_part_brand_name($post_id) {
+    // Confirmed brand taxonomy slug (23 Nov 2026).
+    foreach (array('a3_brand') as $tax) {
+        $terms = get_the_terms($post_id, $tax);
+        if ($terms && !is_wp_error($terms) && !empty($terms[0]->name)) {
+            return $terms[0]->name;
+        }
+    }
+    // Fallback: manufacturer meta field (e.g. "Hyundai (هيونداي)").
+    // Edit form writes _a3_part_manufacturer; the theme displays
+    // _a3_manufacturer — read the form key first, then the theme key.
+    $mfr = a3tal_part_first_meta($post_id, array('_a3_part_manufacturer', '_a3_manufacturer'));
+    return is_string($mfr) ? $mfr : '';
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
