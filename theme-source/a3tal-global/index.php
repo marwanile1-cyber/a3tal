@@ -12,7 +12,7 @@ $cat=a3g_primary_cat(); $diag=a3g_is_diagnostic(); $vehicle_entity=a3g_related_v
 </section>
 <div class="g-wrap g-article-layout">
   <main class="g-article-card">
-    <?php if(has_post_thumbnail()): ?><figure class="g-featured"><?php the_post_thumbnail('full',['loading'=>'eager','fetchpriority'=>'high']); ?></figure><?php endif; ?>
+    <?php if(has_post_thumbnail()): ?><figure class="g-featured"><?php the_post_thumbnail('large',['loading'=>'eager','fetchpriority'=>'high','decoding'=>'async','data-no-lazy'=>'1','sizes'=>'(max-width: 430px) calc(100vw - 46px), (max-width: 600px) calc(100vw - 50px), (max-width: 1100px) calc(100vw - 80px), 804px']); ?></figure><?php endif; ?>
     <?php if($diag): ?><div class="g-diagnostic-note"><strong>قاعدة أعطال:</strong><span>ابدأ بالأعراض والفحص والقياسات قبل تغيير أي قطعة.</span></div><?php endif; ?>
     <?php if($vehicle_entity):
       $ve_id=(int)$vehicle_entity->ID;
