@@ -24,7 +24,7 @@ jobs:
           import requests,json,pathlib,sys
           from bs4 import BeautifulSoup
           B='https://a3tal.com'
-          paths=['/p0420-catalyst-efficiency-bank-1/','/wheel-bearing-humming-noise-diagnosis/','/opel-frontera-price-specs-egypt/']
+          paths=['/wheel-bearing-humming-noise-diagnosis/','/opel-frontera-price-specs-egypt/','/car-battery-drains-overnight-while-parked-parasitic-draw-diagnosis/']
           stage=sys.argv[1]
           results=[]
           for path in paths:
@@ -50,7 +50,7 @@ jobs:
       - name: Mobile Lighthouse baseline for article and DTC
         run: |
           set -euo pipefail
-          for route in p0420-catalyst-efficiency-bank-1 dtc; do
+          for route in wheel-bearing-humming-noise-diagnosis dtc; do
             npx --yes lighthouse@12.8.2 "https://a3tal.com/$route/" --chrome-path=/usr/bin/google-chrome --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" --only-categories=performance --form-factor=mobile --screenEmulation.mobile=true --throttling-method=simulate --output=json --output-path="reports/$route-before.json" --quiet
           done
       - name: Apply reviewed article image improvement to exact live theme file
@@ -106,10 +106,10 @@ jobs:
       - name: Repeat Lighthouse on same article
         run: |
           set -euo pipefail
-          npx --yes lighthouse@12.8.2 https://a3tal.com/p0420-catalyst-efficiency-bank-1/ --chrome-path=/usr/bin/google-chrome --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" --only-categories=performance --form-factor=mobile --screenEmulation.mobile=true --throttling-method=simulate --output=json --output-path=reports/p0420-catalyst-efficiency-bank-1-after.json --quiet
+          npx --yes lighthouse@12.8.2 https://a3tal.com/wheel-bearing-humming-noise-diagnosis/ --chrome-path=/usr/bin/google-chrome --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" --only-categories=performance --form-factor=mobile --screenEmulation.mobile=true --throttling-method=simulate --output=json --output-path=reports/wheel-bearing-humming-noise-diagnosis-after.json --quiet
           node - <<'JS'
           const fs=require('fs');
-          for(const name of ['p0420-catalyst-efficiency-bank-1-before','dtc-before','p0420-catalyst-efficiency-bank-1-after']){
+          for(const name of ['wheel-bearing-humming-noise-diagnosis-before','dtc-before','wheel-bearing-humming-noise-diagnosis-after']){
             const r=JSON.parse(fs.readFileSync('reports/'+name+'.json'));const a=r.audits;
             console.log('ARTICLE_SPEED_METRICS',JSON.stringify({name,score:Math.round(r.categories.performance.score*100),lcp:a['largest-contentful-paint'].numericValue,fcp:a['first-contentful-paint'].numericValue,cls:a['cumulative-layout-shift'].numericValue,tbt:a['total-blocking-time'].numericValue,lcpElement:a['largest-contentful-paint-element']?.details?.items?.slice(0,1),images:a['network-requests']?.details?.items?.filter(x=>x.resourceType==='Image'&&x.url.includes('/wp-content/uploads/')).slice(0,5).map(x=>({url:x.url,transfer:x.transferSize})),css:a['unused-css-rules']?.displayValue,js:a['unused-javascript']?.displayValue}).slice(0,5500))
           }
