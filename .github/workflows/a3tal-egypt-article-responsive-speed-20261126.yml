@@ -1,0 +1,122 @@
+name: A3tal Egypt - article responsive images and mobile speed verification
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/a3tal-egypt-article-responsive-speed-20261126.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: a3tal-production-theme
+  cancel-in-progress: false
+jobs:
+  article-speed:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify live article images and collect baseline
+        run: |
+          set -euo pipefail
+          python3 -m pip install -q requests beautifulsoup4
+          mkdir -p reports
+          cat >/tmp/article_speed_check.py <<'PY'
+          import requests,json,pathlib,sys
+          from bs4 import BeautifulSoup
+          B='https://a3tal.com'
+          paths=['/p0420-catalyst-efficiency-bank-1/','/wheel-bearing-humming-noise-diagnosis/','/opel-frontera-price-specs-egypt/']
+          stage=sys.argv[1]
+          results=[]
+          for path in paths:
+            r=requests.get(B+path,headers={'User-Agent':'Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36','Cache-Control':'no-cache'},params={'article_speed_qa':stage},timeout=40)
+            r.raise_for_status()
+            s=BeautifulSoup(r.text,'html.parser'); img=s.select_one('.g-featured img')
+            if not img:raise RuntimeError('Expected public article hero missing: '+path)
+            can=s.find('link',rel='canonical');rob=s.find('meta',attrs={'name':'robots'});og=s.find('meta',property='og:image')
+            o={'path':path,'status':r.status_code,'title':s.title.get_text(' ',strip=True),'h1':[x.get_text(' ',strip=True) for x in s.select('h1')],'canonical':can.get('href') if can else None,'robots':rob.get('content') if rob else None,'og':og.get('content') if og else None,'article_text':len(s.select_one('.g-entry').get_text(' ',strip=True)),'image':{k:img.get(k) for k in ('src','srcset','sizes','width','height','loading','fetchpriority','alt','data-no-lazy')},'ad_scripts':len(s.select('script[src*="googlesyndication"]'))}
+            results.append(o)
+            print('ARTICLE_'+stage.upper(),json.dumps(o,ensure_ascii=False),flush=True)
+          pathlib.Path('reports/'+stage+'.json').write_text(json.dumps(results,ensure_ascii=False,indent=2),'utf8')
+          if stage=='after':
+            before=json.loads(pathlib.Path('reports/before.json').read_text())
+            for a,b in zip(results,before):
+              for field in ('path','title','h1','canonical','robots','og','article_text','ad_scripts'):
+                if a[field]!=b[field]:raise RuntimeError('Unexpected changed public field '+field+' '+a['path'])
+              if '804px' not in (a['image']['sizes'] or ''):raise RuntimeError('Responsive sizes absent '+a['path'])
+              if a['image']['alt']!=b['image']['alt']:raise RuntimeError('ALT changed')
+              if a['image']['loading']!='eager' or a['image']['fetchpriority']!='high':raise RuntimeError('Hero priority lost')
+          PY
+          python3 /tmp/article_speed_check.py before
+      - name: Mobile Lighthouse baseline for article and DTC
+        run: |
+          set -euo pipefail
+          for route in p0420-catalyst-efficiency-bank-1 dtc; do
+            npx --yes lighthouse@12.8.2 "https://a3tal.com/$route/" --chrome-path=/usr/bin/google-chrome --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" --only-categories=performance --form-factor=mobile --screenEmulation.mobile=true --throttling-method=simulate --output=json --output-path="reports/$route-before.json" --quiet
+          done
+      - name: Apply reviewed article image improvement to exact live theme file
+        env:
+          A3TAL_API_KEY: ${{ secrets.A3TAL_API_KEY }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os,requests,pathlib,hashlib,subprocess,time
+          B='https://a3tal.com'; k=os.environ['A3TAL_API_KEY']; h={'X-A3tal-Key':k,'Authorization':'Bearer '+k,'Accept':'application/json'}
+          file='themes/a3tal-global/index.php';p=pathlib.Path('theme-source/a3tal-global/index.php')
+          def req(j):
+            r=requests.post(B+'/wp-json/a3tal-direct/v1/admin',json=j,headers=h,timeout=60)
+            r.raise_for_status(); x=r.json()
+            if not x.get('ok'):raise RuntimeError('Bridge failed '+j['op'])
+            return x.get('result')
+          def read():
+            x=req({'op':'file_read','path':file})
+            assert hashlib.sha256(x['content'].encode()).hexdigest()==x['sha256']
+            return x
+          def write(content,sha):
+            req({'op':'file_write','path':file,'content':content,'expected_sha256':sha,'confirm':True,'dangerous':True})
+            assert read()['content']==content
+          x=read(); old=x['content']
+          if old.splitlines()!=p.read_text('utf8').splitlines():raise RuntimeError('Live/repository index.php drift; stopped without editing')
+          a="the_post_thumbnail('full',['loading'=>'eager','fetchpriority'=>'high']);"
+          b="the_post_thumbnail('large',['loading'=>'eager','fetchpriority'=>'high','decoding'=>'async','data-no-lazy'=>'1','sizes'=>'(max-width: 430px) calc(100vw - 46px), (max-width: 600px) calc(100vw - 50px), (max-width: 1100px) calc(100vw - 80px), 804px']);"
+          assert old.count(a)==1
+          new=old.replace(a,b,1)
+          pathlib.Path('reports/index.php.before').write_text(old,'utf8'); pathlib.Path('reports/index.php.after').write_text(new,'utf8')
+          subprocess.run(['php','-l','reports/index.php.after'],check=True)
+          try:
+            write(new,x['sha256']);req({'op':'cache_flush'})
+            for i in range(3):
+              r=subprocess.run(['python3','/tmp/article_speed_check.py','after'])
+              if r.returncode==0:break
+              time.sleep(3)
+            if r.returncode!=0:raise RuntimeError('Public article QA failed')
+            p.write_text(new,'utf8')
+            print('ARTICLE_IMAGE_PATCH_LIVE_VERIFIED',flush=True)
+          except Exception:
+            y=read()
+            if y['content']==new:
+              write(old,y['sha256']);req({'op':'cache_flush'});print('ARTICLE_PATCH_ROLLED_BACK',flush=True)
+            raise
+          PY
+      - name: Synchronize verified theme file
+        run: |
+          git config user.name "a3tal-performance"
+          git config user.email "a3tal-performance@users.noreply.github.com"
+          git add theme-source/a3tal-global/index.php
+          if ! git diff --cached --quiet; then git commit -m "Use responsive article featured image dimensions with original SEO metadata preserved"; git push origin HEAD:main; fi
+      - name: Repeat Lighthouse on same article
+        run: |
+          set -euo pipefail
+          npx --yes lighthouse@12.8.2 https://a3tal.com/p0420-catalyst-efficiency-bank-1/ --chrome-path=/usr/bin/google-chrome --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" --only-categories=performance --form-factor=mobile --screenEmulation.mobile=true --throttling-method=simulate --output=json --output-path=reports/p0420-catalyst-efficiency-bank-1-after.json --quiet
+          node - <<'JS'
+          const fs=require('fs');
+          for(const name of ['p0420-catalyst-efficiency-bank-1-before','dtc-before','p0420-catalyst-efficiency-bank-1-after']){
+            const r=JSON.parse(fs.readFileSync('reports/'+name+'.json'));const a=r.audits;
+            console.log('ARTICLE_SPEED_METRICS',JSON.stringify({name,score:Math.round(r.categories.performance.score*100),lcp:a['largest-contentful-paint'].numericValue,fcp:a['first-contentful-paint'].numericValue,cls:a['cumulative-layout-shift'].numericValue,tbt:a['total-blocking-time'].numericValue,lcpElement:a['largest-contentful-paint-element']?.details?.items?.slice(0,1),images:a['network-requests']?.details?.items?.filter(x=>x.resourceType==='Image'&&x.url.includes('/wp-content/uploads/')).slice(0,5).map(x=>({url:x.url,transfer:x.transferSize})),css:a['unused-css-rules']?.displayValue,js:a['unused-javascript']?.displayValue}).slice(0,5500))
+          }
+          JS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: a3tal-article-speed-20261126
+          path: reports/
+          retention-days: 30
